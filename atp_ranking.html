@@ -113,6 +113,89 @@
                     transform: scale(1.05);
                 }
 
+                .summary-section {
+                    margin-top: 12px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+
+                .summary-toggle {
+                    background: var(--filter-row-bg);
+                    border: 1px solid var(--border-color);
+                    color: var(--text-main);
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    transition: all 0.2s;
+                }
+
+                /* 3. Summary Section (if applicable) */
+
+                .summary-content {
+                    margin-top: 10px;
+                    padding: 12px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    background: var(--bg-container);
+                    display: none;
+                }
+                
+                .summary-content.open {
+                    max-height: 500px; /* adjust based on content */
+                }
+
+                .summary-content.show {
+                    display: block;
+                }
+
+                /* Summary Table Styling */
+                .summary-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 12px;
+                    margin-top: 6px;
+                }
+
+                .summary-table th {
+                    background: var(--filter-row-bg);
+                    color: var(--text-main);
+                    padding: 8px;
+                    text-align: left;
+                    font-weight: 600;
+                    border-bottom: 2px solid var(--border-color);
+                    white-space: nowrap;
+                }
+
+                .summary-table td {
+                    padding: 8px;
+                    border-bottom: 1px solid var(--border-color);
+                    color: var(--text-main);
+                }
+
+                .summary-table tr:nth-child(even) {
+                    background-color: var(--table-row-even);
+                }
+
+                .summary-table tr:hover {
+                    background-color: var(--table-row-hover);
+                }
+
+                /* Optional: make first column stand out (useful for stats labels) */
+                .summary-table td:first-child,
+                .summary-table th:first-child {
+                    font-weight: 600;
+                }
+
+                /* Optional: compact look */
+                .summary-table.compact th,
+                .summary-table.compact td {
+                    padding: 6px;
+                    font-size: 11px;
+                }
+
                 .table-wrapper {
                     max-height: 70vh;
                     overflow-y: auto;
@@ -174,7 +257,7 @@
                     border-bottom: 2px solid var(--border-color);
                 }
 
-                /* Dropdown Styling */
+                /* 4. Dropdown Styling */
                 .filter-dropdown {
                     position: relative;
                     width: 100%;
@@ -256,7 +339,7 @@
                     border-bottom-color: #3498db;
                 }
 
-                /* 3. Row count align left */
+                /* 5. Row count align left */
                 .stats {
                     margin-top: 10px;
                     padding: 8px;
@@ -321,7 +404,7 @@
                 <div class="header-info">
                     <h1>ATP即时排名</h1>
                     <div class="last-updated">
-                        ⏱ 更新时间: 2026年05月04日 00:02:20
+                        ⏱ 更新时间: 2026年05月05日 01:54:44
                     </div>
                 </div>
                 
@@ -333,6 +416,8 @@
                 <div class="stats">
                     显示 <span id="visible-count">0</span> / <span id="total-count">0</span> 行
                 </div>
+
+                
 
                 <div class="table-wrapper">
                     <div id="table-container">
@@ -6248,6 +6333,9 @@
                     }
                 }
 
+                // summary section
+                
+
                 document.addEventListener('DOMContentLoaded', function() {
                     const table = document.querySelector('.filterable-table');
                     if (!table) return;
@@ -6351,13 +6439,25 @@
                                 rowsArray.sort((a, b) => {
                                     const A = a.children[index].textContent.trim();
                                     const B = b.children[index].textContent.trim();
-                                    
+
+                                    // Treat empty / null-like values
+                                    const isEmptyA = A === "" || A.toLowerCase() === "nan" || A === "-";
+                                    const isEmptyB = B === "" || B.toLowerCase() === "nan" || B === "-";
+
+                                    // Always push empty values to bottom
+                                    if (isEmptyA && !isEmptyB) return 1;
+                                    if (!isEmptyA && isEmptyB) return -1;
+                                    if (isEmptyA && isEmptyB) return 0;
+
+                                    // Try numeric comparison
                                     const numA = parseFloat(A);
                                     const numB = parseFloat(B);
 
                                     if (!isNaN(numA) && !isNaN(numB)) {
                                         return (numA - numB) * (sortDirection === 'asc' ? 1 : -1);
                                     }
+
+                                    // Fallback to string comparison
                                     return A.localeCompare(B, 'zh') * (sortDirection === 'asc' ? 1 : -1);
                                 });
 
