@@ -113,6 +113,89 @@
                     transform: scale(1.05);
                 }
 
+                .summary-section {
+                    margin-top: 12px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+
+                .summary-toggle {
+                    background: var(--filter-row-bg);
+                    border: 1px solid var(--border-color);
+                    color: var(--text-main);
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    transition: all 0.2s;
+                }
+
+                /* 3. Summary Section (if applicable) */
+
+                .summary-content {
+                    margin-top: 10px;
+                    padding: 12px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    background: var(--bg-container);
+                    display: none;
+                }
+                
+                .summary-content.open {
+                    max-height: 500px; /* adjust based on content */
+                }
+
+                .summary-content.show {
+                    display: block;
+                }
+
+                /* Summary Table Styling */
+                .summary-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 12px;
+                    margin-top: 6px;
+                }
+
+                .summary-table th {
+                    background: var(--filter-row-bg);
+                    color: var(--text-main);
+                    padding: 8px;
+                    text-align: left;
+                    font-weight: 600;
+                    border-bottom: 2px solid var(--border-color);
+                    white-space: nowrap;
+                }
+
+                .summary-table td {
+                    padding: 8px;
+                    border-bottom: 1px solid var(--border-color);
+                    color: var(--text-main);
+                }
+
+                .summary-table tr:nth-child(even) {
+                    background-color: var(--table-row-even);
+                }
+
+                .summary-table tr:hover {
+                    background-color: var(--table-row-hover);
+                }
+
+                /* Optional: make first column stand out (useful for stats labels) */
+                .summary-table td:first-child,
+                .summary-table th:first-child {
+                    font-weight: 600;
+                }
+
+                /* Optional: compact look */
+                .summary-table.compact th,
+                .summary-table.compact td {
+                    padding: 6px;
+                    font-size: 11px;
+                }
+
                 .table-wrapper {
                     max-height: 70vh;
                     overflow-y: auto;
@@ -174,7 +257,7 @@
                     border-bottom: 2px solid var(--border-color);
                 }
 
-                /* Dropdown Styling */
+                /* 4. Dropdown Styling */
                 .filter-dropdown {
                     position: relative;
                     width: 100%;
@@ -256,7 +339,7 @@
                     border-bottom-color: #3498db;
                 }
 
-                /* 3. Row count align left */
+                /* 5. Row count align left */
                 .stats {
                     margin-top: 10px;
                     padding: 8px;
@@ -321,7 +404,7 @@
                 <div class="header-info">
                     <h1>WTA幸存者杀手榜（总榜）</h1>
                     <div class="last-updated">
-                        ⏱ 更新时间: 2026年05月04日 00:02:20
+                        ⏱ 更新时间: 2026年05月06日 09:17:28
                     </div>
                 </div>
                 
@@ -330,6 +413,8 @@
                     <span id="themeIcon">🌙</span>
                 </button>
                 
+                
+
                 <div class="stats">
                     显示 <span id="visible-count">0</span> / <span id="total-count">0</span> 行
                 </div>
@@ -350,934 +435,1262 @@
   <tbody>
     <tr>
       <td>1</td>
-      <td>卡萨特金娜</td>
-      <td>444</td>
-      <td>36.79%</td>
-      <td>78</td>
-      <td>1207</td>
+      <td>毛罗然</td>
+      <td>273</td>
+      <td>34.60%</td>
+      <td>63</td>
+      <td>789</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>米-安德烈耶娃</td>
-      <td>422</td>
-      <td>23.92%</td>
-      <td>68</td>
-      <td>1764</td>
+      <td>布勃利克</td>
+      <td>242</td>
+      <td>50.31%</td>
+      <td>50</td>
+      <td>481</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>保利尼</td>
-      <td>409</td>
-      <td>34.43%</td>
-      <td>68</td>
-      <td>1188</td>
+      <td>阿纳尔迪</td>
+      <td>237</td>
+      <td>62.37%</td>
+      <td>99</td>
+      <td>380</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>亚历山德罗娃</td>
-      <td>407</td>
-      <td>40.70%</td>
-      <td>57</td>
-      <td>1000</td>
+      <td>高芙</td>
+      <td>235</td>
+      <td>55.95%</td>
+      <td>82</td>
+      <td>420</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>高芙</td>
-      <td>362</td>
-      <td>27.53%</td>
-      <td>82</td>
-      <td>1315</td>
+      <td>米克尔森</td>
+      <td>233</td>
+      <td>52.36%</td>
+      <td>84</td>
+      <td>445</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>施内德</td>
-      <td>355</td>
-      <td>25.43%</td>
-      <td>51</td>
-      <td>1396</td>
+      <td>梅德韦杰夫</td>
+      <td>233</td>
+      <td>27.28%</td>
+      <td>27</td>
+      <td>854</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>普汀塞娃</td>
-      <td>353</td>
-      <td>39.40%</td>
-      <td>113</td>
-      <td>896</td>
+      <td>鲁德</td>
+      <td>219</td>
+      <td>39.96%</td>
+      <td>56</td>
+      <td>548</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>佩古拉</td>
-      <td>337</td>
-      <td>20.92%</td>
-      <td>55</td>
-      <td>1611</td>
+      <td>保罗</td>
+      <td>214</td>
+      <td>18.69%</td>
+      <td>93</td>
+      <td>1145</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>萨姆索诺娃</td>
-      <td>327</td>
-      <td>30.97%</td>
-      <td>52</td>
-      <td>1056</td>
+      <td>西西帕斯</td>
+      <td>209</td>
+      <td>31.62%</td>
+      <td>102</td>
+      <td>661</td>
     </tr>
     <tr>
       <td>10</td>
-      <td>斯维托丽娜</td>
-      <td>324</td>
-      <td>18.93%</td>
-      <td>91</td>
-      <td>1712</td>
+      <td>马哈奇</td>
+      <td>198</td>
+      <td>44.59%</td>
+      <td>44</td>
+      <td>444</td>
     </tr>
     <tr>
       <td>11</td>
-      <td>凯斯</td>
-      <td>312</td>
-      <td>26.28%</td>
-      <td>59</td>
-      <td>1187</td>
+      <td>斯维托丽娜</td>
+      <td>196</td>
+      <td>33.28%</td>
+      <td>91</td>
+      <td>589</td>
     </tr>
     <tr>
       <td>12</td>
-      <td>王欣瑜</td>
-      <td>295</td>
-      <td>35.54%</td>
-      <td>89</td>
-      <td>830</td>
+      <td>穆塞蒂</td>
+      <td>190</td>
+      <td>29.73%</td>
+      <td>34</td>
+      <td>639</td>
     </tr>
     <tr>
       <td>13</td>
-      <td>拉杜卡努</td>
-      <td>272</td>
-      <td>29.50%</td>
-      <td>82</td>
-      <td>922</td>
+      <td>哈恰诺夫</td>
+      <td>187</td>
+      <td>19.06%</td>
+      <td>76</td>
+      <td>981</td>
     </tr>
     <tr>
       <td>14</td>
-      <td>蕾-费尔南德斯</td>
-      <td>266</td>
-      <td>22.30%</td>
-      <td>109</td>
-      <td>1193</td>
+      <td>中岛布兰登</td>
+      <td>184</td>
+      <td>41.72%</td>
+      <td>63</td>
+      <td>441</td>
     </tr>
     <tr>
       <td>15</td>
-      <td>维基奇</td>
-      <td>259</td>
-      <td>48.87%</td>
-      <td>120</td>
-      <td>530</td>
+      <td>科达</td>
+      <td>177</td>
+      <td>35.54%</td>
+      <td>95</td>
+      <td>498</td>
     </tr>
     <tr>
       <td>16</td>
-      <td>奥斯塔彭科</td>
-      <td>257</td>
-      <td>40.47%</td>
-      <td>69</td>
-      <td>635</td>
-    </tr>
-    <tr>
-      <td>17</td>
-      <td>希维昂泰克</td>
-      <td>252</td>
-      <td>25.71%</td>
-      <td>54</td>
-      <td>980</td>
-    </tr>
-    <tr>
-      <td>18</td>
-      <td>大坂直美</td>
-      <td>248</td>
-      <td>25.75%</td>
-      <td>62</td>
-      <td>963</td>
-    </tr>
-    <tr>
-      <td>19</td>
-      <td>科斯秋克</td>
-      <td>246</td>
-      <td>22.08%</td>
-      <td>97</td>
-      <td>1114</td>
-    </tr>
-    <tr>
-      <td>20</td>
-      <td>梅尔滕斯</td>
-      <td>243</td>
-      <td>18.09%</td>
-      <td>68</td>
-      <td>1343</td>
-    </tr>
-    <tr>
-      <td>21</td>
-      <td>埃-纳瓦罗</td>
-      <td>242</td>
-      <td>19.67%</td>
-      <td>70</td>
-      <td>1230</td>
-    </tr>
-    <tr>
-      <td>22</td>
-      <td>博尔特</td>
-      <td>240</td>
-      <td>38.96%</td>
-      <td>68</td>
-      <td>616</td>
-    </tr>
-    <tr>
-      <td>23</td>
-      <td>巴蒂斯特</td>
-      <td>239</td>
-      <td>33.06%</td>
-      <td>83</td>
-      <td>723</td>
-    </tr>
-    <tr>
-      <td>24</td>
-      <td>巴多萨</td>
-      <td>236</td>
-      <td>20.85%</td>
-      <td>55</td>
-      <td>1132</td>
-    </tr>
-    <tr>
-      <td>25</td>
-      <td>诺斯科娃</td>
-      <td>213</td>
-      <td>18.87%</td>
-      <td>38</td>
-      <td>1129</td>
-    </tr>
-    <tr>
-      <td>26</td>
-      <td>郑钦文</td>
-      <td>211</td>
-      <td>19.23%</td>
-      <td>49</td>
-      <td>1097</td>
-    </tr>
-    <tr>
-      <td>27</td>
-      <td>凯斯勒</td>
-      <td>208</td>
-      <td>27.12%</td>
-      <td>84</td>
-      <td>767</td>
-    </tr>
-    <tr>
-      <td>28</td>
-      <td>雷巴金娜</td>
-      <td>203</td>
-      <td>18.45%</td>
-      <td>51</td>
-      <td>1100</td>
-    </tr>
-    <tr>
-      <td>29</td>
-      <td>帕芙柳琴科娃</td>
-      <td>200</td>
-      <td>64.52%</td>
-      <td>60</td>
-      <td>310</td>
-    </tr>
-    <tr>
-      <td>30</td>
-      <td>波塔波娃</td>
-      <td>199</td>
-      <td>36.78%</td>
-      <td>78</td>
-      <td>541</td>
-    </tr>
-    <tr>
-      <td>31</td>
-      <td>卡林斯卡娅</td>
-      <td>194</td>
-      <td>25.49%</td>
-      <td>30</td>
-      <td>761</td>
-    </tr>
-    <tr>
-      <td>32</td>
-      <td>克宁</td>
-      <td>190</td>
-      <td>34.30%</td>
-      <td>69</td>
-      <td>554</td>
-    </tr>
-    <tr>
-      <td>33</td>
-      <td>斯塔罗杜布采娃</td>
-      <td>184</td>
-      <td>73.60%</td>
-      <td>162</td>
-      <td>250</td>
-    </tr>
-    <tr>
-      <td>34</td>
-      <td>袁悦</td>
-      <td>183</td>
-      <td>68.03%</td>
-      <td>65</td>
-      <td>269</td>
-    </tr>
-    <tr>
-      <td>35</td>
-      <td>亚斯特列姆斯卡</td>
-      <td>183</td>
-      <td>32.33%</td>
-      <td>82</td>
-      <td>566</td>
-    </tr>
-    <tr>
-      <td>36</td>
-      <td>斯特恩斯</td>
-      <td>173</td>
-      <td>38.36%</td>
-      <td>51</td>
-      <td>451</td>
-    </tr>
-    <tr>
-      <td>37</td>
-      <td>弗雷希</td>
-      <td>167</td>
-      <td>37.03%</td>
-      <td>91</td>
-      <td>451</td>
-    </tr>
-    <tr>
-      <td>38</td>
-      <td>阿尼西莫娃</td>
-      <td>166</td>
-      <td>15.89%</td>
-      <td>55</td>
-      <td>1045</td>
-    </tr>
-    <tr>
-      <td>39</td>
-      <td>克赖奇科娃</td>
-      <td>163</td>
-      <td>31.29%</td>
-      <td>29</td>
-      <td>521</td>
-    </tr>
-    <tr>
-      <td>40</td>
-      <td>穆霍娃</td>
-      <td>153</td>
-      <td>11.28%</td>
-      <td>37</td>
-      <td>1356</td>
-    </tr>
-    <tr>
-      <td>41</td>
-      <td>陶森</td>
-      <td>145</td>
-      <td>26.13%</td>
-      <td>40</td>
-      <td>555</td>
-    </tr>
-    <tr>
-      <td>42</td>
-      <td>玛雅</td>
-      <td>144</td>
-      <td>29.09%</td>
-      <td>25</td>
-      <td>495</td>
-    </tr>
-    <tr>
-      <td>43</td>
-      <td>玛利亚</td>
-      <td>134</td>
-      <td>77.01%</td>
-      <td>73</td>
-      <td>174</td>
-    </tr>
-    <tr>
-      <td>44</td>
-      <td>萨巴莲卡</td>
-      <td>132</td>
-      <td>13.48%</td>
-      <td>39</td>
-      <td>979</td>
-    </tr>
-    <tr>
-      <td>45</td>
-      <td>贾贝乌尔</td>
-      <td>130</td>
-      <td>28.32%</td>
-      <td>43</td>
-      <td>459</td>
-    </tr>
-    <tr>
-      <td>46</td>
-      <td>西尼亚科娃</td>
-      <td>118</td>
-      <td>12.34%</td>
-      <td>23</td>
-      <td>956</td>
-    </tr>
-    <tr>
-      <td>47</td>
-      <td>卡塔尔</td>
-      <td>117</td>
-      <td>60.62%</td>
-      <td>47</td>
-      <td>193</td>
-    </tr>
-    <tr>
-      <td>48</td>
-      <td>里纳特</td>
-      <td>117</td>
-      <td>29.77%</td>
-      <td>33</td>
-      <td>393</td>
-    </tr>
-    <tr>
-      <td>49</td>
-      <td>特苏伦科</td>
-      <td>114</td>
-      <td>80.85%</td>
-      <td>95</td>
-      <td>141</td>
-    </tr>
-    <tr>
-      <td>50</td>
-      <td>施拉姆科娃</td>
-      <td>110</td>
-      <td>45.45%</td>
-      <td>51</td>
-      <td>242</td>
-    </tr>
-    <tr>
-      <td>51</td>
-      <td>克鲁格</td>
-      <td>110</td>
-      <td>23.50%</td>
-      <td>47</td>
-      <td>468</td>
-    </tr>
-    <tr>
-      <td>52</td>
-      <td>阿扎伦卡</td>
-      <td>110</td>
-      <td>18.15%</td>
-      <td>34</td>
-      <td>606</td>
-    </tr>
-    <tr>
-      <td>53</td>
-      <td>库德梅托娃</td>
-      <td>108</td>
-      <td>19.64%</td>
-      <td>38</td>
-      <td>550</td>
-    </tr>
-    <tr>
-      <td>54</td>
-      <td>本西奇</td>
-      <td>99</td>
-      <td>9.84%</td>
-      <td>24</td>
-      <td>1006</td>
-    </tr>
-    <tr>
-      <td>55</td>
-      <td>汤姆亚诺维奇</td>
-      <td>99</td>
-      <td>26.33%</td>
-      <td>44</td>
-      <td>376</td>
-    </tr>
-    <tr>
-      <td>56</td>
-      <td>加西亚</td>
-      <td>97</td>
-      <td>63.82%</td>
-      <td>79</td>
-      <td>152</td>
-    </tr>
-    <tr>
-      <td>57</td>
-      <td>孙璐璐</td>
-      <td>94</td>
-      <td>43.12%</td>
-      <td>50</td>
-      <td>218</td>
-    </tr>
-    <tr>
-      <td>58</td>
-      <td>博萨斯</td>
-      <td>92</td>
-      <td>39.48%</td>
-      <td>70</td>
-      <td>233</td>
-    </tr>
-    <tr>
-      <td>59</td>
-      <td>鲍兹科娃</td>
-      <td>92</td>
-      <td>14.53%</td>
-      <td>43</td>
-      <td>633</td>
-    </tr>
-    <tr>
-      <td>60</td>
-      <td>沃雷涅茨</td>
-      <td>90</td>
-      <td>48.65%</td>
-      <td>49</td>
-      <td>185</td>
-    </tr>
-    <tr>
-      <td>61</td>
-      <td>李吉妮</td>
-      <td>89</td>
-      <td>36.93%</td>
-      <td>40</td>
-      <td>241</td>
-    </tr>
-    <tr>
-      <td>62</td>
-      <td>科恰雷托</td>
-      <td>88</td>
-      <td>18.22%</td>
-      <td>31</td>
-      <td>483</td>
-    </tr>
-    <tr>
-      <td>63</td>
-      <td>万卓索娃</td>
-      <td>84</td>
-      <td>17.18%</td>
-      <td>52</td>
-      <td>489</td>
-    </tr>
-    <tr>
-      <td>64</td>
-      <td>格拉乔娃</td>
-      <td>80</td>
-      <td>35.24%</td>
-      <td>33</td>
-      <td>227</td>
-    </tr>
-    <tr>
-      <td>65</td>
-      <td>韦思佳</td>
-      <td>79</td>
-      <td>100.00%</td>
-      <td>74</td>
-      <td>79</td>
-    </tr>
-    <tr>
+      <td>科博利</td>
+      <td>177</td>
+      <td>33.52%</td>
       <td>66</td>
-      <td>萨斯诺维奇</td>
-      <td>72</td>
-      <td>91.14%</td>
-      <td>39</td>
-      <td>79</td>
-    </tr>
-    <tr>
-      <td>67</td>
-      <td>帕克斯</td>
-      <td>71</td>
-      <td>54.62%</td>
-      <td>35</td>
-      <td>130</td>
-    </tr>
-    <tr>
-      <td>68</td>
-      <td>斯蒂芬斯</td>
-      <td>68</td>
-      <td>40.72%</td>
-      <td>23</td>
-      <td>167</td>
-    </tr>
-    <tr>
-      <td>69</td>
-      <td>利斯</td>
-      <td>68</td>
-      <td>19.54%</td>
-      <td>33</td>
-      <td>348</td>
-    </tr>
-    <tr>
-      <td>70</td>
-      <td>萨卡里</td>
-      <td>68</td>
-      <td>12.88%</td>
-      <td>14</td>
       <td>528</td>
     </tr>
     <tr>
-      <td>71</td>
-      <td>乔因特</td>
-      <td>65</td>
-      <td>11.84%</td>
-      <td>34</td>
-      <td>549</td>
-    </tr>
-    <tr>
-      <td>72</td>
-      <td>托莫娃</td>
-      <td>63</td>
-      <td>42.00%</td>
-      <td>27</td>
-      <td>150</td>
-    </tr>
-    <tr>
-      <td>73</td>
-      <td>朱琳</td>
-      <td>62</td>
-      <td>91.18%</td>
-      <td>30</td>
-      <td>68</td>
-    </tr>
-    <tr>
-      <td>74</td>
-      <td>加里宁娜</td>
-      <td>62</td>
-      <td>29.95%</td>
-      <td>30</td>
-      <td>207</td>
-    </tr>
-    <tr>
-      <td>75</td>
-      <td>明尼恩</td>
-      <td>60</td>
-      <td>78.95%</td>
-      <td>40</td>
-      <td>76</td>
-    </tr>
-    <tr>
-      <td>76</td>
-      <td>卡莱</td>
-      <td>55</td>
-      <td>96.49%</td>
-      <td>55</td>
-      <td>57</td>
-    </tr>
-    <tr>
-      <td>77</td>
-      <td>埃-安德烈耶娃</td>
-      <td>52</td>
-      <td>42.28%</td>
-      <td>20</td>
-      <td>123</td>
-    </tr>
-    <tr>
-      <td>78</td>
-      <td>克里斯蒂安</td>
-      <td>52</td>
-      <td>18.57%</td>
-      <td>42</td>
-      <td>280</td>
-    </tr>
-    <tr>
-      <td>79</td>
-      <td>伊-约维奇</td>
-      <td>52</td>
-      <td>11.30%</td>
-      <td>19</td>
-      <td>460</td>
-    </tr>
-    <tr>
-      <td>80</td>
-      <td>曾丽美</td>
-      <td>51</td>
-      <td>79.69%</td>
-      <td>39</td>
-      <td>64</td>
-    </tr>
-    <tr>
-      <td>81</td>
-      <td>科斯蒂亚</td>
-      <td>50</td>
-      <td>6.95%</td>
-      <td>24</td>
-      <td>719</td>
-    </tr>
-    <tr>
-      <td>82</td>
-      <td>布林科娃</td>
-      <td>49</td>
-      <td>39.52%</td>
-      <td>28</td>
-      <td>124</td>
-    </tr>
-    <tr>
-      <td>83</td>
-      <td>阿瓦涅相</td>
-      <td>49</td>
-      <td>19.52%</td>
-      <td>34</td>
-      <td>251</td>
-    </tr>
-    <tr>
-      <td>84</td>
-      <td>科林斯</td>
-      <td>45</td>
-      <td>6.36%</td>
-      <td>12</td>
-      <td>708</td>
-    </tr>
-    <tr>
-      <td>85</td>
-      <td>布克沙</td>
-      <td>45</td>
-      <td>21.23%</td>
-      <td>24</td>
-      <td>212</td>
-    </tr>
-    <tr>
-      <td>86</td>
-      <td>安德莱斯库</td>
-      <td>44</td>
-      <td>13.46%</td>
       <td>17</td>
-      <td>327</td>
+      <td>施特鲁夫</td>
+      <td>170</td>
+      <td>47.89%</td>
+      <td>76</td>
+      <td>355</td>
     </tr>
     <tr>
-      <td>87</td>
-      <td>瓦伦托娃</td>
-      <td>42</td>
-      <td>19.18%</td>
-      <td>25</td>
-      <td>219</td>
+      <td>18</td>
+      <td>索内戈</td>
+      <td>169</td>
+      <td>45.92%</td>
+      <td>76</td>
+      <td>368</td>
     </tr>
     <tr>
-      <td>88</td>
-      <td>森梅兹</td>
-      <td>42</td>
-      <td>11.63%</td>
-      <td>11</td>
-      <td>361</td>
+      <td>19</td>
+      <td>德米纳尔</td>
+      <td>168</td>
+      <td>16.15%</td>
+      <td>35</td>
+      <td>1040</td>
     </tr>
     <tr>
-      <td>89</td>
-      <td>达尼洛维奇</td>
-      <td>41</td>
-      <td>26.97%</td>
-      <td>15</td>
-      <td>152</td>
+      <td>20</td>
+      <td>巴多萨</td>
+      <td>166</td>
+      <td>61.48%</td>
+      <td>55</td>
+      <td>270</td>
     </tr>
     <tr>
-      <td>90</td>
-      <td>比勒尔</td>
-      <td>40</td>
-      <td>42.11%</td>
-      <td>24</td>
-      <td>95</td>
+      <td>21</td>
+      <td>姆佩奇-佩里卡尔</td>
+      <td>162</td>
+      <td>74.31%</td>
+      <td>63</td>
+      <td>218</td>
     </tr>
     <tr>
-      <td>91</td>
-      <td>鲁季奇</td>
-      <td>39</td>
-      <td>33.05%</td>
-      <td>36</td>
-      <td>118</td>
+      <td>22</td>
+      <td>弗里茨</td>
+      <td>156</td>
+      <td>18.89%</td>
+      <td>44</td>
+      <td>826</td>
     </tr>
     <tr>
-      <td>92</td>
-      <td>奥索里奥</td>
-      <td>38</td>
-      <td>15.64%</td>
       <td>23</td>
+      <td>希维昂泰克</td>
+      <td>155</td>
+      <td>50.99%</td>
+      <td>54</td>
+      <td>304</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>埃切韦里</td>
+      <td>154</td>
+      <td>55.80%</td>
+      <td>84</td>
+      <td>276</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td>安贝尔</td>
+      <td>149</td>
+      <td>28.38%</td>
+      <td>76</td>
+      <td>525</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>范德尚舒尔普</td>
+      <td>148</td>
+      <td>48.05%</td>
+      <td>127</td>
+      <td>308</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>莱赫奇卡</td>
+      <td>147</td>
+      <td>16.94%</td>
+      <td>45</td>
+      <td>868</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>阿利亚西姆</td>
+      <td>142</td>
+      <td>15.99%</td>
+      <td>54</td>
+      <td>888</td>
+    </tr>
+    <tr>
+      <td>29</td>
+      <td>巴埃斯</td>
+      <td>141</td>
+      <td>42.60%</td>
+      <td>62</td>
+      <td>331</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>张之臻</td>
+      <td>137</td>
+      <td>33.17%</td>
+      <td>38</td>
+      <td>413</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>卢布列夫</td>
+      <td>137</td>
+      <td>15.99%</td>
+      <td>22</td>
+      <td>857</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>波佩林</td>
+      <td>135</td>
+      <td>28.07%</td>
+      <td>52</td>
+      <td>481</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td>亚-兹韦列夫</td>
+      <td>133</td>
+      <td>17.52%</td>
+      <td>42</td>
+      <td>759</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>亚斯特列姆斯卡</td>
+      <td>132</td>
+      <td>54.32%</td>
+      <td>82</td>
       <td>243</td>
     </tr>
     <tr>
-      <td>93</td>
-      <td>姆博科</td>
-      <td>37</td>
-      <td>8.08%</td>
-      <td>16</td>
-      <td>458</td>
-    </tr>
-    <tr>
-      <td>94</td>
-      <td>内岛萌夏</td>
-      <td>37</td>
-      <td>48.05%</td>
-      <td>15</td>
-      <td>77</td>
-    </tr>
-    <tr>
-      <td>95</td>
-      <td>张帅</td>
-      <td>36</td>
-      <td>37.89%</td>
-      <td>13</td>
-      <td>95</td>
-    </tr>
-    <tr>
-      <td>96</td>
-      <td>韩天遇</td>
       <td>35</td>
-      <td>53.03%</td>
-      <td>21</td>
-      <td>66</td>
-    </tr>
-    <tr>
-      <td>97</td>
-      <td>谢里芙</td>
-      <td>34</td>
-      <td>85.00%</td>
-      <td>14</td>
-      <td>40</td>
-    </tr>
-    <tr>
-      <td>98</td>
-      <td>麦克纳莉</td>
-      <td>31</td>
-      <td>25.20%</td>
-      <td>21</td>
-      <td>123</td>
-    </tr>
-    <tr>
-      <td>99</td>
-      <td>巴尔通科娃</td>
-      <td>30</td>
-      <td>100.00%</td>
-      <td>30</td>
-      <td>30</td>
-    </tr>
-    <tr>
-      <td>100</td>
-      <td>王雅繁</td>
-      <td>28</td>
-      <td>41.18%</td>
-      <td>14</td>
-      <td>68</td>
-    </tr>
-    <tr>
-      <td>101</td>
-      <td>拉门斯</td>
-      <td>28</td>
-      <td>14.74%</td>
-      <td>12</td>
-      <td>190</td>
-    </tr>
-    <tr>
-      <td>102</td>
-      <td>阿朗戈</td>
-      <td>27</td>
-      <td>79.41%</td>
-      <td>16</td>
-      <td>34</td>
-    </tr>
-    <tr>
-      <td>103</td>
-      <td>谢拉</td>
-      <td>26</td>
-      <td>83.87%</td>
-      <td>21</td>
-      <td>31</td>
-    </tr>
-    <tr>
-      <td>104</td>
-      <td>卡-普利斯科娃</td>
-      <td>24</td>
-      <td>19.35%</td>
-      <td>11</td>
-      <td>124</td>
-    </tr>
-    <tr>
-      <td>105</td>
-      <td>王曦雨</td>
-      <td>23</td>
-      <td>8.46%</td>
-      <td>8</td>
-      <td>272</td>
-    </tr>
-    <tr>
-      <td>106</td>
-      <td>布龙泽蒂</td>
-      <td>23</td>
-      <td>32.86%</td>
-      <td>8</td>
-      <td>70</td>
-    </tr>
-    <tr>
-      <td>107</td>
-      <td>多勒海德</td>
-      <td>22</td>
-      <td>37.93%</td>
-      <td>17</td>
-      <td>58</td>
-    </tr>
-    <tr>
-      <td>108</td>
-      <td>波-库德梅托娃</td>
-      <td>22</td>
-      <td>16.79%</td>
-      <td>5</td>
+      <td>黄泽林</td>
       <td>131</td>
+      <td>99.24%</td>
+      <td>129</td>
+      <td>132</td>
     </tr>
     <tr>
-      <td>109</td>
-      <td>科贝尔</td>
-      <td>21</td>
-      <td>65.62%</td>
-      <td>9</td>
-      <td>32</td>
+      <td>36</td>
+      <td>门希克</td>
+      <td>130</td>
+      <td>29.15%</td>
+      <td>41</td>
+      <td>446</td>
     </tr>
     <tr>
-      <td>110</td>
-      <td>扎哈罗娃</td>
-      <td>21</td>
-      <td>35.00%</td>
-      <td>11</td>
-      <td>60</td>
+      <td>37</td>
+      <td>迪米特洛夫</td>
+      <td>123</td>
+      <td>21.65%</td>
+      <td>25</td>
+      <td>568</td>
     </tr>
     <tr>
-      <td>111</td>
-      <td>贝古</td>
-      <td>20</td>
-      <td>13.33%</td>
-      <td>9</td>
+      <td>38</td>
+      <td>鲁内</td>
+      <td>123</td>
+      <td>20.03%</td>
+      <td>61</td>
+      <td>614</td>
+    </tr>
+    <tr>
+      <td>39</td>
+      <td>凯斯勒</td>
+      <td>118</td>
+      <td>27.57%</td>
+      <td>84</td>
+      <td>428</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>谢尔顿</td>
+      <td>115</td>
+      <td>14.80%</td>
+      <td>25</td>
+      <td>777</td>
+    </tr>
+    <tr>
+      <td>41</td>
+      <td>普汀塞娃</td>
+      <td>114</td>
+      <td>66.28%</td>
+      <td>113</td>
+      <td>172</td>
+    </tr>
+    <tr>
+      <td>42</td>
+      <td>保利尼</td>
+      <td>112</td>
+      <td>74.67%</td>
+      <td>68</td>
       <td>150</td>
     </tr>
     <tr>
+      <td>43</td>
+      <td>商竣程</td>
       <td>112</td>
-      <td>鲁塞</td>
+      <td>31.46%</td>
+      <td>56</td>
+      <td>356</td>
+    </tr>
+    <tr>
+      <td>44</td>
+      <td>弗-塞伦多洛</td>
+      <td>112</td>
+      <td>22.44%</td>
       <td>20</td>
-      <td>11.56%</td>
-      <td>10</td>
-      <td>173</td>
+      <td>499</td>
     </tr>
     <tr>
-      <td>113</td>
-      <td>沃兹尼亚奇</td>
-      <td>19</td>
-      <td>7.36%</td>
-      <td>9</td>
-      <td>258</td>
+      <td>45</td>
+      <td>蒂亚福</td>
+      <td>112</td>
+      <td>15.80%</td>
+      <td>46</td>
+      <td>709</td>
     </tr>
     <tr>
-      <td>114</td>
-      <td>尼迈尔</td>
-      <td>19</td>
-      <td>67.86%</td>
-      <td>15</td>
-      <td>28</td>
+      <td>46</td>
+      <td>贝雷蒂尼</td>
+      <td>111</td>
+      <td>22.89%</td>
+      <td>54</td>
+      <td>485</td>
     </tr>
     <tr>
-      <td>115</td>
-      <td>佩拉</td>
-      <td>19</td>
-      <td>11.45%</td>
-      <td>9</td>
+      <td>47</td>
+      <td>武基奇</td>
+      <td>110</td>
+      <td>62.86%</td>
+      <td>64</td>
+      <td>175</td>
+    </tr>
+    <tr>
+      <td>48</td>
+      <td>卡萨特金娜</td>
+      <td>106</td>
+      <td>73.10%</td>
+      <td>65</td>
+      <td>145</td>
+    </tr>
+    <tr>
+      <td>49</td>
+      <td>丹尼尔太郎</td>
+      <td>102</td>
+      <td>91.07%</td>
+      <td>100</td>
+      <td>112</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>弗雷希</td>
+      <td>101</td>
+      <td>60.84%</td>
+      <td>91</td>
       <td>166</td>
     </tr>
     <tr>
-      <td>116</td>
-      <td>雅克莫</td>
+      <td>51</td>
+      <td>达维多维奇</td>
+      <td>101</td>
+      <td>14.96%</td>
+      <td>24</td>
+      <td>675</td>
+    </tr>
+    <tr>
+      <td>52</td>
+      <td>萨菲乌林</td>
+      <td>100</td>
+      <td>32.05%</td>
+      <td>21</td>
+      <td>312</td>
+    </tr>
+    <tr>
+      <td>53</td>
+      <td>凯茨曼诺维奇</td>
+      <td>96</td>
+      <td>36.23%</td>
+      <td>50</td>
+      <td>265</td>
+    </tr>
+    <tr>
+      <td>54</td>
+      <td>格里科斯普</td>
+      <td>96</td>
+      <td>18.46%</td>
+      <td>49</td>
+      <td>520</td>
+    </tr>
+    <tr>
+      <td>55</td>
+      <td>阿尔卡拉斯</td>
+      <td>95</td>
+      <td>14.24%</td>
+      <td>34</td>
+      <td>667</td>
+    </tr>
+    <tr>
+      <td>56</td>
+      <td>奥斯塔彭科</td>
+      <td>94</td>
+      <td>52.22%</td>
+      <td>46</td>
+      <td>180</td>
+    </tr>
+    <tr>
+      <td>57</td>
+      <td>达尔德里</td>
+      <td>91</td>
+      <td>30.23%</td>
+      <td>78</td>
+      <td>301</td>
+    </tr>
+    <tr>
+      <td>58</td>
+      <td>菲斯</td>
+      <td>91</td>
+      <td>23.51%</td>
+      <td>27</td>
+      <td>387</td>
+    </tr>
+    <tr>
+      <td>59</td>
+      <td>阿里斯</td>
+      <td>89</td>
+      <td>66.92%</td>
+      <td>49</td>
+      <td>133</td>
+    </tr>
+    <tr>
+      <td>60</td>
+      <td>巴蒂斯特</td>
+      <td>89</td>
+      <td>19.60%</td>
+      <td>42</td>
+      <td>454</td>
+    </tr>
+    <tr>
+      <td>61</td>
+      <td>亚历山德罗娃</td>
+      <td>88</td>
+      <td>57.52%</td>
+      <td>47</td>
+      <td>153</td>
+    </tr>
+    <tr>
+      <td>62</td>
+      <td>包蒂斯塔-阿古特</td>
+      <td>87</td>
+      <td>40.85%</td>
+      <td>36</td>
+      <td>213</td>
+    </tr>
+    <tr>
+      <td>63</td>
+      <td>布云朝克特</td>
+      <td>85</td>
+      <td>29.41%</td>
+      <td>29</td>
+      <td>289</td>
+    </tr>
+    <tr>
+      <td>64</td>
+      <td>穆泰</td>
+      <td>84</td>
+      <td>26.67%</td>
+      <td>28</td>
+      <td>315</td>
+    </tr>
+    <tr>
+      <td>65</td>
+      <td>萨姆索诺娃</td>
+      <td>83</td>
+      <td>35.32%</td>
+      <td>28</td>
+      <td>235</td>
+    </tr>
+    <tr>
+      <td>66</td>
+      <td>沙波瓦洛夫</td>
+      <td>83</td>
+      <td>25.54%</td>
+      <td>28</td>
+      <td>325</td>
+    </tr>
+    <tr>
+      <td>67</td>
+      <td>博萨斯</td>
+      <td>78</td>
+      <td>75.00%</td>
+      <td>70</td>
+      <td>104</td>
+    </tr>
+    <tr>
+      <td>68</td>
+      <td>波塔波娃</td>
+      <td>78</td>
+      <td>40.62%</td>
+      <td>78</td>
+      <td>192</td>
+    </tr>
+    <tr>
+      <td>69</td>
+      <td>德雷珀</td>
+      <td>76</td>
+      <td>11.84%</td>
+      <td>37</td>
+      <td>642</td>
+    </tr>
+    <tr>
+      <td>70</td>
+      <td>孟菲尔斯</td>
+      <td>75</td>
+      <td>23.44%</td>
+      <td>33</td>
+      <td>320</td>
+    </tr>
+    <tr>
+      <td>71</td>
+      <td>斯特恩斯</td>
+      <td>74</td>
+      <td>61.16%</td>
+      <td>51</td>
+      <td>121</td>
+    </tr>
+    <tr>
+      <td>72</td>
+      <td>梅杰多维奇</td>
+      <td>73</td>
+      <td>36.68%</td>
+      <td>31</td>
+      <td>199</td>
+    </tr>
+    <tr>
+      <td>73</td>
+      <td>本西奇</td>
+      <td>71</td>
+      <td>26.10%</td>
+      <td>24</td>
+      <td>272</td>
+    </tr>
+    <tr>
+      <td>74</td>
+      <td>马-贝鲁奇</td>
+      <td>68</td>
+      <td>86.08%</td>
+      <td>66</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <td>75</td>
+      <td>辛纳</td>
+      <td>67</td>
+      <td>10.14%</td>
+      <td>39</td>
+      <td>661</td>
+    </tr>
+    <tr>
+      <td>76</td>
+      <td>贾里</td>
+      <td>65</td>
+      <td>73.03%</td>
       <td>18</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <td>77</td>
+      <td>李吉妮</td>
+      <td>65</td>
+      <td>51.59%</td>
+      <td>40</td>
+      <td>126</td>
+    </tr>
+    <tr>
+      <td>78</td>
+      <td>诺里</td>
+      <td>62</td>
+      <td>14.73%</td>
+      <td>27</td>
+      <td>421</td>
+    </tr>
+    <tr>
+      <td>79</td>
+      <td>戈芬</td>
+      <td>61</td>
+      <td>93.85%</td>
+      <td>16</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <td>80</td>
+      <td>科斯秋克</td>
+      <td>60</td>
+      <td>39.74%</td>
+      <td>59</td>
+      <td>151</td>
+    </tr>
+    <tr>
+      <td>81</td>
+      <td>阿尼西莫娃</td>
+      <td>60</td>
+      <td>34.29%</td>
+      <td>21</td>
+      <td>175</td>
+    </tr>
+    <tr>
+      <td>82</td>
+      <td>贝尔赫斯</td>
+      <td>60</td>
+      <td>25.21%</td>
+      <td>24</td>
+      <td>238</td>
+    </tr>
+    <tr>
+      <td>83</td>
+      <td>帕克斯</td>
+      <td>59</td>
+      <td>71.08%</td>
+      <td>35</td>
+      <td>83</td>
+    </tr>
+    <tr>
+      <td>84</td>
+      <td>科恰雷托</td>
+      <td>59</td>
+      <td>14.94%</td>
+      <td>31</td>
+      <td>395</td>
+    </tr>
+    <tr>
+      <td>85</td>
+      <td>丰塞卡</td>
+      <td>59</td>
+      <td>14.50%</td>
+      <td>21</td>
+      <td>407</td>
+    </tr>
+    <tr>
+      <td>86</td>
+      <td>诺斯科娃</td>
+      <td>59</td>
+      <td>14.43%</td>
+      <td>38</td>
+      <td>409</td>
+    </tr>
+    <tr>
+      <td>87</td>
+      <td>梅尔滕斯</td>
+      <td>57</td>
+      <td>11.90%</td>
+      <td>34</td>
+      <td>479</td>
+    </tr>
+    <tr>
+      <td>88</td>
+      <td>曼纳里诺</td>
+      <td>56</td>
+      <td>73.68%</td>
+      <td>31</td>
+      <td>76</td>
+    </tr>
+    <tr>
+      <td>89</td>
+      <td>邦齐</td>
+      <td>54</td>
       <td>78.26%</td>
-      <td>9</td>
-      <td>23</td>
+      <td>19</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <td>90</td>
+      <td>陶森</td>
+      <td>54</td>
+      <td>30.51%</td>
+      <td>40</td>
+      <td>177</td>
+    </tr>
+    <tr>
+      <td>91</td>
+      <td>阿尔特迈尔</td>
+      <td>52</td>
+      <td>25.00%</td>
+      <td>18</td>
+      <td>208</td>
+    </tr>
+    <tr>
+      <td>92</td>
+      <td>万卓索娃</td>
+      <td>52</td>
+      <td>100.00%</td>
+      <td>52</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <td>93</td>
+      <td>克鲁格</td>
+      <td>51</td>
+      <td>94.44%</td>
+      <td>47</td>
+      <td>54</td>
+    </tr>
+    <tr>
+      <td>94</td>
+      <td>雷巴金娜</td>
+      <td>50</td>
+      <td>18.25%</td>
+      <td>18</td>
+      <td>274</td>
+    </tr>
+    <tr>
+      <td>95</td>
+      <td>丘里奇</td>
+      <td>49</td>
+      <td>30.82%</td>
+      <td>18</td>
+      <td>159</td>
+    </tr>
+    <tr>
+      <td>96</td>
+      <td>施拉姆科娃</td>
+      <td>47</td>
+      <td>100.00%</td>
+      <td>43</td>
+      <td>47</td>
+    </tr>
+    <tr>
+      <td>97</td>
+      <td>帕芙柳琴科娃</td>
+      <td>47</td>
+      <td>100.00%</td>
+      <td>35</td>
+      <td>47</td>
+    </tr>
+    <tr>
+      <td>98</td>
+      <td>克里斯蒂安</td>
+      <td>46</td>
+      <td>76.67%</td>
+      <td>42</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td>99</td>
+      <td>巴萨瓦雷迪</td>
+      <td>45</td>
+      <td>59.21%</td>
+      <td>38</td>
+      <td>76</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td>博尔热斯</td>
+      <td>45</td>
+      <td>29.80%</td>
+      <td>17</td>
+      <td>151</td>
+    </tr>
+    <tr>
+      <td>101</td>
+      <td>卡林斯卡娅</td>
+      <td>44</td>
+      <td>24.31%</td>
+      <td>18</td>
+      <td>181</td>
+    </tr>
+    <tr>
+      <td>102</td>
+      <td>伊-约维奇</td>
+      <td>44</td>
+      <td>10.33%</td>
+      <td>19</td>
+      <td>426</td>
+    </tr>
+    <tr>
+      <td>103</td>
+      <td>米-安德烈耶娃</td>
+      <td>43</td>
+      <td>7.47%</td>
+      <td>11</td>
+      <td>576</td>
+    </tr>
+    <tr>
+      <td>104</td>
+      <td>穆纳尔</td>
+      <td>43</td>
+      <td>18.45%</td>
+      <td>16</td>
+      <td>233</td>
+    </tr>
+    <tr>
+      <td>105</td>
+      <td>玛利亚</td>
+      <td>42</td>
+      <td>71.19%</td>
+      <td>32</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <td>106</td>
+      <td>勒纳-钱</td>
+      <td>41</td>
+      <td>9.43%</td>
+      <td>20</td>
+      <td>435</td>
+    </tr>
+    <tr>
+      <td>107</td>
+      <td>西里奇</td>
+      <td>40</td>
+      <td>44.94%</td>
+      <td>25</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <td>108</td>
+      <td>胡尔卡奇</td>
+      <td>40</td>
+      <td>15.50%</td>
+      <td>17</td>
+      <td>258</td>
+    </tr>
+    <tr>
+      <td>109</td>
+      <td>鲁季奇</td>
+      <td>39</td>
+      <td>33.91%</td>
+      <td>36</td>
+      <td>115</td>
+    </tr>
+    <tr>
+      <td>110</td>
+      <td>奥夫纳</td>
+      <td>39</td>
+      <td>27.27%</td>
+      <td>19</td>
+      <td>143</td>
+    </tr>
+    <tr>
+      <td>111</td>
+      <td>林德克内希</td>
+      <td>39</td>
+      <td>22.41%</td>
+      <td>8</td>
+      <td>174</td>
+    </tr>
+    <tr>
+      <td>112</td>
+      <td>鲁苏武奥里</td>
+      <td>39</td>
+      <td>100.00%</td>
+      <td>39</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <td>113</td>
+      <td>科梅萨纳</td>
+      <td>37</td>
+      <td>71.15%</td>
+      <td>31</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <td>114</td>
+      <td>吉隆</td>
+      <td>37</td>
+      <td>19.17%</td>
+      <td>12</td>
+      <td>193</td>
+    </tr>
+    <tr>
+      <td>115</td>
+      <td>克宁</td>
+      <td>33</td>
+      <td>46.48%</td>
+      <td>16</td>
+      <td>71</td>
+    </tr>
+    <tr>
+      <td>116</td>
+      <td>拉杜卡努</td>
+      <td>32</td>
+      <td>25.60%</td>
+      <td>11</td>
+      <td>125</td>
     </tr>
     <tr>
       <td>117</td>
+      <td>西尼亚科娃</td>
+      <td>32</td>
+      <td>20.51%</td>
+      <td>18</td>
+      <td>156</td>
+    </tr>
+    <tr>
+      <td>118</td>
+      <td>弗尼尼</td>
+      <td>31</td>
+      <td>81.58%</td>
+      <td>27</td>
+      <td>38</td>
+    </tr>
+    <tr>
+      <td>119</td>
+      <td>布克沙</td>
+      <td>31</td>
+      <td>37.35%</td>
+      <td>24</td>
+      <td>83</td>
+    </tr>
+    <tr>
+      <td>120</td>
+      <td>凯斯</td>
+      <td>31</td>
+      <td>10.92%</td>
+      <td>14</td>
+      <td>284</td>
+    </tr>
+    <tr>
+      <td>121</td>
+      <td>麦克唐纳</td>
+      <td>30</td>
+      <td>40.54%</td>
+      <td>28</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <td>122</td>
+      <td>麦克纳莉</td>
+      <td>30</td>
+      <td>38.96%</td>
+      <td>21</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <td>123</td>
+      <td>施内德</td>
+      <td>30</td>
+      <td>10.71%</td>
+      <td>30</td>
+      <td>280</td>
+    </tr>
+    <tr>
+      <td>124</td>
+      <td>土方凛辉</td>
+      <td>29</td>
+      <td>44.62%</td>
+      <td>20</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <td>125</td>
+      <td>克赖奇科娃</td>
+      <td>29</td>
+      <td>26.13%</td>
+      <td>29</td>
+      <td>111</td>
+    </tr>
+    <tr>
+      <td>126</td>
+      <td>姆博科</td>
+      <td>29</td>
+      <td>10.36%</td>
+      <td>16</td>
+      <td>280</td>
+    </tr>
+    <tr>
+      <td>127</td>
+      <td>塔比洛</td>
+      <td>28</td>
+      <td>40.00%</td>
+      <td>13</td>
+      <td>70</td>
+    </tr>
+    <tr>
+      <td>128</td>
+      <td>佩-马丁内斯</td>
+      <td>28</td>
+      <td>36.84%</td>
+      <td>6</td>
+      <td>76</td>
+    </tr>
+    <tr>
+      <td>129</td>
+      <td>科瓦切维奇</td>
+      <td>28</td>
+      <td>21.88%</td>
+      <td>10</td>
+      <td>128</td>
+    </tr>
+    <tr>
+      <td>130</td>
+      <td>森梅兹</td>
+      <td>27</td>
+      <td>6.34%</td>
+      <td>11</td>
+      <td>426</td>
+    </tr>
+    <tr>
+      <td>131</td>
+      <td>萨巴莲卡</td>
+      <td>27</td>
+      <td>15.43%</td>
+      <td>27</td>
+      <td>175</td>
+    </tr>
+    <tr>
+      <td>132</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>26</td>
+      <td>65.00%</td>
+      <td>10</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>133</td>
+      <td>萨卡里</td>
+      <td>26</td>
+      <td>21.14%</td>
+      <td>14</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <td>134</td>
+      <td>里纳特</td>
+      <td>26</td>
+      <td>15.03%</td>
+      <td>25</td>
+      <td>173</td>
+    </tr>
+    <tr>
+      <td>135</td>
+      <td>谢拉</td>
+      <td>25</td>
+      <td>89.29%</td>
+      <td>21</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <td>136</td>
+      <td>科斯蒂亚</td>
+      <td>25</td>
+      <td>5.53%</td>
+      <td>24</td>
+      <td>452</td>
+    </tr>
+    <tr>
+      <td>137</td>
+      <td>布鲁克斯比</td>
+      <td>25</td>
+      <td>41.67%</td>
+      <td>18</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td>138</td>
+      <td>埃-纳瓦罗</td>
+      <td>25</td>
+      <td>39.68%</td>
+      <td>23</td>
+      <td>63</td>
+    </tr>
+    <tr>
+      <td>139</td>
+      <td>博尔特</td>
+      <td>25</td>
+      <td>32.05%</td>
+      <td>25</td>
+      <td>78</td>
+    </tr>
+    <tr>
+      <td>140</td>
+      <td>舍夫琴科</td>
+      <td>25</td>
+      <td>21.74%</td>
+      <td>19</td>
+      <td>115</td>
+    </tr>
+    <tr>
+      <td>141</td>
+      <td>蕾-费尔南德斯</td>
+      <td>25</td>
+      <td>12.25%</td>
+      <td>15</td>
+      <td>204</td>
+    </tr>
+    <tr>
+      <td>142</td>
+      <td>张帅</td>
+      <td>23</td>
+      <td>41.07%</td>
+      <td>13</td>
+      <td>56</td>
+    </tr>
+    <tr>
+      <td>143</td>
+      <td>富乔维奇</td>
+      <td>23</td>
+      <td>17.83%</td>
+      <td>14</td>
+      <td>129</td>
+    </tr>
+    <tr>
+      <td>144</td>
+      <td>王欣瑜</td>
+      <td>23</td>
+      <td>15.75%</td>
+      <td>17</td>
+      <td>146</td>
+    </tr>
+    <tr>
+      <td>145</td>
+      <td>迪亚洛</td>
+      <td>23</td>
+      <td>13.14%</td>
+      <td>9</td>
+      <td>175</td>
+    </tr>
+    <tr>
+      <td>146</td>
+      <td>米勒</td>
+      <td>23</td>
+      <td>11.68%</td>
+      <td>11</td>
+      <td>197</td>
+    </tr>
+    <tr>
+      <td>147</td>
+      <td>卡奇马佐夫</td>
+      <td>23</td>
+      <td>100.00%</td>
+      <td>23</td>
+      <td>23</td>
+    </tr>
+    <tr>
+      <td>148</td>
+      <td>佩古拉</td>
+      <td>21</td>
+      <td>4.60%</td>
+      <td>11</td>
+      <td>457</td>
+    </tr>
+    <tr>
+      <td>149</td>
+      <td>斯蒂芬斯</td>
+      <td>21</td>
+      <td>30.88%</td>
+      <td>17</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <td>150</td>
+      <td>萨斯诺维奇</td>
+      <td>21</td>
+      <td>100.00%</td>
+      <td>17</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <td>151</td>
+      <td>利斯</td>
+      <td>20</td>
+      <td>80.00%</td>
+      <td>11</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>152</td>
+      <td>纳尔迪</td>
+      <td>20</td>
+      <td>68.97%</td>
+      <td>9</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <td>153</td>
+      <td>德约科维奇</td>
+      <td>20</td>
+      <td>3.95%</td>
+      <td>10</td>
+      <td>506</td>
+    </tr>
+    <tr>
+      <td>154</td>
+      <td>托莫娃</td>
+      <td>19</td>
+      <td>50.00%</td>
+      <td>19</td>
+      <td>38</td>
+    </tr>
+    <tr>
+      <td>155</td>
+      <td>卡塔尔</td>
+      <td>19</td>
+      <td>27.54%</td>
+      <td>12</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <td>156</td>
+      <td>杰雷</td>
+      <td>19</td>
+      <td>13.87%</td>
+      <td>6</td>
+      <td>137</td>
+    </tr>
+    <tr>
+      <td>157</td>
+      <td>施瓦茨曼</td>
+      <td>19</td>
+      <td>100.00%</td>
+      <td>19</td>
+      <td>19</td>
+    </tr>
+    <tr>
+      <td>158</td>
       <td>奥利尼科娃</td>
       <td>18</td>
       <td>100.00%</td>
@@ -1285,111 +1698,271 @@
       <td>18</td>
     </tr>
     <tr>
-      <td>118</td>
-      <td>赛德尔</td>
+      <td>159</td>
+      <td>费恩利</td>
       <td>17</td>
-      <td>29.31%</td>
-      <td>13</td>
-      <td>58</td>
+      <td>42.50%</td>
+      <td>9</td>
+      <td>40</td>
     </tr>
     <tr>
-      <td>119</td>
-      <td>伊埃拉</td>
+      <td>160</td>
+      <td>瓦伦托娃</td>
       <td>17</td>
-      <td>17.17%</td>
-      <td>10</td>
-      <td>99</td>
+      <td>33.33%</td>
+      <td>13</td>
+      <td>51</td>
     </tr>
     <tr>
-      <td>120</td>
-      <td>汤森德</td>
-      <td>13</td>
-      <td>15.48%</td>
+      <td>161</td>
+      <td>拉约维奇</td>
+      <td>17</td>
+      <td>28.33%</td>
       <td>5</td>
-      <td>84</td>
+      <td>60</td>
     </tr>
     <tr>
-      <td>121</td>
-      <td>贝莱克</td>
-      <td>13</td>
-      <td>10.48%</td>
+      <td>162</td>
+      <td>乔因特</td>
+      <td>17</td>
+      <td>100.00%</td>
+      <td>14</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>163</td>
+      <td>阿朗戈</td>
+      <td>16</td>
+      <td>69.57%</td>
+      <td>16</td>
+      <td>23</td>
+    </tr>
+    <tr>
+      <td>164</td>
+      <td>达克沃斯</td>
+      <td>16</td>
+      <td>53.33%</td>
+      <td>5</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>165</td>
+      <td>瓦林卡</td>
+      <td>16</td>
+      <td>48.48%</td>
+      <td>12</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <td>166</td>
+      <td>沃尔顿</td>
+      <td>16</td>
+      <td>48.48%</td>
+      <td>8</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <td>167</td>
+      <td>纳沃内</td>
+      <td>14</td>
+      <td>9.09%</td>
+      <td>6</td>
+      <td>154</td>
+    </tr>
+    <tr>
+      <td>168</td>
+      <td>卡尔巴耶斯</td>
+      <td>14</td>
+      <td>45.16%</td>
+      <td>12</td>
+      <td>31</td>
+    </tr>
+    <tr>
+      <td>169</td>
+      <td>卡-普利斯科娃</td>
+      <td>14</td>
+      <td>23.73%</td>
       <td>11</td>
-      <td>124</td>
+      <td>59</td>
     </tr>
     <tr>
-      <td>122</td>
-      <td>西格蒙德</td>
-      <td>12</td>
-      <td>3.72%</td>
-      <td>3</td>
-      <td>323</td>
+      <td>170</td>
+      <td>达尼洛维奇</td>
+      <td>14</td>
+      <td>11.57%</td>
+      <td>14</td>
+      <td>121</td>
     </tr>
     <tr>
+      <td>171</td>
+      <td>西冈良仁</td>
+      <td>14</td>
+      <td>11.38%</td>
+      <td>5</td>
       <td>123</td>
-      <td>马尔蒂奇</td>
-      <td>12</td>
-      <td>19.67%</td>
-      <td>4</td>
+    </tr>
+    <tr>
+      <td>172</td>
+      <td>谢里芙</td>
+      <td>14</td>
+      <td>100.00%</td>
+      <td>14</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>173</td>
+      <td>卡雷尼奥-布斯塔</td>
+      <td>13</td>
+      <td>21.31%</td>
+      <td>9</td>
       <td>61</td>
     </tr>
     <tr>
-      <td>124</td>
-      <td>加尔菲</td>
-      <td>12</td>
-      <td>10.91%</td>
-      <td>6</td>
-      <td>110</td>
-    </tr>
-    <tr>
-      <td>125</td>
-      <td>布瓦松</td>
+      <td>174</td>
+      <td>斯塔罗杜布采娃</td>
+      <td>13</td>
+      <td>18.84%</td>
       <td>11</td>
-      <td>11.96%</td>
-      <td>5</td>
-      <td>92</td>
+      <td>69</td>
     </tr>
     <tr>
-      <td>126</td>
-      <td>蒙哥马利</td>
+      <td>175</td>
+      <td>迪亚斯-阿科斯塔</td>
+      <td>13</td>
+      <td>100.00%</td>
+      <td>9</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>176</td>
+      <td>穆霍娃</td>
+      <td>12</td>
+      <td>2.45%</td>
+      <td>6</td>
+      <td>490</td>
+    </tr>
+    <tr>
+      <td>177</td>
+      <td>汤普森</td>
+      <td>11</td>
+      <td>7.91%</td>
+      <td>3</td>
+      <td>139</td>
+    </tr>
+    <tr>
+      <td>178</td>
+      <td>曾丽美</td>
+      <td>11</td>
+      <td>45.83%</td>
+      <td>7</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <td>179</td>
+      <td>奥佩尔卡</td>
+      <td>11</td>
+      <td>4.93%</td>
+      <td>5</td>
+      <td>223</td>
+    </tr>
+    <tr>
+      <td>180</td>
+      <td>维尔吉</td>
+      <td>11</td>
+      <td>36.67%</td>
+      <td>4</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>181</td>
+      <td>尤班克斯</td>
+      <td>11</td>
+      <td>12.36%</td>
+      <td>4</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <td>182</td>
+      <td>麦凯布</td>
+      <td>10</td>
+      <td>90.91%</td>
+      <td>9</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>183</td>
+      <td>瓦舍罗</td>
       <td>10</td>
       <td>58.82%</td>
-      <td>7</td>
+      <td>10</td>
       <td>17</td>
     </tr>
     <tr>
-      <td>127</td>
-      <td>施米德洛娃</td>
+      <td>184</td>
+      <td>郑钦文</td>
       <td>10</td>
-      <td>55.56%</td>
+      <td>5.81%</td>
       <td>10</td>
-      <td>18</td>
+      <td>172</td>
     </tr>
     <tr>
-      <td>128</td>
-      <td>鲁斯</td>
+      <td>185</td>
+      <td>伊埃拉</td>
       <td>10</td>
-      <td>38.46%</td>
-      <td>5</td>
-      <td>26</td>
+      <td>11.49%</td>
+      <td>10</td>
+      <td>87</td>
     </tr>
     <tr>
-      <td>129</td>
-      <td>扎拉祖哈</td>
+      <td>186</td>
+      <td>巴雷尔</td>
       <td>10</td>
-      <td>13.51%</td>
-      <td>3</td>
-      <td>74</td>
+      <td>100.00%</td>
+      <td>10</td>
+      <td>10</td>
     </tr>
     <tr>
-      <td>130</td>
-      <td>尤万</td>
-      <td>8</td>
-      <td>88.89%</td>
-      <td>4</td>
+      <td>187</td>
+      <td>雅克莫</td>
       <td>9</td>
+      <td>81.82%</td>
+      <td>9</td>
+      <td>11</td>
     </tr>
     <tr>
-      <td>131</td>
+      <td>188</td>
+      <td>汤姆亚诺维奇</td>
+      <td>8</td>
+      <td>9.30%</td>
+      <td>6</td>
+      <td>86</td>
+    </tr>
+    <tr>
+      <td>189</td>
+      <td>埃文斯</td>
+      <td>8</td>
+      <td>8.89%</td>
+      <td>4</td>
+      <td>90</td>
+    </tr>
+    <tr>
+      <td>190</td>
+      <td>加斯东</td>
+      <td>8</td>
+      <td>72.73%</td>
+      <td>4</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>191</td>
+      <td>鲍兹科娃</td>
+      <td>8</td>
+      <td>6.90%</td>
+      <td>3</td>
+      <td>116</td>
+    </tr>
+    <tr>
+      <td>192</td>
       <td>布雷迪</td>
       <td>8</td>
       <td>50.00%</td>
@@ -1397,103 +1970,207 @@
       <td>16</td>
     </tr>
     <tr>
-      <td>132</td>
-      <td>邦达尔</td>
+      <td>193</td>
+      <td>科托夫</td>
       <td>8</td>
-      <td>4.60%</td>
-      <td>5</td>
-      <td>174</td>
+      <td>5.63%</td>
+      <td>6</td>
+      <td>142</td>
     </tr>
     <tr>
-      <td>133</td>
-      <td>泰赫曼</td>
+      <td>194</td>
+      <td>大坂直美</td>
+      <td>8</td>
+      <td>11.59%</td>
+      <td>8</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <td>195</td>
+      <td>内岛萌夏</td>
+      <td>8</td>
+      <td>100.00%</td>
+      <td>5</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>196</td>
+      <td>奥康尼尔</td>
       <td>7</td>
-      <td>15.91%</td>
+      <td>5.56%</td>
       <td>4</td>
-      <td>44</td>
+      <td>126</td>
     </tr>
     <tr>
-      <td>134</td>
-      <td>郭涵煜</td>
-      <td>6</td>
-      <td>66.67%</td>
-      <td>6</td>
-      <td>9</td>
+      <td>197</td>
+      <td>朱姆胡尔</td>
+      <td>7</td>
+      <td>29.17%</td>
+      <td>5</td>
+      <td>24</td>
     </tr>
     <tr>
-      <td>135</td>
-      <td>特雷维桑</td>
-      <td>6</td>
+      <td>198</td>
+      <td>兰达卢塞</td>
+      <td>7</td>
+      <td>100.00%</td>
+      <td>7</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>199</td>
+      <td>普伊</td>
+      <td>7</td>
+      <td>100.00%</td>
+      <td>7</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td>维尔塔宁</td>
+      <td>7</td>
       <td>100.00%</td>
       <td>6</td>
-      <td>6</td>
+      <td>7</td>
     </tr>
     <tr>
-      <td>136</td>
-      <td>大威廉姆斯</td>
+      <td>201</td>
+      <td>卡拉采夫</td>
       <td>6</td>
-      <td>100.00%</td>
-      <td>2</td>
-      <td>6</td>
-    </tr>
-    <tr>
-      <td>137</td>
-      <td>伊藤葵</td>
-      <td>5</td>
-      <td>83.33%</td>
-      <td>5</td>
-      <td>6</td>
-    </tr>
-    <tr>
-      <td>138</td>
-      <td>科帕奇</td>
-      <td>5</td>
-      <td>83.33%</td>
-      <td>2</td>
-      <td>6</td>
-    </tr>
-    <tr>
-      <td>139</td>
-      <td>比雷尔</td>
-      <td>5</td>
-      <td>45.45%</td>
-      <td>3</td>
+      <td>54.55%</td>
+      <td>4</td>
       <td>11</td>
     </tr>
     <tr>
-      <td>140</td>
-      <td>索里维斯</td>
-      <td>5</td>
-      <td>27.78%</td>
-      <td>5</td>
-      <td>18</td>
-    </tr>
-    <tr>
-      <td>141</td>
-      <td>阿-科瓦奇科娃</td>
-      <td>5</td>
-      <td>100.00%</td>
-      <td>5</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>142</td>
-      <td>阿-罗迪奥诺娃</td>
-      <td>5</td>
-      <td>100.00%</td>
-      <td>5</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>143</td>
-      <td>戈卢比奇</td>
+      <td>202</td>
+      <td>鲁塞</td>
+      <td>6</td>
+      <td>5.88%</td>
       <td>4</td>
-      <td>9.09%</td>
-      <td>2</td>
-      <td>44</td>
+      <td>102</td>
     </tr>
     <tr>
-      <td>144</td>
+      <td>203</td>
+      <td>邦达尔</td>
+      <td>6</td>
+      <td>4.08%</td>
+      <td>5</td>
+      <td>147</td>
+    </tr>
+    <tr>
+      <td>204</td>
+      <td>维基奇</td>
+      <td>6</td>
+      <td>31.58%</td>
+      <td>6</td>
+      <td>19</td>
+    </tr>
+    <tr>
+      <td>205</td>
+      <td>鲁瓦耶</td>
+      <td>6</td>
+      <td>13.04%</td>
+      <td>5</td>
+      <td>46</td>
+    </tr>
+    <tr>
+      <td>206</td>
+      <td>科-史密斯</td>
+      <td>6</td>
+      <td>100.00%</td>
+      <td>5</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>207</td>
+      <td>霍尔特</td>
+      <td>6</td>
+      <td>100.00%</td>
+      <td>4</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>208</td>
+      <td>玛雅</td>
+      <td>6</td>
+      <td>100.00%</td>
+      <td>3</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>209</td>
+      <td>阿特马纳</td>
+      <td>5</td>
+      <td>9.43%</td>
+      <td>2</td>
+      <td>53</td>
+    </tr>
+    <tr>
+      <td>210</td>
+      <td>安德莱斯库</td>
+      <td>5</td>
+      <td>83.33%</td>
+      <td>3</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>211</td>
+      <td>加尔菲</td>
+      <td>5</td>
+      <td>6.33%</td>
+      <td>3</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <td>212</td>
+      <td>格拉乔娃</td>
+      <td>5</td>
+      <td>41.67%</td>
+      <td>5</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>213</td>
+      <td>吴易昺</td>
+      <td>5</td>
+      <td>11.90%</td>
+      <td>2</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <td>214</td>
+      <td>布瓦松</td>
+      <td>5</td>
+      <td>100.00%</td>
+      <td>5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>215</td>
+      <td>穆雷</td>
+      <td>5</td>
+      <td>100.00%</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>216</td>
+      <td>纳加尔</td>
+      <td>4</td>
+      <td>80.00%</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>217</td>
+      <td>赛德尔</td>
+      <td>4</td>
+      <td>80.00%</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>218</td>
       <td>谢列赫梅捷娃</td>
       <td>4</td>
       <td>8.70%</td>
@@ -1501,47 +2178,63 @@
       <td>46</td>
     </tr>
     <tr>
-      <td>145</td>
-      <td>博格丹</td>
+      <td>219</td>
+      <td>比勒尔</td>
+      <td>4</td>
+      <td>7.41%</td>
+      <td>3</td>
+      <td>54</td>
+    </tr>
+    <tr>
+      <td>220</td>
+      <td>布林科娃</td>
       <td>4</td>
       <td>66.67%</td>
-      <td>3</td>
+      <td>2</td>
       <td>6</td>
     </tr>
     <tr>
-      <td>146</td>
-      <td>科内</td>
+      <td>221</td>
+      <td>曾俊欣</td>
       <td>4</td>
       <td>66.67%</td>
-      <td>3</td>
+      <td>2</td>
       <td>6</td>
     </tr>
     <tr>
-      <td>147</td>
-      <td>季莫费耶娃</td>
+      <td>222</td>
+      <td>奎因</td>
       <td>4</td>
-      <td>36.36%</td>
-      <td>4</td>
-      <td>11</td>
+      <td>6.06%</td>
+      <td>3</td>
+      <td>66</td>
     </tr>
     <tr>
-      <td>148</td>
-      <td>达特</td>
+      <td>223</td>
+      <td>马辛科</td>
       <td>4</td>
-      <td>36.36%</td>
+      <td>50.00%</td>
+      <td>3</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>224</td>
+      <td>沃雷涅茨</td>
+      <td>4</td>
+      <td>50.00%</td>
       <td>2</td>
-      <td>11</td>
+      <td>8</td>
     </tr>
     <tr>
-      <td>149</td>
-      <td>萨维尔</td>
+      <td>225</td>
+      <td>比-哈里斯</td>
       <td>4</td>
-      <td>11.43%</td>
-      <td>2</td>
-      <td>35</td>
+      <td>16.67%</td>
+      <td>3</td>
+      <td>24</td>
     </tr>
     <tr>
-      <td>150</td>
+      <td>226</td>
       <td>什塔库西奇</td>
       <td>4</td>
       <td>100.00%</td>
@@ -1549,23 +2242,15 @@
       <td>4</td>
     </tr>
     <tr>
-      <td>151</td>
-      <td>奥西格威</td>
+      <td>227</td>
+      <td>恩格尔</td>
       <td>4</td>
       <td>100.00%</td>
       <td>4</td>
       <td>4</td>
     </tr>
     <tr>
-      <td>152</td>
-      <td>巴特尔</td>
-      <td>4</td>
-      <td>100.00%</td>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>153</td>
+      <td>228</td>
       <td>普雷斯顿</td>
       <td>4</td>
       <td>100.00%</td>
@@ -1573,15 +2258,7 @@
       <td>4</td>
     </tr>
     <tr>
-      <td>154</td>
-      <td>沃洛季科</td>
-      <td>4</td>
-      <td>100.00%</td>
-      <td>4</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>155</td>
+      <td>229</td>
       <td>维德曼诺娃</td>
       <td>4</td>
       <td>100.00%</td>
@@ -1589,127 +2266,127 @@
       <td>4</td>
     </tr>
     <tr>
-      <td>156</td>
-      <td>恩古努</td>
+      <td>230</td>
+      <td>大威廉姆斯</td>
       <td>4</td>
       <td>100.00%</td>
-      <td>3</td>
+      <td>2</td>
       <td>4</td>
     </tr>
     <tr>
-      <td>157</td>
-      <td>拉希莫娃</td>
+      <td>231</td>
+      <td>科基纳基斯</td>
+      <td>4</td>
+      <td>10.53%</td>
       <td>3</td>
-      <td>7.32%</td>
-      <td>3</td>
-      <td>41</td>
+      <td>38</td>
     </tr>
     <tr>
-      <td>158</td>
-      <td>沃特森</td>
+      <td>232</td>
+      <td>克普费尔</td>
       <td>3</td>
-      <td>7.32%</td>
+      <td>7.14%</td>
+      <td>2</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <td>233</td>
+      <td>锦织圭</td>
+      <td>3</td>
+      <td>7.14%</td>
+      <td>2</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <td>234</td>
+      <td>蒙泰罗</td>
+      <td>3</td>
+      <td>42.86%</td>
+      <td>2</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>235</td>
+      <td>什瓦伊达</td>
+      <td>3</td>
+      <td>37.50%</td>
+      <td>3</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>236</td>
+      <td>斯特里克</td>
+      <td>3</td>
+      <td>37.50%</td>
+      <td>3</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>237</td>
+      <td>加斯奎特</td>
+      <td>3</td>
+      <td>25.00%</td>
       <td>1</td>
-      <td>41</td>
+      <td>12</td>
     </tr>
     <tr>
-      <td>159</td>
-      <td>尤晓迪</td>
+      <td>238</td>
+      <td>卡佐</td>
       <td>3</td>
-      <td>100.00%</td>
-      <td>3</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>160</td>
-      <td>迪亚斯</td>
-      <td>3</td>
-      <td>100.00%</td>
-      <td>3</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>161</td>
-      <td>科斯托维奇</td>
-      <td>3</td>
-      <td>100.00%</td>
+      <td>2.97%</td>
       <td>2</td>
-      <td>3</td>
+      <td>101</td>
     </tr>
     <tr>
-      <td>162</td>
-      <td>帕里</td>
+      <td>239</td>
+      <td>马特勒</td>
       <td>3</td>
-      <td>1.69%</td>
+      <td>12.50%</td>
+      <td>3</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <td>240</td>
+      <td>扎拉祖哈</td>
+      <td>3</td>
+      <td>10.34%</td>
+      <td>2</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <td>241</td>
+      <td>胡-塞伦多洛</td>
+      <td>2</td>
+      <td>33.33%</td>
+      <td>2</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>242</td>
+      <td>巴斯拉什维利</td>
+      <td>2</td>
+      <td>33.33%</td>
       <td>1</td>
-      <td>177</td>
+      <td>6</td>
     </tr>
     <tr>
-      <td>163</td>
-      <td>克鲁尼奇</td>
-      <td>2</td>
-      <td>66.67%</td>
-      <td>2</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>164</td>
-      <td>夏尔玛</td>
-      <td>2</td>
-      <td>40.00%</td>
-      <td>2</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>165</td>
-      <td>科维托娃</td>
-      <td>2</td>
-      <td>40.00%</td>
-      <td>1</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>166</td>
-      <td>帕奎</td>
-      <td>2</td>
-      <td>2.60%</td>
-      <td>1</td>
-      <td>77</td>
-    </tr>
-    <tr>
-      <td>167</td>
-      <td>塞瓦斯托娃</td>
-      <td>2</td>
-      <td>18.18%</td>
-      <td>2</td>
-      <td>11</td>
-    </tr>
-    <tr>
-      <td>168</td>
-      <td>弗-琼斯</td>
-      <td>2</td>
-      <td>15.38%</td>
-      <td>1</td>
-      <td>13</td>
-    </tr>
-    <tr>
-      <td>169</td>
-      <td>M Rapolu</td>
-      <td>2</td>
-      <td>100.00%</td>
-      <td>2</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <td>170</td>
-      <td>加斯帕良</td>
+      <td>243</td>
+      <td>基里奥斯</td>
       <td>2</td>
       <td>100.00%</td>
       <td>2</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>171</td>
+      <td>244</td>
+      <td>斯卡托夫</td>
+      <td>2</td>
+      <td>100.00%</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>245</td>
       <td>斯托亚纳</td>
       <td>2</td>
       <td>100.00%</td>
@@ -1717,71 +2394,119 @@
       <td>2</td>
     </tr>
     <tr>
-      <td>172</td>
-      <td>斯科特</td>
+      <td>246</td>
+      <td>洛夫哈根</td>
       <td>2</td>
       <td>100.00%</td>
       <td>2</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>173</td>
-      <td>科尔涅耶娃</td>
+      <td>247</td>
+      <td>科利尼翁</td>
       <td>2</td>
       <td>100.00%</td>
       <td>2</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>174</td>
-      <td>白卓璇</td>
+      <td>248</td>
+      <td>科帕奇</td>
+      <td>2</td>
+      <td>100.00%</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>249</td>
+      <td>科斯托维奇</td>
+      <td>2</td>
+      <td>100.00%</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>250</td>
+      <td>哈比卜</td>
       <td>2</td>
       <td>100.00%</td>
       <td>1</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>175</td>
-      <td>英格利斯</td>
+      <td>251</td>
+      <td>布洛克斯</td>
       <td>2</td>
       <td>100.00%</td>
       <td>1</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>176</td>
-      <td>蓬谢</td>
+      <td>252</td>
+      <td>蒂兰特</td>
       <td>2</td>
-      <td>10.00%</td>
+      <td>100.00%</td>
       <td>1</td>
-      <td>20</td>
+      <td>2</td>
     </tr>
     <tr>
-      <td>177</td>
-      <td>沙尔科娃</td>
-      <td>1</td>
-      <td>7.14%</td>
-      <td>1</td>
-      <td>14</td>
+      <td>253</td>
+      <td>西格蒙德</td>
+      <td>2</td>
+      <td>0.78%</td>
+      <td>2</td>
+      <td>255</td>
     </tr>
     <tr>
-      <td>178</td>
-      <td>伯雷奇</td>
+      <td>254</td>
+      <td>弗-琼斯</td>
+      <td>1</td>
+      <td>8.33%</td>
+      <td>1</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>255</td>
+      <td>拉希莫娃</td>
+      <td>1</td>
+      <td>7.69%</td>
+      <td>1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>256</td>
+      <td>希门尼斯</td>
       <td>1</td>
       <td>50.00%</td>
       <td>1</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>179</td>
-      <td>埃拉尼</td>
+      <td>257</td>
+      <td>库库什金</td>
       <td>1</td>
       <td>50.00%</td>
       <td>1</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>180</td>
+      <td>258</td>
+      <td>斯夸尔</td>
+      <td>1</td>
+      <td>50.00%</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>259</td>
+      <td>莱斯蒂耶纳</td>
+      <td>1</td>
+      <td>50.00%</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>260</td>
       <td>萨姆森</td>
       <td>1</td>
       <td>50.00%</td>
@@ -1789,119 +2514,87 @@
       <td>2</td>
     </tr>
     <tr>
-      <td>181</td>
-      <td>赫瓦林斯卡</td>
+      <td>261</td>
+      <td>袁悦</td>
       <td>1</td>
       <td>50.00%</td>
       <td>1</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>182</td>
-      <td>日比野菜绪</td>
-      <td>1</td>
-      <td>5.56%</td>
-      <td>1</td>
-      <td>18</td>
-    </tr>
-    <tr>
-      <td>183</td>
-      <td>园部八奏</td>
-      <td>1</td>
-      <td>33.33%</td>
-      <td>1</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>184</td>
-      <td>希门尼斯</td>
-      <td>1</td>
-      <td>33.33%</td>
-      <td>1</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>185</td>
-      <td>琳-弗吕维尔托娃</td>
-      <td>1</td>
-      <td>33.33%</td>
-      <td>1</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>186</td>
-      <td>诺哈-阿库古</td>
-      <td>1</td>
-      <td>33.33%</td>
-      <td>1</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>187</td>
-      <td>马萨洛娃</td>
-      <td>1</td>
-      <td>33.33%</td>
-      <td>1</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>188</td>
-      <td>让让</td>
-      <td>1</td>
-      <td>20.00%</td>
-      <td>1</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>189</td>
-      <td>马辛科</td>
-      <td>1</td>
-      <td>20.00%</td>
-      <td>1</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>190</td>
-      <td>戴维斯</td>
-      <td>1</td>
-      <td>2.63%</td>
-      <td>1</td>
-      <td>38</td>
-    </tr>
-    <tr>
-      <td>191</td>
+      <td>262</td>
       <td>塔格尔</td>
       <td>1</td>
-      <td>2.50%</td>
+      <td>5.88%</td>
       <td>1</td>
-      <td>40</td>
+      <td>17</td>
     </tr>
     <tr>
-      <td>192</td>
-      <td>维克里</td>
+      <td>263</td>
+      <td>马-普塞尔</td>
       <td>1</td>
-      <td>11.11%</td>
+      <td>4.55%</td>
       <td>1</td>
-      <td>9</td>
+      <td>22</td>
     </tr>
     <tr>
-      <td>193</td>
-      <td>Back D</td>
+      <td>264</td>
+      <td>格兰</td>
       <td>1</td>
-      <td>100.00%</td>
+      <td>33.33%</td>
       <td>1</td>
-      <td>1</td>
+      <td>3</td>
     </tr>
     <tr>
-      <td>194</td>
-      <td>H Inoue</td>
+      <td>265</td>
+      <td>米索利奇</td>
       <td>1</td>
-      <td>100.00%</td>
+      <td>25.00%</td>
       <td>1</td>
-      <td>1</td>
+      <td>4</td>
     </tr>
     <tr>
-      <td>195</td>
+      <td>266</td>
+      <td>范阿舍</td>
+      <td>1</td>
+      <td>20.00%</td>
+      <td>1</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>267</td>
+      <td>菲科维奇</td>
+      <td>1</td>
+      <td>20.00%</td>
+      <td>1</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>268</td>
+      <td>汉夫曼</td>
+      <td>1</td>
+      <td>2.13%</td>
+      <td>1</td>
+      <td>47</td>
+    </tr>
+    <tr>
+      <td>269</td>
+      <td>扎哈罗娃</td>
+      <td>1</td>
+      <td>16.67%</td>
+      <td>1</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>270</td>
+      <td>科普里瓦</td>
+      <td>1</td>
+      <td>12.50%</td>
+      <td>1</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>271</td>
       <td>凯莉耶娃</td>
       <td>1</td>
       <td>100.00%</td>
@@ -1909,63 +2602,63 @@
       <td>1</td>
     </tr>
     <tr>
-      <td>196</td>
-      <td>刘婧文</td>
+      <td>272</td>
+      <td>列迪</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>197</td>
-      <td>帕利佐娃</td>
+      <td>273</td>
+      <td>周意</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>198</td>
-      <td>托多尼</td>
+      <td>274</td>
+      <td>巴里奥斯</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>199</td>
-      <td>拉乔纳</td>
+      <td>275</td>
+      <td>布朗谢</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>200</td>
-      <td>斋藤咲良</td>
+      <td>276</td>
+      <td>戈约</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>201</td>
-      <td>斯托亚诺维奇</td>
+      <td>277</td>
+      <td>斯库尔凯特</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>202</td>
-      <td>本玉真唯</td>
+      <td>278</td>
+      <td>杜格斯</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>203</td>
+      <td>279</td>
       <td>查拉耶娃</td>
       <td>1</td>
       <td>100.00%</td>
@@ -1973,23 +2666,39 @@
       <td>1</td>
     </tr>
     <tr>
-      <td>204</td>
-      <td>格兰特</td>
+      <td>280</td>
+      <td>沃特森</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>205</td>
-      <td>范乌伊凡克</td>
+      <td>281</td>
+      <td>热亚</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>206</td>
+      <td>282</td>
+      <td>瑟尔</td>
+      <td>1</td>
+      <td>100.00%</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>283</td>
+      <td>茹卡耶夫</td>
+      <td>1</td>
+      <td>100.00%</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>284</td>
       <td>蓬-乌德沃尔迪</td>
       <td>1</td>
       <td>100.00%</td>
@@ -1997,71 +2706,55 @@
       <td>1</td>
     </tr>
     <tr>
-      <td>207</td>
-      <td>逯佳境</td>
+      <td>285</td>
+      <td>让维耶</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>208</td>
-      <td>郑赛赛</td>
+      <td>286</td>
+      <td>诺哈-阿库古</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>209</td>
-      <td>里斯蒂奇</td>
+      <td>287</td>
+      <td>霍因斯基</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>210</td>
-      <td>马烨欣</td>
+      <td>288</td>
+      <td>马约</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>211</td>
-      <td>高馨妤</td>
+      <td>289</td>
+      <td>迈赫扎克</td>
       <td>1</td>
-      <td>100.00%</td>
+      <td>1.03%</td>
       <td>1</td>
-      <td>1</td>
+      <td>97</td>
     </tr>
     <tr>
-      <td>212</td>
-      <td>斯特凡尼尼</td>
+      <td>290</td>
+      <td>纳达尔</td>
       <td>1</td>
-      <td>1.41%</td>
+      <td>0.97%</td>
       <td>1</td>
-      <td>71</td>
+      <td>103</td>
     </tr>
     <tr>
-      <td>213</td>
-      <td>丽-格拉什科</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <td>214</td>
-      <td>丽-马里诺</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>215</td>
+      <td>291</td>
       <td>乌尔霍博</td>
       <td>0</td>
       <td>0.00%</td>
@@ -2069,15 +2762,15 @@
       <td>2</td>
     </tr>
     <tr>
-      <td>216</td>
-      <td>亨特</td>
+      <td>292</td>
+      <td>亚-埃尔南德斯</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
-      <td>3</td>
+      <td>2</td>
     </tr>
     <tr>
-      <td>217</td>
+      <td>293</td>
       <td>克韦多</td>
       <td>0</td>
       <td>0.00%</td>
@@ -2085,7 +2778,7 @@
       <td>34</td>
     </tr>
     <tr>
-      <td>218</td>
+      <td>294</td>
       <td>兹沃娜列娃</td>
       <td>0</td>
       <td>0.00%</td>
@@ -2093,172 +2786,244 @@
       <td>1</td>
     </tr>
     <tr>
-      <td>219</td>
-      <td>勒普琴科</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>220</td>
-      <td>吉奥尔吉</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>221</td>
-      <td>吉布森</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <td>222</td>
-      <td>哈夫利奇科娃</td>
+      <td>295</td>
+      <td>内山靖崇</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
       <td>3</td>
     </tr>
     <tr>
-      <td>223</td>
-      <td>埃-琼斯</td>
+      <td>296</td>
+      <td>加里宁娜</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
-      <td>8</td>
+      <td>63</td>
     </tr>
     <tr>
-      <td>224</td>
-      <td>布-弗吕维尔托娃</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <td>225</td>
-      <td>帕里萨斯</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>145</td>
-    </tr>
-    <tr>
-      <td>226</td>
-      <td>斯尼古尔</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>227</td>
-      <td>施晗</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>30</td>
-    </tr>
-    <tr>
-      <td>228</td>
-      <td>柴原瑛菜</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>229</td>
-      <td>波多罗斯卡</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>75</td>
-    </tr>
-    <tr>
-      <td>230</td>
-      <td>班德尔</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>231</td>
-      <td>石井纱也加</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>232</td>
-      <td>科维尼奇</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>233</td>
-      <td>罗杰斯</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>56</td>
-    </tr>
-    <tr>
-      <td>234</td>
-      <td>罗梅罗</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>235</td>
-      <td>费特</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>6</td>
-    </tr>
-    <tr>
-      <td>236</td>
-      <td>赵一羽</td>
+      <td>297</td>
+      <td>博耶</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
       <td>9</td>
     </tr>
     <tr>
-      <td>237</td>
-      <td>轮空</td>
+      <td>298</td>
+      <td>吉布森</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
-      <td>805</td>
+      <td>14</td>
     </tr>
     <tr>
-      <td>238</td>
-      <td>齐丹谢克</td>
+      <td>299</td>
+      <td>吉甘特</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
-      <td>13</td>
+      <td>2</td>
     </tr>
     <tr>
-      <td>239</td>
-      <td>齐里科</td>
+      <td>300</td>
+      <td>埃-琼斯</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>301</td>
+      <td>埃贝尔</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>302</td>
+      <td>基姆</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>303</td>
+      <td>塔弗特</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
       <td>1</td>
+    </tr>
+    <tr>
+      <td>304</td>
+      <td>塔韦内</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>305</td>
+      <td>奇纳</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>306</td>
+      <td>奥索里奥</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <td>307</td>
+      <td>尼-阿瑟诺</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>308</td>
+      <td>巴戈尼斯</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>309</td>
+      <td>布鲁查加</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>310</td>
+      <td>帕萨罗</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>311</td>
+      <td>帕里</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>312</td>
+      <td>德容</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <td>313</td>
+      <td>斯皮齐里</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>314</td>
+      <td>日亚努</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>315</td>
+      <td>望月慎太郎</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>316</td>
+      <td>格勒尼耶</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>317</td>
+      <td>汤森德</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>318</td>
+      <td>波-库德梅托娃</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>319</td>
+      <td>泽皮耶里</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>86</td>
+    </tr>
+    <tr>
+      <td>320</td>
+      <td>特兰杰里迪</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>321</td>
+      <td>琳-弗吕维尔托娃</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>322</td>
+      <td>纳瓦</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>323</td>
+      <td>绵贯阳介</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>324</td>
+      <td>贝莱克</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>93</td>
     </tr>
   </tbody>
 </table>
@@ -2279,6 +3044,9 @@
                         icon.textContent = '🌙';
                     }
                 }
+
+                // summary section
+                
 
                 document.addEventListener('DOMContentLoaded', function() {
                     const table = document.querySelector('.filterable-table');
@@ -2383,13 +3151,25 @@
                                 rowsArray.sort((a, b) => {
                                     const A = a.children[index].textContent.trim();
                                     const B = b.children[index].textContent.trim();
-                                    
+
+                                    // Treat empty / null-like values
+                                    const isEmptyA = A === "" || A.toLowerCase() === "nan" || A === "-";
+                                    const isEmptyB = B === "" || B.toLowerCase() === "nan" || B === "-";
+
+                                    // Always push empty values to bottom
+                                    if (isEmptyA && !isEmptyB) return 1;
+                                    if (!isEmptyA && isEmptyB) return -1;
+                                    if (isEmptyA && isEmptyB) return 0;
+
+                                    // Try numeric comparison
                                     const numA = parseFloat(A);
                                     const numB = parseFloat(B);
 
                                     if (!isNaN(numA) && !isNaN(numB)) {
                                         return (numA - numB) * (sortDirection === 'asc' ? 1 : -1);
                                     }
+
+                                    // Fallback to string comparison
                                     return A.localeCompare(B, 'zh') * (sortDirection === 'asc' ? 1 : -1);
                                 });
 
