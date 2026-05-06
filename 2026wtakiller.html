@@ -91,26 +91,62 @@
                     display: inline-block;
                 }
 
-                /* 2. Smaller toggle button, icon only */
+                /* 2. Pill-style day/night toggle */
                 .theme-toggle {
                     position: absolute;
                     right: 30px;
-                    top: 10px; /* Align with title */
-                    background: var(--filter-row-bg);
-                    border: 1px solid var(--border-color);
-                    color: var(--text-main);
-                    padding: 6px 12px;
+                    top: 10px;
+                    width: 140px;
+                    height: 36px;
                     border-radius: 18px;
+                    border: 2px solid var(--border-color);
+                    background: var(--filter-row-bg);
                     cursor: pointer;
-                    font-size: 12px; /* Icon size */
                     display: flex;
                     align-items: center;
-                    transition: all 0.2s;
+                    padding: 0;
+                    overflow: hidden;
+                    transition: background 0.3s, border-color 0.3s;
                 }
-                
-                .theme-toggle:hover {
-                    background-color: var(--table-row-hover);
-                    transform: scale(1.05);
+
+                .theme-toggle .toggle-knob {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    background: var(--text-secondary);
+                    color: var(--filter-row-bg);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                    flex-shrink: 0;
+                    margin-left: 1px;
+                    transition: background 0.3s, color 0.3s;
+                    order: 1;
+                }
+
+                body.dark-mode .theme-toggle .toggle-knob {
+                    order: 2;
+                    margin-left: 0;
+                    margin-right: 1px;
+                }
+
+                .theme-toggle .toggle-label {
+                    flex: 1;
+                    text-align: center;
+                    font-size: 11px;
+                    font-weight: 700;
+                    letter-spacing: 0.05em;
+                    color: var(--text-secondary);
+                    order: 2;
+                    transition: color 0.3s;
+                    padding-right: 4px;
+                }
+
+                body.dark-mode .theme-toggle .toggle-label {
+                    order: 1;
+                    padding-right: 0;
+                    padding-left: 4px;
                 }
 
                 .summary-section {
@@ -119,6 +155,7 @@
                     flex-direction: column;
                     align-items: center;
                     margin-bottom: 20px;
+                    padding-right: 60px;
                 }
 
                 .summary-toggle {
@@ -143,12 +180,11 @@
                     display: none;
                 }
                 
-                .summary-content.open {
-                    max-height: 500px; /* adjust based on content */
-                }
-
                 .summary-content.show {
                     display: block;
+                    max-height: 300px;
+                    overflow-y: auto;
+                    overflow-x: auto;
                 }
 
                 /* Summary Table Styling */
@@ -283,17 +319,15 @@
 
                 .dropdown-content {
                     display: none;
-                    position: absolute;
+                    position: fixed;
                     background-color: var(--dropdown-bg);
                     color: var(--text-filter);
-                    min-width: 100%;
+                    min-width: 160px;
                     max-height: 250px;
                     overflow-y: auto;
                     border: 1px solid var(--dropdown-border);
                     box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-                    z-index: 100;
-                    top: 100%;
-                    left: 0;
+                    z-index: 9999;
                 }
 
                 .dropdown-content.show {
@@ -392,10 +426,41 @@
 
 
                 @media (max-width: 768px) {
-                    .container { padding: 15px; }
-                    h1 { font-size: 20px; }
+                    body { padding: 8px; }
+
+                    .container { padding: 12px; position: static; }
+
+                    /* Stack theme toggle below title instead of overlapping it */
+                    .theme-toggle {
+                        position: static;
+                        margin: 8px auto 0;
+                        width: 120px;
+                        height: 32px;
+                    }
+
+                    /* Remove the right-padding offset that compensated for the absolute button */
+                    .header-info { padding-right: 0; margin-bottom: 10px; }
+                    .summary-section { padding-right: 0; }
+
+                    h1 { font-size: 18px; }
+
+                    .last-updated { font-size: 11px; }
+
+                    /* Compact table */
                     .filterable-table { font-size: 11px; }
-                    .filterable-table th, .filterable-table td { padding: 6px 4px; }
+                    .filterable-table th,
+                    .filterable-table td { padding: 5px 4px; white-space: nowrap; }
+
+                    /* Cap dropdown height and widen tap targets */
+                    .dropdown-content { max-height: 180px; }
+                    .filter-trigger { padding: 5px 6px; font-size: 10px; }
+
+                    /* Use more viewport height for the table on small screens */
+                    .table-wrapper { max-height: 65vh; }
+
+                    .stats { font-size: 11px; }
+
+                    .summary-table th, .summary-table td { padding: 6px 5px; font-size: 11px; }
                 }
             </style>
         </head>
@@ -404,13 +469,14 @@
                 <div class="header-info">
                     <h1>WTA幸存者杀手榜（2026）</h1>
                     <div class="last-updated">
-                        ⏱ 更新时间: 2026年05月06日 09:17:28
+                        ⏱ 更新时间: 2026年05月06日 18:53:09
                     </div>
                 </div>
                 
                 <!-- 2. Toggle Button -->
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-                    <span id="themeIcon">🌙</span>
+                    <span class="toggle-knob" id="themeIcon">☀️</span>
+                    <span class="toggle-label" id="themeLabel">亮色模式</span>
                 </button>
                 
                 
@@ -1468,13 +1534,8 @@
                 function toggleTheme() {
                     document.body.classList.toggle('dark-mode');
                     const isDark = document.body.classList.contains('dark-mode');
-                    const icon = document.getElementById('themeIcon');
-                    
-                    if (isDark) {
-                        icon.textContent = '☀️';
-                    } else {
-                        icon.textContent = '🌙';
-                    }
+                    document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+                    document.getElementById('themeLabel').textContent = isDark ? '夜间模式' : '亮色模式';
                 }
 
                 // summary section
@@ -1499,6 +1560,9 @@
                     // Create Filter Row
                     const filterRow = document.createElement('tr');
                     filterRow.className = 'filter-row';
+
+                    // Track body-mounted option containers per column for filterTable
+                    const allOptionContainers = [];
 
                     headers.forEach((header, index) => {
                         let sortDirection = 'none';
@@ -1526,11 +1590,35 @@
                         searchInput.addEventListener('input', (e) => {
                             const query = e.target.value.toLowerCase().trim();
                             optionsContainer.querySelectorAll('.option-item').forEach(item => {
+                                if (item.dataset.selectAll) return; // keep 全选 always visible
                                 const label = item.querySelector('span').textContent.toLowerCase();
                                 item.style.display = label.includes(query) ? 'flex' : 'none';
                             });
                         });
-                        
+
+                        // 全选 item
+                        const selectAllItem = document.createElement('div');
+                        selectAllItem.className = 'option-item select-all-item';
+                        selectAllItem.dataset.selectAll = '1';
+                        selectAllItem.style.borderBottom = '2px solid var(--border-color)';
+                        const selectAllCb = document.createElement('input');
+                        selectAllCb.type = 'checkbox';
+                        selectAllCb.checked = true;
+                        const selectAllLabel = document.createElement('span');
+                        selectAllLabel.textContent = '全选';
+                        selectAllLabel.style.fontWeight = '600';
+                        selectAllItem.appendChild(selectAllCb);
+                        selectAllItem.appendChild(selectAllLabel);
+                        optionsContainer.appendChild(selectAllItem);
+
+                        selectAllCb.addEventListener('change', () => {
+                            const checked = selectAllCb.checked;
+                            optionsContainer.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]').forEach(cb => {
+                                cb.checked = checked;
+                            });
+                            filterTable();
+                        });
+
                         // Populate Options
                         const uniqueValues = new Set();
                         rows.forEach(row => {
@@ -1564,7 +1652,9 @@
                         });
 
                         dropdownWrapper.appendChild(trigger);
-                        dropdownWrapper.appendChild(optionsContainer);
+                        // Append to body so overflow:auto on .table-wrapper doesn't clip it
+                        document.body.appendChild(optionsContainer);
+                        allOptionContainers.push(optionsContainer);
                         thCell.appendChild(dropdownWrapper);
                         filterRow.appendChild(thCell);
 
@@ -1615,29 +1705,66 @@
                             document.querySelectorAll('.dropdown-content').forEach(d => {
                                 if(d !== optionsContainer) d.classList.remove('show');
                             });
+                            const isOpen = optionsContainer.classList.contains('show');
                             optionsContainer.classList.toggle('show');
+                            if (!isOpen) {
+                                const rect = trigger.getBoundingClientRect();
+                                const dropH = Math.min(250, optionsContainer.scrollHeight);
+                                const spaceBelow = window.innerHeight - rect.bottom;
+                                optionsContainer.style.width = rect.width + 'px';
+                                if (spaceBelow >= dropH || spaceBelow >= 120) {
+                                    optionsContainer.style.top = rect.bottom + 'px';
+                                    optionsContainer.style.bottom = '';
+                                } else {
+                                    optionsContainer.style.top = (rect.top - dropH) + 'px';
+                                    optionsContainer.style.bottom = '';
+                                }
+                                optionsContainer.style.left = rect.left + 'px';
+                            }
                         });
 
-                        optionsContainer.addEventListener('change', filterTable);
+                        optionsContainer.addEventListener('change', (e) => {
+                            if (!e.target.closest('[data-select-all]')) {
+                                const all = optionsContainer.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]');
+                                const allChecked = Array.from(all).every(cb => cb.checked);
+                                selectAllCb.checked = allChecked;
+                            }
+                            filterTable();
+                        });
                     });
 
                     thead.appendChild(filterRow);
+
+                    // Close all dropdowns when the table scrolls (fixed-position dropdowns won't follow)
+                    document.querySelector('.table-wrapper').addEventListener('scroll', () => {
+                        allOptionContainers.forEach(oc => oc.classList.remove('show'));
+                    });
+
+                    // Dynamically set filter row's sticky top to match actual header height
+                    // (avoids hardcoded 40px breaking on mobile where header is shorter)
+                    function updateFilterRowTop() {
+                        filterRow.style.top = headerRow.getBoundingClientRect().height + 'px';
+                    }
+                    updateFilterRowTop();
+                    new ResizeObserver(updateFilterRowTop).observe(headerRow);
 
 
                     // Filter Function
                     function filterTable() {
                         let visibleCount = 0;
                         const activeFilters = [];
-                        const dropdowns = document.querySelectorAll('.filter-dropdown');
-                        
-                        dropdowns.forEach(dd => {
-                            const checkboxes = dd.querySelectorAll('input[type="checkbox"]');
-                            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-                            
-                            const triggerText = dd.querySelector('.filter-trigger span:first-child');
-                            if(selected.length === 0) triggerText.textContent = "已取消";
-                            else if(selected.length === checkboxes.length) triggerText.textContent = "全部";
-                            else triggerText.textContent = `已选 ${selected.length} 项`;
+                        const triggerEls = document.querySelectorAll('.filter-trigger span:first-child');
+
+                        allOptionContainers.forEach((oc, i) => {
+                            // exclude 全选 checkbox from the value list
+                            const checkboxes = Array.from(oc.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]'));
+                            const selected = checkboxes.filter(cb => cb.checked).map(cb => cb.value);
+
+                            if (triggerEls[i]) {
+                                if (selected.length === 0) triggerEls[i].textContent = "已取消";
+                                else if (selected.length === checkboxes.length) triggerEls[i].textContent = "全部";
+                                else triggerEls[i].textContent = `已选 ${selected.length} 项`;
+                            }
 
                             activeFilters.push(selected);
                         });
