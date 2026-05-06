@@ -404,7 +404,7 @@
                 <div class="header-info">
                     <h1>ATP即时冠军排名</h1>
                     <div class="last-updated">
-                        ⏱ 更新时间: 2026年05月06日 10:58:09
+                        ⏱ 更新时间: 2026年05月06日 11:03:35
                     </div>
                 </div>
                 
@@ -414,6 +414,165 @@
                 </button>
                 
                 
+        <div class="summary-section">
+            <button class="summary-toggle" onclick="toggleSummary()">
+                📊 显示选人统计
+            </button>
+
+            <div class="summary-content" id="summaryContent">
+                <table class="dataframe summary-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>今日主选</th>
+      <th>非轮空</th>
+      <th>轮空</th>
+      <th>总计</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>布洛克斯</td>
+      <td>25</td>
+      <td>19</td>
+      <td>44</td>
+    </tr>
+    <tr>
+      <td>朱姆胡尔</td>
+      <td>13</td>
+      <td>5</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <td>巴埃斯</td>
+      <td>6</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>胡尔卡奇</td>
+      <td>6</td>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>乌戈-卡拉贝利</td>
+      <td>4</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>普里兹米奇</td>
+      <td>4</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>特兰杰里迪</td>
+      <td>4</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>阿尔特迈尔</td>
+      <td>4</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>博尔热斯</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>塔比洛</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>基普森</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>施特鲁夫</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>曼纳里诺</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>张之臻</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>什瓦伊达</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>姆佩奇-佩里卡尔</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>富乔维奇</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>布鲁克斯比</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>科普里瓦</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>科梅萨纳</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>范德尚舒尔普</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>阿纳尔迪</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>总计</td>
+      <td>87</td>
+      <td>29</td>
+      <td>116</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+        
 
                 <div class="stats">
                     显示 <span id="visible-count">0</span> / <span id="total-count">0</span> 行
@@ -7203,6 +7362,19 @@
 
                 // summary section
                 
+        function toggleSummary() {
+            const content = document.getElementById('summaryContent');
+            const btn = document.querySelector('.summary-toggle');
+
+            content.classList.toggle('show');
+
+            if (content.classList.contains('show')) {
+                btn.textContent = '📊 隐藏选人统计';
+            } else {
+                btn.textContent = '📊 显示选人统计';
+            }
+        }
+        
 
                 document.addEventListener('DOMContentLoaded', function() {
                     const table = document.querySelector('.filterable-table');
