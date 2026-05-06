@@ -91,26 +91,62 @@
                     display: inline-block;
                 }
 
-                /* 2. Smaller toggle button, icon only */
+                /* 2. Pill-style day/night toggle */
                 .theme-toggle {
                     position: absolute;
                     right: 30px;
-                    top: 10px; /* Align with title */
-                    background: var(--filter-row-bg);
-                    border: 1px solid var(--border-color);
-                    color: var(--text-main);
-                    padding: 6px 12px;
+                    top: 10px;
+                    width: 140px;
+                    height: 36px;
                     border-radius: 18px;
+                    border: 2px solid var(--border-color);
+                    background: var(--filter-row-bg);
                     cursor: pointer;
-                    font-size: 12px; /* Icon size */
                     display: flex;
                     align-items: center;
-                    transition: all 0.2s;
+                    padding: 0;
+                    overflow: hidden;
+                    transition: background 0.3s, border-color 0.3s;
                 }
-                
-                .theme-toggle:hover {
-                    background-color: var(--table-row-hover);
-                    transform: scale(1.05);
+
+                .theme-toggle .toggle-knob {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    background: var(--text-secondary);
+                    color: var(--filter-row-bg);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                    flex-shrink: 0;
+                    margin-left: 1px;
+                    transition: background 0.3s, color 0.3s;
+                    order: 1;
+                }
+
+                body.dark-mode .theme-toggle .toggle-knob {
+                    order: 2;
+                    margin-left: 0;
+                    margin-right: 1px;
+                }
+
+                .theme-toggle .toggle-label {
+                    flex: 1;
+                    text-align: center;
+                    font-size: 11px;
+                    font-weight: 700;
+                    letter-spacing: 0.05em;
+                    color: var(--text-secondary);
+                    order: 2;
+                    transition: color 0.3s;
+                    padding-right: 4px;
+                }
+
+                body.dark-mode .theme-toggle .toggle-label {
+                    order: 1;
+                    padding-right: 0;
+                    padding-left: 4px;
                 }
 
                 .summary-section {
@@ -119,6 +155,7 @@
                     flex-direction: column;
                     align-items: center;
                     margin-bottom: 20px;
+                    padding-right: 60px;
                 }
 
                 .summary-toggle {
@@ -143,12 +180,11 @@
                     display: none;
                 }
                 
-                .summary-content.open {
-                    max-height: 500px; /* adjust based on content */
-                }
-
                 .summary-content.show {
                     display: block;
+                    max-height: 300px;
+                    overflow-y: auto;
+                    overflow-x: auto;
                 }
 
                 /* Summary Table Styling */
@@ -404,13 +440,14 @@
                 <div class="header-info">
                     <h1>ATP即时冠军排名</h1>
                     <div class="last-updated">
-                        ⏱ 更新时间: 2026年05月06日 11:03:35
+                        ⏱ 更新时间: 2026年05月06日 16:09:26
                     </div>
                 </div>
                 
                 <!-- 2. Toggle Button -->
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-                    <span id="themeIcon">🌙</span>
+                    <span class="toggle-knob" id="themeIcon">☀️</span>
+                    <span class="toggle-label" id="themeLabel">亮色模式</span>
                 </button>
                 
                 
@@ -425,6 +462,7 @@
     <tr style="text-align: right;">
       <th>今日主选</th>
       <th>非轮空</th>
+      <th>自杀（主备冲突）</th>
       <th>轮空</th>
       <th>总计</th>
     </tr>
@@ -432,91 +470,148 @@
   <tbody>
     <tr>
       <td>布洛克斯</td>
-      <td>25</td>
-      <td>19</td>
-      <td>44</td>
+      <td>76</td>
+      <td>0</td>
+      <td>40</td>
+      <td>116</td>
     </tr>
     <tr>
       <td>朱姆胡尔</td>
-      <td>13</td>
-      <td>5</td>
-      <td>18</td>
+      <td>31</td>
+      <td>0</td>
+      <td>11</td>
+      <td>42</td>
     </tr>
     <tr>
       <td>巴埃斯</td>
+      <td>18</td>
+      <td>1</td>
+      <td>4</td>
+      <td>23</td>
+    </tr>
+    <tr>
+      <td>阿尔特迈尔</td>
+      <td>12</td>
+      <td>0</td>
+      <td>0</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>胡尔卡奇</td>
+      <td>10</td>
+      <td>0</td>
+      <td>3</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>乌戈-卡拉贝利</td>
+      <td>8</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>普里兹米奇</td>
+      <td>7</td>
+      <td>0</td>
+      <td>2</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>特兰杰里迪</td>
+      <td>7</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>基普森</td>
       <td>6</td>
+      <td>0</td>
       <td>2</td>
       <td>8</td>
     </tr>
     <tr>
-      <td>胡尔卡奇</td>
-      <td>6</td>
-      <td>1</td>
-      <td>7</td>
-    </tr>
-    <tr>
-      <td>乌戈-卡拉贝利</td>
-      <td>4</td>
-      <td>0</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>普里兹米奇</td>
-      <td>4</td>
-      <td>0</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>特兰杰里迪</td>
-      <td>4</td>
-      <td>0</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>阿尔特迈尔</td>
-      <td>4</td>
-      <td>0</td>
-      <td>4</td>
-    </tr>
-    <tr>
       <td>博尔热斯</td>
-      <td>3</td>
+      <td>5</td>
       <td>0</td>
-      <td>3</td>
+      <td>0</td>
+      <td>5</td>
     </tr>
     <tr>
       <td>塔比洛</td>
-      <td>3</td>
+      <td>5</td>
       <td>0</td>
-      <td>3</td>
+      <td>0</td>
+      <td>5</td>
     </tr>
     <tr>
-      <td>基普森</td>
+      <td>曼纳里诺</td>
+      <td>5</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>张之臻</td>
       <td>2</td>
       <td>0</td>
-      <td>2</td>
+      <td>3</td>
+      <td>5</td>
     </tr>
     <tr>
       <td>施特鲁夫</td>
       <td>2</td>
       <td>0</td>
-      <td>2</td>
+      <td>1</td>
+      <td>3</td>
     </tr>
     <tr>
-      <td>曼纳里诺</td>
+      <td>科梅萨纳</td>
       <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>穆纳尔</td>
+      <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>范德尚舒尔普</td>
+      <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>富乔维奇</td>
+      <td>2</td>
+      <td>0</td>
       <td>0</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>张之臻</td>
-      <td>1</td>
+      <td>费恩利</td>
       <td>2</td>
-      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>阿纳尔迪</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
     </tr>
     <tr>
       <td>什瓦伊达</td>
       <td>1</td>
+      <td>0</td>
       <td>0</td>
       <td>1</td>
     </tr>
@@ -524,11 +619,6 @@
       <td>姆佩奇-佩里卡尔</td>
       <td>1</td>
       <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>富乔维奇</td>
-      <td>1</td>
       <td>0</td>
       <td>1</td>
     </tr>
@@ -536,37 +626,43 @@
       <td>布鲁克斯比</td>
       <td>1</td>
       <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>武基奇</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>毛罗然</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
       <td>1</td>
     </tr>
     <tr>
       <td>科普里瓦</td>
       <td>1</td>
       <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>科梅萨纳</td>
-      <td>1</td>
       <td>0</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>范德尚舒尔普</td>
-      <td>1</td>
+      <td>德容</td>
+      <td>0</td>
       <td>0</td>
       <td>1</td>
-    </tr>
-    <tr>
-      <td>阿纳尔迪</td>
-      <td>1</td>
-      <td>0</td>
       <td>1</td>
     </tr>
     <tr>
       <td>总计</td>
-      <td>87</td>
-      <td>29</td>
-      <td>116</td>
+      <td>212</td>
+      <td>1</td>
+      <td>70</td>
+      <td>283</td>
     </tr>
   </tbody>
 </table>
@@ -601,9 +697,9 @@
       <td>1</td>
       <td>r***i</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>富乔维奇</td>
+      <td>轮空</td>
       <td>0</td>
       <td>3173</td>
       <td><span class="rank same"></span></td>
@@ -613,9 +709,9 @@
       <td>2</td>
       <td>爱***d</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>范德尚舒尔普</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2949</td>
       <td><span class="rank same"></span></td>
@@ -625,9 +721,9 @@
       <td>3</td>
       <td>Elroy晨曦</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>胡尔卡奇</td>
+      <td>布洛克斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2844</td>
       <td><span class="rank same"></span></td>
@@ -649,9 +745,9 @@
       <td>5</td>
       <td>荞二皮</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>胡尔卡奇</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2704</td>
       <td><span class="rank same"></span></td>
@@ -673,9 +769,9 @@
       <td>7</td>
       <td>精神故乡丝芙兰</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2531</td>
       <td><span class="rank same"></span></td>
@@ -709,9 +805,9 @@
       <td>10</td>
       <td>M***y</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>施特鲁夫</td>
+      <td>胡尔卡奇</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2328</td>
       <td><span class="rank same"></span></td>
@@ -733,9 +829,9 @@
       <td>12</td>
       <td>ElvisD95</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>布洛克斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2231</td>
       <td><span class="rank same"></span></td>
@@ -769,9 +865,9 @@
       <td>15</td>
       <td>无***痕</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>普里兹米奇</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2093</td>
       <td><span class="rank same"></span></td>
@@ -805,9 +901,9 @@
       <td>18</td>
       <td>寻***9</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>曼纳里诺</td>
+      <td>轮空</td>
       <td>0</td>
       <td>2035</td>
       <td><span class="rank same"></span></td>
@@ -877,9 +973,9 @@
       <td>24</td>
       <td>吡***吩</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1964</td>
       <td><span class="rank same"></span></td>
@@ -901,9 +997,9 @@
       <td>26</td>
       <td>马仙洪_</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>普里兹米奇</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1948</td>
       <td><span class="rank same"></span></td>
@@ -913,9 +1009,9 @@
       <td>27</td>
       <td>强化型米斯prototype</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>阿纳尔迪</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1889</td>
       <td><span class="rank same"></span></td>
@@ -925,9 +1021,9 @@
       <td>28</td>
       <td>samsonyip</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>毛罗然</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1884</td>
       <td><span class="rank same"></span></td>
@@ -937,9 +1033,9 @@
       <td>29</td>
       <td>slay全场666</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>基普森</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1874</td>
       <td><span class="rank down">-1</span></td>
@@ -949,9 +1045,9 @@
       <td>30</td>
       <td>Vintyovo</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>基普森</td>
+      <td>巴埃斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1874</td>
       <td><span class="rank up">+1</span></td>
@@ -973,9 +1069,9 @@
       <td>32</td>
       <td>没有滑板的张某某</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1861</td>
       <td><span class="rank same"></span></td>
@@ -985,15 +1081,15 @@
       <td>33</td>
       <td>荞麦皮</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>穆纳尔</td>
+      <td>塔比洛</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1841</td>
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>34</td>
+      <td>33</td>
       <td>34</td>
       <td>梦***e</td>
       <td></td>
@@ -1002,16 +1098,16 @@
       <td>轮空</td>
       <td>0</td>
       <td>1841</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+1</span></td>
     </tr>
     <tr>
       <td>35</td>
       <td>35</td>
       <td>洋葱葱葱葱葱葱葱啊</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1829</td>
       <td><span class="rank same"></span></td>
@@ -1021,9 +1117,9 @@
       <td>36</td>
       <td>滑板2号</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1814</td>
       <td><span class="rank same"></span></td>
@@ -1033,9 +1129,9 @@
       <td>37</td>
       <td>moommomoommo</td>
       <td></td>
+      <td>张之臻</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1804</td>
       <td><span class="rank same"></span></td>
@@ -1057,9 +1153,9 @@
       <td>39</td>
       <td>152*****282</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>基普森</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1798</td>
       <td><span class="rank same"></span></td>
@@ -1081,9 +1177,9 @@
       <td>41</td>
       <td>z***7</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1763</td>
       <td><span class="rank same"></span></td>
@@ -1093,9 +1189,9 @@
       <td>42</td>
       <td>精明姐姐的小秘</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1751</td>
       <td><span class="rank same"></span></td>
@@ -1105,9 +1201,9 @@
       <td>43</td>
       <td>为你而来呀</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1744</td>
       <td><span class="rank same"></span></td>
@@ -1117,9 +1213,9 @@
       <td>44</td>
       <td>MobiusZH</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>普里兹米奇</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1736</td>
       <td><span class="rank same"></span></td>
@@ -1129,9 +1225,9 @@
       <td>45</td>
       <td>D***3</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>科梅萨纳</td>
+      <td>胡尔卡奇</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1722</td>
       <td><span class="rank same"></span></td>
@@ -1237,9 +1333,9 @@
       <td>54</td>
       <td>Zoey</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1639</td>
       <td><span class="rank same"></span></td>
@@ -1249,15 +1345,15 @@
       <td>55</td>
       <td>交H于一点</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>普里兹米奇</td>
+      <td>布洛克斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1631</td>
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>56</td>
+      <td>55</td>
       <td>56</td>
       <td>您波打的电话正在通话中2333</td>
       <td></td>
@@ -1266,16 +1362,16 @@
       <td>未选</td>
       <td>0</td>
       <td>1631</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+1</span></td>
     </tr>
     <tr>
       <td>57</td>
       <td>57</td>
       <td>网球评级update</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>基普森</td>
+      <td>德容</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1625</td>
       <td><span class="rank same"></span></td>
@@ -1297,9 +1393,9 @@
       <td>59</td>
       <td>弗外外茨</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>普里兹米奇</td>
+      <td>朱姆胡尔</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1604</td>
       <td><span class="rank same"></span></td>
@@ -1309,9 +1405,9 @@
       <td>60</td>
       <td>Earth球球</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>特兰杰里迪</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1581</td>
       <td><span class="rank same"></span></td>
@@ -1369,9 +1465,9 @@
       <td>65</td>
       <td>德约的粉丝</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>基普森</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1569</td>
       <td><span class="rank same"></span></td>
@@ -1429,9 +1525,9 @@
       <td>70</td>
       <td>136******19</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>姆佩奇-佩里卡尔</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1521</td>
       <td><span class="rank same"></span></td>
@@ -1453,9 +1549,9 @@
       <td>72</td>
       <td>本命百香果柠檬</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>胡尔卡奇</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1503</td>
       <td><span class="rank same"></span></td>
@@ -1477,9 +1573,9 @@
       <td>74</td>
       <td>爱歪歪的坏宝贝</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>阿尔特迈尔</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1484</td>
       <td><span class="rank same"></span></td>
@@ -1490,7 +1586,7 @@
       <td>Leo_T1nyFo2est_autor</td>
       <td></td>
       <td>布洛克斯</td>
-      <td></td>
+      <td>胡尔卡奇</td>
       <td>轮空</td>
       <td>0</td>
       <td>1473</td>
@@ -1525,9 +1621,9 @@
       <td>78</td>
       <td>IggyAzaleaChina</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1445</td>
       <td><span class="rank same"></span></td>
@@ -1537,9 +1633,9 @@
       <td>79</td>
       <td>Dylan Bai</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1443</td>
       <td><span class="rank same"></span></td>
@@ -1549,9 +1645,9 @@
       <td>80</td>
       <td>一寺一壶酒尔乐</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1442</td>
       <td><span class="rank same"></span></td>
@@ -1561,9 +1657,9 @@
       <td>81</td>
       <td>板尼哟</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1432</td>
       <td><span class="rank same"></span></td>
@@ -1573,9 +1669,9 @@
       <td>82</td>
       <td>流星穹宇crazy</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>塔比洛</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1430</td>
       <td><span class="rank same"></span></td>
@@ -1621,9 +1717,9 @@
       <td>86</td>
       <td>liu8322925</td>
       <td></td>
+      <td>德容</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>轮空</td>
       <td>0</td>
       <td>1406</td>
       <td><span class="rank same"></span></td>
@@ -1645,9 +1741,9 @@
       <td>88</td>
       <td>用户7856057992</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1402</td>
       <td><span class="rank same"></span></td>
@@ -1705,9 +1801,9 @@
       <td>93</td>
       <td>131*****034</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>基普森</td>
+      <td>已选</td>
       <td>0</td>
       <td>1381</td>
       <td><span class="rank same"></span></td>
@@ -1717,9 +1813,9 @@
       <td>94</td>
       <td>日***岸</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1368</td>
       <td><span class="rank same"></span></td>
@@ -1729,9 +1825,9 @@
       <td>95</td>
       <td>卡尼TT</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>已选</td>
       <td>0</td>
       <td>1361</td>
       <td><span class="rank same"></span></td>
@@ -1753,9 +1849,9 @@
       <td>97</td>
       <td>Kellan Li</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1356</td>
       <td><span class="rank same"></span></td>
@@ -1765,9 +1861,9 @@
       <td>98</td>
       <td>箐斓丶</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1351</td>
       <td><span class="rank same"></span></td>
@@ -1789,9 +1885,9 @@
       <td>100</td>
       <td>na_go_h</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>已选</td>
       <td>0</td>
       <td>1336</td>
       <td><span class="rank same"></span></td>
@@ -1837,9 +1933,9 @@
       <td>104</td>
       <td>历***4</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1306</td>
       <td><span class="rank same"></span></td>
@@ -1849,9 +1945,9 @@
       <td>105</td>
       <td>夕***阳</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>张之臻</td>
+      <td>科普里瓦</td>
+      <td>已选</td>
       <td>0</td>
       <td>1290</td>
       <td><span class="rank same"></span></td>
@@ -1921,9 +2017,9 @@
       <td>111</td>
       <td>h***t</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>富乔维奇</td>
+      <td>毛罗然</td>
+      <td>已选</td>
       <td>0</td>
       <td>1274</td>
       <td><span class="rank same"></span></td>
@@ -1945,9 +2041,9 @@
       <td>113</td>
       <td>A-ries_15</td>
       <td></td>
+      <td>巴埃斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1258</td>
       <td><span class="rank same"></span></td>
@@ -1957,9 +2053,9 @@
       <td>114</td>
       <td>陈***8</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1256</td>
       <td><span class="rank same"></span></td>
@@ -1969,9 +2065,9 @@
       <td>115</td>
       <td>我宝儿子不露脸不改名</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1243</td>
       <td><span class="rank same"></span></td>
@@ -1981,9 +2077,9 @@
       <td>116</td>
       <td>嗨嗨嗨改名字好难</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1242</td>
       <td><span class="rank same"></span></td>
@@ -2001,25 +2097,25 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>117</td>
+      <td>118</td>
       <td>117</td>
       <td>镇远神</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1241</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-1</span></td>
     </tr>
     <tr>
       <td>119</td>
       <td>119</td>
       <td>福尔摩凳</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1234</td>
       <td><span class="rank same"></span></td>
@@ -2041,9 +2137,9 @@
       <td>121</td>
       <td>海狸先生的小翘臀</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>基普森</td>
+      <td>穆纳尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1212</td>
       <td><span class="rank same"></span></td>
@@ -2065,9 +2161,9 @@
       <td>123</td>
       <td>c***i</td>
       <td></td>
+      <td>普里兹米奇</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1208</td>
       <td><span class="rank same"></span></td>
@@ -2077,9 +2173,9 @@
       <td>124</td>
       <td>178******17</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1198</td>
       <td><span class="rank same"></span></td>
@@ -2113,9 +2209,9 @@
       <td>127</td>
       <td>Oreache_TAO</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>基普森</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1167</td>
       <td><span class="rank same"></span></td>
@@ -2125,9 +2221,9 @@
       <td>128</td>
       <td>杰***鞋</td>
       <td></td>
+      <td>阿尔特迈尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1161</td>
       <td><span class="rank same"></span></td>
@@ -2161,9 +2257,9 @@
       <td>131</td>
       <td>BORIS-_-i</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1124</td>
       <td><span class="rank same"></span></td>
@@ -2197,9 +2293,9 @@
       <td>134</td>
       <td>浙江土特产</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1116</td>
       <td><span class="rank same"></span></td>
@@ -2233,9 +2329,9 @@
       <td>137</td>
       <td>Chris Ivanovic</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1102</td>
       <td><span class="rank same"></span></td>
@@ -2269,9 +2365,9 @@
       <td>140</td>
       <td>德雨珀1</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1084</td>
       <td><span class="rank same"></span></td>
@@ -2281,9 +2377,9 @@
       <td>141</td>
       <td>dhhdjfjdjdbcjjcnx</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>塔比洛</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1080</td>
       <td><span class="rank same"></span></td>
@@ -2293,9 +2389,9 @@
       <td>142</td>
       <td>大***5</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>已选</td>
       <td>0</td>
       <td>1072</td>
       <td><span class="rank same"></span></td>
@@ -2317,9 +2413,9 @@
       <td>144</td>
       <td>X X</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>科梅萨纳</td>
+      <td>普里兹米奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>1066</td>
       <td><span class="rank same"></span></td>
@@ -2329,9 +2425,9 @@
       <td>145</td>
       <td>大***一</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>曼纳里诺</td>
+      <td>毛罗然</td>
+      <td>已选</td>
       <td>0</td>
       <td>1043</td>
       <td><span class="rank same"></span></td>
@@ -2341,9 +2437,9 @@
       <td>145</td>
       <td>顶***家</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>1043</td>
       <td><span class="rank same"></span></td>
@@ -2377,9 +2473,9 @@
       <td>149</td>
       <td>钱老奶奶</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>博尔热斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1027</td>
       <td><span class="rank same"></span></td>
@@ -2413,9 +2509,9 @@
       <td>152</td>
       <td>强化型米斯alternate</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1024</td>
       <td><span class="rank same"></span></td>
@@ -2425,9 +2521,9 @@
       <td>153</td>
       <td>Markwu0626</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>毛罗然</td>
+      <td>已选</td>
       <td>0</td>
       <td>1020</td>
       <td><span class="rank same"></span></td>
@@ -2437,9 +2533,9 @@
       <td>154</td>
       <td>那不勒斯Jasper</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>胡尔卡奇</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>1018</td>
       <td><span class="rank same"></span></td>
@@ -2461,9 +2557,9 @@
       <td>156</td>
       <td>红***4</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>特兰杰里迪</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1016</td>
       <td><span class="rank same"></span></td>
@@ -2473,9 +2569,9 @@
       <td>157</td>
       <td>巴***机</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>阿尔特迈尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>1011</td>
       <td><span class="rank same"></span></td>
@@ -2485,9 +2581,9 @@
       <td>158</td>
       <td>Elroy ZHANG</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>胡尔卡奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>1006</td>
       <td><span class="rank same"></span></td>
@@ -2517,16 +2613,16 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>160</td>
+      <td>161</td>
       <td>160</td>
       <td>德不驴</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>已选</td>
       <td>0</td>
       <td>983</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-1</span></td>
     </tr>
     <tr>
       <td>162</td>
@@ -2545,9 +2641,9 @@
       <td>163</td>
       <td>薄荷奶绿不加冰_</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>976</td>
       <td><span class="rank same"></span></td>
@@ -2557,15 +2653,15 @@
       <td>164</td>
       <td>198******80</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>特兰杰里迪</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>973</td>
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>165</td>
+      <td>164</td>
       <td>164</td>
       <td>法网冠军丰塞卡</td>
       <td></td>
@@ -2574,16 +2670,16 @@
       <td>已选</td>
       <td>0</td>
       <td>973</td>
-      <td><span class="rank down">-1</span></td>
+      <td><span class="rank same"></span></td>
     </tr>
     <tr>
       <td>166</td>
       <td>166</td>
       <td>Emppu99</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>博尔热斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>971</td>
       <td><span class="rank same"></span></td>
@@ -2593,9 +2689,9 @@
       <td>166</td>
       <td>公考小皮</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>范德尚舒尔普</td>
+      <td>已选</td>
       <td>0</td>
       <td>971</td>
       <td><span class="rank same"></span></td>
@@ -2605,9 +2701,9 @@
       <td>168</td>
       <td>最爱王欣瑜</td>
       <td></td>
+      <td>乌戈-卡拉贝利</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>965</td>
       <td><span class="rank same"></span></td>
@@ -2617,9 +2713,9 @@
       <td>169</td>
       <td>荞三皮</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>960</td>
       <td><span class="rank same"></span></td>
@@ -2641,9 +2737,9 @@
       <td>171</td>
       <td>Ryan-Tennis</td>
       <td></td>
+      <td>费恩利</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>954</td>
       <td><span class="rank same"></span></td>
@@ -2653,9 +2749,9 @@
       <td>172</td>
       <td>啦***拉</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>穆纳尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>949</td>
       <td><span class="rank same"></span></td>
@@ -2677,9 +2773,9 @@
       <td>174</td>
       <td>用户7918293245</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>普里兹米奇</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>930</td>
       <td><span class="rank same"></span></td>
@@ -2689,9 +2785,9 @@
       <td>175</td>
       <td>梦是无尽的荒野</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>阿尔特迈尔</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>929</td>
       <td><span class="rank same"></span></td>
@@ -2701,9 +2797,9 @@
       <td>176</td>
       <td>1***2</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>923</td>
       <td><span class="rank same"></span></td>
@@ -2749,9 +2845,9 @@
       <td>180</td>
       <td>神秘的药</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>普里兹米奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>913</td>
       <td><span class="rank same"></span></td>
@@ -2761,9 +2857,9 @@
       <td>181</td>
       <td>唯爱张帅</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>911</td>
       <td><span class="rank same"></span></td>
@@ -2833,9 +2929,9 @@
       <td>187</td>
       <td>卑***高</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>胡尔卡奇</td>
+      <td>乌戈-卡拉贝利</td>
+      <td>已选</td>
       <td>0</td>
       <td>875</td>
       <td><span class="rank same"></span></td>
@@ -2905,9 +3001,9 @@
       <td>193</td>
       <td>晨曦中的楷模Elroy</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>塔比洛</td>
+      <td>已选</td>
       <td>0</td>
       <td>837</td>
       <td><span class="rank same"></span></td>
@@ -2917,9 +3013,9 @@
       <td>194</td>
       <td>海***y</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>科普里瓦</td>
+      <td>已选</td>
       <td>0</td>
       <td>835</td>
       <td><span class="rank same"></span></td>
@@ -2941,9 +3037,9 @@
       <td>196</td>
       <td>迪***9</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>胡尔卡奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>821</td>
       <td><span class="rank same"></span></td>
@@ -2953,9 +3049,9 @@
       <td>197</td>
       <td>黑***友</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>813</td>
       <td><span class="rank same"></span></td>
@@ -2965,15 +3061,15 @@
       <td>198</td>
       <td>Kwan-tennis</td>
       <td></td>
+      <td>阿尔特迈尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>811</td>
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>199</td>
+      <td>198</td>
       <td>199</td>
       <td>impum</td>
       <td></td>
@@ -2982,16 +3078,16 @@
       <td>未选</td>
       <td>0</td>
       <td>811</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+1</span></td>
     </tr>
     <tr>
       <td>200</td>
       <td>200</td>
       <td>老***6</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>808</td>
       <td><span class="rank same"></span></td>
@@ -3013,9 +3109,9 @@
       <td>202</td>
       <td>稀有的木臼犬</td>
       <td></td>
+      <td>布洛克斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>789</td>
       <td><span class="rank same"></span></td>
@@ -3037,9 +3133,9 @@
       <td>204</td>
       <td>怀***蕴</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>胡尔卡奇</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>776</td>
       <td><span class="rank same"></span></td>
@@ -3061,9 +3157,9 @@
       <td>206</td>
       <td>__Novak__</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>科梅萨纳</td>
+      <td>已选</td>
       <td>0</td>
       <td>764</td>
       <td><span class="rank same"></span></td>
@@ -3073,9 +3169,9 @@
       <td>207</td>
       <td>F C</td>
       <td></td>
+      <td>巴埃斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>762</td>
       <td><span class="rank same"></span></td>
@@ -3133,9 +3229,9 @@
       <td>212</td>
       <td>Genie201312</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>基普森</td>
+      <td>已选</td>
       <td>0</td>
       <td>745</td>
       <td><span class="rank same"></span></td>
@@ -3145,9 +3241,9 @@
       <td>213</td>
       <td>Dylan Byron</td>
       <td></td>
+      <td>巴埃斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>745</td>
       <td><span class="rank same"></span></td>
@@ -3169,9 +3265,9 @@
       <td>215</td>
       <td>Raymond Wong</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>塔比洛</td>
+      <td>已选</td>
       <td>0</td>
       <td>725</td>
       <td><span class="rank same"></span></td>
@@ -3181,9 +3277,9 @@
       <td>216</td>
       <td>丨Salvation丨</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>720</td>
       <td><span class="rank same"></span></td>
@@ -3193,15 +3289,15 @@
       <td>217</td>
       <td>伊***贝</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>科梅萨纳</td>
+      <td>已选</td>
       <td>0</td>
       <td>715</td>
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>218</td>
+      <td>217</td>
       <td>218</td>
       <td>一口好牙高胖虎</td>
       <td></td>
@@ -3210,7 +3306,7 @@
       <td>未选</td>
       <td>0</td>
       <td>715</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+1</span></td>
     </tr>
     <tr>
       <td>219</td>
@@ -3277,9 +3373,9 @@
       <td>224</td>
       <td>Beautysofia</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>范德尚舒尔普</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>685</td>
       <td><span class="rank same"></span></td>
@@ -3313,9 +3409,9 @@
       <td>227</td>
       <td>指纹Nongzw</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>679</td>
       <td><span class="rank same"></span></td>
@@ -3349,9 +3445,9 @@
       <td>230</td>
       <td>画图狗张胖</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>672</td>
       <td><span class="rank same"></span></td>
@@ -3373,9 +3469,9 @@
       <td>232</td>
       <td>-Frictionless</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>661</td>
       <td><span class="rank same"></span></td>
@@ -3409,9 +3505,9 @@
       <td>235</td>
       <td>沫小琦_259695</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>657</td>
       <td><span class="rank same"></span></td>
@@ -3481,9 +3577,9 @@
       <td>241</td>
       <td>猫崽孑丶</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>阿尔特迈尔</td>
+      <td>穆纳尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>644</td>
       <td><span class="rank same"></span></td>
@@ -3505,9 +3601,9 @@
       <td>243</td>
       <td>l***5</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>特兰杰里迪</td>
+      <td>已选</td>
       <td>0</td>
       <td>633</td>
       <td><span class="rank same"></span></td>
@@ -3529,9 +3625,9 @@
       <td>245</td>
       <td>z***4</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>632</td>
       <td><span class="rank same"></span></td>
@@ -3541,9 +3637,9 @@
       <td>245</td>
       <td>底线老五</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>特兰杰里迪</td>
+      <td>姆佩奇-佩里卡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>632</td>
       <td><span class="rank same"></span></td>
@@ -3565,9 +3661,9 @@
       <td>248</td>
       <td>荞四皮</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>穆纳尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>625</td>
       <td><span class="rank same"></span></td>
@@ -3613,9 +3709,9 @@
       <td>252</td>
       <td>浮空a倾城</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>基普森</td>
+      <td>已选</td>
       <td>0</td>
       <td>602</td>
       <td><span class="rank same"></span></td>
@@ -3633,7 +3729,7 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>255</td>
+      <td>254</td>
       <td>254</td>
       <td>番薯阿瓜</td>
       <td></td>
@@ -3642,16 +3738,16 @@
       <td>已选</td>
       <td>0</td>
       <td>596</td>
-      <td><span class="rank down">-1</span></td>
+      <td><span class="rank same"></span></td>
     </tr>
     <tr>
       <td>254</td>
       <td>254</td>
       <td>Iridescent29</td>
       <td></td>
+      <td>博尔热斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>596</td>
       <td><span class="rank same"></span></td>
@@ -3661,9 +3757,9 @@
       <td>256</td>
       <td>Ivejoy</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>塔比洛</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>591</td>
       <td><span class="rank same"></span></td>
@@ -3685,9 +3781,9 @@
       <td>258</td>
       <td>一杯思s</td>
       <td></td>
+      <td>阿尔特迈尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>586</td>
       <td><span class="rank same"></span></td>
@@ -3733,9 +3829,9 @@
       <td>262</td>
       <td>宋承宪我老公</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>胡尔卡奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>573</td>
       <td><span class="rank same"></span></td>
@@ -3769,9 +3865,9 @@
       <td>265</td>
       <td>Oreache</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>564</td>
       <td><span class="rank same"></span></td>
@@ -3793,9 +3889,9 @@
       <td>267</td>
       <td>Pearlescent_69</td>
       <td></td>
+      <td>普里兹米奇</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>560</td>
       <td><span class="rank same"></span></td>
@@ -3901,9 +3997,9 @@
       <td>276</td>
       <td>别花里胡哨的</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>卡雷尼奥-布斯塔</td>
+      <td>已选</td>
       <td>0</td>
       <td>516</td>
       <td><span class="rank same"></span></td>
@@ -3913,24 +4009,24 @@
       <td>277</td>
       <td>唯爱佩古拉</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>阿纳尔迪</td>
+      <td>武基奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>515</td>
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>278</td>
+      <td>279</td>
       <td>278</td>
       <td>黑白_大山</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>胡尔卡奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>514</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-1</span></td>
     </tr>
     <tr>
       <td>278</td>
@@ -3949,9 +4045,9 @@
       <td>280</td>
       <td>会***头</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>513</td>
       <td><span class="rank same"></span></td>
@@ -3973,9 +4069,9 @@
       <td>282</td>
       <td>超***间</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>499</td>
       <td><span class="rank same"></span></td>
@@ -4021,9 +4117,9 @@
       <td>286</td>
       <td>嘎里ga气</td>
       <td></td>
+      <td>巴埃斯</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>470</td>
       <td><span class="rank same"></span></td>
@@ -4033,9 +4129,9 @@
       <td>286</td>
       <td>Don Li</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>博尔热斯</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>470</td>
       <td><span class="rank same"></span></td>
@@ -4081,9 +4177,9 @@
       <td>291</td>
       <td>Patrick Ding</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>基普森</td>
+      <td>毛罗然</td>
+      <td>已选</td>
       <td>0</td>
       <td>449</td>
       <td><span class="rank same"></span></td>
@@ -4093,9 +4189,9 @@
       <td>292</td>
       <td>Ha-1234567</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>毛罗然</td>
+      <td>汉夫曼</td>
+      <td>已选</td>
       <td>0</td>
       <td>445</td>
       <td><span class="rank same"></span></td>
@@ -4165,9 +4261,9 @@
       <td>298</td>
       <td>Opalescent0</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>415</td>
       <td><span class="rank same"></span></td>
@@ -4213,9 +4309,9 @@
       <td>302</td>
       <td>Tony-Tennis</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>费恩利</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>391</td>
       <td><span class="rank same"></span></td>
@@ -4249,9 +4345,9 @@
       <td>305</td>
       <td>KG5Benzema9Jokic15Luka77_Paul3</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>普里兹米奇</td>
+      <td>已选</td>
       <td>0</td>
       <td>381</td>
       <td><span class="rank same"></span></td>
@@ -4261,9 +4357,9 @@
       <td>306</td>
       <td>Tennis-苟活者</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>塔比洛</td>
+      <td>已选</td>
       <td>0</td>
       <td>377</td>
       <td><span class="rank same"></span></td>
@@ -4273,15 +4369,15 @@
       <td>307</td>
       <td>E***s</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>胡尔卡奇</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>375</td>
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>308</td>
+      <td>307</td>
       <td>308</td>
       <td>A***4</td>
       <td></td>
@@ -4290,7 +4386,7 @@
       <td>未选</td>
       <td>0</td>
       <td>375</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+1</span></td>
     </tr>
     <tr>
       <td>309</td>
@@ -4393,9 +4489,9 @@
       <td>317</td>
       <td>橙色熊猫</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>塔比洛</td>
+      <td>已选</td>
       <td>0</td>
       <td>333</td>
       <td><span class="rank same"></span></td>
@@ -4549,9 +4645,9 @@
       <td>330</td>
       <td>风儿007008</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>265</td>
       <td><span class="rank same"></span></td>
@@ -4561,9 +4657,9 @@
       <td>331</td>
       <td>w***w</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>范德尚舒尔普</td>
+      <td>已选</td>
       <td>0</td>
       <td>262</td>
       <td><span class="rank same"></span></td>
@@ -4729,9 +4825,9 @@
       <td>345</td>
       <td>用户8259085094</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>基普森</td>
+      <td>已选</td>
       <td>0</td>
       <td>216</td>
       <td><span class="rank same"></span></td>
@@ -4765,9 +4861,9 @@
       <td>348</td>
       <td>漪***7</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>206</td>
       <td><span class="rank same"></span></td>
@@ -4777,9 +4873,9 @@
       <td>349</td>
       <td>姬州</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>204</td>
       <td><span class="rank same"></span></td>
@@ -4849,9 +4945,9 @@
       <td>355</td>
       <td>信籁亮</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>195</td>
       <td><span class="rank same"></span></td>
@@ -4869,16 +4965,16 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>356</td>
+      <td>357</td>
       <td>356</td>
       <td>落叶是秋天的情人</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>巴埃斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>180</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-1</span></td>
     </tr>
     <tr>
       <td>358</td>
@@ -4981,9 +5077,9 @@
       <td>366</td>
       <td>唯爱保利尼</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>费恩利</td>
+      <td>已选</td>
       <td>0</td>
       <td>161</td>
       <td><span class="rank same"></span></td>
@@ -5209,9 +5305,9 @@
       <td>385</td>
       <td>189******99</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>113</td>
       <td><span class="rank same"></span></td>
@@ -5221,9 +5317,9 @@
       <td>386</td>
       <td>bless-Selena</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>布洛克斯</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>108</td>
       <td><span class="rank same"></span></td>
@@ -5565,25 +5661,25 @@
       <td><span class="rank up">+2</span></td>
     </tr>
     <tr>
-      <td>412</td>
+      <td>415</td>
       <td>414</td>
       <td>l***t</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>60</td>
-      <td><span class="rank up">+2</span></td>
+      <td><span class="rank down">-1</span></td>
     </tr>
     <tr>
       <td>416</td>
       <td>416</td>
       <td>Yaczah_</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>56</td>
       <td><span class="rank same"></span></td>
@@ -5761,9 +5857,9 @@
       <td>431</td>
       <td>J***o</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>穆纳尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>46</td>
       <td><span class="rank same"></span></td>
@@ -5841,19 +5937,19 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>437</td>
+      <td>438</td>
       <td>437</td>
       <td>距离的寂寞</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>阿尔特迈尔</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
       <td>0</td>
       <td>40</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-1</span></td>
     </tr>
     <tr>
-      <td>439</td>
+      <td>438</td>
       <td>439</td>
       <td>星***泪</td>
       <td></td>
@@ -5862,7 +5958,7 @@
       <td>未选</td>
       <td>0</td>
       <td>40</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+1</span></td>
     </tr>
     <tr>
       <td>440</td>
@@ -5901,16 +5997,16 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>440</td>
+      <td>443</td>
       <td>440</td>
       <td>芋y头h小m生</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>曼纳里诺</td>
+      <td>卡雷尼奥-布斯塔</td>
+      <td>已选</td>
       <td>0</td>
       <td>38</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-3</span></td>
     </tr>
     <tr>
       <td>444</td>
@@ -6033,16 +6129,16 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>454</td>
+      <td>456</td>
       <td>454</td>
       <td>s***3</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>30</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-2</span></td>
     </tr>
     <tr>
       <td>454</td>
@@ -6069,19 +6165,19 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>454</td>
+      <td>456</td>
       <td>454</td>
       <td>流星飞舞啦啦啦</td>
       <td></td>
+      <td>朱姆胡尔</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>30</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-2</span></td>
     </tr>
     <tr>
-      <td>458</td>
+      <td>456</td>
       <td>458</td>
       <td>l***t</td>
       <td></td>
@@ -6090,10 +6186,10 @@
       <td>未选</td>
       <td>0</td>
       <td>30</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+2</span></td>
     </tr>
     <tr>
-      <td>458</td>
+      <td>456</td>
       <td>458</td>
       <td>怎***9</td>
       <td></td>
@@ -6102,10 +6198,10 @@
       <td>未选</td>
       <td>0</td>
       <td>30</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+2</span></td>
     </tr>
     <tr>
-      <td>458</td>
+      <td>456</td>
       <td>458</td>
       <td>楚***书</td>
       <td></td>
@@ -6114,7 +6210,7 @@
       <td>未选</td>
       <td>0</td>
       <td>30</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank up">+2</span></td>
     </tr>
     <tr>
       <td>461</td>
@@ -6561,16 +6657,16 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>497</td>
+      <td>503</td>
       <td>497</td>
       <td>L***啊</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>朱姆胡尔</td>
+      <td>穆纳尔</td>
+      <td>已选</td>
       <td>0</td>
       <td>20</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-6</span></td>
     </tr>
     <tr>
       <td>497</td>
@@ -6621,16 +6717,16 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>497</td>
+      <td>503</td>
       <td>497</td>
       <td>q***1</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>巴埃斯</td>
+      <td>巴埃斯</td>
+      <td>自杀（主备冲突）</td>
       <td>0</td>
       <td>20</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-6</span></td>
     </tr>
     <tr>
       <td>497</td>
@@ -6849,16 +6945,16 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>514</td>
+      <td>540</td>
       <td>514</td>
       <td>陈阿坑</td>
       <td></td>
+      <td>武基奇</td>
       <td></td>
-      <td></td>
-      <td>未选</td>
+      <td>已选</td>
       <td>0</td>
       <td>10</td>
-      <td><span class="rank same"></span></td>
+      <td><span class="rank down">-26</span></td>
     </tr>
     <tr>
       <td>514</td>
@@ -7125,7 +7221,7 @@
       <td><span class="rank same"></span></td>
     </tr>
     <tr>
-      <td>554</td>
+      <td>561</td>
       <td>545</td>
       <td>我是我自己zyt</td>
       <td></td>
@@ -7134,10 +7230,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>554</td>
+      <td>561</td>
       <td>545</td>
       <td>j***1</td>
       <td></td>
@@ -7146,10 +7242,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>554</td>
+      <td>561</td>
       <td>545</td>
       <td>pododic Tang</td>
       <td></td>
@@ -7158,10 +7254,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>554</td>
+      <td>561</td>
       <td>545</td>
       <td>ilove33</td>
       <td></td>
@@ -7170,10 +7266,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>558</td>
+      <td>565</td>
       <td>549</td>
       <td>135******50</td>
       <td></td>
@@ -7182,10 +7278,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>558</td>
+      <td>565</td>
       <td>549</td>
       <td>旧纳琛</td>
       <td></td>
@@ -7194,10 +7290,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>558</td>
+      <td>565</td>
       <td>549</td>
       <td>空***o</td>
       <td></td>
@@ -7206,10 +7302,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>558</td>
+      <td>565</td>
       <td>549</td>
       <td>Pomelo琛</td>
       <td></td>
@@ -7218,10 +7314,10 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
-      <td>558</td>
+      <td>565</td>
       <td>549</td>
       <td>Antichristvon</td>
       <td></td>
@@ -7230,7 +7326,7 @@
       <td>未选</td>
       <td>0</td>
       <td>0</td>
-      <td><span class="rank down">-9</span></td>
+      <td><span class="rank down">-16</span></td>
     </tr>
     <tr>
       <td>542</td>
@@ -7263,6 +7359,42 @@
       <td></td>
       <td>特兰杰里迪</td>
       <td>阿尔特迈尔</td>
+      <td>已选</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="rank up"></span></td>
+    </tr>
+    <tr>
+      <td>542</td>
+      <td><NA></td>
+      <td>深圳野鸡王二蛋</td>
+      <td></td>
+      <td>巴埃斯</td>
+      <td></td>
+      <td>已选</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="rank up"></span></td>
+    </tr>
+    <tr>
+      <td>542</td>
+      <td><NA></td>
+      <td>极昼9920</td>
+      <td></td>
+      <td>基普森</td>
+      <td>布洛克斯</td>
+      <td>已选</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="rank up"></span></td>
+    </tr>
+    <tr>
+      <td>542</td>
+      <td><NA></td>
+      <td>卡萨布兰卡9920</td>
+      <td></td>
+      <td>布洛克斯</td>
+      <td>特兰杰里迪</td>
       <td>已选</td>
       <td>0</td>
       <td>0</td>
@@ -7319,6 +7451,54 @@
     <tr>
       <td>542</td>
       <td><NA></td>
+      <td>持中文英文</td>
+      <td></td>
+      <td>布洛克斯</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="rank up"></span></td>
+    </tr>
+    <tr>
+      <td>542</td>
+      <td><NA></td>
+      <td>邪恶纳米</td>
+      <td></td>
+      <td>阿尔特迈尔</td>
+      <td>朱姆胡尔</td>
+      <td>已选</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="rank up"></span></td>
+    </tr>
+    <tr>
+      <td>542</td>
+      <td><NA></td>
+      <td>会打逆风球的小米拉</td>
+      <td></td>
+      <td>乌戈-卡拉贝利</td>
+      <td>阿尔特迈尔</td>
+      <td>已选</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="rank up"></span></td>
+    </tr>
+    <tr>
+      <td>542</td>
+      <td><NA></td>
+      <td>状况ample</td>
+      <td></td>
+      <td>曼纳里诺</td>
+      <td>范德尚舒尔普</td>
+      <td>已选</td>
+      <td>0</td>
+      <td>0</td>
+      <td><span class="rank up"></span></td>
+    </tr>
+    <tr>
+      <td>542</td>
+      <td><NA></td>
       <td>用户9009606163</td>
       <td></td>
       <td>布鲁克斯比</td>
@@ -7351,13 +7531,8 @@
                 function toggleTheme() {
                     document.body.classList.toggle('dark-mode');
                     const isDark = document.body.classList.contains('dark-mode');
-                    const icon = document.getElementById('themeIcon');
-                    
-                    if (isDark) {
-                        icon.textContent = '☀️';
-                    } else {
-                        icon.textContent = '🌙';
-                    }
+                    document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+                    document.getElementById('themeLabel').textContent = isDark ? '夜间模式' : '亮色模式';
                 }
 
                 // summary section
