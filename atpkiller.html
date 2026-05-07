@@ -469,7 +469,7 @@
                 <div class="header-info">
                     <h1>ATP幸存者杀手榜（总榜）</h1>
                     <div class="last-updated">
-                        ⏱ 更新时间: 2026年05月07日 18:35:57
+                        ⏱ 更新时间: 2026年05月07日 21:27:01
                     </div>
                 </div>
                 
@@ -2323,13 +2323,20 @@
                         optionsContainer.prepend(searchInput);
 
                         // 🆕 Search Filter Logic
+                        // AFTER
                         searchInput.addEventListener('input', (e) => {
                             const query = e.target.value.toLowerCase().trim();
                             optionsContainer.querySelectorAll('.option-item').forEach(item => {
-                                if (item.dataset.selectAll) return; // keep 全选 always visible
+                                if (item.dataset.selectAll) return;
                                 const label = item.querySelector('span').textContent.toLowerCase();
                                 item.style.display = label.includes(query) ? 'flex' : 'none';
                             });
+                            // Sync 全选 checkbox: checked only if ALL visible items are checked
+                            const visibleCbs = Array.from(
+                                optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
+                            ).filter(item => item.style.display !== 'none')
+                            .map(item => item.querySelector('input[type="checkbox"]'));
+                            selectAllCb.checked = visibleCbs.length > 0 && visibleCbs.every(cb => cb.checked);
                         });
 
                         // 全选 item
@@ -2347,10 +2354,13 @@
                         selectAllItem.appendChild(selectAllLabel);
                         optionsContainer.appendChild(selectAllItem);
 
+                        // AFTER
                         selectAllCb.addEventListener('change', () => {
                             const checked = selectAllCb.checked;
-                            optionsContainer.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]').forEach(cb => {
-                                cb.checked = checked;
+                            optionsContainer.querySelectorAll('.option-item:not([data-select-all])').forEach(item => {
+                                if (item.style.display !== 'none') {  // only affect visible items
+                                    item.querySelector('input[type="checkbox"]').checked = checked;
+                                }
                             });
                             filterTable();
                         });
@@ -2459,11 +2469,14 @@
                             }
                         });
 
+                        // AFTER
                         optionsContainer.addEventListener('change', (e) => {
                             if (!e.target.closest('[data-select-all]')) {
-                                const all = optionsContainer.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]');
-                                const allChecked = Array.from(all).every(cb => cb.checked);
-                                selectAllCb.checked = allChecked;
+                                const visibleCbs = Array.from(
+                                    optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
+                                ).filter(item => item.style.display !== 'none')
+                                .map(item => item.querySelector('input[type="checkbox"]'));
+                                selectAllCb.checked = visibleCbs.length > 0 && visibleCbs.every(cb => cb.checked);
                             }
                             filterTable();
                         });
