@@ -319,17 +319,15 @@
 
                 .dropdown-content {
                     display: none;
-                    position: absolute;
+                    position: fixed;
                     background-color: var(--dropdown-bg);
                     color: var(--text-filter);
-                    min-width: 100%;
+                    min-width: 160px;
                     max-height: 250px;
                     overflow-y: auto;
                     border: 1px solid var(--dropdown-border);
                     box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-                    z-index: 100;
-                    top: 100%;
-                    left: 0;
+                    z-index: 9999;
                 }
 
                 .dropdown-content.show {
@@ -428,10 +426,41 @@
 
 
                 @media (max-width: 768px) {
-                    .container { padding: 15px; }
-                    h1 { font-size: 20px; }
+                    body { padding: 8px; }
+
+                    .container { padding: 12px; position: static; }
+
+                    /* Stack theme toggle below title instead of overlapping it */
+                    .theme-toggle {
+                        position: static;
+                        margin: 8px auto 0;
+                        width: 120px;
+                        height: 32px;
+                    }
+
+                    /* Remove the right-padding offset that compensated for the absolute button */
+                    .header-info { padding-right: 0; margin-bottom: 10px; }
+                    .summary-section { padding-right: 0; }
+
+                    h1 { font-size: 18px; }
+
+                    .last-updated { font-size: 11px; }
+
+                    /* Compact table */
                     .filterable-table { font-size: 11px; }
-                    .filterable-table th, .filterable-table td { padding: 6px 4px; }
+                    .filterable-table th,
+                    .filterable-table td { padding: 5px 4px; white-space: nowrap; }
+
+                    /* Cap dropdown height and widen tap targets */
+                    .dropdown-content { max-height: 180px; }
+                    .filter-trigger { padding: 5px 6px; font-size: 10px; }
+
+                    /* Use more viewport height for the table on small screens */
+                    .table-wrapper { max-height: 65vh; }
+
+                    .stats { font-size: 11px; }
+
+                    .summary-table th, .summary-table td { padding: 6px 5px; font-size: 11px; }
                 }
             </style>
         </head>
@@ -440,7 +469,7 @@
                 <div class="header-info">
                     <h1>WTA幸存者杀手榜（2026）</h1>
                     <div class="last-updated">
-                        ⏱ 更新时间: 2026年05月06日 16:24:25
+                        ⏱ 更新时间: 2026年05月07日 09:07:29
                     </div>
                 </div>
                 
@@ -521,10 +550,10 @@
     <tr>
       <td>7</td>
       <td>普汀塞娃</td>
-      <td>114</td>
-      <td>66.28%</td>
+      <td>115</td>
+      <td>66.47%</td>
       <td>113</td>
-      <td>172</td>
+      <td>173</td>
     </tr>
     <tr>
       <td>8</td>
@@ -554,12 +583,20 @@
       <td>11</td>
       <td>奥斯塔彭科</td>
       <td>94</td>
-      <td>52.22%</td>
+      <td>29.01%</td>
       <td>46</td>
-      <td>180</td>
+      <td>324</td>
     </tr>
     <tr>
       <td>12</td>
+      <td>里纳特</td>
+      <td>90</td>
+      <td>37.97%</td>
+      <td>64</td>
+      <td>237</td>
+    </tr>
+    <tr>
+      <td>13</td>
       <td>巴蒂斯特</td>
       <td>89</td>
       <td>19.60%</td>
@@ -567,7 +604,7 @@
       <td>454</td>
     </tr>
     <tr>
-      <td>13</td>
+      <td>14</td>
       <td>亚历山德罗娃</td>
       <td>88</td>
       <td>57.52%</td>
@@ -575,7 +612,7 @@
       <td>153</td>
     </tr>
     <tr>
-      <td>14</td>
+      <td>15</td>
       <td>萨姆索诺娃</td>
       <td>83</td>
       <td>35.32%</td>
@@ -583,7 +620,7 @@
       <td>235</td>
     </tr>
     <tr>
-      <td>15</td>
+      <td>16</td>
       <td>博萨斯</td>
       <td>78</td>
       <td>75.00%</td>
@@ -591,23 +628,23 @@
       <td>104</td>
     </tr>
     <tr>
-      <td>16</td>
+      <td>17</td>
       <td>波塔波娃</td>
       <td>78</td>
-      <td>40.62%</td>
+      <td>34.21%</td>
       <td>78</td>
-      <td>192</td>
-    </tr>
-    <tr>
-      <td>17</td>
-      <td>斯特恩斯</td>
-      <td>74</td>
-      <td>61.16%</td>
-      <td>51</td>
-      <td>121</td>
+      <td>228</td>
     </tr>
     <tr>
       <td>18</td>
+      <td>斯特恩斯</td>
+      <td>74</td>
+      <td>55.22%</td>
+      <td>51</td>
+      <td>134</td>
+    </tr>
+    <tr>
+      <td>19</td>
       <td>本西奇</td>
       <td>71</td>
       <td>26.10%</td>
@@ -615,7 +652,7 @@
       <td>272</td>
     </tr>
     <tr>
-      <td>19</td>
+      <td>20</td>
       <td>李吉妮</td>
       <td>65</td>
       <td>51.59%</td>
@@ -623,7 +660,7 @@
       <td>126</td>
     </tr>
     <tr>
-      <td>20</td>
+      <td>21</td>
       <td>科斯秋克</td>
       <td>60</td>
       <td>39.74%</td>
@@ -631,7 +668,7 @@
       <td>151</td>
     </tr>
     <tr>
-      <td>21</td>
+      <td>22</td>
       <td>阿尼西莫娃</td>
       <td>60</td>
       <td>34.29%</td>
@@ -639,7 +676,7 @@
       <td>175</td>
     </tr>
     <tr>
-      <td>22</td>
+      <td>23</td>
       <td>帕克斯</td>
       <td>59</td>
       <td>71.08%</td>
@@ -647,15 +684,15 @@
       <td>83</td>
     </tr>
     <tr>
-      <td>23</td>
+      <td>24</td>
       <td>科恰雷托</td>
       <td>59</td>
-      <td>14.94%</td>
+      <td>14.75%</td>
       <td>31</td>
-      <td>395</td>
+      <td>400</td>
     </tr>
     <tr>
-      <td>24</td>
+      <td>25</td>
       <td>诺斯科娃</td>
       <td>59</td>
       <td>14.43%</td>
@@ -663,7 +700,7 @@
       <td>409</td>
     </tr>
     <tr>
-      <td>25</td>
+      <td>26</td>
       <td>梅尔滕斯</td>
       <td>57</td>
       <td>11.90%</td>
@@ -671,7 +708,7 @@
       <td>479</td>
     </tr>
     <tr>
-      <td>26</td>
+      <td>27</td>
       <td>陶森</td>
       <td>54</td>
       <td>30.51%</td>
@@ -679,7 +716,7 @@
       <td>177</td>
     </tr>
     <tr>
-      <td>27</td>
+      <td>28</td>
       <td>万卓索娃</td>
       <td>52</td>
       <td>100.00%</td>
@@ -687,7 +724,7 @@
       <td>52</td>
     </tr>
     <tr>
-      <td>28</td>
+      <td>29</td>
       <td>克鲁格</td>
       <td>51</td>
       <td>96.23%</td>
@@ -695,7 +732,7 @@
       <td>53</td>
     </tr>
     <tr>
-      <td>29</td>
+      <td>30</td>
       <td>雷巴金娜</td>
       <td>50</td>
       <td>18.25%</td>
@@ -703,7 +740,7 @@
       <td>274</td>
     </tr>
     <tr>
-      <td>30</td>
+      <td>31</td>
       <td>施拉姆科娃</td>
       <td>47</td>
       <td>100.00%</td>
@@ -711,7 +748,7 @@
       <td>47</td>
     </tr>
     <tr>
-      <td>31</td>
+      <td>32</td>
       <td>帕芙柳琴科娃</td>
       <td>47</td>
       <td>100.00%</td>
@@ -719,7 +756,7 @@
       <td>47</td>
     </tr>
     <tr>
-      <td>32</td>
+      <td>33</td>
       <td>克里斯蒂安</td>
       <td>46</td>
       <td>76.67%</td>
@@ -727,7 +764,7 @@
       <td>60</td>
     </tr>
     <tr>
-      <td>33</td>
+      <td>34</td>
       <td>卡林斯卡娅</td>
       <td>44</td>
       <td>24.31%</td>
@@ -735,7 +772,7 @@
       <td>181</td>
     </tr>
     <tr>
-      <td>34</td>
+      <td>35</td>
       <td>伊-约维奇</td>
       <td>44</td>
       <td>10.33%</td>
@@ -743,7 +780,7 @@
       <td>426</td>
     </tr>
     <tr>
-      <td>35</td>
+      <td>36</td>
       <td>米-安德烈耶娃</td>
       <td>43</td>
       <td>7.47%</td>
@@ -751,7 +788,7 @@
       <td>576</td>
     </tr>
     <tr>
-      <td>36</td>
+      <td>37</td>
       <td>玛利亚</td>
       <td>42</td>
       <td>71.19%</td>
@@ -759,7 +796,7 @@
       <td>59</td>
     </tr>
     <tr>
-      <td>37</td>
+      <td>38</td>
       <td>鲁季奇</td>
       <td>39</td>
       <td>33.91%</td>
@@ -767,7 +804,7 @@
       <td>115</td>
     </tr>
     <tr>
-      <td>38</td>
+      <td>39</td>
       <td>克宁</td>
       <td>33</td>
       <td>46.48%</td>
@@ -775,7 +812,7 @@
       <td>71</td>
     </tr>
     <tr>
-      <td>39</td>
+      <td>40</td>
       <td>拉杜卡努</td>
       <td>32</td>
       <td>25.60%</td>
@@ -783,15 +820,15 @@
       <td>125</td>
     </tr>
     <tr>
-      <td>40</td>
+      <td>41</td>
       <td>西尼亚科娃</td>
       <td>32</td>
-      <td>20.51%</td>
+      <td>18.82%</td>
       <td>18</td>
-      <td>156</td>
+      <td>170</td>
     </tr>
     <tr>
-      <td>41</td>
+      <td>42</td>
       <td>布克沙</td>
       <td>31</td>
       <td>37.35%</td>
@@ -799,7 +836,7 @@
       <td>83</td>
     </tr>
     <tr>
-      <td>42</td>
+      <td>43</td>
       <td>凯斯</td>
       <td>31</td>
       <td>10.92%</td>
@@ -807,15 +844,15 @@
       <td>284</td>
     </tr>
     <tr>
-      <td>43</td>
+      <td>44</td>
       <td>麦克纳莉</td>
       <td>30</td>
-      <td>38.96%</td>
+      <td>37.50%</td>
       <td>21</td>
-      <td>77</td>
+      <td>80</td>
     </tr>
     <tr>
-      <td>44</td>
+      <td>45</td>
       <td>施内德</td>
       <td>30</td>
       <td>10.71%</td>
@@ -823,7 +860,7 @@
       <td>280</td>
     </tr>
     <tr>
-      <td>45</td>
+      <td>46</td>
       <td>克赖奇科娃</td>
       <td>29</td>
       <td>26.13%</td>
@@ -831,7 +868,7 @@
       <td>111</td>
     </tr>
     <tr>
-      <td>46</td>
+      <td>47</td>
       <td>姆博科</td>
       <td>29</td>
       <td>10.36%</td>
@@ -839,7 +876,7 @@
       <td>280</td>
     </tr>
     <tr>
-      <td>47</td>
+      <td>48</td>
       <td>森梅兹</td>
       <td>27</td>
       <td>6.34%</td>
@@ -847,7 +884,15 @@
       <td>426</td>
     </tr>
     <tr>
-      <td>48</td>
+      <td>49</td>
+      <td>博尔特</td>
+      <td>27</td>
+      <td>33.75%</td>
+      <td>25</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <td>50</td>
       <td>萨巴莲卡</td>
       <td>27</td>
       <td>15.43%</td>
@@ -855,31 +900,23 @@
       <td>175</td>
     </tr>
     <tr>
-      <td>49</td>
+      <td>51</td>
       <td>萨卡里</td>
       <td>26</td>
-      <td>21.14%</td>
+      <td>20.00%</td>
       <td>14</td>
-      <td>123</td>
-    </tr>
-    <tr>
-      <td>50</td>
-      <td>里纳特</td>
-      <td>26</td>
-      <td>15.03%</td>
-      <td>25</td>
-      <td>173</td>
-    </tr>
-    <tr>
-      <td>51</td>
-      <td>谢拉</td>
-      <td>25</td>
-      <td>89.29%</td>
-      <td>21</td>
-      <td>28</td>
+      <td>130</td>
     </tr>
     <tr>
       <td>52</td>
+      <td>谢拉</td>
+      <td>25</td>
+      <td>86.21%</td>
+      <td>21</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <td>53</td>
       <td>科斯蒂亚</td>
       <td>25</td>
       <td>5.53%</td>
@@ -887,20 +924,12 @@
       <td>452</td>
     </tr>
     <tr>
-      <td>53</td>
+      <td>54</td>
       <td>埃-纳瓦罗</td>
       <td>25</td>
       <td>39.68%</td>
       <td>23</td>
       <td>63</td>
-    </tr>
-    <tr>
-      <td>54</td>
-      <td>博尔特</td>
-      <td>25</td>
-      <td>32.05%</td>
-      <td>25</td>
-      <td>78</td>
     </tr>
     <tr>
       <td>55</td>
@@ -986,9 +1015,9 @@
       <td>65</td>
       <td>瓦伦托娃</td>
       <td>17</td>
-      <td>33.33%</td>
+      <td>32.69%</td>
       <td>13</td>
-      <td>51</td>
+      <td>52</td>
     </tr>
     <tr>
       <td>66</td>
@@ -1010,9 +1039,9 @@
       <td>68</td>
       <td>卡-普利斯科娃</td>
       <td>14</td>
-      <td>23.73%</td>
+      <td>21.21%</td>
       <td>11</td>
-      <td>59</td>
+      <td>66</td>
     </tr>
     <tr>
       <td>69</td>
@@ -1034,9 +1063,9 @@
       <td>71</td>
       <td>斯塔罗杜布采娃</td>
       <td>13</td>
-      <td>18.84%</td>
+      <td>18.31%</td>
       <td>11</td>
-      <td>69</td>
+      <td>71</td>
     </tr>
     <tr>
       <td>72</td>
@@ -1082,9 +1111,9 @@
       <td>77</td>
       <td>汤姆亚诺维奇</td>
       <td>8</td>
-      <td>9.30%</td>
+      <td>7.34%</td>
       <td>6</td>
-      <td>86</td>
+      <td>109</td>
     </tr>
     <tr>
       <td>78</td>
@@ -1120,6 +1149,14 @@
     </tr>
     <tr>
       <td>82</td>
+      <td>玛雅</td>
+      <td>7</td>
+      <td>100.00%</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>83</td>
       <td>鲁塞</td>
       <td>6</td>
       <td>5.88%</td>
@@ -1127,7 +1164,7 @@
       <td>102</td>
     </tr>
     <tr>
-      <td>83</td>
+      <td>84</td>
       <td>邦达尔</td>
       <td>6</td>
       <td>4.08%</td>
@@ -1135,7 +1172,7 @@
       <td>147</td>
     </tr>
     <tr>
-      <td>84</td>
+      <td>85</td>
       <td>维基奇</td>
       <td>6</td>
       <td>31.58%</td>
@@ -1143,15 +1180,15 @@
       <td>19</td>
     </tr>
     <tr>
-      <td>85</td>
-      <td>玛雅</td>
+      <td>86</td>
+      <td>布瓦松</td>
       <td>6</td>
       <td>100.00%</td>
-      <td>3</td>
+      <td>5</td>
       <td>6</td>
     </tr>
     <tr>
-      <td>86</td>
+      <td>87</td>
       <td>安德莱斯库</td>
       <td>5</td>
       <td>83.33%</td>
@@ -1159,7 +1196,7 @@
       <td>6</td>
     </tr>
     <tr>
-      <td>87</td>
+      <td>88</td>
       <td>加尔菲</td>
       <td>5</td>
       <td>6.33%</td>
@@ -1167,20 +1204,12 @@
       <td>79</td>
     </tr>
     <tr>
-      <td>88</td>
+      <td>89</td>
       <td>格拉乔娃</td>
       <td>5</td>
       <td>41.67%</td>
       <td>5</td>
       <td>12</td>
-    </tr>
-    <tr>
-      <td>89</td>
-      <td>布瓦松</td>
-      <td>5</td>
-      <td>100.00%</td>
-      <td>5</td>
-      <td>5</td>
     </tr>
     <tr>
       <td>90</td>
@@ -1300,7 +1329,7 @@
       <td>2</td>
       <td>0.78%</td>
       <td>2</td>
-      <td>255</td>
+      <td>256</td>
     </tr>
     <tr>
       <td>105</td>
@@ -1336,7 +1365,7 @@
     </tr>
     <tr>
       <td>109</td>
-      <td>袁悦</td>
+      <td>蓬-乌德沃尔迪</td>
       <td>1</td>
       <td>50.00%</td>
       <td>1</td>
@@ -1344,6 +1373,14 @@
     </tr>
     <tr>
       <td>110</td>
+      <td>袁悦</td>
+      <td>1</td>
+      <td>50.00%</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>111</td>
       <td>塔格尔</td>
       <td>1</td>
       <td>5.88%</td>
@@ -1351,7 +1388,7 @@
       <td>17</td>
     </tr>
     <tr>
-      <td>111</td>
+      <td>112</td>
       <td>扎哈罗娃</td>
       <td>1</td>
       <td>16.67%</td>
@@ -1359,7 +1396,7 @@
       <td>6</td>
     </tr>
     <tr>
-      <td>112</td>
+      <td>113</td>
       <td>凯莉耶娃</td>
       <td>1</td>
       <td>100.00%</td>
@@ -1367,7 +1404,7 @@
       <td>1</td>
     </tr>
     <tr>
-      <td>113</td>
+      <td>114</td>
       <td>查拉耶娃</td>
       <td>1</td>
       <td>100.00%</td>
@@ -1375,16 +1412,8 @@
       <td>1</td>
     </tr>
     <tr>
-      <td>114</td>
-      <td>沃特森</td>
-      <td>1</td>
-      <td>100.00%</td>
-      <td>1</td>
-      <td>1</td>
-    </tr>
-    <tr>
       <td>115</td>
-      <td>蓬-乌德沃尔迪</td>
+      <td>沃特森</td>
       <td>1</td>
       <td>100.00%</td>
       <td>1</td>
@@ -1400,6 +1429,14 @@
     </tr>
     <tr>
       <td>117</td>
+      <td>贝莱克</td>
+      <td>1</td>
+      <td>1.06%</td>
+      <td>1</td>
+      <td>94</td>
+    </tr>
+    <tr>
+      <td>118</td>
       <td>乌尔霍博</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1407,7 +1444,7 @@
       <td>2</td>
     </tr>
     <tr>
-      <td>118</td>
+      <td>119</td>
       <td>克韦多</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1415,7 +1452,7 @@
       <td>34</td>
     </tr>
     <tr>
-      <td>119</td>
+      <td>120</td>
       <td>兹沃娜列娃</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1423,7 +1460,7 @@
       <td>1</td>
     </tr>
     <tr>
-      <td>120</td>
+      <td>121</td>
       <td>加里宁娜</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1431,7 +1468,7 @@
       <td>63</td>
     </tr>
     <tr>
-      <td>121</td>
+      <td>122</td>
       <td>吉布森</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1439,7 +1476,7 @@
       <td>14</td>
     </tr>
     <tr>
-      <td>122</td>
+      <td>123</td>
       <td>埃-琼斯</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1447,7 +1484,7 @@
       <td>7</td>
     </tr>
     <tr>
-      <td>123</td>
+      <td>124</td>
       <td>奥索里奥</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1455,7 +1492,7 @@
       <td>59</td>
     </tr>
     <tr>
-      <td>124</td>
+      <td>125</td>
       <td>帕里</td>
       <td>0</td>
       <td>0.00%</td>
@@ -1463,24 +1500,16 @@
       <td>16</td>
     </tr>
     <tr>
-      <td>125</td>
-      <td>汤森德</td>
-      <td>0</td>
-      <td>0.00%</td>
-      <td>0</td>
-      <td>5</td>
-    </tr>
-    <tr>
       <td>126</td>
-      <td>波-库德梅托娃</td>
+      <td>戈卢比奇</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
-      <td>15</td>
+      <td>6</td>
     </tr>
     <tr>
       <td>127</td>
-      <td>琳-弗吕维尔托娃</td>
+      <td>格兰特</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
@@ -1488,11 +1517,35 @@
     </tr>
     <tr>
       <td>128</td>
-      <td>贝莱克</td>
+      <td>汤森德</td>
       <td>0</td>
       <td>0.00%</td>
       <td>0</td>
-      <td>93</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <td>129</td>
+      <td>波-库德梅托娃</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>130</td>
+      <td>琳-弗吕维尔托娃</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>131</td>
+      <td>让让</td>
+      <td>0</td>
+      <td>0.00%</td>
+      <td>0</td>
+      <td>5</td>
     </tr>
   </tbody>
 </table>
@@ -1532,6 +1585,9 @@
                     const filterRow = document.createElement('tr');
                     filterRow.className = 'filter-row';
 
+                    // Track body-mounted option containers per column for filterTable
+                    const allOptionContainers = [];
+
                     headers.forEach((header, index) => {
                         let sortDirection = 'none';
 
@@ -1558,11 +1614,35 @@
                         searchInput.addEventListener('input', (e) => {
                             const query = e.target.value.toLowerCase().trim();
                             optionsContainer.querySelectorAll('.option-item').forEach(item => {
+                                if (item.dataset.selectAll) return; // keep 全选 always visible
                                 const label = item.querySelector('span').textContent.toLowerCase();
                                 item.style.display = label.includes(query) ? 'flex' : 'none';
                             });
                         });
-                        
+
+                        // 全选 item
+                        const selectAllItem = document.createElement('div');
+                        selectAllItem.className = 'option-item select-all-item';
+                        selectAllItem.dataset.selectAll = '1';
+                        selectAllItem.style.borderBottom = '2px solid var(--border-color)';
+                        const selectAllCb = document.createElement('input');
+                        selectAllCb.type = 'checkbox';
+                        selectAllCb.checked = true;
+                        const selectAllLabel = document.createElement('span');
+                        selectAllLabel.textContent = '全选';
+                        selectAllLabel.style.fontWeight = '600';
+                        selectAllItem.appendChild(selectAllCb);
+                        selectAllItem.appendChild(selectAllLabel);
+                        optionsContainer.appendChild(selectAllItem);
+
+                        selectAllCb.addEventListener('change', () => {
+                            const checked = selectAllCb.checked;
+                            optionsContainer.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]').forEach(cb => {
+                                cb.checked = checked;
+                            });
+                            filterTable();
+                        });
+
                         // Populate Options
                         const uniqueValues = new Set();
                         rows.forEach(row => {
@@ -1596,7 +1676,9 @@
                         });
 
                         dropdownWrapper.appendChild(trigger);
-                        dropdownWrapper.appendChild(optionsContainer);
+                        // Append to body so overflow:auto on .table-wrapper doesn't clip it
+                        document.body.appendChild(optionsContainer);
+                        allOptionContainers.push(optionsContainer);
                         thCell.appendChild(dropdownWrapper);
                         filterRow.appendChild(thCell);
 
@@ -1647,29 +1729,66 @@
                             document.querySelectorAll('.dropdown-content').forEach(d => {
                                 if(d !== optionsContainer) d.classList.remove('show');
                             });
+                            const isOpen = optionsContainer.classList.contains('show');
                             optionsContainer.classList.toggle('show');
+                            if (!isOpen) {
+                                const rect = trigger.getBoundingClientRect();
+                                const dropH = Math.min(250, optionsContainer.scrollHeight);
+                                const spaceBelow = window.innerHeight - rect.bottom;
+                                optionsContainer.style.width = rect.width + 'px';
+                                if (spaceBelow >= dropH || spaceBelow >= 120) {
+                                    optionsContainer.style.top = rect.bottom + 'px';
+                                    optionsContainer.style.bottom = '';
+                                } else {
+                                    optionsContainer.style.top = (rect.top - dropH) + 'px';
+                                    optionsContainer.style.bottom = '';
+                                }
+                                optionsContainer.style.left = rect.left + 'px';
+                            }
                         });
 
-                        optionsContainer.addEventListener('change', filterTable);
+                        optionsContainer.addEventListener('change', (e) => {
+                            if (!e.target.closest('[data-select-all]')) {
+                                const all = optionsContainer.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]');
+                                const allChecked = Array.from(all).every(cb => cb.checked);
+                                selectAllCb.checked = allChecked;
+                            }
+                            filterTable();
+                        });
                     });
 
                     thead.appendChild(filterRow);
+
+                    // Close all dropdowns when the table scrolls (fixed-position dropdowns won't follow)
+                    document.querySelector('.table-wrapper').addEventListener('scroll', () => {
+                        allOptionContainers.forEach(oc => oc.classList.remove('show'));
+                    });
+
+                    // Dynamically set filter row's sticky top to match actual header height
+                    // (avoids hardcoded 40px breaking on mobile where header is shorter)
+                    function updateFilterRowTop() {
+                        filterRow.style.top = headerRow.getBoundingClientRect().height + 'px';
+                    }
+                    updateFilterRowTop();
+                    new ResizeObserver(updateFilterRowTop).observe(headerRow);
 
 
                     // Filter Function
                     function filterTable() {
                         let visibleCount = 0;
                         const activeFilters = [];
-                        const dropdowns = document.querySelectorAll('.filter-dropdown');
-                        
-                        dropdowns.forEach(dd => {
-                            const checkboxes = dd.querySelectorAll('input[type="checkbox"]');
-                            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-                            
-                            const triggerText = dd.querySelector('.filter-trigger span:first-child');
-                            if(selected.length === 0) triggerText.textContent = "已取消";
-                            else if(selected.length === checkboxes.length) triggerText.textContent = "全部";
-                            else triggerText.textContent = `已选 ${selected.length} 项`;
+                        const triggerEls = document.querySelectorAll('.filter-trigger span:first-child');
+
+                        allOptionContainers.forEach((oc, i) => {
+                            // exclude 全选 checkbox from the value list
+                            const checkboxes = Array.from(oc.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]'));
+                            const selected = checkboxes.filter(cb => cb.checked).map(cb => cb.value);
+
+                            if (triggerEls[i]) {
+                                if (selected.length === 0) triggerEls[i].textContent = "已取消";
+                                else if (selected.length === checkboxes.length) triggerEls[i].textContent = "全部";
+                                else triggerEls[i].textContent = `已选 ${selected.length} 项`;
+                            }
 
                             activeFilters.push(selected);
                         });
