@@ -308,7 +308,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年05月12日 09:32:17</span>
+    <span class="updated">⏱ 2026年05月12日 10:00:47</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -325,9 +325,11 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
         <div class="sum-header">
         <div class="sum-title">今日选人统计</div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 25 人已选</span>
+        <span class="meta-chip chip-valid">✓ 34 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">94 人未选</span>
+    <span class="meta-chip chip-nosel">84 人未选</span>
+    <span class="meta-sep">｜</span>
+    <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 119 人</span>
         </div>
@@ -349,9 +351,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "高芙", "normal": 13, "bye": 0}, {"name": "奥斯塔彭科", "normal": 5, "bye": 0}, {"name": "科斯蒂亚", "normal": 5, "bye": 0}, {"name": "米-安德烈耶娃", "normal": 2, "bye": 0}];
-        var TOTALS  = {"normal": 25, "bye": 0, "grand": 25};
-        var MAX_VAL = 13;
+        var ROWS    = [{"name": "高芙", "normal": 17, "bye": 0}, {"name": "科斯蒂亚", "normal": 7, "bye": 0}, {"name": "奥斯塔彭科", "normal": 7, "bye": 0}, {"name": "米-安德烈耶娃", "normal": 3, "bye": 0}];
+        var TOTALS  = {"normal": 34, "bye": 0, "grand": 34};
+        var MAX_VAL = 17;
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -605,9 +607,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>板尼哟</td>
     <td>存活</td>
     <td></td>
+    <td>高芙</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>215</td>
     <td>303</td>
     <td>4190</td>
@@ -628,20 +630,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-14</span></td>
   </tr>
   <tr>
-    <td>22</td>
-    <td>12</td>
-    <td>BORIS-_-i</td>
-    <td>球员输球</td>
-    <td>里纳特</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>10</td>
-    <td>303</td>
-    <td>3905</td>
-    <td><span class="rank down">-10</span></td>
-  </tr>
-  <tr>
     <td>14</td>
     <td>12</td>
     <td>怀***蕴</td>
@@ -654,6 +642,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>93</td>
     <td>4115</td>
     <td><span class="rank down">-2</span></td>
+  </tr>
+  <tr>
+    <td>22</td>
+    <td>12</td>
+    <td>BORIS-_-i</td>
+    <td>球员输球</td>
+    <td>里纳特</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>10</td>
+    <td>303</td>
+    <td>3905</td>
+    <td><span class="rank down">-10</span></td>
   </tr>
   <tr>
     <td>9</td>
@@ -871,9 +873,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>w***酱</td>
     <td>存活</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>奥斯塔彭科</td>
+    <td>米-安德烈耶娃</td>
+    <td>已选</td>
     <td>215</td>
     <td>0</td>
     <td>3882</td>
@@ -1333,9 +1335,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>嗨嗨嗨改名字好难</td>
     <td>存活</td>
     <td></td>
+    <td>高芙</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>215</td>
     <td>390</td>
     <td>2913</td>
@@ -1823,9 +1825,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>胡一统居士</td>
     <td>存活</td>
     <td></td>
+    <td>奥斯塔彭科</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>215</td>
     <td>0</td>
     <td>2943</td>
@@ -1963,9 +1965,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>心之所向都奔赴美好</td>
     <td>存活</td>
     <td></td>
+    <td>科斯蒂亚</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>215</td>
     <td>0</td>
     <td>2870</td>
@@ -2327,9 +2329,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>我宝儿子不露脸不改名</td>
     <td>存活</td>
     <td></td>
+    <td>高芙</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>215</td>
     <td>303</td>
     <td>2396</td>
@@ -3209,9 +3211,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>青花比目</td>
     <td>存活</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>米-安德烈耶娃</td>
+    <td>科斯蒂亚</td>
+    <td>已选</td>
     <td>215</td>
     <td>215</td>
     <td>2040</td>
@@ -4049,9 +4051,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>猫崽孑丶</td>
     <td>存活</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>科斯蒂亚</td>
+    <td>米-安德烈耶娃</td>
+    <td>自杀（重复）</td>
     <td>215</td>
     <td>0</td>
     <td>1722</td>
@@ -4091,9 +4093,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>沫小琦_259695</td>
     <td>存活</td>
     <td></td>
+    <td>科斯蒂亚</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>215</td>
     <td>0</td>
     <td>1715</td>
@@ -4399,9 +4401,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>超***间</td>
     <td>存活</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>高芙</td>
+    <td>奥斯塔彭科</td>
+    <td>已选</td>
     <td>215</td>
     <td>0</td>
     <td>1577</td>
@@ -6888,7 +6890,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>455</td>
     <td>459</td>
-    <td>永***殇</td>
+    <td>k***8</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -6902,7 +6904,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>455</td>
     <td>459</td>
-    <td>k***8</td>
+    <td>永***殇</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -7588,7 +7590,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>509</td>
     <td>509</td>
-    <td>t***雨</td>
+    <td>龙呆呆看世界</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -7602,7 +7604,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>509</td>
     <td>509</td>
-    <td>龙呆呆看世界</td>
+    <td>t***雨</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -7672,7 +7674,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>520</td>
     <td>515</td>
-    <td>m***n</td>
+    <td>白白不嘻嘻</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -7686,7 +7688,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>520</td>
     <td>515</td>
-    <td>白白不嘻嘻</td>
+    <td>m***n</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -7798,7 +7800,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>586</td>
     <td>524</td>
-    <td>les lll</td>
+    <td>用户7927633580</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -7812,7 +7814,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>586</td>
     <td>524</td>
-    <td>用户7927633580</td>
+    <td>les lll</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -7824,18 +7826,18 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-62</span></td>
   </tr>
   <tr>
-    <td>527</td>
+    <td>533</td>
     <td>526</td>
-    <td>紫葡萄126</td>
-    <td>球员输球</td>
-    <td>克宁</td>
+    <td>wang</td>
+    <td>未参赛</td>
+    <td></td>
     <td></td>
     <td></td>
     <td>未选</td>
-    <td>10</td>
+    <td></td>
     <td>0</td>
-    <td>170</td>
-    <td><span class="rank down">-1</span></td>
+    <td>160</td>
+    <td><span class="rank down">-7</span></td>
   </tr>
   <tr>
     <td>533</td>
@@ -7852,18 +7854,18 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-7</span></td>
   </tr>
   <tr>
-    <td>533</td>
+    <td>527</td>
     <td>526</td>
-    <td>wang</td>
-    <td>未参赛</td>
-    <td></td>
+    <td>紫葡萄126</td>
+    <td>球员输球</td>
+    <td>克宁</td>
     <td></td>
     <td></td>
     <td>未选</td>
-    <td></td>
+    <td>10</td>
     <td>0</td>
-    <td>160</td>
-    <td><span class="rank down">-7</span></td>
+    <td>170</td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr>
     <td>519</td>
@@ -7894,20 +7896,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+1</span></td>
   </tr>
   <tr>
-    <td>555</td>
-    <td>531</td>
-    <td>c***i</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>23</td>
-    <td>130</td>
-    <td><span class="rank down">-24</span></td>
-  </tr>
-  <tr>
     <td>499</td>
     <td>531</td>
     <td>Pearlescent_69</td>
@@ -7920,6 +7908,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>0</td>
     <td>218</td>
     <td><span class="rank up">+32</span></td>
+  </tr>
+  <tr>
+    <td>555</td>
+    <td>531</td>
+    <td>c***i</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>23</td>
+    <td>130</td>
+    <td><span class="rank down">-24</span></td>
   </tr>
   <tr>
     <td>524</td>
@@ -8008,7 +8010,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>541</td>
     <td>539</td>
-    <td>假装会微笑</td>
+    <td>姚子午37813</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8022,7 +8024,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>541</td>
     <td>539</td>
-    <td>姚子午37813</td>
+    <td>假装会微笑</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8078,6 +8080,76 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>543</td>
     <td>544</td>
+    <td>Aaron凯旋</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>130</td>
+    <td><span class="rank up">+1</span></td>
+  </tr>
+  <tr>
+    <td>543</td>
+    <td>544</td>
+    <td>澳奥-</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>130</td>
+    <td><span class="rank up">+1</span></td>
+  </tr>
+  <tr>
+    <td>543</td>
+    <td>544</td>
+    <td>饭炒饭炒饭-</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>130</td>
+    <td><span class="rank up">+1</span></td>
+  </tr>
+  <tr>
+    <td>543</td>
+    <td>544</td>
+    <td>切尔西赢一把</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>130</td>
+    <td><span class="rank up">+1</span></td>
+  </tr>
+  <tr>
+    <td>543</td>
+    <td>544</td>
+    <td>踏尘川</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>130</td>
+    <td><span class="rank up">+1</span></td>
+  </tr>
+  <tr>
+    <td>543</td>
+    <td>544</td>
     <td>新人逛吧</td>
     <td>未参赛</td>
     <td></td>
@@ -8107,76 +8179,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>543</td>
     <td>544</td>
     <td>雨***8</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>130</td>
-    <td><span class="rank up">+1</span></td>
-  </tr>
-  <tr>
-    <td>543</td>
-    <td>544</td>
-    <td>切尔西赢一把</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>130</td>
-    <td><span class="rank up">+1</span></td>
-  </tr>
-  <tr>
-    <td>543</td>
-    <td>544</td>
-    <td>Aaron凯旋</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>130</td>
-    <td><span class="rank up">+1</span></td>
-  </tr>
-  <tr>
-    <td>543</td>
-    <td>544</td>
-    <td>饭炒饭炒饭-</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>130</td>
-    <td><span class="rank up">+1</span></td>
-  </tr>
-  <tr>
-    <td>543</td>
-    <td>544</td>
-    <td>踏尘川</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>130</td>
-    <td><span class="rank up">+1</span></td>
-  </tr>
-  <tr>
-    <td>543</td>
-    <td>544</td>
-    <td>澳奥-</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8286,20 +8288,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+41</span></td>
   </tr>
   <tr>
-    <td>457</td>
-    <td>559</td>
-    <td>Yaczah_</td>
-    <td>存活</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>215</td>
-    <td>0</td>
-    <td>335</td>
-    <td><span class="rank up">+102</span></td>
-  </tr>
-  <tr>
     <td>526</td>
     <td>559</td>
     <td>莫***卿</td>
@@ -8312,6 +8300,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>0</td>
     <td>170</td>
     <td><span class="rank up">+33</span></td>
+  </tr>
+  <tr>
+    <td>457</td>
+    <td>559</td>
+    <td>Yaczah_</td>
+    <td>存活</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>215</td>
+    <td>0</td>
+    <td>335</td>
+    <td><span class="rank up">+102</span></td>
   </tr>
   <tr>
     <td>560</td>
@@ -8456,7 +8458,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>574</td>
     <td>572</td>
-    <td>c***9</td>
+    <td>海***_</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8470,7 +8472,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>574</td>
     <td>572</td>
-    <td>海***_</td>
+    <td>c***9</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8498,7 +8500,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>576</td>
     <td>575</td>
-    <td>雷***雷</td>
+    <td>王石</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8512,7 +8514,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>576</td>
     <td>575</td>
-    <td>王石</td>
+    <td>雷***雷</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8554,7 +8556,35 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>580</td>
     <td>579</td>
+    <td>High Dream</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>100</td>
+    <td><span class="rank down">-1</span></td>
+  </tr>
+  <tr>
+    <td>580</td>
+    <td>579</td>
     <td>Patteringraindrops</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>100</td>
+    <td><span class="rank down">-1</span></td>
+  </tr>
+  <tr>
+    <td>580</td>
+    <td>579</td>
+    <td>C***g</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8583,34 +8613,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>580</td>
     <td>579</td>
     <td>minute_par_minute</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>100</td>
-    <td><span class="rank down">-1</span></td>
-  </tr>
-  <tr>
-    <td>580</td>
-    <td>579</td>
-    <td>High Dream</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>100</td>
-    <td><span class="rank down">-1</span></td>
-  </tr>
-  <tr>
-    <td>580</td>
-    <td>579</td>
-    <td>C***g</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -8692,20 +8694,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+23</span></td>
   </tr>
   <tr>
-    <td>516</td>
-    <td>589</td>
-    <td>q***1</td>
-    <td>球员输球</td>
-    <td>凯斯</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>93</td>
-    <td>0</td>
-    <td>186</td>
-    <td><span class="rank up">+73</span></td>
-  </tr>
-  <tr>
     <td>579</td>
     <td>589</td>
     <td>流星飞舞啦啦啦</td>
@@ -8718,6 +8706,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>0</td>
     <td>103</td>
     <td><span class="rank up">+10</span></td>
+  </tr>
+  <tr>
+    <td>516</td>
+    <td>589</td>
+    <td>q***1</td>
+    <td>球员输球</td>
+    <td>凯斯</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>93</td>
+    <td>0</td>
+    <td>186</td>
+    <td><span class="rank up">+73</span></td>
   </tr>
   <tr>
     <td>592</td>
@@ -8960,20 +8962,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>614</td>
     <td>608</td>
-    <td>洋芋星6</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
     <td>卡林斯卡娅不夺冠不改名</td>
     <td>未参赛</td>
     <td></td>
@@ -9002,133 +8990,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>614</td>
     <td>608</td>
-    <td>闹闹的药不要停丶</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>比奇堡飞飞鱼</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>Strict0538</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>干啥啥不行呗66</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>h***c</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>Zhuoyi Wang</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>Shuaishuai Yang</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>我***a</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>pin2pin</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>614</td>
-    <td>608</td>
-    <td>Neo_Sakkawai</td>
+    <td>时间的歌雨水一盒</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9156,7 +9018,161 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>614</td>
     <td>608</td>
-    <td>时间的歌雨水一盒</td>
+    <td>Neo_Sakkawai</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>Shuaishuai Yang</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>pin2pin</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>干啥啥不行呗66</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>Strict0538</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>h***c</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>闹闹的药不要停丶</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>洋芋星6</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>我***a</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>Zhuoyi Wang</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>614</td>
+    <td>608</td>
+    <td>比奇堡飞飞鱼</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>70</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>629</td>
+    <td>623</td>
+    <td>冰饮去冰三分糖</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9185,20 +9201,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>629</td>
     <td>623</td>
     <td>C***9</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>70</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>629</td>
-    <td>623</td>
-    <td>冰饮去冰三分糖</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9280,6 +9282,48 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+33</span></td>
   </tr>
   <tr>
+    <td>599</td>
+    <td>631</td>
+    <td>谢谢我不熬夜的哦</td>
+    <td>球员输球</td>
+    <td>里纳特</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>23</td>
+    <td>0</td>
+    <td>88</td>
+    <td><span class="rank up">+32</span></td>
+  </tr>
+  <tr>
+    <td>635</td>
+    <td>631</td>
+    <td>寒柳几许</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>65</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>635</td>
+    <td>631</td>
+    <td>冷***z</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>65</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
     <td>635</td>
     <td>631</td>
     <td>周同學JAYhou</td>
@@ -9311,48 +9355,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>635</td>
     <td>631</td>
     <td>香鱼不长大</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>65</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>635</td>
-    <td>631</td>
-    <td>寒柳几许</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>65</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>599</td>
-    <td>631</td>
-    <td>谢谢我不熬夜的哦</td>
-    <td>球员输球</td>
-    <td>里纳特</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>23</td>
-    <td>0</td>
-    <td>88</td>
-    <td><span class="rank up">+32</span></td>
-  </tr>
-  <tr>
-    <td>635</td>
-    <td>631</td>
-    <td>冷***z</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9518,20 +9520,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+171</span></td>
   </tr>
   <tr>
-    <td>539</td>
-    <td>650</td>
-    <td>bless-Selena</td>
-    <td>球员输球</td>
-    <td>凯斯</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>93</td>
-    <td>0</td>
-    <td>144</td>
-    <td><span class="rank up">+111</span></td>
-  </tr>
-  <tr>
     <td>653</td>
     <td>650</td>
     <td>德不驴</td>
@@ -9546,9 +9534,23 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-3</span></td>
   </tr>
   <tr>
+    <td>539</td>
+    <td>650</td>
+    <td>bless-Selena</td>
+    <td>球员输球</td>
+    <td>凯斯</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>93</td>
+    <td>0</td>
+    <td>144</td>
+    <td><span class="rank up">+111</span></td>
+  </tr>
+  <tr>
     <td>655</td>
     <td>652</td>
-    <td>jelennnnn</td>
+    <td>岳阳株洲</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9560,23 +9562,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-3</span></td>
   </tr>
   <tr>
-    <td>647</td>
-    <td>652</td>
-    <td>用户7978746839</td>
-    <td>球员输球</td>
-    <td>亚斯特列姆斯卡</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>10</td>
-    <td>0</td>
-    <td>60</td>
-    <td><span class="rank up">+5</span></td>
-  </tr>
-  <tr>
     <td>655</td>
     <td>652</td>
-    <td>洛漠08</td>
+    <td>漏球小子</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9604,6 +9592,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>655</td>
     <td>652</td>
+    <td>wencong zheng</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>50</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>655</td>
+    <td>652</td>
     <td>赤诚热土</td>
     <td>未参赛</td>
     <td></td>
@@ -9618,7 +9620,21 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>655</td>
     <td>652</td>
-    <td>ANi01023</td>
+    <td>jelennnnn</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>50</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>655</td>
+    <td>652</td>
+    <td>幸***额</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9674,20 +9690,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>655</td>
     <td>652</td>
-    <td>漏球小子</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>50</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>655</td>
-    <td>652</td>
     <td>Irene Lee</td>
     <td>未参赛</td>
     <td></td>
@@ -9700,23 +9702,23 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-3</span></td>
   </tr>
   <tr>
-    <td>655</td>
+    <td>647</td>
     <td>652</td>
-    <td>wencong zheng</td>
-    <td>未参赛</td>
-    <td></td>
+    <td>用户7978746839</td>
+    <td>球员输球</td>
+    <td>亚斯特列姆斯卡</td>
     <td></td>
     <td></td>
     <td>未选</td>
-    <td></td>
+    <td>10</td>
     <td>0</td>
-    <td>50</td>
-    <td><span class="rank down">-3</span></td>
+    <td>60</td>
+    <td><span class="rank up">+5</span></td>
   </tr>
   <tr>
     <td>655</td>
     <td>652</td>
-    <td>幸***额</td>
+    <td>Almond_Sky</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9744,7 +9746,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>655</td>
     <td>652</td>
-    <td>Almond_Sky</td>
+    <td>ANi01023</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9758,7 +9760,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>655</td>
     <td>652</td>
-    <td>岳阳株洲</td>
+    <td>洛漠08</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9912,7 +9914,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>684</td>
     <td>679</td>
-    <td>斜杠少年00053</td>
+    <td>G***e</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9926,7 +9928,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>684</td>
     <td>679</td>
-    <td>G***e</td>
+    <td>斜杠少年00053</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -9940,259 +9942,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>687</td>
     <td>681</td>
-    <td>qi zhou</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>的的可乐</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>Yakamoz21</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>l***7</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>SuenWanYukkk_3000</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>156******69</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>LHLLDZ</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>tyiihv</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
     <td>Isaaaaac_</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>狱***煞</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>轩***7</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>l***1</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>摩***o</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>Eric Li</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>樱***3</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>t***f</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>Cybele Yao</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>Ethan Liu</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>687</td>
-    <td>681</td>
-    <td>L***n</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10220,7 +9970,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>687</td>
     <td>681</td>
-    <td>元气豆沙包</td>
+    <td>裤裤酷酷库库</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10235,6 +9985,216 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>687</td>
     <td>681</td>
     <td>_Tvillingen</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>LHLLDZ</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>Eric Li</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>虎王_长弓</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>qi zhou</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>狱***煞</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>Immortal13509</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>L***n</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>Ethan Liu</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>Yakamoz21</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>的的可乐</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>156******69</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>l***7</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>178******72</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>Cybele Yao</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>樱***3</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10276,7 +10236,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>687</td>
     <td>681</td>
-    <td>虎王_长弓</td>
+    <td>l***1</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10290,7 +10250,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>687</td>
     <td>681</td>
-    <td>裤裤酷酷库库</td>
+    <td>摩***o</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10304,7 +10264,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>687</td>
     <td>681</td>
-    <td>Immortal13509</td>
+    <td>t***f</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10318,7 +10278,49 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>687</td>
     <td>681</td>
-    <td>178******72</td>
+    <td>轩***7</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>元气豆沙包</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>SuenWanYukkk_3000</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>687</td>
+    <td>681</td>
+    <td>tyiihv</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10346,35 +10348,21 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>716</td>
     <td>710</td>
-    <td>旅***9</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>716</td>
-    <td>710</td>
-    <td>158******93</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>40</td>
-    <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>716</td>
-    <td>710</td>
     <td>徐***彩</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>716</td>
+    <td>710</td>
+    <td>波斯科维奇</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10416,7 +10404,21 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>716</td>
     <td>710</td>
-    <td>波斯科维奇</td>
+    <td>用户245635868</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>40</td>
+    <td><span class="rank down">-6</span></td>
+  </tr>
+  <tr>
+    <td>716</td>
+    <td>710</td>
+    <td>158******93</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10444,7 +10446,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>716</td>
     <td>710</td>
-    <td>用户245635868</td>
+    <td>旅***9</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10454,20 +10456,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>0</td>
     <td>40</td>
     <td><span class="rank down">-6</span></td>
-  </tr>
-  <tr>
-    <td>723</td>
-    <td>718</td>
-    <td>淋***朝</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>38</td>
-    <td><span class="rank down">-5</span></td>
   </tr>
   <tr>
     <td>723</td>
@@ -10500,7 +10488,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>723</td>
     <td>718</td>
-    <td>海鲜过敏的螃蟹老丁</td>
+    <td>尛謩</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10515,6 +10503,48 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>723</td>
     <td>718</td>
     <td>63858号病人</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>38</td>
+    <td><span class="rank down">-5</span></td>
+  </tr>
+  <tr>
+    <td>723</td>
+    <td>718</td>
+    <td>淋***朝</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>38</td>
+    <td><span class="rank down">-5</span></td>
+  </tr>
+  <tr>
+    <td>723</td>
+    <td>718</td>
+    <td>风***音</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>38</td>
+    <td><span class="rank down">-5</span></td>
+  </tr>
+  <tr>
+    <td>723</td>
+    <td>718</td>
+    <td>海鲜过敏的螃蟹老丁</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10568,9 +10598,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-5</span></td>
   </tr>
   <tr>
-    <td>723</td>
-    <td>718</td>
-    <td>尛謩</td>
+    <td>733</td>
+    <td>728</td>
+    <td>139******01</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10578,21 +10608,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>未选</td>
     <td></td>
     <td>0</td>
-    <td>38</td>
-    <td><span class="rank down">-5</span></td>
-  </tr>
-  <tr>
-    <td>723</td>
-    <td>718</td>
-    <td>风***音</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>38</td>
+    <td>35</td>
     <td><span class="rank down">-5</span></td>
   </tr>
   <tr>
@@ -10610,23 +10626,23 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-5</span></td>
   </tr>
   <tr>
-    <td>733</td>
-    <td>728</td>
-    <td>139******01</td>
+    <td>836</td>
+    <td>732</td>
+    <td>h***2</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
     <td></td>
     <td>未选</td>
     <td></td>
-    <td>0</td>
-    <td>35</td>
-    <td><span class="rank down">-5</span></td>
+    <td>23</td>
+    <td>10</td>
+    <td><span class="rank down">-104</span></td>
   </tr>
   <tr>
     <td>736</td>
     <td>732</td>
-    <td>花***天</td>
+    <td>Haut-bas-fragile</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10654,7 +10670,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>736</td>
     <td>732</td>
-    <td>Haut-bas-fragile</td>
+    <td>花***天</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10664,20 +10680,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>0</td>
     <td>33</td>
     <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>836</td>
-    <td>732</td>
-    <td>h***2</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>23</td>
-    <td>10</td>
-    <td><span class="rank down">-104</span></td>
   </tr>
   <tr>
     <td>740</td>
@@ -10696,21 +10698,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>183******59</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>z***6</td>
+    <td>樋雅口-</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10738,7 +10726,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>WillKris锴</td>
+    <td>蘇_梓浩丶</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10752,7 +10740,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>泰***3</td>
+    <td>陰雨天的傘</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10780,7 +10768,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>蘇_梓浩丶</td>
+    <td>大道至远1001</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10794,7 +10782,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>用户7677565081</td>
+    <td>155******56</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10808,7 +10796,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>用户7736857621</td>
+    <td>日子真的很难熬</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10822,21 +10810,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>什***8</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>半_俗人</td>
+    <td>泰***3</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -10878,48 +10852,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>樋雅口-</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>Anastasia帕芙柳琴科娃fansclub</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>科绊中的娜世英雄</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
     <td>十六块醉了</td>
     <td>未参赛</td>
     <td></td>
@@ -10934,105 +10866,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>_Alpaca___</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>用户8000936946</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>gzdao chen (zeoliteAPO)</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>K***9</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>155******56</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>circle山遥</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>N***3</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>30</td>
-    <td><span class="rank down">-4</span></td>
-  </tr>
-  <tr>
-    <td>741</td>
-    <td>737</td>
-    <td>日子真的很难熬</td>
+    <td>山丘Shayne</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11088,7 +10922,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>陰雨天的傘</td>
+    <td>N***3</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11102,7 +10936,35 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>Iianaa_</td>
+    <td>半_俗人</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>什***8</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>Anastasia帕芙柳琴科娃fansclub</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11130,7 +10992,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>山丘Shayne</td>
+    <td>gzdao chen (zeoliteAPO)</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11144,7 +11006,147 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>741</td>
     <td>737</td>
-    <td>大道至远1001</td>
+    <td>用户8000936946</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>Iianaa_</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>用户7736857621</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>科绊中的娜世英雄</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>用户7677565081</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>circle山遥</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>z***6</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>_Alpaca___</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>WillKris锴</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>K***9</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>30</td>
+    <td><span class="rank down">-4</span></td>
+  </tr>
+  <tr>
+    <td>741</td>
+    <td>737</td>
+    <td>183******59</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11198,6 +11200,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-5</span></td>
   </tr>
   <tr>
+    <td>596</td>
+    <td>773</td>
+    <td>憨皮儿不是小怪兽</td>
+    <td>球员输球</td>
+    <td>本西奇</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>65</td>
+    <td>0</td>
+    <td>89</td>
+    <td><span class="rank up">+177</span></td>
+  </tr>
+  <tr>
     <td>609</td>
     <td>773</td>
     <td>利斯乌约维奇瓦尔德曼诺娃我老婆</td>
@@ -11214,20 +11230,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>596</td>
     <td>773</td>
-    <td>憨皮儿不是小怪兽</td>
-    <td>球员输球</td>
-    <td>本西奇</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>65</td>
-    <td>0</td>
-    <td>89</td>
-    <td><span class="rank up">+177</span></td>
-  </tr>
-  <tr>
-    <td>596</td>
-    <td>773</td>
     <td>唯爱斯瓦泰克</td>
     <td>球员输球</td>
     <td>本西奇</td>
@@ -11240,18 +11242,18 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+177</span></td>
   </tr>
   <tr>
-    <td>599</td>
+    <td>778</td>
     <td>776</td>
-    <td>180******62</td>
-    <td>自杀(重复)</td>
+    <td>冰萌申煦</td>
+    <td>未参赛</td>
     <td></td>
     <td></td>
     <td></td>
     <td>未选</td>
-    <td>65</td>
+    <td></td>
     <td>0</td>
-    <td>88</td>
-    <td><span class="rank up">+177</span></td>
+    <td>23</td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr>
     <td>678</td>
@@ -11268,79 +11270,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+98</span></td>
   </tr>
   <tr>
-    <td>678</td>
-    <td>776</td>
-    <td>王翊翀</td>
-    <td>自杀(退赛)</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>23</td>
-    <td>0</td>
-    <td>46</td>
-    <td><span class="rank up">+98</span></td>
-  </tr>
-  <tr>
-    <td>650</td>
-    <td>776</td>
-    <td>胡天翼</td>
-    <td>自杀(退赛)</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>35</td>
-    <td>0</td>
-    <td>58</td>
-    <td><span class="rank up">+126</span></td>
-  </tr>
-  <tr>
     <td>778</td>
     <td>776</td>
     <td>158******20</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>23</td>
-    <td><span class="rank down">-2</span></td>
-  </tr>
-  <tr>
-    <td>778</td>
-    <td>776</td>
-    <td>摸鱼入门学员Prof杨</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>23</td>
-    <td><span class="rank down">-2</span></td>
-  </tr>
-  <tr>
-    <td>778</td>
-    <td>776</td>
-    <td>Terry_Tiger_</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>23</td>
-    <td><span class="rank down">-2</span></td>
-  </tr>
-  <tr>
-    <td>778</td>
-    <td>776</td>
-    <td>慕***杨</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11368,7 +11300,21 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>778</td>
     <td>776</td>
-    <td>冰萌申煦</td>
+    <td>慕***杨</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>23</td>
+    <td><span class="rank down">-2</span></td>
+  </tr>
+  <tr>
+    <td>778</td>
+    <td>776</td>
+    <td>摸鱼入门学员Prof杨</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11394,6 +11340,34 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-2</span></td>
   </tr>
   <tr>
+    <td>778</td>
+    <td>776</td>
+    <td>Terry_Tiger_</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>23</td>
+    <td><span class="rank down">-2</span></td>
+  </tr>
+  <tr>
+    <td>678</td>
+    <td>776</td>
+    <td>王翊翀</td>
+    <td>自杀(退赛)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>23</td>
+    <td>0</td>
+    <td>46</td>
+    <td><span class="rank up">+98</span></td>
+  </tr>
+  <tr>
     <td>736</td>
     <td>776</td>
     <td>王左</td>
@@ -11406,6 +11380,34 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>0</td>
     <td>33</td>
     <td><span class="rank up">+40</span></td>
+  </tr>
+  <tr>
+    <td>650</td>
+    <td>776</td>
+    <td>胡天翼</td>
+    <td>自杀(退赛)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>35</td>
+    <td>0</td>
+    <td>58</td>
+    <td><span class="rank up">+126</span></td>
+  </tr>
+  <tr>
+    <td>599</td>
+    <td>776</td>
+    <td>180******62</td>
+    <td>自杀(重复)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>65</td>
+    <td>0</td>
+    <td>88</td>
+    <td><span class="rank up">+177</span></td>
   </tr>
   <tr>
     <td>794</td>
@@ -11424,7 +11426,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>795</td>
     <td>792</td>
-    <td>小邱邱爱看球</td>
+    <td>S***b</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11438,7 +11440,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>795</td>
     <td>792</td>
-    <td>S***b</td>
+    <td>小邱邱爱看球</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11480,6 +11482,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>795</td>
     <td>792</td>
+    <td>王彦涵</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>20</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>795</td>
+    <td>792</td>
     <td>139******58</td>
     <td>未参赛</td>
     <td></td>
@@ -11495,20 +11511,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td>795</td>
     <td>792</td>
     <td>九两不吃香蕉尖尖</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>20</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>795</td>
-    <td>792</td>
-    <td>王彦涵</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11576,6 +11578,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank up">+10</span></td>
   </tr>
   <tr>
+    <td>793</td>
+    <td>803</td>
+    <td>塔姆科尔涅娃我老婆</td>
+    <td>球员输球</td>
+    <td>亚斯特列姆斯卡</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>10</td>
+    <td>0</td>
+    <td>21</td>
+    <td><span class="rank up">+10</span></td>
+  </tr>
+  <tr>
     <td>807</td>
     <td>803</td>
     <td>小白BAILL</td>
@@ -11604,135 +11620,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-4</span></td>
   </tr>
   <tr>
-    <td>793</td>
-    <td>803</td>
-    <td>塔姆科尔涅娃我老婆</td>
-    <td>球员输球</td>
-    <td>亚斯特列姆斯卡</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>10</td>
-    <td>0</td>
-    <td>21</td>
-    <td><span class="rank up">+10</span></td>
-  </tr>
-  <tr>
-    <td>497</td>
-    <td>806</td>
-    <td>L***啊</td>
-    <td>存活</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>215</td>
-    <td>0</td>
-    <td>225</td>
-    <td><span class="rank up">+309</span></td>
-  </tr>
-  <tr>
     <td>809</td>
     <td>806</td>
-    <td>Bibliotek</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>用户7987683453</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>用户7320091705</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>Simin Feng</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>o***9</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>阿Maaay</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>Pres10 Possibly a Cyborg</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>onecolor_</td>
+    <td>8***8</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11760,7 +11650,119 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>809</td>
     <td>806</td>
-    <td>M***i</td>
+    <td>用户7320091705</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>Steven</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>497</td>
+    <td>806</td>
+    <td>L***啊</td>
+    <td>存活</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>215</td>
+    <td>0</td>
+    <td>225</td>
+    <td><span class="rank up">+309</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>o***9</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>onecolor_</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>Pres10 Possibly a Cyborg</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>Bibliotek</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>theruss44</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>用户7987683453</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11788,7 +11790,175 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>809</td>
     <td>806</td>
-    <td>theruss44</td>
+    <td>海上起飞-</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>胡安张</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>E***n</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>551</td>
+    <td>806</td>
+    <td>y***7</td>
+    <td>球员输球</td>
+    <td>诺斯科娃</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>120</td>
+    <td>0</td>
+    <td>130</td>
+    <td><span class="rank up">+255</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>180******98</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>用户7010054011</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>阿Maaay</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>z***g</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>小红薯赶紧倒闭</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>M***i</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>Simin Feng</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>孤傲王子Lee</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>809</td>
+    <td>806</td>
+    <td>SORA_NORA</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -11828,174 +11998,6 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td><span class="rank down">-3</span></td>
   </tr>
   <tr>
-    <td>551</td>
-    <td>806</td>
-    <td>y***7</td>
-    <td>球员输球</td>
-    <td>诺斯科娃</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>120</td>
-    <td>0</td>
-    <td>130</td>
-    <td><span class="rank up">+255</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>z***g</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>E***n</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>用户7010054011</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>孤傲王子Lee</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>海上起飞-</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>SORA_NORA</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>180******98</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>小红薯赶紧倒闭</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>8***8</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>Steven</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>809</td>
-    <td>806</td>
-    <td>胡安张</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
     <td>838</td>
     <td>835</td>
     <td>Grc一</td>
@@ -12007,6 +12009,48 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
     <td></td>
     <td>0</td>
     <td>2</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>w***1</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>刘***亮</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>Luv Connor</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
     <td><span class="rank down">-3</span></td>
   </tr>
   <tr>
@@ -12026,7 +12070,21 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>839</td>
     <td>836</td>
-    <td>gabrielle_pei</td>
+    <td>徜***里</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>TaylorGAGA瑜</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -12068,133 +12126,21 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>839</td>
     <td>836</td>
-    <td>战***袍</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>w***1</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>131******15</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>徜***里</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>刘***亮</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>a***8</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>TaylorGAGA瑜</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>QelenaRyueen</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>ZbtWind</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
     <td>La_Mariposa_Azul</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>gabrielle_pei</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -12222,21 +12168,7 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>839</td>
     <td>836</td>
-    <td>Luv Connor</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>0</td>
-    <td>1</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
-  <tr>
-    <td>839</td>
-    <td>836</td>
-    <td>138******54</td>
+    <td>131******15</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -12264,7 +12196,77 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>839</td>
     <td>836</td>
+    <td>QelenaRyueen</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>138******54</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
     <td>Peter就是Peter陈啦</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>ZbtWind</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>战***袍</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>0</td>
+    <td>1</td>
+    <td><span class="rank down">-3</span></td>
+  </tr>
+  <tr>
+    <td>839</td>
+    <td>836</td>
+    <td>a***8</td>
     <td>未参赛</td>
     <td></td>
     <td></td>
@@ -12404,6 +12406,20 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>778</td>
     <td></td>
+    <td>邪恶纳米</td>
+    <td>球员输球</td>
+    <td>里纳特</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>23</td>
+    <td>0</td>
+    <td>23</td>
+    <td><span class="rank same"></span></td>
+  </tr>
+  <tr>
+    <td>778</td>
+    <td></td>
     <td>冯俊俊111</td>
     <td>自杀(退赛)</td>
     <td></td>
@@ -12432,37 +12448,23 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
   <tr>
     <td>778</td>
     <td></td>
-    <td>状况ample</td>
-    <td>球员输球</td>
-    <td>布瓦松</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>23</td>
-    <td>0</td>
-    <td>23</td>
-    <td><span class="rank same"></span></td>
-  </tr>
-  <tr>
-    <td>778</td>
-    <td></td>
-    <td>邪恶纳米</td>
-    <td>球员输球</td>
-    <td>里纳特</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>23</td>
-    <td>0</td>
-    <td>23</td>
-    <td><span class="rank same"></span></td>
-  </tr>
-  <tr>
-    <td>778</td>
-    <td></td>
     <td>xhsyfy</td>
     <td>自杀(退赛)</td>
     <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>23</td>
+    <td>0</td>
+    <td>23</td>
+    <td><span class="rank same"></span></td>
+  </tr>
+  <tr>
+    <td>778</td>
+    <td></td>
+    <td>状况ample</td>
+    <td>球员输球</td>
+    <td>布瓦松</td>
     <td></td>
     <td></td>
     <td>未选</td>
