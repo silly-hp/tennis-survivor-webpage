@@ -8,25 +8,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
 :root {
+    /* surfaces */
     --bg:#faf6f0; --bg2:#f0e8dc; --surface:#ffffff; --surface2:#fdf9f5;
-    --clay:#e06040; --clay-dark:#c04830; --clay-dim:rgba(224,96,64,.10);
-    --cobalt:#1a3a70; --cobalt2:#2856a8; --cobalt-dim:rgba(26,58,112,.09);
+
+    /* primary: terracotta clay */
+    --primary:#e06040; --primary-dark:#c04830;
+    --primary-dim:rgba(224,96,64,.10); --primary-rim:rgba(224,96,64,.25);
+
+    /* secondary: cobalt blue */
+    --secondary:#2856a8;
+    --secondary-dim:rgba(40,86,168,.10); --secondary-rim:rgba(40,86,168,.25);
+
+    /* typography */
     --ink:#1a1a1a; --ink2:#3a3530; --muted:#7a7268; --faint:#b0a898;
+
+    /* borders */
     --border:rgba(26,26,26,.10); --border2:rgba(26,26,26,.06);
-    --th-bg:#1a1a1a; --th-text:#e8e0d4;
+
+    /* table chrome */
+    --th-bg:#1a1a1a; --th-text:#e8541a;
     --row-hover:rgba(224,96,64,.05); --row-even:rgba(26,26,26,.02);
-    --drop-bg:#ffffff; --filter-bg:#f5f0e8;
+    --filter-bg:#f5f0e8; --drop-bg:#ffffff; --track-bg:#ede8e0;
+
+    /* podium medals */
     --rank1:#c04830; --rank2:#7a7268; --rank3:#8a6030;
 }
 body.dark {
+    /* surfaces */
     --bg:#161210; --bg2:#1e1916; --surface:#221e1a; --surface2:#2c2622;
-    --clay:#e8603c; --clay-dark:#ff7a54; --clay-dim:rgba(232,96,60,.12);
-    --cobalt:#6fa0e0; --cobalt2:#90bcf4; --cobalt-dim:rgba(111,160,224,.10);
+
+    /* primary */
+    --primary:#e8603c; --primary-dark:#ff7a54;
+    --primary-dim:rgba(232,96,60,.13); --primary-rim:rgba(232,96,60,.30);
+
+    /* secondary */
+    --secondary:#90bcf4;
+    --secondary-dim:rgba(144,188,244,.12); --secondary-rim:rgba(144,188,244,.28);
+
+    /* typography */
     --ink:#f0ece6; --ink2:#c8c0b4; --muted:#8a8278; --faint:#4a4540;
+
+    /* borders */
     --border:rgba(240,236,230,.10); --border2:rgba(240,236,230,.06);
+
+    /* table chrome */
     --th-bg:#0e0c0a; --th-text:#e8541a;
     --row-hover:rgba(232,96,60,.07); --row-even:rgba(255,255,255,.025);
-    --drop-bg:#2c2622; --filter-bg:#1e1916;
+    --filter-bg:#1e1916; --drop-bg:#2c2622; --track-bg:#2c2622;
+
+    /* podium medals */
     --rank1:#ff7a54; --rank2:#8a8278; --rank3:#c8a060;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -55,12 +85,12 @@ body::before{
         .theme-btn{border:1px solid var(--border);background:var(--surface);color:var(--muted);
             padding:7px 16px;border-radius:20px;cursor:pointer;font-size:12px;
             font-family:'Noto Sans SC',sans-serif;transition:all .2s;}
-        .theme-btn:hover{border-color:var(--clay);color:var(--clay);}
+        .theme-btn:hover{border-color:var(--primary);color:var(--primary);}
 
         /* hero */
-        .hero{padding:36px 0 36px 20px;border-left:3px solid var(--clay);margin-bottom:52px;}
+        .hero{padding:36px 0 36px 20px;border-left:3px solid var(--primary);margin-bottom:52px;}
         .hero-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.28em;
-            text-transform:uppercase;color:var(--clay);margin-bottom:14px;}
+            text-transform:uppercase;color:var(--primary);margin-bottom:14px;}
         .hero-title{font-family:'Noto Serif SC',serif;font-size:clamp(26px,5vw,42px);
             font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:14px;}
         .hero-desc{font-size:14px;color:var(--muted);line-height:1.85;max-width:500px;}
@@ -72,10 +102,10 @@ body::before{
         .stat-cell{padding:18px 16px;text-align:center;border-right:1px solid var(--border);}
         .stat-cell:last-child{border-right:none;}
         .stat-val{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;
-            color:var(--clay);line-height:1;margin-bottom:5px;}
+            color:var(--primary);line-height:1;margin-bottom:5px;}
         .stat-lbl{font-size:11px;color:var(--faint);letter-spacing:.04em;}
         .live-wrap{display:inline-flex;align-items:center;gap:5px;}
-        .ldot{width:7px;height:7px;border-radius:50%;background:var(--clay-dark);
+        .ldot{width:7px;height:7px;border-radius:50%;background:var(--primary-dark);
             animation:blink 1.4s ease-in-out infinite;}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
@@ -97,20 +127,20 @@ body::before{
         .card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(26,26,26,.07);}
         body.dark .card:hover{box-shadow:0 4px 16px rgba(0,0,0,.3);}
         .card:hover::before{opacity:1;}
-        .card.atp::before{background:var(--cobalt);}
-        .card.wta::before{background:var(--clay);}
-        .card.all::before{background:var(--clay-dark);}
+        .card.atp::before{background:var(--secondary);}
+        .card.wta::before{background:var(--primary);}
+        .card.all::before{background:var(--primary-dark);}
         .card-eye{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;
             text-transform:uppercase;margin-bottom:8px;}
-        .card.atp .card-eye{color:var(--cobalt);}
-        .card.wta .card-eye{color:var(--clay);}
-        .card.all .card-eye{color:var(--clay-dark);}
+        .card.atp .card-eye{color:var(--secondary);}
+        .card.wta .card-eye{color:var(--primary);}
+        .card.all .card-eye{color:var(--primary-dark);}
         .card-title{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:600;
             color:var(--ink);margin-bottom:5px;}
         .card-desc{font-size:12px;color:var(--muted);line-height:1.6;}
         .card-arrow{position:absolute;right:18px;bottom:18px;font-size:15px;
             color:var(--faint);transition:all .2s;font-family:monospace;}
-        .card:hover .card-arrow{color:var(--clay);transform:translateX(3px);}
+        .card:hover .card-arrow{color:var(--primary);transform:translateX(3px);}
 
         /* footer */
         footer{margin-top:36px;padding-top:24px;border-top:1px solid var(--border2);
@@ -118,7 +148,7 @@ body::before{
             flex-wrap:wrap;gap:12px;}
         .credits{font-size:12px;color:var(--faint);line-height:2;}
         .credits a{color:var(--muted);text-decoration:none;border-bottom:1px dashed var(--border);transition:all .2s;}
-        .credits a:hover{color:var(--clay);border-bottom-color:var(--clay);}
+        .credits a:hover{color:var(--primary);border-bottom-color:var(--primary);}
         .ver{font-family:'Space Mono',monospace;font-size:9px;color:var(--faint);
             letter-spacing:.16em;padding:5px 9px;border:1px solid var(--border2);border-radius:3px;}
 
