@@ -32,6 +32,9 @@
 
     /* podium medals */
     --rank1:#c04830; --rank2:#7a7268; --rank3:#8a6030;
+    /* h2h result colors */
+    --win:#2a7a4a; --win-bg:rgba(42,122,74,.08); --win-rim:rgba(42,122,74,.20);
+    --lose:#c04830; --lose-bg:rgba(192,72,48,.08); --lose-rim:rgba(192,72,48,.20);
 }
 body.dark {
     /* surfaces */
@@ -58,6 +61,9 @@ body.dark {
 
     /* podium medals */
     --rank1:#ff7a54; --rank2:#8a8278; --rank3:#c8a060;
+    /* h2h result colors */
+    --win:#4aaa6a; --win-bg:rgba(74,170,106,.10); --win-rim:rgba(74,170,106,.25);
+    --lose:#ff7a54; --lose-bg:rgba(255,122,84,.10); --lose-rim:rgba(255,122,84,.25);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
@@ -420,7 +426,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年05月22日 08:52:41</span>
+    <span class="updated">⏱ 2026年05月23日 12:39:22</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -447,14 +453,14 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   <div class="pod-name">布勃利克</div>
   <div class="pod-kills">363</div>
   <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">杀人率 44.27%</div>
+  <div class="pod-rate">杀人率 44.38%</div>
 </div>
 <div class="pod-card p3">
   <div class="pod-medal">#3</div>
   <div class="pod-name">哈恰诺夫</div>
   <div class="pod-kills">357</div>
   <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">杀人率 25.12%</div>
+  <div class="pod-rate">杀人率 25.14%</div>
 </div>
 </div>
 
@@ -486,49 +492,49 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2</td>
     <td>布勃利克</td>
     <td>363</td>
-    <td>44.27%</td>
+    <td>44.38%</td>
     <td>65</td>
-    <td>820</td>
+    <td>818</td>
   </tr>
   <tr>
     <td>3</td>
     <td>哈恰诺夫</td>
     <td>357</td>
-    <td>25.12%</td>
+    <td>25.14%</td>
     <td>76</td>
-    <td>1421</td>
+    <td>1420</td>
   </tr>
   <tr>
     <td>4</td>
     <td>梅德韦杰夫</td>
     <td>314</td>
-    <td>27.81%</td>
+    <td>28.04%</td>
     <td>38</td>
-    <td>1129</td>
+    <td>1120</td>
   </tr>
   <tr>
     <td>5</td>
     <td>毛罗然</td>
     <td>311</td>
-    <td>37.25%</td>
+    <td>37.33%</td>
     <td>63</td>
-    <td>835</td>
+    <td>833</td>
   </tr>
   <tr>
     <td>6</td>
     <td>莱赫奇卡</td>
     <td>297</td>
-    <td>25.06%</td>
+    <td>25.11%</td>
     <td>99</td>
-    <td>1185</td>
+    <td>1183</td>
   </tr>
   <tr>
     <td>7</td>
     <td>门希克</td>
     <td>289</td>
-    <td>33.45%</td>
+    <td>33.53%</td>
     <td>84</td>
-    <td>864</td>
+    <td>862</td>
   </tr>
   <tr>
     <td>8</td>
@@ -550,17 +556,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>10</td>
     <td>巴埃斯</td>
     <td>269</td>
-    <td>48.91%</td>
+    <td>49.09%</td>
     <td>123</td>
-    <td>550</td>
+    <td>548</td>
   </tr>
   <tr>
     <td>11</td>
     <td>保罗</td>
     <td>269</td>
-    <td>16.64%</td>
+    <td>16.63%</td>
     <td>93</td>
-    <td>1617</td>
+    <td>1618</td>
   </tr>
   <tr>
     <td>12</td>
@@ -572,30 +578,38 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </tr>
   <tr>
     <td>13</td>
-    <td>阿利亚西姆</td>
-    <td>259</td>
-    <td>22.25%</td>
-    <td>58</td>
-    <td>1164</td>
+    <td>德米纳尔</td>
+    <td>261</td>
+    <td>19.23%</td>
+    <td>35</td>
+    <td>1357</td>
   </tr>
   <tr>
     <td>14</td>
-    <td>鲁德</td>
-    <td>258</td>
-    <td>28.96%</td>
-    <td>56</td>
-    <td>891</td>
+    <td>阿利亚西姆</td>
+    <td>259</td>
+    <td>22.27%</td>
+    <td>58</td>
+    <td>1163</td>
   </tr>
   <tr>
     <td>15</td>
-    <td>米克尔森</td>
-    <td>252</td>
-    <td>41.58%</td>
-    <td>84</td>
-    <td>606</td>
+    <td>鲁德</td>
+    <td>258</td>
+    <td>28.79%</td>
+    <td>56</td>
+    <td>896</td>
   </tr>
   <tr>
     <td>16</td>
+    <td>米克尔森</td>
+    <td>252</td>
+    <td>41.65%</td>
+    <td>84</td>
+    <td>605</td>
+  </tr>
+  <tr>
+    <td>17</td>
     <td>中岛布兰登</td>
     <td>239</td>
     <td>33.52%</td>
@@ -603,7 +617,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>713</td>
   </tr>
   <tr>
-    <td>17</td>
+    <td>18</td>
     <td>阿纳尔迪</td>
     <td>238</td>
     <td>62.14%</td>
@@ -611,20 +625,12 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>383</td>
   </tr>
   <tr>
-    <td>18</td>
-    <td>德米纳尔</td>
-    <td>229</td>
-    <td>17.27%</td>
-    <td>35</td>
-    <td>1326</td>
-  </tr>
-  <tr>
     <td>19</td>
     <td>谢尔顿</td>
     <td>219</td>
-    <td>20.13%</td>
+    <td>20.17%</td>
     <td>37</td>
-    <td>1088</td>
+    <td>1086</td>
   </tr>
   <tr>
     <td>20</td>
@@ -638,17 +644,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>21</td>
     <td>穆塞蒂</td>
     <td>207</td>
-    <td>26.37%</td>
+    <td>26.40%</td>
     <td>34</td>
-    <td>785</td>
+    <td>784</td>
   </tr>
   <tr>
     <td>22</td>
     <td>胡尔卡奇</td>
     <td>189</td>
-    <td>44.06%</td>
+    <td>44.37%</td>
     <td>73</td>
-    <td>429</td>
+    <td>426</td>
   </tr>
   <tr>
     <td>23</td>
@@ -662,44 +668,52 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>24</td>
     <td>施特鲁夫</td>
     <td>187</td>
-    <td>41.56%</td>
+    <td>41.65%</td>
     <td>76</td>
-    <td>450</td>
+    <td>449</td>
   </tr>
   <tr>
     <td>25</td>
     <td>弗-塞伦多洛</td>
     <td>183</td>
-    <td>23.08%</td>
+    <td>23.11%</td>
     <td>46</td>
-    <td>793</td>
+    <td>792</td>
   </tr>
   <tr>
     <td>26</td>
-    <td>索内戈</td>
-    <td>175</td>
-    <td>32.77%</td>
-    <td>76</td>
-    <td>534</td>
+    <td>弗里茨</td>
+    <td>177</td>
+    <td>18.04%</td>
+    <td>44</td>
+    <td>981</td>
   </tr>
   <tr>
     <td>27</td>
-    <td>安贝尔</td>
-    <td>173</td>
-    <td>16.94%</td>
+    <td>索内戈</td>
+    <td>175</td>
+    <td>32.83%</td>
     <td>76</td>
-    <td>1021</td>
+    <td>533</td>
   </tr>
   <tr>
     <td>28</td>
-    <td>波佩林</td>
-    <td>172</td>
-    <td>22.75%</td>
-    <td>52</td>
-    <td>756</td>
+    <td>安贝尔</td>
+    <td>173</td>
+    <td>16.96%</td>
+    <td>76</td>
+    <td>1020</td>
   </tr>
   <tr>
     <td>29</td>
+    <td>波佩林</td>
+    <td>172</td>
+    <td>22.84%</td>
+    <td>52</td>
+    <td>753</td>
+  </tr>
+  <tr>
+    <td>30</td>
     <td>凯茨曼诺维奇</td>
     <td>170</td>
     <td>33.27%</td>
@@ -707,28 +721,20 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>511</td>
   </tr>
   <tr>
-    <td>30</td>
-    <td>弗里茨</td>
-    <td>169</td>
-    <td>17.44%</td>
-    <td>44</td>
-    <td>969</td>
-  </tr>
-  <tr>
     <td>31</td>
     <td>姆佩奇-佩里卡尔</td>
     <td>168</td>
-    <td>63.16%</td>
+    <td>72.10%</td>
     <td>63</td>
-    <td>266</td>
+    <td>233</td>
   </tr>
   <tr>
     <td>32</td>
     <td>迪米特洛夫</td>
     <td>165</td>
-    <td>26.48%</td>
+    <td>26.96%</td>
     <td>33</td>
-    <td>623</td>
+    <td>612</td>
   </tr>
   <tr>
     <td>33</td>
@@ -750,9 +756,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>35</td>
     <td>范德尚舒尔普</td>
     <td>164</td>
-    <td>28.92%</td>
+    <td>28.98%</td>
     <td>127</td>
-    <td>567</td>
+    <td>566</td>
   </tr>
   <tr>
     <td>36</td>
@@ -772,6 +778,14 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </tr>
   <tr>
     <td>38</td>
+    <td>阿尔卡拉斯</td>
+    <td>155</td>
+    <td>15.85%</td>
+    <td>37</td>
+    <td>978</td>
+  </tr>
+  <tr>
+    <td>39</td>
     <td>格里科斯普</td>
     <td>153</td>
     <td>23.91%</td>
@@ -779,28 +793,20 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>640</td>
   </tr>
   <tr>
-    <td>39</td>
-    <td>阿尔卡拉斯</td>
-    <td>153</td>
-    <td>15.71%</td>
-    <td>37</td>
-    <td>974</td>
-  </tr>
-  <tr>
     <td>40</td>
     <td>蒂亚福</td>
     <td>150</td>
-    <td>12.17%</td>
+    <td>12.19%</td>
     <td>46</td>
-    <td>1233</td>
+    <td>1231</td>
   </tr>
   <tr>
     <td>41</td>
     <td>亚-兹韦列夫</td>
-    <td>145</td>
-    <td>12.85%</td>
+    <td>149</td>
+    <td>13.15%</td>
     <td>42</td>
-    <td>1128</td>
+    <td>1133</td>
   </tr>
   <tr>
     <td>42</td>
@@ -814,9 +820,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>43</td>
     <td>贝雷蒂尼</td>
     <td>137</td>
-    <td>19.86%</td>
+    <td>19.88%</td>
     <td>54</td>
-    <td>690</td>
+    <td>689</td>
   </tr>
   <tr>
     <td>44</td>
@@ -838,17 +844,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>46</td>
     <td>达维多维奇</td>
     <td>129</td>
-    <td>14.08%</td>
+    <td>14.11%</td>
     <td>24</td>
-    <td>916</td>
+    <td>914</td>
   </tr>
   <tr>
     <td>47</td>
     <td>武基奇</td>
     <td>124</td>
-    <td>62.63%</td>
+    <td>62.94%</td>
     <td>64</td>
-    <td>198</td>
+    <td>197</td>
   </tr>
   <tr>
     <td>48</td>
@@ -862,17 +868,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>49</td>
     <td>鲁内</td>
     <td>123</td>
-    <td>20.03%</td>
+    <td>20.13%</td>
     <td>61</td>
-    <td>614</td>
+    <td>611</td>
   </tr>
   <tr>
     <td>50</td>
     <td>菲斯</td>
     <td>120</td>
-    <td>14.94%</td>
+    <td>15.13%</td>
     <td>27</td>
-    <td>803</td>
+    <td>793</td>
   </tr>
   <tr>
     <td>51</td>
@@ -894,9 +900,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>53</td>
     <td>丹尼尔太郎</td>
     <td>102</td>
-    <td>91.07%</td>
+    <td>91.89%</td>
     <td>100</td>
-    <td>112</td>
+    <td>111</td>
   </tr>
   <tr>
     <td>54</td>
@@ -926,25 +932,25 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>57</td>
     <td>德雷珀</td>
     <td>98</td>
-    <td>14.10%</td>
+    <td>14.16%</td>
     <td>37</td>
-    <td>695</td>
+    <td>692</td>
   </tr>
   <tr>
     <td>58</td>
     <td>吴易昺</td>
     <td>96</td>
-    <td>41.20%</td>
+    <td>41.38%</td>
     <td>81</td>
-    <td>233</td>
+    <td>232</td>
   </tr>
   <tr>
     <td>59</td>
     <td>辛纳</td>
     <td>94</td>
-    <td>10.15%</td>
+    <td>10.01%</td>
     <td>39</td>
-    <td>926</td>
+    <td>939</td>
   </tr>
   <tr>
     <td>60</td>
@@ -998,9 +1004,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>66</td>
     <td>丰塞卡</td>
     <td>83</td>
-    <td>12.89%</td>
+    <td>12.91%</td>
     <td>21</td>
-    <td>644</td>
+    <td>643</td>
   </tr>
   <tr>
     <td>67</td>
@@ -1022,17 +1028,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>69</td>
     <td>乌戈-卡拉贝利</td>
     <td>77</td>
-    <td>72.64%</td>
+    <td>73.33%</td>
     <td>41</td>
-    <td>106</td>
+    <td>105</td>
   </tr>
   <tr>
     <td>70</td>
     <td>孟菲尔斯</td>
     <td>76</td>
-    <td>20.38%</td>
+    <td>20.43%</td>
     <td>33</td>
-    <td>373</td>
+    <td>372</td>
   </tr>
   <tr>
     <td>71</td>
@@ -1052,6 +1058,14 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </tr>
   <tr>
     <td>73</td>
+    <td>科瓦切维奇</td>
+    <td>69</td>
+    <td>31.65%</td>
+    <td>20</td>
+    <td>218</td>
+  </tr>
+  <tr>
+    <td>74</td>
     <td>贾里</td>
     <td>65</td>
     <td>73.03%</td>
@@ -1059,7 +1073,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>89</td>
   </tr>
   <tr>
-    <td>74</td>
+    <td>75</td>
     <td>戈芬</td>
     <td>61</td>
     <td>93.85%</td>
@@ -1067,7 +1081,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>65</td>
   </tr>
   <tr>
-    <td>75</td>
+    <td>76</td>
     <td>佩-马丁内斯</td>
     <td>58</td>
     <td>54.72%</td>
@@ -1075,7 +1089,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>106</td>
   </tr>
   <tr>
-    <td>76</td>
+    <td>77</td>
     <td>塔比洛</td>
     <td>58</td>
     <td>35.15%</td>
@@ -1083,7 +1097,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>165</td>
   </tr>
   <tr>
-    <td>77</td>
+    <td>78</td>
     <td>邦齐</td>
     <td>54</td>
     <td>73.97%</td>
@@ -1091,7 +1105,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>73</td>
   </tr>
   <tr>
-    <td>78</td>
+    <td>79</td>
     <td>瓦舍罗</td>
     <td>51</td>
     <td>23.18%</td>
@@ -1099,20 +1113,12 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>220</td>
   </tr>
   <tr>
-    <td>79</td>
+    <td>80</td>
     <td>丘里奇</td>
     <td>49</td>
     <td>30.82%</td>
     <td>18</td>
     <td>159</td>
-  </tr>
-  <tr>
-    <td>80</td>
-    <td>科瓦切维奇</td>
-    <td>49</td>
-    <td>24.75%</td>
-    <td>14</td>
-    <td>198</td>
   </tr>
   <tr>
     <td>81</td>
@@ -1222,17 +1228,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>94</td>
     <td>纳尔迪</td>
     <td>27</td>
-    <td>67.50%</td>
+    <td>72.97%</td>
     <td>9</td>
-    <td>40</td>
+    <td>37</td>
   </tr>
   <tr>
     <td>95</td>
     <td>舍夫琴科</td>
     <td>26</td>
-    <td>21.14%</td>
+    <td>21.31%</td>
     <td>19</td>
-    <td>123</td>
+    <td>122</td>
   </tr>
   <tr>
     <td>96</td>
@@ -1246,9 +1252,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>97</td>
     <td>德约科维奇</td>
     <td>23</td>
-    <td>3.82%</td>
+    <td>3.93%</td>
     <td>10</td>
-    <td>602</td>
+    <td>585</td>
   </tr>
   <tr>
     <td>98</td>
@@ -1262,17 +1268,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>99</td>
     <td>阿特马纳</td>
     <td>22</td>
-    <td>30.99%</td>
+    <td>32.35%</td>
     <td>5</td>
-    <td>71</td>
+    <td>68</td>
   </tr>
   <tr>
     <td>100</td>
     <td>杰雷</td>
     <td>22</td>
-    <td>15.71%</td>
+    <td>17.60%</td>
     <td>6</td>
-    <td>140</td>
+    <td>125</td>
   </tr>
   <tr>
     <td>101</td>
@@ -1294,9 +1300,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>103</td>
     <td>费恩利</td>
     <td>19</td>
-    <td>43.18%</td>
+    <td>44.19%</td>
     <td>9</td>
-    <td>44</td>
+    <td>43</td>
   </tr>
   <tr>
     <td>104</td>
@@ -1358,17 +1364,17 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>111</td>
     <td>卡尔巴耶斯</td>
     <td>14</td>
-    <td>45.16%</td>
+    <td>48.28%</td>
     <td>12</td>
-    <td>31</td>
+    <td>29</td>
   </tr>
   <tr>
     <td>112</td>
     <td>西冈良仁</td>
     <td>14</td>
-    <td>11.38%</td>
+    <td>11.48%</td>
     <td>5</td>
-    <td>123</td>
+    <td>122</td>
   </tr>
   <tr>
     <td>113</td>
@@ -1406,9 +1412,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>117</td>
     <td>汤普森</td>
     <td>11</td>
-    <td>7.75%</td>
+    <td>7.80%</td>
     <td>3</td>
-    <td>142</td>
+    <td>141</td>
   </tr>
   <tr>
     <td>118</td>
@@ -1620,14 +1626,6 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </tr>
   <tr>
     <td>144</td>
-    <td>纳加尔</td>
-    <td>4</td>
-    <td>80.00%</td>
-    <td>3</td>
-    <td>5</td>
-  </tr>
-  <tr>
-    <td>145</td>
     <td>曾俊欣</td>
     <td>4</td>
     <td>66.67%</td>
@@ -1635,7 +1633,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>6</td>
   </tr>
   <tr>
-    <td>146</td>
+    <td>145</td>
     <td>胡-塞伦多洛</td>
     <td>4</td>
     <td>44.44%</td>
@@ -1643,20 +1641,28 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>9</td>
   </tr>
   <tr>
-    <td>147</td>
+    <td>146</td>
     <td>布塞</td>
     <td>4</td>
-    <td>3.25%</td>
+    <td>2.65%</td>
     <td>3</td>
-    <td>123</td>
+    <td>151</td>
   </tr>
   <tr>
-    <td>148</td>
+    <td>147</td>
     <td>比-哈里斯</td>
     <td>4</td>
     <td>16.67%</td>
     <td>3</td>
     <td>24</td>
+  </tr>
+  <tr>
+    <td>148</td>
+    <td>纳加尔</td>
+    <td>4</td>
+    <td>100.00%</td>
+    <td>3</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>149</td>
@@ -1668,15 +1674,15 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </tr>
   <tr>
     <td>150</td>
-    <td>克普费尔</td>
+    <td>锦织圭</td>
     <td>3</td>
-    <td>7.14%</td>
+    <td>7.50%</td>
     <td>2</td>
-    <td>42</td>
+    <td>40</td>
   </tr>
   <tr>
     <td>151</td>
-    <td>锦织圭</td>
+    <td>克普费尔</td>
     <td>3</td>
     <td>7.14%</td>
     <td>2</td>
@@ -1710,9 +1716,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>155</td>
     <td>迈赫扎克</td>
     <td>3</td>
-    <td>3.00%</td>
+    <td>3.03%</td>
     <td>1</td>
-    <td>100</td>
+    <td>99</td>
   </tr>
   <tr>
     <td>156</td>
@@ -2243,7 +2249,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1</td>
   </tr>
   <tr>
-    <td>223</td>
+    <td>222</td>
     <td>达尔文-布兰奇</td>
     <td>0</td>
     <td>0.00%</td>
