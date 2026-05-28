@@ -441,7 +441,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年05月28日 11:35:00</span>
+    <span class="updated">⏱ 2026年05月28日 11:55:39</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -464,9 +464,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 95 人已选</span>
+        <span class="meta-chip chip-valid">✓ 106 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">146 人未选</span>
+    <span class="meta-chip chip-nosel">135 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-chip chip-suicide">⚠ 4 人自杀</span>
     <span class="meta-sep">｜</span>
@@ -482,7 +482,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 14 名球员）</span>
+        <span id="sumToggleTxt">显示全部 15 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -490,10 +490,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "波塔波娃", "normal": 32, "bye": 0}, {"name": "卡萨特金娜", "normal": 19, "bye": 0}, {"name": "凯斯", "normal": 9, "bye": 0}, {"name": "萨卡里", "normal": 8, "bye": 0}, {"name": "李吉妮", "normal": 6, "bye": 0}, {"name": "梅尔滕斯", "normal": 5, "bye": 0}, {"name": "施内德", "normal": 5, "bye": 0}, {"name": "大坂直美", "normal": 4, "bye": 0}, {"name": "姆博科", "normal": 3, "bye": 0}, {"name": "卡林斯卡娅", "normal": 1, "bye": 0}, {"name": "奥利尼科娃", "normal": 1, "bye": 0}, {"name": "萨巴莲卡", "normal": 1, "bye": 0}, {"name": "高芙", "normal": 1, "bye": 0}, {"name": "埃-纳瓦罗", "normal": 0, "bye": 0}];
-        var TOTALS  = {"normal": 95, "bye": 0, "grand": 95};
-        var MAX_VAL = 32;
-        var CLIPBOARD_HEADER = "已选95 未选146 自杀4";
+        var ROWS    = [{"name": "波塔波娃", "normal": 35, "bye": 0}, {"name": "卡萨特金娜", "normal": 20, "bye": 0}, {"name": "凯斯", "normal": 10, "bye": 0}, {"name": "萨卡里", "normal": 8, "bye": 0}, {"name": "大坂直美", "normal": 6, "bye": 0}, {"name": "施内德", "normal": 6, "bye": 0}, {"name": "李吉妮", "normal": 6, "bye": 0}, {"name": "梅尔滕斯", "normal": 5, "bye": 0}, {"name": "姆博科", "normal": 3, "bye": 0}, {"name": "卡林斯卡娅", "normal": 2, "bye": 0}, {"name": "阿尼西莫娃", "normal": 2, "bye": 0}, {"name": "奥利尼科娃", "normal": 1, "bye": 0}, {"name": "萨巴莲卡", "normal": 1, "bye": 0}, {"name": "高芙", "normal": 1, "bye": 0}, {"name": "埃-纳瓦罗", "normal": 0, "bye": 0}];
+        var TOTALS  = {"normal": 106, "bye": 0, "grand": 106};
+        var MAX_VAL = 35;
+        var CLIPBOARD_HEADER = "已选106 未选135 自杀4";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -787,9 +787,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>波塔波娃</td>
+    <td>姆博科</td>
+    <td>已选</td>
     <td>100</td>
     <td>240</td>
     <td>4336</td>
@@ -1027,9 +1027,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>施内德</td>
+    <td>凯斯</td>
+    <td>已选</td>
     <td>100</td>
     <td>70</td>
     <td>3906</td>
@@ -3817,9 +3817,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>萨卡里</td>
+    <td>已选</td>
     <td>100</td>
     <td>335</td>
     <td>1718</td>
@@ -4612,9 +4612,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>李吉妮</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>1650</td>
@@ -5122,9 +5122,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
+    <td>波塔波娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>1390</td>
@@ -5857,9 +5857,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>波塔波娃</td>
+    <td>李吉妮</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>1026</td>
@@ -7102,9 +7102,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
+    <td>阿尼西莫娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>523</td>
@@ -12097,9 +12097,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
+    <td>阿尼西莫娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>123</td>
@@ -12382,9 +12382,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
+    <td>卡萨特金娜</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>110</td>
@@ -13118,7 +13118,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>4</td>
     <td></td>
     <td>卡萨特金娜</td>
-    <td></td>
+    <td>波塔波娃</td>
     <td>已选</td>
     <td>100</td>
     <td>0</td>
@@ -13162,9 +13162,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
+    <td>卡林斯卡娅</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>100</td>
@@ -13177,9 +13177,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
+    <td>凯斯</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>100</td>
     <td>0</td>
     <td>100</td>
