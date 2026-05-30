@@ -441,7 +441,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年05月30日 09:41:59</span>
+    <span class="updated">⏱ 2026年05月30日 09:48:03</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -464,11 +464,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 0 人已选</span>
+        <span class="meta-chip chip-valid">✓ 6 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">0 人未选</span>
+    <span class="meta-chip chip-nosel">43 人未选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-suicide">⚠ 50 人自杀</span>
+    <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 50 人</span>
         </div>
@@ -482,7 +482,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 5 名球员）</span>
+        <span id="sumToggleTxt">显示全部 3 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -490,10 +490,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "卢布列夫", "normal": 0, "bye": 0}, {"name": "霍达尔", "normal": 0, "bye": 0}, {"name": "鲁德", "normal": 0, "bye": 0}, {"name": "卡雷尼奥-布斯塔", "normal": 0, "bye": 0}, {"name": "亚-兹韦列夫", "normal": 0, "bye": 0}];
-        var TOTALS  = {"normal": 0, "bye": 0, "grand": 1};
-        var MAX_VAL = 1;
-        var CLIPBOARD_HEADER = "已选0 未选0 自杀50";
+        var ROWS    = [{"name": "塔比洛", "normal": 3, "bye": 0}, {"name": "弗-塞伦多洛", "normal": 2, "bye": 0}, {"name": "蒂亚福", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 6, "bye": 0, "grand": 6};
+        var MAX_VAL = 3;
+        var CLIPBOARD_HEADER = "已选6 未选43 自杀1";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -802,9 +802,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>50</td>
     <td>4538</td>
@@ -982,9 +982,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>50</td>
     <td>4090</td>
@@ -997,9 +997,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>蒂兰特</td>
-    <td>自杀（重复）</td>
+    <td>塔比洛</td>
+    <td>科博利</td>
+    <td>已选</td>
     <td>150</td>
     <td>36</td>
     <td>4103</td>
@@ -1162,9 +1162,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>300</td>
     <td>3376</td>
@@ -1552,9 +1552,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>36</td>
     <td>3231</td>
@@ -1687,9 +1687,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>50</td>
     <td>3064</td>
@@ -1717,9 +1717,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>50</td>
     <td>3060</td>
@@ -1867,9 +1867,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>1300</td>
     <td>1661</td>
@@ -2137,9 +2137,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>蒂兰特</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>2668</td>
@@ -2212,9 +2212,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>50</td>
     <td>2548</td>
@@ -2407,9 +2407,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>75</td>
     <td>2401</td>
@@ -2527,8 +2527,8 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>鲁德</td>
-    <td>亚-兹韦列夫</td>
+    <td>弗-塞伦多洛</td>
+    <td>塔比洛</td>
     <td>自杀（重复）</td>
     <td>150</td>
     <td>50</td>
@@ -2542,9 +2542,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>300</td>
     <td>2050</td>
@@ -2587,9 +2587,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>300</td>
     <td>2038</td>
@@ -2647,9 +2647,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>亚-兹韦列夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>10</td>
     <td>2278</td>
@@ -2737,9 +2737,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>36</td>
     <td>2198</td>
@@ -2767,9 +2767,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>2212</td>
@@ -2782,9 +2782,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>2190</td>
@@ -2857,9 +2857,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>50</td>
     <td>2111</td>
@@ -3142,9 +3142,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>鲁德</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>23</td>
     <td>1966</td>
@@ -3217,9 +3217,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>10</td>
     <td>1966</td>
@@ -3382,9 +3382,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>德约科维奇</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>1886</td>
@@ -3412,9 +3412,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>亚-兹韦列夫</td>
-    <td>自杀（重复）</td>
+    <td>弗-塞伦多洛</td>
+    <td>阿利亚西姆</td>
+    <td>已选</td>
     <td>150</td>
     <td>75</td>
     <td>1804</td>
@@ -3547,9 +3547,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>300</td>
     <td>1495</td>
@@ -4042,9 +4042,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>300</td>
     <td>1313</td>
@@ -4057,9 +4057,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>300</td>
     <td>1306</td>
@@ -4252,9 +4252,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>亚-兹韦列夫</td>
-    <td>自杀（重复）</td>
+    <td>塔比洛</td>
+    <td>阿利亚西姆</td>
+    <td>已选</td>
     <td>150</td>
     <td>0</td>
     <td>1499</td>
@@ -4417,9 +4417,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>鲁德</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>1438</td>
@@ -4462,9 +4462,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>鲁德</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>1431</td>
@@ -4477,9 +4477,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>36</td>
     <td>1395</td>
@@ -4522,9 +4522,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>卢布列夫</td>
-    <td>自杀（重复）</td>
+    <td>塔比洛</td>
+    <td>蒂亚福</td>
+    <td>已选</td>
     <td>150</td>
     <td>300</td>
     <td>1109</td>
@@ -4717,9 +4717,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>亚-兹韦列夫</td>
-    <td>自杀（重复）</td>
+    <td>弗-塞伦多洛</td>
+    <td>塔比洛</td>
+    <td>已选</td>
     <td>150</td>
     <td>10</td>
     <td>1286</td>
@@ -4822,9 +4822,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>75</td>
     <td>1179</td>
@@ -5017,9 +5017,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>蒂兰特</td>
-    <td>自杀（重复）</td>
+    <td>蒂亚福</td>
+    <td>塔比洛</td>
+    <td>已选</td>
     <td>150</td>
     <td>0</td>
     <td>1159</td>
@@ -5377,9 +5377,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>鲁德</td>
-    <td>霍达尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>36</td>
     <td>1014</td>
@@ -5692,9 +5692,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>亚-兹韦列夫</td>
-    <td>霍达尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>909</td>
@@ -6097,9 +6097,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>鲁德</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>731</td>
@@ -6787,9 +6787,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卡雷尼奥-布斯塔</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>477</td>
@@ -6817,9 +6817,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>鲁德</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>10</td>
     <td>463</td>
@@ -8002,9 +8002,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>鲁德</td>
-    <td>德约科维奇</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>285</td>
@@ -8227,9 +8227,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>亚-兹韦列夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>265</td>
@@ -8542,9 +8542,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卡雷尼奥-布斯塔</td>
-    <td>鲁德</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>50</td>
     <td>190</td>
@@ -11152,9 +11152,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>160</td>
@@ -11242,9 +11242,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>鲁德</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>160</td>
@@ -11377,9 +11377,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>150</td>
@@ -11452,9 +11452,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>哈恰诺夫</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>150</td>
@@ -11467,9 +11467,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>霍达尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>150</td>
@@ -11482,9 +11482,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>150</td>
@@ -11497,9 +11497,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>150</td>
@@ -11512,9 +11512,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>6</td>
     <td></td>
-    <td>霍达尔</td>
-    <td>德米纳尔</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>150</td>
     <td>0</td>
     <td>150</td>
