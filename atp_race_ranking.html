@@ -441,7 +441,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年06月01日 08:43:32</span>
+    <span class="updated">⏱ 2026年06月01日 09:04:04</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -465,9 +465,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 1 人已选</span>
+        <span class="meta-chip chip-valid">✓ 3 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">27 人未选</span>
+    <span class="meta-chip chip-nosel">25 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 28 人</span>
         </div>
@@ -481,7 +481,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 1 名球员）</span>
+        <span id="sumToggleTxt">显示全部 2 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -489,10 +489,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "阿利亚西姆", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 1, "bye": 0, "grand": 1};
-        var MAX_VAL = 1;
-        var CLIPBOARD_HEADER = "已选1 未选27";
+        var ROWS    = [{"name": "科博利", "normal": 2, "bye": 0}, {"name": "阿利亚西姆", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 3, "bye": 0, "grand": 3};
+        var MAX_VAL = 2;
+        var CLIPBOARD_HEADER = "已选3 未选25";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -1295,9 +1295,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>8</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>科博利</td>
+    <td>胡-塞伦多洛</td>
+    <td>已选</td>
     <td>300</td>
     <td>2215</td>
     <td><span class="rank up">+20</span></td>
@@ -2737,9 +2737,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>8</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>科博利</td>
+    <td>阿利亚西姆</td>
+    <td>已选</td>
     <td>300</td>
     <td>1524</td>
     <td><span class="rank up">+43</span></td>
