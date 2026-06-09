@@ -7,16 +7,16 @@
 | 页面 | 功能说明 |
 |------|----------|
 | [首页](index.html) | 导航总览，快速跳转各功能模块 |
-| [ATP 幸存者积分](atp_ranking.html) | ATP 球员实时幸存者积分排名 |
-| [WTA 幸存者积分](wta_ranking.html) | WTA 球员实时幸存者积分排名 |
-| [ATP Race 排名](atp_race_ranking.html) | ATP 年终总决赛 Race to Turin 积分 |
-| [WTA Race 排名](wta_race_ranking.html) | WTA 年终总决赛 Race to Riyadh 积分 |
+| [ATP 幸存者积分排名](atp_ranking.html) | ATP 球员实时幸存者积分排名 |
+| [WTA 幸存者积分排名](wta_ranking.html) | WTA 球员实时幸存者积分排名 |
+| [ATP 幸存者冠军排名](atp_race_ranking.html) | ATP 年终总决赛 Race to Turin 积分 |
+| [WTA 幸存者冠军排名](wta_race_ranking.html) | WTA 年终总决赛 Race to Riyadh 积分 |
 | [ATP 冠军榜](atp_champion.html) | ATP 幸存者游戏历届赛事冠军记录 |
 | [WTA 冠军榜](wta_champion.html) | WTA 幸存者游戏历届赛事冠军记录 |
-| [2026 ATP 终结者](2026atpkiller.html) | 2026 赛季 ATP 淘汰数排行榜 |
-| [2026 WTA 终结者](2026wtakiller.html) | 2026 赛季 WTA 淘汰数排行榜 |
-| [ATP 历史终结者](atpkiller.html) | ATP 全历史终结者总榜 |
-| [WTA 历史终结者](wtakiller.html) | WTA 全历史终结者总榜 |
+| [2026 ATP杀手榜](2026atpkiller.html) | 2026 赛季 ATP 淘汰数排行榜 |
+| [2026 WTA杀手榜](2026wtakiller.html) | 2026 赛季 WTA 淘汰数排行榜 |
+| [ATP 历史杀手榜](atpkiller.html) | ATP 全历史终结者总榜 |
+| [WTA 历史杀手榜者](wtakiller.html) | WTA 全历史终结者总榜 |
 | [ATP 交手记录](h2h_atp.html) | ATP 任意两名球员历史对阵查询 |
 | [WTA 交手记录](h2h_wta.html) | WTA 任意两名球员历史对阵查询 |
 
