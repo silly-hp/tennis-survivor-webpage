@@ -435,7 +435,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年06月18日 17:34:14</span>
+    <span class="updated">⏱ 2026年06月18日 17:54:51</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -458,9 +458,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 61 人已选</span>
+        <span class="meta-chip chip-valid">✓ 64 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">13 人未选</span>
+    <span class="meta-chip chip-nosel">9 人未选</span>
+    <span class="meta-sep">｜</span>
+    <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 74 人</span>
         </div>
@@ -482,10 +484,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "斯维托丽娜", "normal": 50, "bye": 0}, {"name": "雷巴金娜", "normal": 6, "bye": 0}, {"name": "诺斯科娃", "normal": 5, "bye": 0}];
-        var TOTALS  = {"normal": 61, "bye": 0, "grand": 61};
-        var MAX_VAL = 50;
-        var CLIPBOARD_HEADER = "已选61 未选13";
+        var ROWS    = [{"name": "斯维托丽娜", "normal": 53, "bye": 0}, {"name": "雷巴金娜", "normal": 6, "bye": 0}, {"name": "诺斯科娃", "normal": 5, "bye": 0}];
+        var TOTALS  = {"normal": 64, "bye": 0, "grand": 64};
+        var MAX_VAL = 53;
+        var CLIPBOARD_HEADER = "已选64 未选9 自杀1";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -1304,9 +1306,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
+    <td>斯维托丽娜</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>84</td>
     <td>1</td>
     <td>3392</td>
@@ -3749,9 +3751,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>斯维托丽娜</td>
+    <td>雷巴金娜</td>
+    <td>已选</td>
     <td>84</td>
     <td>30</td>
     <td>2107</td>
@@ -6569,9 +6571,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
+    <td>斯维托丽娜</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>84</td>
     <td>1</td>
     <td>779</td>
@@ -10934,9 +10936,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
+    <td>斯维托丽娜</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>自杀（重复）</td>
     <td>84</td>
     <td>0</td>
     <td>134</td>
