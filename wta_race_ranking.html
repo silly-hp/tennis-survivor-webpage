@@ -435,7 +435,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年06月21日 10:03:49</span>
+    <span class="updated">⏱ 2026年06月21日 10:24:15</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -459,9 +459,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 非轮空 39 人</span>
+        <span class="meta-chip chip-valid">✓ 非轮空 47 人</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-bye">◎ 轮空 5 人</span>
+    <span class="meta-chip chip-bye">◎ 轮空 6 人</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 865 人</span>
         </div>
@@ -480,7 +480,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 5 名球员）</span>
+        <span id="sumToggleTxt">显示全部 7 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -488,10 +488,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = true;
-        var ROWS    = [{"name": "西尼亚科娃", "normal": 14, "bye": 0}, {"name": "大坂直美", "normal": 10, "bye": 2}, {"name": "伊-约维奇", "normal": 9, "bye": 0}, {"name": "博尔特", "normal": 5, "bye": 3}, {"name": "蕾-费尔南德斯", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 39, "bye": 5, "grand": 44};
-        var MAX_VAL = 14;
-        var CLIPBOARD_HEADER = "非轮空39 轮空5";
+        var ROWS    = [{"name": "西尼亚科娃", "normal": 16, "bye": 0}, {"name": "大坂直美", "normal": 12, "bye": 2}, {"name": "伊-约维奇", "normal": 11, "bye": 0}, {"name": "博尔特", "normal": 6, "bye": 2}, {"name": "蕾-费尔南德斯", "normal": 2, "bye": 0}, {"name": "弗雷希", "normal": 0, "bye": 1}, {"name": "王欣瑜", "normal": 0, "bye": 1}];
+        var TOTALS  = {"normal": 47, "bye": 6, "grand": 53};
+        var MAX_VAL = 16;
+        var CLIPBOARD_HEADER = "非轮空47 轮空6";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -698,7 +698,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td></td>
     <td>博尔特</td>
     <td>王欣瑜</td>
-    <td>轮空</td>
+    <td>已选</td>
     <td>0</td>
     <td>3563</td>
     <td><span class="rank same"></span></td>
@@ -768,9 +768,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>10</td>
     <td>大***5</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>弗雷希</td>
+    <td>西尼亚科娃</td>
+    <td>轮空</td>
     <td>0</td>
     <td>3249</td>
     <td><span class="rank same"></span></td>
@@ -900,9 +900,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>21</td>
     <td>就是爱吃虾_</td>
     <td></td>
+    <td>王欣瑜</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>轮空</td>
     <td>0</td>
     <td>2904</td>
     <td><span class="rank same"></span></td>
@@ -1632,9 +1632,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>82</td>
     <td>M***y</td>
     <td></td>
+    <td>伊-约维奇</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>0</td>
     <td>2130</td>
     <td><span class="rank same"></span></td>
@@ -2244,9 +2244,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>133</td>
     <td>法网冠军丰塞卡</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>伊-约维奇</td>
+    <td>已选</td>
     <td>0</td>
     <td>1796</td>
     <td><span class="rank same"></span></td>
@@ -2520,9 +2520,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>156</td>
     <td>南柯一梦-mx</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>蕾-费尔南德斯</td>
+    <td>大坂直美</td>
+    <td>已选</td>
     <td>0</td>
     <td>1680</td>
     <td><span class="rank same"></span></td>
@@ -3324,9 +3324,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>223</td>
     <td>TowerZ</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>西尼亚科娃</td>
+    <td>大坂直美</td>
+    <td>已选</td>
     <td>0</td>
     <td>1275</td>
     <td><span class="rank same"></span></td>
@@ -3408,9 +3408,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>230</td>
     <td>海狸先生的小翘臀</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>伊-约维奇</td>
+    <td>已选</td>
     <td>0</td>
     <td>1260</td>
     <td><span class="rank same"></span></td>
@@ -4728,9 +4728,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>340</td>
     <td>海***y</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>西尼亚科娃</td>
+    <td>伊-约维奇</td>
+    <td>已选</td>
     <td>0</td>
     <td>657</td>
     <td><span class="rank same"></span></td>
@@ -7308,15 +7308,15 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>555</td>
     <td>同***物</td>
     <td></td>
+    <td>伊-约维奇</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>0</td>
     <td>60</td>
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[]">
-    <td>556</td>
+    <td>555</td>
     <td>556</td>
     <td>你不放弃我便追随</td>
     <td></td>
@@ -7325,10 +7325,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>60</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>556</td>
+    <td>555</td>
     <td>556</td>
     <td>M***i</td>
     <td></td>
@@ -7337,10 +7337,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>60</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>556</td>
+    <td>555</td>
     <td>556</td>
     <td>闹闹小德</td>
     <td></td>
@@ -7349,10 +7349,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>60</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>556</td>
+    <td>555</td>
     <td>556</td>
     <td>德***j</td>
     <td></td>
@@ -7361,7 +7361,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>60</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[]">
     <td>560</td>
