@@ -460,7 +460,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </div>
         <div class="sum-meta">
         <span class="meta-chip chip-valid">✓ 101 人已选</span>
+        <span class="meta-chip chip-valid">✓ 101 人已选</span>
     <span class="meta-sep">｜</span>
+    <span class="meta-chip chip-nosel">184 人未选</span>
     <span class="meta-chip chip-nosel">184 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
@@ -485,6 +487,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
+        var ROWS    = [{"name": "贝古", "normal": 40, "bye": 0}, {"name": "卡林斯卡娅", "normal": 32, "bye": 0}, {"name": "伊-约维奇", "normal": 13, "bye": 0}, {"name": "施内德", "normal": 10, "bye": 0}, {"name": "郑钦文", "normal": 3, "bye": 0}, {"name": "梅尔滕斯", "normal": 2, "bye": 0}, {"name": "谢拉", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 101, "bye": 0, "grand": 101};
+        var MAX_VAL = 40;
+        var CLIPBOARD_HEADER = "已选101 未选184 自杀1";
         var ROWS    = [{"name": "贝古", "normal": 40, "bye": 0}, {"name": "卡林斯卡娅", "normal": 32, "bye": 0}, {"name": "伊-约维奇", "normal": 13, "bye": 0}, {"name": "施内德", "normal": 10, "bye": 0}, {"name": "郑钦文", "normal": 3, "bye": 0}, {"name": "梅尔滕斯", "normal": 2, "bye": 0}, {"name": "谢拉", "normal": 1, "bye": 0}];
         var TOTALS  = {"normal": 101, "bye": 0, "grand": 101};
         var MAX_VAL = 40;
@@ -717,6 +723,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>贝古</td>
+    <td>卡林斯卡娅</td>
+    <td>已选</td>
     <td>贝古</td>
     <td>卡林斯卡娅</td>
     <td>已选</td>
@@ -1123,6 +1132,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>卡林斯卡娅</td>
+    <td>伊-约维奇</td>
+    <td>已选</td>
     <td>卡林斯卡娅</td>
     <td>伊-约维奇</td>
     <td>已选</td>
@@ -2887,6 +2899,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>贝古</td>
+    <td>郑钦文</td>
+    <td>已选</td>
     <td>贝古</td>
     <td>郑钦文</td>
     <td>已选</td>
@@ -6121,6 +6136,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>贝古</td>
+    <td>施内德</td>
+    <td>已选</td>
     <td>贝古</td>
     <td>施内德</td>
     <td>已选</td>
