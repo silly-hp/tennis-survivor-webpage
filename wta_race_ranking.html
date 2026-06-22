@@ -460,7 +460,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </div>
         <div class="sum-meta">
         <span class="meta-chip chip-valid">✓ 150 人已选</span>
+        <span class="meta-chip chip-valid">✓ 150 人已选</span>
     <span class="meta-sep">｜</span>
+    <span class="meta-chip chip-nosel">135 人未选</span>
     <span class="meta-chip chip-nosel">135 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
@@ -485,6 +487,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
+        var ROWS    = [{"name": "贝古", "normal": 58, "bye": 0}, {"name": "卡林斯卡娅", "normal": 45, "bye": 0}, {"name": "伊-约维奇", "normal": 21, "bye": 0}, {"name": "施内德", "normal": 15, "bye": 0}, {"name": "郑钦文", "normal": 4, "bye": 0}, {"name": "梅尔滕斯", "normal": 3, "bye": 0}, {"name": "伊埃拉", "normal": 2, "bye": 0}, {"name": "谢拉", "normal": 2, "bye": 0}];
+        var TOTALS  = {"normal": 150, "bye": 0, "grand": 150};
+        var MAX_VAL = 58;
+        var CLIPBOARD_HEADER = "已选150 未选135 自杀1";
         var ROWS    = [{"name": "贝古", "normal": 58, "bye": 0}, {"name": "卡林斯卡娅", "normal": 45, "bye": 0}, {"name": "伊-约维奇", "normal": 21, "bye": 0}, {"name": "施内德", "normal": 15, "bye": 0}, {"name": "郑钦文", "normal": 4, "bye": 0}, {"name": "梅尔滕斯", "normal": 3, "bye": 0}, {"name": "伊埃拉", "normal": 2, "bye": 0}, {"name": "谢拉", "normal": 2, "bye": 0}];
         var TOTALS  = {"normal": 150, "bye": 0, "grand": 150};
         var MAX_VAL = 58;
@@ -916,6 +922,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>贝古</td>
     <td>卡林斯卡娅</td>
     <td>已选</td>
+    <td>贝古</td>
+    <td>卡林斯卡娅</td>
+    <td>已选</td>
     <td>30</td>
     <td>3032</td>
     <td><span class="rank same"></span></td>
@@ -998,7 +1007,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1</td>
     <td></td>
     <td>贝古</td>
+    <td>贝古</td>
     <td></td>
+    <td>已选</td>
     <td>已选</td>
     <td>30</td>
     <td>2803</td>
@@ -1487,6 +1498,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>卡林斯卡娅</td>
+    <td>王欣瑜</td>
+    <td>已选</td>
     <td>卡林斯卡娅</td>
     <td>王欣瑜</td>
     <td>已选</td>
@@ -2680,6 +2694,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>施内德</td>
     <td>卡林斯卡娅</td>
     <td>已选</td>
+    <td>施内德</td>
+    <td>卡林斯卡娅</td>
+    <td>已选</td>
     <td>30</td>
     <td>1775</td>
     <td><span class="rank up">+3</span></td>
@@ -3730,6 +3747,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>伊-约维奇</td>
     <td>施内德</td>
     <td>已选</td>
+    <td>伊-约维奇</td>
+    <td>施内德</td>
+    <td>已选</td>
     <td>30</td>
     <td>1336</td>
     <td><span class="rank up">+4</span></td>
@@ -4176,7 +4196,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1</td>
     <td></td>
     <td>卡林斯卡娅</td>
+    <td>卡林斯卡娅</td>
     <td></td>
+    <td>已选</td>
     <td>已选</td>
     <td>30</td>
     <td>1164</td>
@@ -6264,6 +6286,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>贝古</td>
     <td>伊-约维奇</td>
     <td>已选</td>
+    <td>贝古</td>
+    <td>伊-约维奇</td>
+    <td>已选</td>
     <td>30</td>
     <td>388</td>
     <td><span class="rank up">+3</span></td>
@@ -7634,7 +7659,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1</td>
     <td></td>
     <td>卡林斯卡娅</td>
+    <td>卡林斯卡娅</td>
     <td></td>
+    <td>已选</td>
     <td>已选</td>
     <td>30</td>
     <td>150</td>
@@ -9188,7 +9215,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1</td>
     <td></td>
     <td>伊埃拉</td>
+    <td>伊埃拉</td>
     <td></td>
+    <td>已选</td>
     <td>已选</td>
     <td>30</td>
     <td>62</td>
