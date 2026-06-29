@@ -435,7 +435,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年06月29日 12:39:51</span>
+    <span class="updated">⏱ 2026年06月29日 13:00:12</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -459,11 +459,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 277 人已选</span>
+        <span class="meta-chip chip-valid">✓ 286 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">504 人未选</span>
+    <span class="meta-chip chip-nosel">496 人未选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-total">总计 781 人</span>
+    <span class="meta-total">总计 782 人</span>
         </div>
         </div>
             <div class="sum-col-hd">
@@ -475,7 +475,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 34 名球员）</span>
+        <span id="sumToggleTxt">显示全部 36 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -483,10 +483,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "保罗", "normal": 41, "bye": 0}, {"name": "博尔热斯", "normal": 36, "bye": 0}, {"name": "霍达尔", "normal": 28, "bye": 0}, {"name": "勒纳-钱", "normal": 19, "bye": 0}, {"name": "中岛布兰登", "normal": 18, "bye": 0}, {"name": "达姆", "normal": 14, "bye": 0}, {"name": "达维多维奇", "normal": 9, "bye": 0}, {"name": "阿利亚西姆", "normal": 9, "bye": 0}, {"name": "丰塞卡", "normal": 8, "bye": 0}, {"name": "兰达卢塞", "normal": 8, "bye": 0}, {"name": "德约科维奇", "normal": 8, "bye": 0}, {"name": "诺里", "normal": 8, "bye": 0}, {"name": "辛纳", "normal": 8, "bye": 0}, {"name": "卢布列夫", "normal": 7, "bye": 0}, {"name": "施特鲁夫", "normal": 6, "bye": 0}, {"name": "林德克内希", "normal": 6, "bye": 0}, {"name": "土方凛辉", "normal": 5, "bye": 0}, {"name": "沙波瓦洛夫", "normal": 5, "bye": 0}, {"name": "西西帕斯", "normal": 5, "bye": 0}, {"name": "富乔维奇", "normal": 4, "bye": 0}, {"name": "布鲁克斯比", "normal": 3, "bye": 0}, {"name": "梅杰多维奇", "normal": 3, "bye": 0}, {"name": "达尔德里", "normal": 3, "bye": 0}, {"name": "巴列霍", "normal": 2, "bye": 0}, {"name": "德容", "normal": 2, "bye": 0}, {"name": "梅希亚", "normal": 2, "bye": 0}, {"name": "梅德韦杰夫", "normal": 2, "bye": 0}, {"name": "胡尔卡奇", "normal": 2, "bye": 0}, {"name": "乌戈-卡拉贝利", "normal": 1, "bye": 0}, {"name": "望月慎太郎", "normal": 1, "bye": 0}, {"name": "梅里达", "normal": 1, "bye": 0}, {"name": "毛罗然", "normal": 1, "bye": 0}, {"name": "科瓦切维奇", "normal": 1, "bye": 0}, {"name": "贝辛", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 277, "bye": 0, "grand": 277};
+        var ROWS    = [{"name": "保罗", "normal": 41, "bye": 0}, {"name": "博尔热斯", "normal": 38, "bye": 0}, {"name": "霍达尔", "normal": 29, "bye": 0}, {"name": "勒纳-钱", "normal": 20, "bye": 0}, {"name": "中岛布兰登", "normal": 19, "bye": 0}, {"name": "达姆", "normal": 15, "bye": 0}, {"name": "达维多维奇", "normal": 10, "bye": 0}, {"name": "阿利亚西姆", "normal": 9, "bye": 0}, {"name": "丰塞卡", "normal": 8, "bye": 0}, {"name": "兰达卢塞", "normal": 8, "bye": 0}, {"name": "德约科维奇", "normal": 8, "bye": 0}, {"name": "诺里", "normal": 8, "bye": 0}, {"name": "辛纳", "normal": 8, "bye": 0}, {"name": "卢布列夫", "normal": 7, "bye": 0}, {"name": "施特鲁夫", "normal": 6, "bye": 0}, {"name": "林德克内希", "normal": 6, "bye": 0}, {"name": "土方凛辉", "normal": 5, "bye": 0}, {"name": "沙波瓦洛夫", "normal": 5, "bye": 0}, {"name": "西西帕斯", "normal": 5, "bye": 0}, {"name": "富乔维奇", "normal": 4, "bye": 0}, {"name": "布鲁克斯比", "normal": 3, "bye": 0}, {"name": "梅杰多维奇", "normal": 3, "bye": 0}, {"name": "达尔德里", "normal": 3, "bye": 0}, {"name": "巴列霍", "normal": 2, "bye": 0}, {"name": "德容", "normal": 2, "bye": 0}, {"name": "梅希亚", "normal": 2, "bye": 0}, {"name": "梅德韦杰夫", "normal": 2, "bye": 0}, {"name": "胡尔卡奇", "normal": 2, "bye": 0}, {"name": "乌戈-卡拉贝利", "normal": 1, "bye": 0}, {"name": "卡雷尼奥-布斯塔", "normal": 1, "bye": 0}, {"name": "布塞", "normal": 1, "bye": 0}, {"name": "望月慎太郎", "normal": 1, "bye": 0}, {"name": "梅里达", "normal": 1, "bye": 0}, {"name": "毛罗然", "normal": 1, "bye": 0}, {"name": "科瓦切维奇", "normal": 1, "bye": 0}, {"name": "贝辛", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 286, "bye": 0, "grand": 286};
         var MAX_VAL = 41;
-        var CLIPBOARD_HEADER = "已选277 未选504";
+        var CLIPBOARD_HEADER = "已选286 未选496";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -931,15 +931,15 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>24</td>
     <td>slay全场666</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>达维多维奇</td>
+    <td>中岛布兰登</td>
+    <td>已选</td>
     <td>0</td>
     <td>2444</td>
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[]">
-    <td>25</td>
+    <td>24</td>
     <td>25</td>
     <td>ElvisD95</td>
     <td></td>
@@ -948,7 +948,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>已选</td>
     <td>0</td>
     <td>2444</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[]">
     <td>26</td>
@@ -1759,9 +1759,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>93</td>
     <td>德约的粉丝</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>中岛布兰登</td>
+    <td>博尔热斯</td>
+    <td>已选</td>
     <td>0</td>
     <td>1795</td>
     <td><span class="rank same"></span></td>
@@ -2047,9 +2047,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>117</td>
     <td>na_go_h</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>达姆</td>
+    <td>保罗</td>
+    <td>已选</td>
     <td>0</td>
     <td>1612</td>
     <td><span class="rank same"></span></td>
@@ -2659,9 +2659,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>168</td>
     <td>请微笑一下你</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>霍达尔</td>
+    <td>保罗</td>
+    <td>已选</td>
     <td>0</td>
     <td>1316</td>
     <td><span class="rank same"></span></td>
@@ -3475,9 +3475,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>236</td>
     <td>浮空a倾城</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>博尔热斯</td>
+    <td>达维多维奇</td>
+    <td>已选</td>
     <td>0</td>
     <td>992</td>
     <td><span class="rank same"></span></td>
@@ -4723,9 +4723,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>340</td>
     <td>Jiabei He</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>勒纳-钱</td>
+    <td>丰塞卡</td>
+    <td>已选</td>
     <td>0</td>
     <td>439</td>
     <td><span class="rank same"></span></td>
@@ -4759,9 +4759,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>343</td>
     <td>W***界</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>布塞</td>
+    <td>施特鲁夫</td>
+    <td>已选</td>
     <td>0</td>
     <td>430</td>
     <td><span class="rank same"></span></td>
@@ -6123,16 +6123,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[]">
-    <td>455</td>
+    <td>458</td>
     <td>455</td>
     <td>M***C</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>卡雷尼奥-布斯塔</td>
+    <td>勒纳-钱</td>
+    <td>已选</td>
     <td>0</td>
     <td>100</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[]">
     <td>455</td>
@@ -8271,7 +8271,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[]">
-    <td>652</td>
+    <td>653</td>
     <td>636</td>
     <td>j***1</td>
     <td></td>
@@ -8280,10 +8280,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>0</td>
-    <td><span class="rank down">-16</span></td>
+    <td><span class="rank down">-17</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>652</td>
+    <td>653</td>
     <td>636</td>
     <td>ilove33</td>
     <td></td>
@@ -8292,10 +8292,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>0</td>
-    <td><span class="rank down">-16</span></td>
+    <td><span class="rank down">-17</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>652</td>
+    <td>653</td>
     <td>636</td>
     <td>pododic Tang</td>
     <td></td>
@@ -8304,10 +8304,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>0</td>
-    <td><span class="rank down">-16</span></td>
+    <td><span class="rank down">-17</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>655</td>
+    <td>656</td>
     <td>639</td>
     <td>Antichristvon</td>
     <td></td>
@@ -8316,10 +8316,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>0</td>
-    <td><span class="rank down">-16</span></td>
+    <td><span class="rank down">-17</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>655</td>
+    <td>656</td>
     <td>639</td>
     <td>135******50</td>
     <td></td>
@@ -8328,7 +8328,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>0</td>
-    <td><span class="rank down">-16</span></td>
+    <td><span class="rank down">-17</span></td>
   </tr>
   <tr data-detail="[]">
     <td>633</td>
@@ -8396,6 +8396,18 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>爱打毛球的十方</td>
     <td></td>
     <td>沙波瓦洛夫</td>
+    <td></td>
+    <td>已选</td>
+    <td>0</td>
+    <td>0</td>
+    <td><span class="rank same"></span></td>
+  </tr>
+  <tr data-detail="[]">
+    <td>633</td>
+    <td></td>
+    <td>Fatdrew</td>
+    <td></td>
+    <td>博尔热斯</td>
     <td></td>
     <td>已选</td>
     <td>0</td>
