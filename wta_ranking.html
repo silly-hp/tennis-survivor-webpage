@@ -435,7 +435,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年07月01日 11:27:39</span>
+    <span class="updated">⏱ 2026年07月01日 14:02:43</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -458,9 +458,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 120 人已选</span>
+        <span class="meta-chip chip-valid">✓ 192 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">234 人未选</span>
+    <span class="meta-chip chip-nosel">162 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-chip chip-suicide">⚠ 4 人自杀</span>
     <span class="meta-sep">｜</span>
@@ -476,7 +476,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 15 名球员）</span>
+        <span id="sumToggleTxt">显示全部 17 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -484,10 +484,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "大坂直美", "normal": 44, "bye": 0}, {"name": "亚历山德罗娃", "normal": 20, "bye": 0}, {"name": "穆霍娃", "normal": 14, "bye": 0}, {"name": "奥斯塔彭科", "normal": 8, "bye": 0}, {"name": "森梅兹", "normal": 7, "bye": 0}, {"name": "帕克斯", "normal": 6, "bye": 0}, {"name": "佩古拉", "normal": 4, "bye": 0}, {"name": "卡林斯卡娅", "normal": 4, "bye": 0}, {"name": "伊-约维奇", "normal": 3, "bye": 0}, {"name": "西尼亚科娃", "normal": 3, "bye": 0}, {"name": "高芙", "normal": 2, "bye": 0}, {"name": "本西奇", "normal": 2, "bye": 0}, {"name": "亚斯特列姆斯卡", "normal": 1, "bye": 0}, {"name": "曾丽美", "normal": 1, "bye": 0}, {"name": "米-安德烈耶娃", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 120, "bye": 0, "grand": 120};
-        var MAX_VAL = 44;
-        var CLIPBOARD_HEADER = "已选120 未选234 自杀4";
+        var ROWS    = [{"name": "大坂直美", "normal": 69, "bye": 0}, {"name": "亚历山德罗娃", "normal": 37, "bye": 0}, {"name": "穆霍娃", "normal": 24, "bye": 0}, {"name": "奥斯塔彭科", "normal": 10, "bye": 0}, {"name": "帕克斯", "normal": 9, "bye": 0}, {"name": "森梅兹", "normal": 9, "bye": 0}, {"name": "佩古拉", "normal": 6, "bye": 0}, {"name": "卡林斯卡娅", "normal": 5, "bye": 0}, {"name": "伊-约维奇", "normal": 5, "bye": 0}, {"name": "高芙", "normal": 4, "bye": 0}, {"name": "本西奇", "normal": 4, "bye": 0}, {"name": "西尼亚科娃", "normal": 4, "bye": 0}, {"name": "亚斯特列姆斯卡", "normal": 2, "bye": 0}, {"name": "卡萨特金娜", "normal": 1, "bye": 0}, {"name": "曾丽美", "normal": 1, "bye": 0}, {"name": "米-安德烈耶娃", "normal": 1, "bye": 0}, {"name": "萨巴莲卡", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 192, "bye": 0, "grand": 192};
+        var MAX_VAL = 69;
+        var CLIPBOARD_HEADER = "已选192 未选162 自杀4";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -901,9 +901,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>穆霍娃</td>
+    <td>卡林斯卡娅</td>
+    <td>已选</td>
     <td>70</td>
     <td>780</td>
     <td>3550</td>
@@ -946,9 +946,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>大坂直美</td>
+    <td>已选</td>
     <td>70</td>
     <td>10</td>
     <td>4094</td>
@@ -1006,9 +1006,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>佩古拉</td>
+    <td>已选</td>
     <td>70</td>
     <td>185</td>
     <td>3805</td>
@@ -1081,9 +1081,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>穆霍娃</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>40</td>
     <td>3896</td>
@@ -1186,9 +1186,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>萨巴莲卡</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>3739</td>
@@ -1366,9 +1366,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>奥斯塔彭科</td>
+    <td>已选</td>
     <td>70</td>
     <td>780</td>
     <td>2665</td>
@@ -1396,9 +1396,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>780</td>
     <td>2658</td>
@@ -1456,9 +1456,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>穆霍娃</td>
+    <td>大坂直美</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>3323</td>
@@ -1576,9 +1576,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>帕克斯</td>
+    <td>森梅兹</td>
+    <td>已选</td>
     <td>70</td>
     <td>10</td>
     <td>3191</td>
@@ -1801,9 +1801,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>穆霍娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2894</td>
@@ -1816,9 +1816,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>佩古拉</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2891</td>
@@ -1906,9 +1906,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>高芙</td>
+    <td>已选</td>
     <td>70</td>
     <td>40</td>
     <td>2884</td>
@@ -1936,9 +1936,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>130</td>
     <td>2779</td>
@@ -2041,9 +2041,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>1300</td>
     <td>1566</td>
@@ -2071,9 +2071,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>大坂直美</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>2826</td>
@@ -2101,9 +2101,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>沙旺乔</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>2840</td>
@@ -2371,9 +2371,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>亚历山德罗娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2656</td>
@@ -2446,9 +2446,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>奥斯塔彭科</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>2710</td>
@@ -2461,9 +2461,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>西尼亚科娃</td>
+    <td>奥斯塔彭科</td>
+    <td>已选</td>
     <td>70</td>
     <td>100</td>
     <td>2602</td>
@@ -2536,9 +2536,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>穆霍娃</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>2638</td>
@@ -2566,9 +2566,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2583</td>
@@ -2626,9 +2626,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>卡林斯卡娅</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>2623</td>
@@ -2671,9 +2671,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2522</td>
@@ -2926,9 +2926,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>本西奇</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2365</td>
@@ -3016,9 +3016,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>130</td>
     <td>2260</td>
@@ -3076,9 +3076,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>米-安德烈耶娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2306</td>
@@ -3166,9 +3166,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>穆霍娃</td>
+    <td>高芙</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>2341</td>
@@ -3226,9 +3226,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>森梅兹</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2254</td>
@@ -3496,9 +3496,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>大坂直美</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>40</td>
     <td>2196</td>
@@ -3571,9 +3571,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>本西奇</td>
+    <td>伊-约维奇</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>2218</td>
@@ -3601,9 +3601,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>卡林斯卡娅</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>130</td>
     <td>2070</td>
@@ -3766,9 +3766,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>穆霍娃</td>
+    <td>本西奇</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>2033</td>
@@ -4366,9 +4366,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>1725</td>
@@ -4381,9 +4381,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>森梅兹</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>1670</td>
@@ -4516,9 +4516,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>100</td>
     <td>1589</td>
@@ -4666,9 +4666,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>大坂直美</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>100</td>
     <td>1527</td>
@@ -4726,9 +4726,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>伊-约维奇</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>1607</td>
@@ -4756,9 +4756,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>伊-约维奇</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>40</td>
     <td>1549</td>
@@ -4771,9 +4771,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>100</td>
     <td>1482</td>
@@ -4891,9 +4891,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>奥斯塔彭科</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>1544</td>
@@ -4906,9 +4906,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>高芙</td>
+    <td>大坂直美</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>1531</td>
@@ -5251,9 +5251,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>高芙</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>1346</td>
@@ -5611,9 +5611,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>佩古拉</td>
+    <td>高芙</td>
+    <td>已选</td>
     <td>70</td>
     <td>40</td>
     <td>1138</td>
@@ -5716,9 +5716,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>穆霍娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>10</td>
     <td>1122</td>
@@ -5851,9 +5851,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>奥斯塔彭科</td>
+    <td>已选</td>
     <td>70</td>
     <td>780</td>
     <td>260</td>
@@ -5881,9 +5881,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>高芙</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>1021</td>
@@ -6181,9 +6181,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>本西奇</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>909</td>
@@ -6211,9 +6211,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>西尼亚科娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>904</td>
@@ -6301,9 +6301,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>奥斯塔彭科</td>
+    <td>佩古拉</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>880</td>
@@ -6511,9 +6511,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>森梅兹</td>
+    <td>已选</td>
     <td>70</td>
     <td>185</td>
     <td>617</td>
@@ -6916,9 +6916,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>佩古拉</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>647</td>
@@ -6991,9 +6991,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>639</td>
@@ -7321,9 +7321,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>536</td>
@@ -7367,7 +7367,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2</td>
     <td></td>
     <td>森梅兹</td>
-    <td></td>
+    <td>萨巴莲卡</td>
     <td>已选</td>
     <td>70</td>
     <td>0</td>
@@ -7486,9 +7486,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚斯特列姆斯卡</td>
+    <td>卡林斯卡娅</td>
+    <td>已选</td>
     <td>70</td>
     <td>430</td>
     <td>70</td>
@@ -7666,9 +7666,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>帕克斯</td>
+    <td>亚历山德罗娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>40</td>
     <td>416</td>
@@ -7726,9 +7726,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>本西奇</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>377</td>
@@ -7981,9 +7981,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>奥斯塔彭科</td>
+    <td>高芙</td>
+    <td>已选</td>
     <td>70</td>
     <td>70</td>
     <td>332</td>
@@ -8026,9 +8026,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>帕克斯</td>
+    <td>卡林斯卡娅</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>388</td>
@@ -8041,9 +8041,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>萨巴莲卡</td>
+    <td>已选</td>
     <td>70</td>
     <td>40</td>
     <td>348</td>
@@ -8056,9 +8056,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>亚历山德罗娃</td>
+    <td>西尼亚科娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>385</td>
@@ -8236,9 +8236,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>卡萨特金娜</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>352</td>
@@ -8311,9 +8311,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>森梅兹</td>
+    <td>大坂直美</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>328</td>
@@ -8551,9 +8551,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>亚历山德罗娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>298</td>
@@ -8596,9 +8596,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>大坂直美</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>298</td>
@@ -8611,9 +8611,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>穆霍娃</td>
+    <td>克赖奇科娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>297</td>
@@ -8731,9 +8731,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>穆霍娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>287</td>
@@ -9061,9 +9061,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>亚历山德罗娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>239</td>
@@ -10186,9 +10186,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>147</td>
@@ -10396,9 +10396,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>大坂直美</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>132</td>
@@ -12616,9 +12616,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>森梅兹</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>70</td>
@@ -12631,9 +12631,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
+    <td>大坂直美</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>70</td>
@@ -12706,9 +12706,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>2</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>大坂直美</td>
+    <td>穆霍娃</td>
+    <td>已选</td>
     <td>70</td>
     <td>0</td>
     <td>70</td>
