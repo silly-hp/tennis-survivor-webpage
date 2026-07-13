@@ -8,56 +8,56 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-    /* surfaces — pale sage parchment, Centre Court chalk-line feel */
-    --bg:#f4f8f2; --bg2:#e6f0e2; --surface:#ffffff; --surface2:#f7fbf5;
+    /* surfaces — icy pale blue, AO arena daylight */
+    --bg:#f0f7fb; --bg2:#e0eef6; --surface:#ffffff; --surface2:#f4fafd;
  
-    /* primary: Wimbledon forest green #1b5e37 */
-    --primary:#1b5e37; --primary-dark:#0f3d22;
-    --primary-dim:rgba(27,94,55,.10); --primary-rim:rgba(27,94,55,.28);
+    /* primary: AO cyan #0088bb */
+    --primary:#0088bb; --primary-dark:#005f85;
+    --primary-dim:rgba(0,136,187,.10); --primary-rim:rgba(0,136,187,.28);
  
-    /* secondary: Wimbledon purple #7b3f9e */
-    --secondary:#7b3f9e;
-    --secondary-dim:rgba(123,63,158,.10); --secondary-rim:rgba(123,63,158,.26);
+    /* secondary: US Open gold #c49800 */
+    --secondary:#c49800;
+    --secondary-dim:rgba(196,152,0,.10); --secondary-rim:rgba(196,152,0,.26);
  
     /* typography */
-    --ink:#161d18; --ink2:#2e3d30; --muted:#526055; --faint:#9ab09a;
+    --ink:#051420; --ink2:#0e2a3c; --muted:#4a6878; --faint:#90aabf;
  
     /* borders */
-    --border:rgba(22,29,24,.10); --border2:rgba(22,29,24,.06);
+    --border:rgba(5,20,32,.10); --border2:rgba(5,20,32,.06);
  
-    /* table chrome */
-    --th-bg:#0f2a1a; --th-text:#1b5e37;
-    --row-hover:rgba(27,94,55,.05); --row-even:rgba(22,29,24,.02);
-    --filter-bg:#ecf5e8; --drop-bg:#ffffff; --track-bg:#d8e8d0;
+    /* table chrome — deep navy header, bright AO cyan accent */
+    --th-bg:#002d44; --th-text:#00aaee;
+    --row-hover:rgba(0,136,187,.05); --row-even:rgba(5,20,32,.02);
+    --filter-bg:#e6f3fa; --drop-bg:#ffffff; --track-bg:#cce6f4;
  
     /* podium medals */
-    --rank1:#0f3d22; --rank2:#7b3f9e; --rank3:#5a3200;
+    --rank1:#005f85; --rank2:#5a6e80; --rank3:#a07800;
 }
 body.dark {
-    /* surfaces — deep forest night */
-    --bg:#090f0b; --bg2:#0f1a12; --surface:#131d16; --surface2:#1a2b1e;
-
-    /* primary: brightened green for dark bg */
-    --primary:#4ca86a; --primary-dark:#7acc90;
-    --primary-dim:rgba(76,168,106,.13); --primary-rim:rgba(76,168,106,.30);
-
-    /* secondary: brightened purple for dark bg */
-    --secondary:#c090e8;
-    --secondary-dim:rgba(192,144,232,.12); --secondary-rim:rgba(192,144,232,.28);
+    /* surfaces — US Open night: deep navy stadium */
+    --bg:#030c14; --bg2:#071422; --surface:#0a1d30; --surface2:#102840;
+ 
+    /* primary: bright AO cyan for night */
+    --primary:#00b8f0; --primary-dark:#40d0ff;
+    --primary-dim:rgba(0,184,240,.13); --primary-rim:rgba(0,184,240,.30);
+ 
+    /* secondary: US Open gold at full brightness */
+    --secondary:#f0c000;
+    --secondary-dim:rgba(240,192,0,.12); --secondary-rim:rgba(240,192,0,.28);
  
     /* typography */
-    --ink:#e2ece4; --ink2:#b8ccba; --muted:#78987a; --faint:#344838;
+    --ink:#ddeef8; --ink2:#a8c8de; --muted:#5a84a0; --faint:#1e3850;
  
     /* borders */
-    --border:rgba(226,236,228,.10); --border2:rgba(226,236,228,.06);
+    --border:rgba(221,238,248,.10); --border2:rgba(221,238,248,.06);
  
     /* table chrome */
-    --th-bg:#070d09; --th-text:#4ca86a;
-    --row-hover:rgba(76,168,106,.07); --row-even:rgba(255,255,255,.025);
-    --filter-bg:#0f1a12; --drop-bg:#1a2b1e; --track-bg:#1a2b1e;
+    --th-bg:#010810; --th-text:#00b8f0;
+    --row-hover:rgba(0,184,240,.07); --row-even:rgba(255,255,255,.025);
+    --filter-bg:#071422; --drop-bg:#102840; --track-bg:#102840;
  
     /* podium medals */
-    --rank1:#7acc90; --rank2:#c090e8; --rank3:#c8a058;
+    --rank1:#40d0ff; --rank2:#6a88a8; --rank3:#f0c000;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
@@ -435,7 +435,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年07月13日 10:22:44</span>
+    <span class="updated">⏱ 2026年07月13日 10:31:02</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -458,9 +458,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 3 人已选</span>
+        <span class="meta-chip chip-valid">✓ 9 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">829 人未选</span>
+    <span class="meta-chip chip-nosel">823 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 832 人</span>
         </div>
@@ -474,7 +474,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 2 名球员）</span>
+        <span id="sumToggleTxt">显示全部 5 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -482,10 +482,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "塔格尔", "normal": 2, "bye": 0}, {"name": "达特", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 3, "bye": 0, "grand": 3};
-        var MAX_VAL = 2;
-        var CLIPBOARD_HEADER = "已选3 未选829";
+        var ROWS    = [{"name": "塔格尔", "normal": 5, "bye": 0}, {"name": "贝莱克", "normal": 1, "bye": 0}, {"name": "达特", "normal": 1, "bye": 0}, {"name": "郑钦文", "normal": 1, "bye": 0}, {"name": "里纳特", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 9, "bye": 0, "grand": 9};
+        var MAX_VAL = 5;
+        var CLIPBOARD_HEADER = "已选9 未选823";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -1760,9 +1760,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>86</td>
     <td>风***虚</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>塔格尔</td>
+    <td>帕克斯</td>
+    <td>已选</td>
     <td>0</td>
     <td>0</td>
     <td>2952</td>
@@ -2254,9 +2254,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>124</td>
     <td>6ga-Swiatek</td>
     <td></td>
+    <td>塔格尔</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>0</td>
     <td>0</td>
     <td>2688</td>
@@ -2384,9 +2384,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>134</td>
     <td>Kellan Li</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>塔格尔</td>
+    <td>达特</td>
+    <td>已选</td>
     <td>0</td>
     <td>0</td>
     <td>2637</td>
@@ -2488,9 +2488,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>142</td>
     <td>yh11yh22</td>
     <td></td>
+    <td>里纳特</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>0</td>
     <td>0</td>
     <td>2566</td>
@@ -5166,9 +5166,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>348</td>
     <td>此号已废16</td>
     <td></td>
+    <td>贝莱克</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>0</td>
     <td>0</td>
     <td>1010</td>
@@ -6752,9 +6752,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>470</td>
     <td>午夜伤感猛男_</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>郑钦文</td>
+    <td>达特</td>
+    <td>已选</td>
     <td>0</td>
     <td>0</td>
     <td>434</td>
