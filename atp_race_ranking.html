@@ -435,7 +435,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年07月17日 22:38:21</span>
+    <span class="updated">⏱ 2026年07月18日 08:02:10</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -459,11 +459,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 187 人已选</span>
+        <span class="meta-chip chip-valid">✓ 0 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">3 人未选</span>
-    <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
+    <span class="meta-chip chip-nosel">191 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 191 人</span>
         </div>
@@ -477,7 +475,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 9 名球员）</span>
+        <span id="sumToggleTxt">显示全部 0 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -485,10 +483,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "瓦舍罗", "normal": 43, "bye": 0}, {"name": "西西帕斯", "normal": 37, "bye": 0}, {"name": "鲁德", "normal": 36, "bye": 0}, {"name": "林德克内希", "normal": 23, "bye": 0}, {"name": "阿里斯", "normal": 22, "bye": 0}, {"name": "布勃利克", "normal": 12, "bye": 0}, {"name": "科利尼翁", "normal": 11, "bye": 0}, {"name": "舍夫琴科", "normal": 2, "bye": 0}, {"name": "胡-塞伦多洛", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 187, "bye": 0, "grand": 187};
-        var MAX_VAL = 43;
-        var CLIPBOARD_HEADER = "已选187 未选3 自杀1";
+        var ROWS    = [];
+        var TOTALS  = {"normal": 0, "bye": 0, "grand": 1};
+        var MAX_VAL = 1;
+        var CLIPBOARD_HEADER = "已选0 未选191";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -661,9 +659,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3780</td>
     <td><span class="rank same"></span></td>
@@ -675,9 +673,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3658</td>
     <td><span class="rank same"></span></td>
@@ -689,9 +687,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3651</td>
     <td><span class="rank same"></span></td>
@@ -703,9 +701,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3596</td>
     <td><span class="rank same"></span></td>
@@ -717,9 +715,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3470</td>
     <td><span class="rank same"></span></td>
@@ -731,9 +729,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3437</td>
     <td><span class="rank same"></span></td>
@@ -745,9 +743,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3391</td>
     <td><span class="rank same"></span></td>
@@ -759,9 +757,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3290</td>
     <td><span class="rank same"></span></td>
@@ -773,9 +771,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3250</td>
     <td><span class="rank same"></span></td>
@@ -801,9 +799,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3081</td>
     <td><span class="rank same"></span></td>
@@ -815,9 +813,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>3072</td>
     <td><span class="rank same"></span></td>
@@ -843,9 +841,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2958</td>
     <td><span class="rank up">+1</span></td>
@@ -885,9 +883,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>舍夫琴科</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2916</td>
     <td><span class="rank up">+2</span></td>
@@ -899,9 +897,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2915</td>
     <td><span class="rank up">+2</span></td>
@@ -927,9 +925,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2786</td>
     <td><span class="rank same"></span></td>
@@ -955,9 +953,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2718</td>
     <td><span class="rank same"></span></td>
@@ -969,9 +967,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2712</td>
     <td><span class="rank same"></span></td>
@@ -983,9 +981,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2696</td>
     <td><span class="rank same"></span></td>
@@ -997,9 +995,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2681</td>
     <td><span class="rank same"></span></td>
@@ -1025,9 +1023,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2664</td>
     <td><span class="rank up">+1</span></td>
@@ -1039,9 +1037,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2581</td>
     <td><span class="rank same"></span></td>
@@ -1053,9 +1051,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>斯特里克</td>
-    <td>自杀（主备冲突）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2567</td>
     <td><span class="rank same"></span></td>
@@ -1067,9 +1065,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2524</td>
     <td><span class="rank same"></span></td>
@@ -1137,9 +1135,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2490</td>
     <td><span class="rank up">+4</span></td>
@@ -1151,9 +1149,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2445</td>
     <td><span class="rank up">+2</span></td>
@@ -1165,9 +1163,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2409</td>
     <td><span class="rank same"></span></td>
@@ -1179,9 +1177,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2361</td>
     <td><span class="rank same"></span></td>
@@ -1193,9 +1191,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2336</td>
     <td><span class="rank same"></span></td>
@@ -1221,9 +1219,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2324</td>
     <td><span class="rank down">-1</span></td>
@@ -1235,9 +1233,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2329</td>
     <td><span class="rank up">+1</span></td>
@@ -1263,9 +1261,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2308</td>
     <td><span class="rank down">-1</span></td>
@@ -1277,9 +1275,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2332</td>
     <td><span class="rank up">+5</span></td>
@@ -1291,9 +1289,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2324</td>
     <td><span class="rank up">+4</span></td>
@@ -1319,9 +1317,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2293</td>
     <td><span class="rank up">+2</span></td>
@@ -1333,9 +1331,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2290</td>
     <td><span class="rank up">+2</span></td>
@@ -1361,9 +1359,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>舍夫琴科</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2278</td>
     <td><span class="rank up">+2</span></td>
@@ -1417,9 +1415,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2269</td>
     <td><span class="rank up">+4</span></td>
@@ -1431,9 +1429,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2254</td>
     <td><span class="rank up">+3</span></td>
@@ -1445,9 +1443,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2219</td>
     <td><span class="rank down">-3</span></td>
@@ -1459,9 +1457,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2242</td>
     <td><span class="rank up">+4</span></td>
@@ -1473,9 +1471,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>胡-塞伦多洛</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2233</td>
     <td><span class="rank up">+4</span></td>
@@ -1501,9 +1499,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2220</td>
     <td><span class="rank up">+2</span></td>
@@ -1515,9 +1513,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2179</td>
     <td><span class="rank same"></span></td>
@@ -1529,9 +1527,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>舍夫琴科</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2182</td>
     <td><span class="rank up">+2</span></td>
@@ -1557,9 +1555,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2149</td>
     <td><span class="rank up">+1</span></td>
@@ -1599,9 +1597,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2129</td>
     <td><span class="rank up">+3</span></td>
@@ -1613,9 +1611,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2114</td>
     <td><span class="rank up">+1</span></td>
@@ -1641,9 +1639,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>斯特里克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2062</td>
     <td><span class="rank down">-1</span></td>
@@ -1669,9 +1667,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>斯特里克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2071</td>
     <td><span class="rank up">+3</span></td>
@@ -1683,9 +1681,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2044</td>
     <td><span class="rank down">-2</span></td>
@@ -1697,9 +1695,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2053</td>
     <td><span class="rank up">+2</span></td>
@@ -1711,9 +1709,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2048</td>
     <td><span class="rank up">+1</span></td>
@@ -1725,9 +1723,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2053</td>
     <td><span class="rank up">+3</span></td>
@@ -1753,9 +1751,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2009</td>
     <td><span class="rank same"></span></td>
@@ -1795,9 +1793,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>2022</td>
     <td><span class="rank up">+4</span></td>
@@ -1809,9 +1807,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1999</td>
     <td><span class="rank up">+3</span></td>
@@ -1837,9 +1835,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1996</td>
     <td><span class="rank up">+4</span></td>
@@ -1851,9 +1849,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1991</td>
     <td><span class="rank up">+4</span></td>
@@ -1879,9 +1877,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1975</td>
     <td><span class="rank up">+2</span></td>
@@ -1907,9 +1905,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1971</td>
     <td><span class="rank up">+3</span></td>
@@ -1921,9 +1919,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1968</td>
     <td><span class="rank up">+3</span></td>
@@ -1963,9 +1961,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1951</td>
     <td><span class="rank up">+4</span></td>
@@ -1991,9 +1989,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1935</td>
     <td><span class="rank up">+4</span></td>
@@ -2005,9 +2003,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1932</td>
     <td><span class="rank up">+4</span></td>
@@ -2033,9 +2031,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>阿里斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1913</td>
     <td><span class="rank up">+4</span></td>
@@ -2047,9 +2045,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1911</td>
     <td><span class="rank up">+3</span></td>
@@ -2131,9 +2129,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1851</td>
     <td><span class="rank up">+5</span></td>
@@ -2145,9 +2143,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1821</td>
     <td><span class="rank up">+1</span></td>
@@ -2201,9 +2199,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1820</td>
     <td><span class="rank up">+4</span></td>
@@ -2215,9 +2213,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1832</td>
     <td><span class="rank up">+7</span></td>
@@ -2229,9 +2227,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1819</td>
     <td><span class="rank up">+5</span></td>
@@ -2257,9 +2255,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1804</td>
     <td><span class="rank up">+4</span></td>
@@ -2285,9 +2283,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1787</td>
     <td><span class="rank up">+3</span></td>
@@ -2299,9 +2297,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1776</td>
     <td><span class="rank up">+1</span></td>
@@ -2313,9 +2311,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1739</td>
     <td><span class="rank down">-2</span></td>
@@ -2327,9 +2325,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1762</td>
     <td><span class="rank up">+2</span></td>
@@ -2355,9 +2353,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1735</td>
     <td><span class="rank same"></span></td>
@@ -2369,9 +2367,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1743</td>
     <td><span class="rank up">+3</span></td>
@@ -2411,9 +2409,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1719</td>
     <td><span class="rank up">+3</span></td>
@@ -2425,9 +2423,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1719</td>
     <td><span class="rank up">+3</span></td>
@@ -2439,9 +2437,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1694</td>
     <td><span class="rank up">+2</span></td>
@@ -2453,9 +2451,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1676</td>
     <td><span class="rank up">+1</span></td>
@@ -2481,9 +2479,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1667</td>
     <td><span class="rank up">+1</span></td>
@@ -2523,9 +2521,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1637</td>
     <td><span class="rank up">+1</span></td>
@@ -2565,9 +2563,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1651</td>
     <td><span class="rank up">+6</span></td>
@@ -2579,9 +2577,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1643</td>
     <td><span class="rank up">+6</span></td>
@@ -2593,9 +2591,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1632</td>
     <td><span class="rank up">+5</span></td>
@@ -2607,9 +2605,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1604</td>
     <td><span class="rank down">-1</span></td>
@@ -2677,9 +2675,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1612</td>
     <td><span class="rank up">+7</span></td>
@@ -2705,9 +2703,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1583</td>
     <td><span class="rank up">+4</span></td>
@@ -2733,9 +2731,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1591</td>
     <td><span class="rank up">+7</span></td>
@@ -2775,9 +2773,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1548</td>
     <td><span class="rank same"></span></td>
@@ -2789,9 +2787,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1558</td>
     <td><span class="rank up">+5</span></td>
@@ -2803,9 +2801,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1557</td>
     <td><span class="rank up">+4</span></td>
@@ -2845,9 +2843,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1550</td>
     <td><span class="rank up">+5</span></td>
@@ -2915,9 +2913,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1511</td>
     <td><span class="rank up">+5</span></td>
@@ -2929,9 +2927,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1529</td>
     <td><span class="rank up">+8</span></td>
@@ -2999,9 +2997,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1510</td>
     <td><span class="rank up">+10</span></td>
@@ -3013,9 +3011,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1505</td>
     <td><span class="rank up">+10</span></td>
@@ -3027,9 +3025,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1502</td>
     <td><span class="rank up">+10</span></td>
@@ -3055,9 +3053,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1487</td>
     <td><span class="rank up">+5</span></td>
@@ -3111,9 +3109,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1425</td>
     <td><span class="rank down">-2</span></td>
@@ -3125,9 +3123,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1448</td>
     <td><span class="rank up">+5</span></td>
@@ -3139,9 +3137,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1431</td>
     <td><span class="rank up">+1</span></td>
@@ -3153,9 +3151,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1442</td>
     <td><span class="rank up">+6</span></td>
@@ -3209,9 +3207,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1414</td>
     <td><span class="rank up">+4</span></td>
@@ -3223,9 +3221,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1414</td>
     <td><span class="rank up">+5</span></td>
@@ -3279,9 +3277,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1370</td>
     <td><span class="rank up">+3</span></td>
@@ -3293,9 +3291,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1369</td>
     <td><span class="rank up">+3</span></td>
@@ -3307,9 +3305,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1353</td>
     <td><span class="rank up">+3</span></td>
@@ -3363,9 +3361,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1334</td>
     <td><span class="rank up">+6</span></td>
@@ -3391,9 +3389,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1319</td>
     <td><span class="rank up">+3</span></td>
@@ -3433,9 +3431,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1290</td>
     <td><span class="rank same"></span></td>
@@ -3447,9 +3445,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1299</td>
     <td><span class="rank up">+5</span></td>
@@ -3461,9 +3459,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1298</td>
     <td><span class="rank up">+5</span></td>
@@ -3475,9 +3473,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1268</td>
     <td><span class="rank down">-2</span></td>
@@ -3489,9 +3487,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1280</td>
     <td><span class="rank up">+3</span></td>
@@ -3503,9 +3501,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1279</td>
     <td><span class="rank up">+3</span></td>
@@ -3517,9 +3515,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1277</td>
     <td><span class="rank up">+3</span></td>
@@ -3559,9 +3557,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1273</td>
     <td><span class="rank up">+5</span></td>
@@ -3573,9 +3571,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1254</td>
     <td><span class="rank same"></span></td>
@@ -3587,9 +3585,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1266</td>
     <td><span class="rank up">+4</span></td>
@@ -3629,9 +3627,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1261</td>
     <td><span class="rank up">+5</span></td>
@@ -3643,9 +3641,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>舍夫琴科</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1240</td>
     <td><span class="rank up">+4</span></td>
@@ -3741,9 +3739,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1215</td>
     <td><span class="rank up">+8</span></td>
@@ -3769,9 +3767,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1203</td>
     <td><span class="rank up">+7</span></td>
@@ -3783,9 +3781,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1187</td>
     <td><span class="rank up">+6</span></td>
@@ -3839,9 +3837,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1183</td>
     <td><span class="rank up">+8</span></td>
@@ -3867,9 +3865,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1174</td>
     <td><span class="rank up">+7</span></td>
@@ -3895,9 +3893,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1145</td>
     <td><span class="rank up">+2</span></td>
@@ -3909,9 +3907,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1149</td>
     <td><span class="rank up">+4</span></td>
@@ -3923,9 +3921,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1161</td>
     <td><span class="rank up">+7</span></td>
@@ -3965,9 +3963,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>斯特里克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1131</td>
     <td><span class="rank up">+3</span></td>
@@ -4007,9 +4005,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1136</td>
     <td><span class="rank up">+8</span></td>
@@ -4049,9 +4047,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1093</td>
     <td><span class="rank up">+4</span></td>
@@ -4063,9 +4061,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1080</td>
     <td><span class="rank up">+1</span></td>
@@ -4161,9 +4159,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1050</td>
     <td><span class="rank up">+5</span></td>
@@ -4203,9 +4201,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1046</td>
     <td><span class="rank up">+7</span></td>
@@ -4217,9 +4215,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1026</td>
     <td><span class="rank up">+7</span></td>
@@ -4245,9 +4243,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>1004</td>
     <td><span class="rank up">+3</span></td>
@@ -4343,9 +4341,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>961</td>
     <td><span class="rank up">+6</span></td>
@@ -4385,9 +4383,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>948</td>
     <td><span class="rank up">+8</span></td>
@@ -4427,9 +4425,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>935</td>
     <td><span class="rank up">+8</span></td>
@@ -4497,9 +4495,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>阿里斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>918</td>
     <td><span class="rank up">+10</span></td>
@@ -4525,9 +4523,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>908</td>
     <td><span class="rank up">+9</span></td>
@@ -4679,9 +4677,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>849</td>
     <td><span class="rank up">+10</span></td>
@@ -4735,9 +4733,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>837</td>
     <td><span class="rank up">+11</span></td>
@@ -4777,9 +4775,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>815</td>
     <td><span class="rank up">+13</span></td>
@@ -4875,9 +4873,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>795</td>
     <td><span class="rank up">+9</span></td>
@@ -4903,9 +4901,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>782</td>
     <td><span class="rank up">+8</span></td>
@@ -4917,9 +4915,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>778</td>
     <td><span class="rank up">+8</span></td>
@@ -4959,9 +4957,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>747</td>
     <td><span class="rank up">+5</span></td>
@@ -4987,9 +4985,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>734</td>
     <td><span class="rank up">+3</span></td>
@@ -5043,9 +5041,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>719</td>
     <td><span class="rank up">+5</span></td>
@@ -5099,9 +5097,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>699</td>
     <td><span class="rank up">+6</span></td>
@@ -5295,9 +5293,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>625</td>
     <td><span class="rank up">+10</span></td>
@@ -5491,9 +5489,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>550</td>
     <td><span class="rank up">+7</span></td>
@@ -5533,9 +5531,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>535</td>
     <td><span class="rank up">+8</span></td>
@@ -5561,9 +5559,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>520</td>
     <td><span class="rank up">+6</span></td>
@@ -5589,9 +5587,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>科利尼翁</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>515</td>
     <td><span class="rank up">+5</span></td>
@@ -5645,9 +5643,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>494</td>
     <td><span class="rank up">+6</span></td>
@@ -5687,9 +5685,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>482</td>
     <td><span class="rank up">+7</span></td>
@@ -5715,9 +5713,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>480</td>
     <td><span class="rank up">+8</span></td>
@@ -5743,9 +5741,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>476</td>
     <td><span class="rank up">+8</span></td>
@@ -5757,9 +5755,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>475</td>
     <td><span class="rank up">+8</span></td>
@@ -5827,9 +5825,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>463</td>
     <td><span class="rank up">+10</span></td>
@@ -5869,9 +5867,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
-    <td>阿里斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>448</td>
     <td><span class="rank up">+10</span></td>
@@ -5953,9 +5951,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>433</td>
     <td><span class="rank up">+13</span></td>
@@ -5981,9 +5979,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>423</td>
     <td><span class="rank up">+12</span></td>
@@ -6191,9 +6189,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>375</td>
     <td><span class="rank up">+15</span></td>
@@ -6303,9 +6301,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>阿里斯</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>347</td>
     <td><span class="rank up">+13</span></td>
@@ -6387,9 +6385,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>科利尼翁</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>325</td>
     <td><span class="rank up">+12</span></td>
@@ -6415,9 +6413,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>314</td>
     <td><span class="rank up">+12</span></td>
@@ -6443,9 +6441,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>311</td>
     <td><span class="rank up">+11</span></td>
@@ -6499,9 +6497,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>303</td>
     <td><span class="rank up">+11</span></td>
@@ -6625,9 +6623,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>胡-塞伦多洛</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>286</td>
     <td><span class="rank up">+17</span></td>
@@ -6639,9 +6637,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>285</td>
     <td><span class="rank up">+17</span></td>
@@ -6863,9 +6861,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>226</td>
     <td><span class="rank up">+13</span></td>
@@ -6905,9 +6903,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>鲁德</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>225</td>
     <td><span class="rank up">+15</span></td>
@@ -6989,9 +6987,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>213</td>
     <td><span class="rank up">+14</span></td>
@@ -7283,9 +7281,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>林德克内希</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>175</td>
     <td><span class="rank up">+25</span></td>
@@ -7591,9 +7589,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>西西帕斯</td>
-    <td>斯特里克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>150</td>
     <td><span class="rank up">+30</span></td>
@@ -7605,9 +7603,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>布勃利克</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>150</td>
     <td><span class="rank up">+30</span></td>
@@ -7633,9 +7631,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>146</td>
     <td><span class="rank up">+31</span></td>
@@ -7857,9 +7855,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
-    <td>林德克内希</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>125</td>
     <td><span class="rank up">+36</span></td>
@@ -8025,9 +8023,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>鲁德</td>
-    <td>西西帕斯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>113</td>
     <td><span class="rank up">+43</span></td>
@@ -9873,9 +9871,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>瓦舍罗</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>60</td>
     <td><span class="rank up">+112</span></td>
@@ -9887,9 +9885,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>4</td>
     <td></td>
-    <td>布勃利克</td>
-    <td>瓦舍罗</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>50</td>
     <td>60</td>
     <td><span class="rank up">+112</span></td>
