@@ -293,6 +293,49 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
 .filterable-table td:nth-child(4){font-family:'Space Mono',monospace;font-size:11px;}
 .filterable-table td:first-child{font-family:'Space Mono',monospace;color:var(--faint);font-size:11px;}
 
+/* ── numeric range-slider filter ── */
+.filter-slider{padding:10px 12px 12px;min-width:190px;}
+.filter-slider-readout{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    margin-bottom:10px;font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--ink2);
+}
+.filter-slider-readout input[type=number]{
+    width:58px;padding:3px 5px;border:1px solid var(--border);border-radius:3px;
+    background:var(--drop-bg);color:var(--ink);font-size:11px;text-align:center;
+    font-family:'Space Mono',monospace;
+}
+.filter-slider-readout input[type=number]:focus{outline:none;border-color:var(--primary);}
+.filter-slider-sep{color:var(--faint);}
+.filter-slider-range{position:relative;height:28px;}
+.filter-slider-track{
+    position:absolute;top:12px;left:0;right:0;height:4px;
+    background:var(--border2);border-radius:2px;
+}
+.filter-slider-fill{
+    position:absolute;top:12px;height:4px;background:var(--primary);border-radius:2px;
+}
+.filter-slider-range input[type=range]{
+    position:absolute;top:0;left:0;width:100%;height:28px;margin:0;
+    background:transparent;-webkit-appearance:none;appearance:none;pointer-events:none;
+}
+.filter-slider-range input[type=range]::-webkit-slider-thumb{
+    pointer-events:auto;-webkit-appearance:none;width:14px;height:14px;
+    border-radius:50%;background:var(--primary);border:2px solid var(--surface);
+    cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.35);margin-top:8px;
+}
+.filter-slider-range input[type=range]::-moz-range-thumb{
+    pointer-events:auto;width:14px;height:14px;border-radius:50%;
+    background:var(--primary);border:2px solid var(--surface);cursor:pointer;
+}
+.filter-slider-reset{
+    width:100%;margin-top:4px;padding:5px 0;border:1px solid var(--border);
+    border-radius:3px;background:var(--surface2);color:var(--muted);
+    font-size:10px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    transition:all .15s;
+}
+.filter-slider-reset:hover{border-color:var(--primary);color:var(--primary);}
+
 /* detail modal */
 .detail-modal{
     position:fixed;inset:0;z-index:9999;
@@ -435,7 +478,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年07月29日 00:46:21</span>
+    <span class="updated">⏱ 2026年07月29日 02:02:49</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -13485,78 +13528,212 @@ document.addEventListener('DOMContentLoaded',function(){
     const filterRow=document.createElement('tr');
     filterRow.className='filter-row';
     const allOptionContainers=[];
+    const columnMeta=[]; // {type:'numeric'|'category', ...}
+
+    // strip % , currency chars etc. before parsing
+    function parseCellNumber(text){
+        const cleaned=String(text).trim().replace(/[%,\s]/g,'');
+        if(cleaned===''||cleaned==='-'||cleaned.toLowerCase()==='nan')return NaN;
+        const n=parseFloat(cleaned);
+        return n;
+    }
+
     headers.forEach((header,index)=>{
         let sortDirection='none';
         const thCell=document.createElement('th');
-        const dropdownWrapper=document.createElement('div');
-        dropdownWrapper.className='filter-dropdown';
-        const trigger=document.createElement('div');
-        trigger.className='filter-trigger';
-        trigger.innerHTML='<span>筛选...</span><span style="font-size:10px">▼</span>';
-        const optionsContainer=document.createElement('div');
-        optionsContainer.className='dropdown-content';
-        const searchInput=document.createElement('input');
-        searchInput.type='text';
-        searchInput.className='dropdown-search';
-        searchInput.placeholder='搜索...';
-        optionsContainer.prepend(searchInput);
-        searchInput.addEventListener('input',(e)=>{
-            const query=e.target.value.toLowerCase().trim();
-            optionsContainer.querySelectorAll('.option-item').forEach(item=>{
-                if(item.dataset.selectAll)return;
-                const label=item.querySelector('span').textContent.toLowerCase();
-                item.style.display=label.includes(query)?'flex':'none';
-            });
-            const visibleCbs=Array.from(
-                optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
-            ).filter(i=>i.style.display!=='none')
-             .map(i=>i.querySelector('input[type="checkbox"]'));
-            selectAllCb.checked=visibleCbs.length>0&&visibleCbs.every(cb=>cb.checked);
-        });
-        const selectAllItem=document.createElement('div');
-        selectAllItem.className='option-item select-all-item';
-        selectAllItem.dataset.selectAll='1';
-        selectAllItem.style.borderBottom='2px solid var(--border)';
-        const selectAllCb=document.createElement('input');
-        selectAllCb.type='checkbox';
-        selectAllCb.checked=true;
-        const selectAllLabel=document.createElement('span');
-        selectAllLabel.textContent='全选';
-        selectAllLabel.style.fontWeight='600';
-        selectAllItem.appendChild(selectAllCb);
-        selectAllItem.appendChild(selectAllLabel);
-        optionsContainer.appendChild(selectAllItem);
-        selectAllCb.addEventListener('change',()=>{
-            const checked=selectAllCb.checked;
-            optionsContainer.querySelectorAll('.option-item:not([data-select-all])').forEach(item=>{
-                if(item.style.display!=='none')
-                    item.querySelector('input[type="checkbox"]').checked=checked;
-            });
-            filterTable();
-        });
-        const uniqueValues=new Set();
+
+        // collect all non-empty values for this column
+        const rawValues=[];
         rows.forEach(row=>{
             const cell=row.children[index];
-            if(cell)uniqueValues.add(cell.textContent.trim());
+            if(cell)rawValues.push(cell.textContent.trim());
         });
-        Array.from(uniqueValues).sort((a,b)=>{
-            const nA=parseFloat(a),nB=parseFloat(b);
-            if(!isNaN(nA)&&!isNaN(nB))return nA-nB;
-            return a.localeCompare(b,'zh');
-        }).forEach(val=>{
-            const item=document.createElement('div');
-            item.className='option-item';
-            const cb=document.createElement('input');
-            cb.type='checkbox';cb.value=val;cb.checked=true;
-            const label=document.createElement('span');
-            label.textContent=val;
-            item.appendChild(cb);item.appendChild(label);
-            optionsContainer.appendChild(item);
-        });
-        dropdownWrapper.appendChild(trigger);
-        document.body.appendChild(optionsContainer);
-        allOptionContainers.push(optionsContainer);
-        thCell.appendChild(dropdownWrapper);
+        const nonEmpty=rawValues.filter(v=>v!==''&&v.toLowerCase()!=='nan'&&v!=='-');
+        const parsedNums=nonEmpty.map(parseCellNumber);
+        const isNumericCol = nonEmpty.length>0 && parsedNums.every(n=>!isNaN(n));
+
+        if(isNumericCol){
+            // ── build slider filter ──────────────────────────────
+            const minVal=Math.min(...parsedNums);
+            const maxVal=Math.max(...parsedNums);
+            const step=(maxVal-minVal)>20 ? 1 : (maxVal-minVal)/100 || 1;
+
+            columnMeta[index]={type:'numeric', min:minVal, max:maxVal,
+                                curMin:minVal, curMax:maxVal};
+
+            const dropdownWrapper=document.createElement('div');
+            dropdownWrapper.className='filter-dropdown';
+            const trigger=document.createElement('div');
+            trigger.className='filter-trigger';
+            trigger.innerHTML='<span>全部</span><span style="font-size:10px">▼</span>';
+
+            const panel=document.createElement('div');
+            panel.className='dropdown-content filter-slider';
+
+            const readout=document.createElement('div');
+            readout.className='filter-slider-readout';
+            const inMin=document.createElement('input');
+            inMin.type='number'; inMin.value=minVal;
+            const sep=document.createElement('span');
+            sep.className='filter-slider-sep'; sep.textContent='~';
+            const inMax=document.createElement('input');
+            inMax.type='number'; inMax.value=maxVal;
+            readout.append(inMin,sep,inMax);
+
+            const rangeWrap=document.createElement('div');
+            rangeWrap.className='filter-slider-range';
+            const track=document.createElement('div');
+            track.className='filter-slider-track';
+            const fill=document.createElement('div');
+            fill.className='filter-slider-fill';
+            const rMin=document.createElement('input');
+            rMin.type='range'; rMin.min=minVal; rMin.max=maxVal; rMin.step=step; rMin.value=minVal;
+            const rMax=document.createElement('input');
+            rMax.type='range'; rMax.min=minVal; rMax.max=maxVal; rMax.step=step; rMax.value=maxVal;
+            rangeWrap.append(track,fill,rMin,rMax);
+
+            const resetBtn=document.createElement('button');
+            resetBtn.type='button'; resetBtn.className='filter-slider-reset';
+            resetBtn.textContent='重置范围';
+
+            panel.append(readout,rangeWrap,resetBtn);
+
+            function syncUI(){
+                let lo=parseFloat(rMin.value), hi=parseFloat(rMax.value);
+                if(lo>hi){ const t=lo; lo=hi; hi=t; }
+                columnMeta[index].curMin=lo;
+                columnMeta[index].curMax=hi;
+                inMin.value=lo; inMax.value=hi;
+                const pct=v=>((v-minVal)/(maxVal-minVal||1))*100;
+                fill.style.left=pct(lo)+'%';
+                fill.style.width=(pct(hi)-pct(lo))+'%';
+                const trigSpan=trigger.querySelector('span:first-child');
+                trigSpan.textContent=(lo===minVal&&hi===maxVal)?'全部':(lo+' ~ '+hi);
+                filterTable();
+            }
+            rMin.addEventListener('input',()=>{ if(+rMin.value>+rMax.value)rMin.value=rMax.value; syncUI(); });
+            rMax.addEventListener('input',()=>{ if(+rMax.value<+rMin.value)rMax.value=rMin.value; syncUI(); });
+            inMin.addEventListener('change',()=>{ rMin.value=inMin.value; syncUI(); });
+            inMax.addEventListener('change',()=>{ rMax.value=inMax.value; syncUI(); });
+            resetBtn.addEventListener('click',()=>{ rMin.value=minVal; rMax.value=maxVal; syncUI(); });
+            syncUI();
+
+            dropdownWrapper.appendChild(trigger);
+            document.body.appendChild(panel);
+            allOptionContainers.push(panel);
+
+            trigger.addEventListener('click',(e)=>{
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-content').forEach(d=>{
+                    if(d!==panel)d.classList.remove('show');
+                });
+                const isOpen=panel.classList.contains('show');
+                panel.classList.toggle('show');
+                if(!isOpen){
+                    const rect=trigger.getBoundingClientRect();
+                    panel.style.width=Math.max(rect.width,190)+'px';
+                    panel.style.left=rect.left+'px';
+                    const dropH=panel.scrollHeight;
+                    const spaceBelow=window.innerHeight-rect.bottom;
+                    panel.style.top=(spaceBelow>=dropH||spaceBelow>=140?rect.bottom:(rect.top-dropH))+'px';
+                }
+            });
+            panel.addEventListener('click',(e)=>e.stopPropagation());
+            thCell.appendChild(dropdownWrapper);
+
+        } else {
+            // ── original categorical checkbox dropdown ───────────
+            columnMeta[index]={type:'category'};
+            const dropdownWrapper=document.createElement('div');
+            dropdownWrapper.className='filter-dropdown';
+            const trigger=document.createElement('div');
+            trigger.className='filter-trigger';
+            trigger.innerHTML='<span>筛选...</span><span style="font-size:10px">▼</span>';
+            const optionsContainer=document.createElement('div');
+            optionsContainer.className='dropdown-content';
+            const searchInput=document.createElement('input');
+            searchInput.type='text';
+            searchInput.className='dropdown-search';
+            searchInput.placeholder='搜索...';
+            optionsContainer.prepend(searchInput);
+            searchInput.addEventListener('input',(e)=>{
+                const query=e.target.value.toLowerCase().trim();
+                optionsContainer.querySelectorAll('.option-item').forEach(item=>{
+                    if(item.dataset.selectAll)return;
+                    const label=item.querySelector('span').textContent.toLowerCase();
+                    item.style.display=label.includes(query)?'flex':'none';
+                });
+                const visibleCbs=Array.from(
+                    optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
+                ).filter(i=>i.style.display!=='none')
+                 .map(i=>i.querySelector('input[type="checkbox"]'));
+                selectAllCb.checked=visibleCbs.length>0&&visibleCbs.every(cb=>cb.checked);
+            });
+            const selectAllItem=document.createElement('div');
+            selectAllItem.className='option-item select-all-item';
+            selectAllItem.dataset.selectAll='1';
+            selectAllItem.style.borderBottom='2px solid var(--border)';
+            const selectAllCb=document.createElement('input');
+            selectAllCb.type='checkbox';
+            selectAllCb.checked=true;
+            const selectAllLabel=document.createElement('span');
+            selectAllLabel.textContent='全选';
+            selectAllLabel.style.fontWeight='600';
+            selectAllItem.appendChild(selectAllCb);
+            selectAllItem.appendChild(selectAllLabel);
+            optionsContainer.appendChild(selectAllItem);
+            selectAllCb.addEventListener('change',()=>{
+                const checked=selectAllCb.checked;
+                optionsContainer.querySelectorAll('.option-item:not([data-select-all])').forEach(item=>{
+                    if(item.style.display!=='none')
+                        item.querySelector('input[type="checkbox"]').checked=checked;
+                });
+                filterTable();
+            });
+            Array.from(new Set(rawValues)).sort((a,b)=>a.localeCompare(b,'zh')).forEach(val=>{
+                const item=document.createElement('div');
+                item.className='option-item';
+                const cb=document.createElement('input');
+                cb.type='checkbox';cb.value=val;cb.checked=true;
+                const label=document.createElement('span');
+                label.textContent=val;
+                item.appendChild(cb);item.appendChild(label);
+                optionsContainer.appendChild(item);
+            });
+            dropdownWrapper.appendChild(trigger);
+            document.body.appendChild(optionsContainer);
+            allOptionContainers.push(optionsContainer);
+            thCell.appendChild(dropdownWrapper);
+
+            trigger.addEventListener('click',(e)=>{
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-content').forEach(d=>{
+                    if(d!==optionsContainer)d.classList.remove('show');
+                });
+                const isOpen=optionsContainer.classList.contains('show');
+                optionsContainer.classList.toggle('show');
+                if(!isOpen){
+                    const rect=trigger.getBoundingClientRect();
+                    const dropH=Math.min(250,optionsContainer.scrollHeight);
+                    const spaceBelow=window.innerHeight-rect.bottom;
+                    optionsContainer.style.width=rect.width+'px';
+                    optionsContainer.style.top=(spaceBelow>=dropH||spaceBelow>=120?rect.bottom:(rect.top-dropH))+'px';
+                    optionsContainer.style.left=rect.left+'px';
+                }
+            });
+            optionsContainer.addEventListener('change',(e)=>{
+                if(!e.target.closest('[data-select-all]')){
+                    const visibleCbs=Array.from(
+                        optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
+                    ).filter(i=>i.style.display!=='none')
+                     .map(i=>i.querySelector('input[type="checkbox"]'));
+                    selectAllCb.checked=visibleCbs.length>0&&visibleCbs.every(cb=>cb.checked);
+                }
+                filterTable();
+            });
+            optionsContainer.addEventListener('click',(e)=>e.stopPropagation());
+        }
+
         filterRow.appendChild(thCell);
         header.addEventListener('click',()=>{
             headers.forEach(h=>h.classList.remove('sort-asc','sort-desc'));
@@ -13581,36 +13758,8 @@ document.addEventListener('DOMContentLoaded',function(){
                 rowsArray.forEach(row=>tbody.appendChild(row));
             }
         });
-        trigger.addEventListener('click',(e)=>{
-            e.stopPropagation();
-            document.querySelectorAll('.dropdown-content').forEach(d=>{
-                if(d!==optionsContainer)d.classList.remove('show');
-            });
-            const isOpen=optionsContainer.classList.contains('show');
-            optionsContainer.classList.toggle('show');
-            if(!isOpen){
-                const rect=trigger.getBoundingClientRect();
-                const dropH=Math.min(250,optionsContainer.scrollHeight);
-                const spaceBelow=window.innerHeight-rect.bottom;
-                optionsContainer.style.width=rect.width+'px';
-                optionsContainer.style.top=(spaceBelow>=dropH||spaceBelow>=120?rect.bottom:(rect.top-dropH))+'px';
-                optionsContainer.style.left=rect.left+'px';
-            }
-        });
-        optionsContainer.addEventListener('change',(e)=>{
-            if(!e.target.closest('[data-select-all]')){
-                const visibleCbs=Array.from(
-                    optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
-                ).filter(i=>i.style.display!=='none')
-                 .map(i=>i.querySelector('input[type="checkbox"]'));
-                selectAllCb.checked=visibleCbs.length>0&&visibleCbs.every(cb=>cb.checked);
-            }
-            filterTable();
-        });
-        optionsContainer.addEventListener('click',(e)=>{
-            e.stopPropagation();
-        });
     });
+
     thead.appendChild(filterRow);
     document.querySelector('.table-wrapper').addEventListener('scroll',()=>{
         allOptionContainers.forEach(oc=>oc.classList.remove('show'));
@@ -13620,28 +13769,23 @@ document.addEventListener('DOMContentLoaded',function(){
     }
     updateFilterRowTop();
     new ResizeObserver(updateFilterRowTop).observe(headerRow);
+
     function filterTable(){
         let visibleCount=0;
-        const activeFilters=[];
-        const triggerEls=document.querySelectorAll('.filter-trigger span:first-child');
-        allOptionContainers.forEach((oc,i)=>{
-            const checkboxes=Array.from(oc.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]'));
-            const selected=checkboxes.filter(cb=>cb.checked).map(cb=>cb.value);
-            if(triggerEls[i]){
-                if(selected.length===0)triggerEls[i].textContent='已取消';
-                else if(selected.length===checkboxes.length)triggerEls[i].textContent='全部';
-                else triggerEls[i].textContent='已选 '+selected.length+' 项';
-            }
-            activeFilters.push(selected);
-        });
         rows.forEach(row=>{
             let showRow=true;
             const cells=row.querySelectorAll('td');
-            activeFilters.forEach((selectedValues,index)=>{
-                if(selectedValues.length===0)return;
-                if(cells[index]){
-                    const cellValue=cells[index].textContent.trim();
-                    if(!selectedValues.includes(cellValue))showRow=false;
+            columnMeta.forEach((meta,index)=>{
+                if(!showRow||!cells[index])return;
+                const cellText=cells[index].textContent.trim();
+                if(meta.type==='numeric'){
+                    const n=parseCellNumber(cellText);
+                    if(!isNaN(n) && (n<meta.curMin || n>meta.curMax)) showRow=false;
+                } else {
+                    const oc=allOptionContainers[index];
+                    const checkboxes=Array.from(oc.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]'));
+                    const selected=checkboxes.filter(cb=>cb.checked).map(cb=>cb.value);
+                    if(selected.length>0 && !selected.includes(cellText)) showRow=false;
                 }
             });
             row.style.display=showRow?'':'none';
@@ -13649,6 +13793,7 @@ document.addEventListener('DOMContentLoaded',function(){
         });
         document.getElementById('visible-count').textContent=visibleCount;
     }
+
     document.addEventListener('click',()=>{
         allOptionContainers.forEach(oc=>oc.classList.remove('show'));
     });
