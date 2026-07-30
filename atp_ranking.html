@@ -428,6 +428,58 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     .table-wrapper{max-height:62vh;}
     .podium{grid-template-columns:1fr;}
 }
+.route-entry{display:flex;align-items:center;gap:14px;background:var(--surface);
+    border:1px solid var(--border);border-radius:8px;padding:14px 18px;
+    cursor:pointer;margin-bottom:18px;transition:border-color .15s,transform .15s;}
+.route-entry:hover{border-color:var(--primary-rim);transform:translateY(-1px);}
+.route-entry-icon{width:34px;height:34px;border-radius:8px;background:var(--primary-dim);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+.route-entry-text{flex:1;}
+.route-entry-title{font-family:'Noto Serif SC',serif;font-size:14px;font-weight:600;color:var(--ink);}
+.route-entry-desc{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.route-entry-arrow{font-size:15px;color:var(--faint);transition:transform .15s;}
+.route-entry:hover .route-entry-arrow{transform:translateX(3px);color:var(--primary);}
+
+.rq-select-box{border:1px solid var(--border);border-radius:6px;background:var(--surface2);
+    margin-bottom:10px;overflow:hidden;}
+.rq-search{width:100%;border:none;background:transparent;padding:8px 10px;font-size:12px;
+    border-bottom:1px solid var(--border2);box-sizing:border-box;color:var(--ink);outline:none;
+    font-family:'Noto Sans SC',sans-serif;}
+.rq-search::placeholder{color:var(--faint);}
+.rq-opt-list{max-height:160px;overflow-y:auto;}
+.rq-opt{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;cursor:pointer;
+    border-bottom:1px solid var(--border2);color:var(--ink2);transition:background .12s;}
+.rq-opt:last-child{border-bottom:none;}
+.rq-opt:hover{background:var(--row-hover);}
+.rq-opt.sel{background:var(--primary-dim);}
+.rq-opt input[type=checkbox]{margin:0;accent-color:var(--primary);pointer-events:none;}
+.rq-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;min-height:24px;}
+.rq-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;
+    font-size:11px;background:var(--primary-dim);color:var(--primary-dark);
+    border:0.5px solid var(--primary-rim);}
+.rq-tag-rm{cursor:pointer;opacity:.65;font-size:11px;}
+.rq-tag-rm:hover{opacity:1;}
+.rq-run-btn{width:100%;background:var(--primary);color:#fff;border:none;padding:9px;
+    border-radius:6px;font-size:13px;cursor:pointer;margin-bottom:16px;
+    font-family:'Noto Sans SC',sans-serif;transition:background .15s;}
+.rq-run-btn:hover{background:var(--primary-dark);}
+.rq-result-count{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;
+    color:var(--faint);margin-bottom:8px;}
+.rq-result-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;}
+.rq-result-row{display:flex;align-items:center;gap:10px;padding:8px 12px;
+    border:1px solid var(--border2);background:var(--surface2);border-radius:8px;}
+.rq-badge{font-size:9px;font-weight:700;color:var(--primary-dark);background:var(--primary-dim);
+    padding:2px 7px;border-radius:5px;flex-shrink:0;white-space:nowrap;}
+.rq-result-name{flex:1;font-size:12.5px;color:var(--ink);overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
+.rq-result-pick{font-size:11px;color:var(--faint);flex-shrink:0;white-space:nowrap;}
+.rq-result-pick b{color:var(--ink);font-weight:500;}
+.rq-empty{padding:28px 0;text-align:center;font-size:12.5px;color:var(--faint);
+    font-family:'Space Mono',monospace;letter-spacing:.04em;}
+
+@media(max-width:640px){
+    .rq-result-pick{white-space:normal;}
+}
 </style>
 </head>
 <body>
@@ -478,7 +530,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年07月30日 16:35:57</span>
+    <span class="updated">⏱ 2026年07月30日 19:20:57</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -501,9 +553,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 38 人已选</span>
+        <span class="meta-chip chip-valid">✓ 49 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">21 人未选</span>
+    <span class="meta-chip chip-nosel">10 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 59 人</span>
         </div>
@@ -525,10 +577,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "德米纳尔", "normal": 25, "bye": 0}, {"name": "门希克", "normal": 7, "bye": 0}, {"name": "谢尔顿", "normal": 3, "bye": 0}, {"name": "塔比洛", "normal": 2, "bye": 0}, {"name": "阿特马纳", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 38, "bye": 0, "grand": 38};
-        var MAX_VAL = 25;
-        var CLIPBOARD_HEADER = "已选38 未选21";
+        var ROWS    = [{"name": "德米纳尔", "normal": 33, "bye": 0}, {"name": "门希克", "normal": 8, "bye": 0}, {"name": "谢尔顿", "normal": 4, "bye": 0}, {"name": "塔比洛", "normal": 2, "bye": 0}, {"name": "阿特马纳", "normal": 2, "bye": 0}];
+        var TOTALS  = {"normal": 49, "bye": 0, "grand": 49};
+        var MAX_VAL = 33;
+        var CLIPBOARD_HEADER = "已选49 未选10";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -671,6 +723,56 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         renderList();
     })();
     </script>
+
+        <div class="route-entry" id="rq-entry">
+  <div class="route-entry-icon">🏆</div>
+  <div class="route-entry-text">
+    <div class="route-entry-title">夺冠路线查询</div>
+    <div class="route-entry-desc">选择球员，查看谁还没选过他们</div>
+  </div>
+  <span class="route-entry-arrow">→</span>
+</div>
+
+<div id="rq-modal" class="detail-modal">
+  <div class="detail-card">
+    <div class="detail-hd">
+      <div class="detail-title-wrap">
+        <div class="detail-icon">🏆</div>
+        <div>
+          <div class="detail-title">夺冠路线查询</div>
+          <div class="detail-meta">选择球员后点击查询</div>
+        </div>
+      </div>
+      <button id="rq-close" class="detail-close" type="button">✕ 关闭</button>
+    </div>
+    <div class="detail-scroll">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">选择球员</div>
+      <div class="rq-select-box">
+        <input type="text" class="rq-search" id="rq-search" placeholder="搜索球员...">
+        <div class="rq-opt-list" id="rq-opt-list">
+          <div class="rq-opt" data-player="德米纳尔"><input type="checkbox">德米纳尔</div>
+          <div class="rq-opt" data-player="克-休伊特"><input type="checkbox">克-休伊特</div>
+          <div class="rq-opt" data-player="中岛布兰登"><input type="checkbox">中岛布兰登</div>
+          <div class="rq-opt" data-player="门希克"><input type="checkbox">门希克</div>
+          <div class="rq-opt" data-player="阿特马纳"><input type="checkbox">阿特马纳</div>
+          <div class="rq-opt" data-player="塔比洛"><input type="checkbox">塔比洛</div>
+          <div class="rq-opt" data-player="安贝尔"><input type="checkbox">安贝尔</div>
+          <div class="rq-opt" data-player="谢尔顿"><input type="checkbox">谢尔顿</div>
+          <div class="rq-opt" data-player="弗里茨"><input type="checkbox">弗里茨</div>
+          <div class="rq-opt" data-player="米克尔森"><input type="checkbox">米克尔森</div>
+          <div class="rq-opt" data-player="霍达尔"><input type="checkbox">霍达尔</div>
+          <div class="rq-opt" data-player="穆塞蒂"><input type="checkbox">穆塞蒂</div>
+        </div>
+      </div>
+      <div class="rq-tags" id="rq-tags"></div>
+      <button class="rq-run-btn" id="rq-run-btn" type="button">查询 →</button>
+      <div class="rq-result-count" id="rq-result-count"></div>
+      <div class="rq-result-list" id="rq-result-list">
+        <div class="rq-empty">选择球员后点击查询查看结果</div>
+      </div>
+    </div>
+  </div>
+</div>
 
         <div class="stats-row">
         <div class="row-count">显示 <b id="visible-count">0</b> / <b id="total-count">0</b> 行</div>
@@ -1167,9 +1269,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>门希克</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>3606</td>
@@ -2022,9 +2124,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>阿特马纳</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>2639</td>
@@ -2967,9 +3069,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>门希克</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>2076</td>
@@ -3537,9 +3639,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>门希克</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>1740</td>
@@ -3777,9 +3879,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>门希克</td>
+    <td>德米纳尔</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>1615</td>
@@ -4017,9 +4119,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>塔比洛</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>1550</td>
@@ -4512,9 +4614,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>谢尔顿</td>
+    <td>德米纳尔</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>1369</td>
@@ -4707,9 +4809,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>谢尔顿</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>1299</td>
@@ -5697,9 +5799,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>谢尔顿</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>916</td>
@@ -6567,9 +6669,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
+    <td>阿特马纳</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>572</td>
@@ -6582,9 +6684,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>3</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>德米纳尔</td>
+    <td>谢尔顿</td>
+    <td>已选</td>
     <td>75</td>
     <td>0</td>
     <td>563</td>
@@ -12041,6 +12143,158 @@ document.addEventListener('DOMContentLoaded',()=>{
             modal.classList.add('show');
         });
     });
+});
+
+document.addEventListener('DOMContentLoaded',function(){
+    var modal = document.getElementById('rq-modal');
+    var closeBtn = document.getElementById('rq-close');
+    if (!modal || !closeBtn) return;
+
+    function findColIndex(headerText){
+        var ths = document.querySelectorAll('.filterable-table thead tr:first-child th');
+        for (var i=0;i<ths.length;i++){
+            if (ths[i].textContent.trim() === headerText) return i;
+        }
+        return -1;
+    }
+
+    function closeModal(){
+        var card = modal.querySelector('.detail-card');
+        if (card){ card.style.transform='translateY(10px) scale(.97)'; card.style.opacity='0'; }
+        setTimeout(function(){
+            modal.classList.remove('show');
+            if (card){ card.style.transform=''; card.style.opacity=''; }
+        },220);
+    }
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && modal.classList.contains('show')) closeModal();
+    });
+
+    var entryBar = document.getElementById('rq-entry');
+    if (entryBar){
+        entryBar.addEventListener('click', function(){ modal.classList.add('show'); });
+    }
+
+    var selected = new Set();
+    var searchInput = document.getElementById('rq-search');
+    var optList = document.getElementById('rq-opt-list');
+    var tagsEl = document.getElementById('rq-tags');
+    var runBtn = document.getElementById('rq-run-btn');
+    var countEl = document.getElementById('rq-result-count');
+    var resultEl = document.getElementById('rq-result-list');
+
+    function renderTags(){
+        tagsEl.innerHTML = '';
+        selected.forEach(function(p){
+            var tag = document.createElement('span');
+            tag.className = 'rq-tag';
+            tag.appendChild(document.createTextNode(p + ' '));
+            var rm = document.createElement('span');
+            rm.className = 'rq-tag-rm';
+            rm.textContent = '\u00d7';
+            rm.addEventListener('click', function(){ toggle(p); });
+            tag.appendChild(rm);
+            tagsEl.appendChild(tag);
+        });
+    }
+
+    function syncOptUI(){
+        if (!optList) return;
+        optList.querySelectorAll('.rq-opt').forEach(function(opt){
+            var p = opt.dataset.player;
+            var cb = opt.querySelector('input[type=checkbox]');
+            var isSel = selected.has(p);
+            if (cb) cb.checked = isSel;
+            opt.classList.toggle('sel', isSel);
+        });
+    }
+
+    function toggle(p){
+        if (selected.has(p)) selected.delete(p); else selected.add(p);
+        syncOptUI();
+        renderTags();
+    }
+
+    if (optList){
+        optList.querySelectorAll('.rq-opt').forEach(function(opt){
+            opt.addEventListener('click', function(){ toggle(opt.dataset.player); });
+        });
+    }
+
+    if (searchInput){
+        searchInput.addEventListener('input', function(){
+            var q = searchInput.value.toLowerCase().trim();
+            optList.querySelectorAll('.rq-opt').forEach(function(opt){
+                var label = opt.textContent.toLowerCase();
+                opt.style.display = label.indexOf(q) !== -1 ? 'flex' : 'none';
+            });
+        });
+    }
+
+    function runQuery(){
+        var statusIdx = findColIndex('当前状态');
+        var nameIdx   = findColIndex('用户名');
+        var mainIdx   = findColIndex('今日主选');
+        var backIdx   = findColIndex('今日备选');
+        var rows = document.querySelectorAll('.filterable-table tbody tr');
+        var matches = [];
+
+        rows.forEach(function(row){
+            var cells = row.querySelectorAll('td');
+            if (statusIdx < 0 || nameIdx < 0 || !cells[statusIdx] || !cells[nameIdx]) return;
+            var status = cells[statusIdx].textContent.trim();
+            if (status !== '存活') return;
+
+            var detail = [];
+            try { detail = JSON.parse(row.dataset.detail || '[]'); } catch (err) { detail = []; }
+            if (!Array.isArray(detail)) detail = [];
+
+            var hasSelected = false;
+            selected.forEach(function(p){ if (detail.indexOf(p) !== -1) hasSelected = true; });
+            if (hasSelected) return;
+
+            var name = cells[nameIdx].textContent.trim();
+            var main = mainIdx >= 0 && cells[mainIdx] ? cells[mainIdx].textContent.trim() : '';
+            var back = backIdx >= 0 && cells[backIdx] ? cells[backIdx].textContent.trim() : '';
+            matches.push({ name: name, main: main, back: back });
+        });
+
+        if (!countEl || !resultEl) return;
+
+        countEl.textContent = selected.size === 0
+            ? '请至少选择一名球员'
+            : ('符合条件 · ' + matches.length + ' 位存活用户未选过以上球员');
+
+        if (selected.size === 0 || matches.length === 0){
+            resultEl.innerHTML = '<div class="rq-empty">'
+                + (selected.size === 0 ? '选择球员后点击查询查看结果' : '暂无符合条件的用户')
+                + '</div>';
+            return;
+        }
+
+        function esc(s){
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        resultEl.innerHTML = matches.map(function(m){
+            var pickText;
+            if (m.main || m.back){
+                pickText = '今日主选：<b>' + esc(m.main || '\u2014') + '</b>'
+                    + (m.back ? ' / 备选：<b>' + esc(m.back) + '</b>' : '');
+            } else {
+                pickText = '今日：未选';
+            }
+            return '<div class="rq-result-row">'
+                + '<span class="rq-badge">存活</span>'
+                + '<span class="rq-result-name" title="' + esc(m.name) + '">' + esc(m.name) + '</span>'
+                + '<span class="rq-result-pick">' + pickText + '</span>'
+                + '</div>';
+        }).join('');
+    }
+
+    if (runBtn) runBtn.addEventListener('click', runQuery);
 });
 
 function toggleTheme(){
