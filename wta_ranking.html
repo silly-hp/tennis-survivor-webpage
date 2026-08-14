@@ -530,7 +530,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年08月14日 19:26:22</span>
+    <span class="updated">⏱ 2026年08月14日 19:39:12</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -553,9 +553,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 91 人已选</span>
+        <span class="meta-chip chip-valid">✓ 100 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">125 人未选</span>
+    <span class="meta-chip chip-nosel">116 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 216 人</span>
         </div>
@@ -577,10 +577,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "萨姆索诺娃", "normal": 20, "bye": 0}, {"name": "科恰雷托", "normal": 17, "bye": 0}, {"name": "阿朗戈", "normal": 12, "bye": 0}, {"name": "巴尔通科娃", "normal": 10, "bye": 0}, {"name": "乔因特", "normal": 9, "bye": 0}, {"name": "瓦伦托娃", "normal": 6, "bye": 0}, {"name": "王欣瑜", "normal": 3, "bye": 0}, {"name": "克劳斯", "normal": 2, "bye": 0}, {"name": "凯莉耶娃", "normal": 2, "bye": 0}, {"name": "斯特恩斯", "normal": 2, "bye": 0}, {"name": "利斯", "normal": 1, "bye": 0}, {"name": "博萨斯", "normal": 1, "bye": 0}, {"name": "卡-普利斯科娃", "normal": 1, "bye": 0}, {"name": "塔格尔", "normal": 1, "bye": 0}, {"name": "斯尼古尔", "normal": 1, "bye": 0}, {"name": "沙旺乔", "normal": 1, "bye": 0}, {"name": "王曦雨", "normal": 1, "bye": 0}, {"name": "贝莱克", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 91, "bye": 0, "grand": 91};
-        var MAX_VAL = 20;
-        var CLIPBOARD_HEADER = "已选91 未选125";
+        var ROWS    = [{"name": "萨姆索诺娃", "normal": 21, "bye": 0}, {"name": "科恰雷托", "normal": 18, "bye": 0}, {"name": "阿朗戈", "normal": 13, "bye": 0}, {"name": "巴尔通科娃", "normal": 12, "bye": 0}, {"name": "乔因特", "normal": 11, "bye": 0}, {"name": "瓦伦托娃", "normal": 7, "bye": 0}, {"name": "王欣瑜", "normal": 3, "bye": 0}, {"name": "克劳斯", "normal": 2, "bye": 0}, {"name": "凯莉耶娃", "normal": 2, "bye": 0}, {"name": "卡-普利斯科娃", "normal": 2, "bye": 0}, {"name": "斯特恩斯", "normal": 2, "bye": 0}, {"name": "利斯", "normal": 1, "bye": 0}, {"name": "博萨斯", "normal": 1, "bye": 0}, {"name": "塔格尔", "normal": 1, "bye": 0}, {"name": "斯尼古尔", "normal": 1, "bye": 0}, {"name": "沙旺乔", "normal": 1, "bye": 0}, {"name": "王曦雨", "normal": 1, "bye": 0}, {"name": "贝莱克", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 100, "bye": 0, "grand": 100};
+        var MAX_VAL = 21;
+        var CLIPBOARD_HEADER = "已选100 未选116";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -724,135 +724,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     })();
     </script>
 
-        <div class="route-entry" id="rq-entry">
-  <div class="route-entry-icon">🏆</div>
-  <div class="route-entry-text">
-    <div class="route-entry-title">夺冠路线查询</div>
-    <div class="route-entry-desc">选择球员，查看谁还没选过ta们</div>
-  </div>
-  <span class="route-entry-arrow">🔍</span>
-</div>
-
-<div id="rq-modal" class="detail-modal">
-  <div class="detail-card">
-    <div class="detail-hd">
-      <div class="detail-title-wrap">
-        <div class="detail-icon">🏆</div>
-        <div>
-          <div class="detail-title">夺冠路线查询</div>
-          <div class="detail-meta">选择球员后点击查询</div>
-        </div>
-      </div>
-      <button id="rq-close" class="detail-close" type="button">✕ 关闭</button>
-    </div>
-    <div class="detail-scroll">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">选择球员</div>
-      <div class="rq-select-box">
-        <input type="text" class="rq-search" id="rq-search" placeholder="搜索球员...">
-        <div class="rq-opt-list" id="rq-opt-list">
-          <div class="rq-opt" data-player="萨巴莲卡"><input type="checkbox">萨巴莲卡</div>
-          <div class="rq-opt" data-player="塔格尔"><input type="checkbox">塔格尔</div>
-          <div class="rq-opt" data-player="吉布森"><input type="checkbox">吉布森</div>
-          <div class="rq-opt" data-player="王欣瑜"><input type="checkbox">王欣瑜</div>
-          <div class="rq-opt" data-player="范德温克尔"><input type="checkbox">范德温克尔</div>
-          <div class="rq-opt" data-player="维基奇"><input type="checkbox">维基奇</div>
-          <div class="rq-opt" data-player="克赖奇科娃"><input type="checkbox">克赖奇科娃</div>
-          <div class="rq-opt" data-player="贝莱克"><input type="checkbox">贝莱克</div>
-          <div class="rq-opt" data-player="卡-普利斯科娃"><input type="checkbox">卡-普利斯科娃</div>
-          <div class="rq-opt" data-player="沙旺乔"><input type="checkbox">沙旺乔</div>
-          <div class="rq-opt" data-player="布林科娃"><input type="checkbox">布林科娃</div>
-          <div class="rq-opt" data-player="亚历山德罗娃"><input type="checkbox">亚历山德罗娃</div>
-          <div class="rq-opt" data-player="西尼亚科娃"><input type="checkbox">西尼亚科娃</div>
-          <div class="rq-opt" data-player="博萨斯"><input type="checkbox">博萨斯</div>
-          <div class="rq-opt" data-player="邦达尔"><input type="checkbox">邦达尔</div>
-          <div class="rq-opt" data-player="斯尼古尔"><input type="checkbox">斯尼古尔</div>
-          <div class="rq-opt" data-player="斯塔罗杜布采娃"><input type="checkbox">斯塔罗杜布采娃</div>
-          <div class="rq-opt" data-player="凯斯"><input type="checkbox">凯斯</div>
-          <div class="rq-opt" data-player="蕾-费尔南德斯"><input type="checkbox">蕾-费尔南德斯</div>
-          <div class="rq-opt" data-player="季莫费耶娃"><input type="checkbox">季莫费耶娃</div>
-          <div class="rq-opt" data-player="王曦雨"><input type="checkbox">王曦雨</div>
-          <div class="rq-opt" data-player="斯托亚纳"><input type="checkbox">斯托亚纳</div>
-          <div class="rq-opt" data-player="瓦伦托娃"><input type="checkbox">瓦伦托娃</div>
-          <div class="rq-opt" data-player="斯维托丽娜"><input type="checkbox">斯维托丽娜</div>
-          <div class="rq-opt" data-player="高芙"><input type="checkbox">高芙</div>
-          <div class="rq-opt" data-player="普汀塞娃"><input type="checkbox">普汀塞娃</div>
-          <div class="rq-opt" data-player="萨姆索诺娃"><input type="checkbox">萨姆索诺娃</div>
-          <div class="rq-opt" data-player="张帅"><input type="checkbox">张帅</div>
-          <div class="rq-opt" data-player="戴伊"><input type="checkbox">戴伊</div>
-          <div class="rq-opt" data-player="李吉妮"><input type="checkbox">李吉妮</div>
-          <div class="rq-opt" data-player="鲍兹科娃"><input type="checkbox">鲍兹科娃</div>
-          <div class="rq-opt" data-player="科恰雷托"><input type="checkbox">科恰雷托</div>
-          <div class="rq-opt" data-player="斯特凡尼尼"><input type="checkbox">斯特凡尼尼</div>
-          <div class="rq-opt" data-player="乔因特"><input type="checkbox">乔因特</div>
-          <div class="rq-opt" data-player="科帕奇"><input type="checkbox">科帕奇</div>
-          <div class="rq-opt" data-player="伊-约维奇"><input type="checkbox">伊-约维奇</div>
-          <div class="rq-opt" data-player="科斯秋克"><input type="checkbox">科斯秋克</div>
-          <div class="rq-opt" data-player="克宁"><input type="checkbox">克宁</div>
-          <div class="rq-opt" data-player="利斯"><input type="checkbox">利斯</div>
-          <div class="rq-opt" data-player="斯蒂芬斯"><input type="checkbox">斯蒂芬斯</div>
-          <div class="rq-opt" data-player="克劳斯"><input type="checkbox">克劳斯</div>
-          <div class="rq-opt" data-player="波塔波娃"><input type="checkbox">波塔波娃</div>
-          <div class="rq-opt" data-player="曾丽美"><input type="checkbox">曾丽美</div>
-          <div class="rq-opt" data-player="帕克斯"><input type="checkbox">帕克斯</div>
-          <div class="rq-opt" data-player="戈卢比奇"><input type="checkbox">戈卢比奇</div>
-          <div class="rq-opt" data-player="凯莉耶娃"><input type="checkbox">凯莉耶娃</div>
-          <div class="rq-opt" data-player="奥利尼科娃"><input type="checkbox">奥利尼科娃</div>
-          <div class="rq-opt" data-player="米-安德烈耶娃"><input type="checkbox">米-安德烈耶娃</div>
-          <div class="rq-opt" data-player="诺斯科娃"><input type="checkbox">诺斯科娃</div>
-          <div class="rq-opt" data-player="博尔特"><input type="checkbox">博尔特</div>
-          <div class="rq-opt" data-player="沃雷涅茨"><input type="checkbox">沃雷涅茨</div>
-          <div class="rq-opt" data-player="斯特恩斯"><input type="checkbox">斯特恩斯</div>
-          <div class="rq-opt" data-player="达特"><input type="checkbox">达特</div>
-          <div class="rq-opt" data-player="陶森"><input type="checkbox">陶森</div>
-          <div class="rq-opt" data-player="伊埃拉"><input type="checkbox">伊埃拉</div>
-          <div class="rq-opt" data-player="鲁塞"><input type="checkbox">鲁塞</div>
-          <div class="rq-opt" data-player="里纳特"><input type="checkbox">里纳特</div>
-          <div class="rq-opt" data-player="卡萨特金娜"><input type="checkbox">卡萨特金娜</div>
-          <div class="rq-opt" data-player="森梅兹"><input type="checkbox">森梅兹</div>
-          <div class="rq-opt" data-player="阿尼西莫娃"><input type="checkbox">阿尼西莫娃</div>
-          <div class="rq-opt" data-player="科斯蒂亚"><input type="checkbox">科斯蒂亚</div>
-          <div class="rq-opt" data-player="巴尔通科娃"><input type="checkbox">巴尔通科娃</div>
-          <div class="rq-opt" data-player="查拉耶娃"><input type="checkbox">查拉耶娃</div>
-          <div class="rq-opt" data-player="麦克纳莉"><input type="checkbox">麦克纳莉</div>
-          <div class="rq-opt" data-player="凯斯勒"><input type="checkbox">凯斯勒</div>
-          <div class="rq-opt" data-player="卡林斯卡娅"><input type="checkbox">卡林斯卡娅</div>
-          <div class="rq-opt" data-player="埃-纳瓦罗"><input type="checkbox">埃-纳瓦罗</div>
-          <div class="rq-opt" data-player="维德曼诺娃"><input type="checkbox">维德曼诺娃</div>
-          <div class="rq-opt" data-player="加里宁娜"><input type="checkbox">加里宁娜</div>
-          <div class="rq-opt" data-player="沃尔特特"><input type="checkbox">沃尔特特</div>
-          <div class="rq-opt" data-player="马辛科"><input type="checkbox">马辛科</div>
-          <div class="rq-opt" data-player="佩古拉"><input type="checkbox">佩古拉</div>
-          <div class="rq-opt" data-player="希维昂泰克"><input type="checkbox">希维昂泰克</div>
-          <div class="rq-opt" data-player="阿朗戈"><input type="checkbox">阿朗戈</div>
-          <div class="rq-opt" data-player="大威廉姆斯"><input type="checkbox">大威廉姆斯</div>
-          <div class="rq-opt" data-player="拉希莫娃"><input type="checkbox">拉希莫娃</div>
-          <div class="rq-opt" data-player="比勒尔"><input type="checkbox">比勒尔</div>
-          <div class="rq-opt" data-player="萨卡里"><input type="checkbox">萨卡里</div>
-          <div class="rq-opt" data-player="梅尔滕斯"><input type="checkbox">梅尔滕斯</div>
-          <div class="rq-opt" data-player="帕里"><input type="checkbox">帕里</div>
-          <div class="rq-opt" data-player="多勒海德"><input type="checkbox">多勒海德</div>
-          <div class="rq-opt" data-player="克鲁格"><input type="checkbox">克鲁格</div>
-          <div class="rq-opt" data-player="布瓦松"><input type="checkbox">布瓦松</div>
-          <div class="rq-opt" data-player="本西奇"><input type="checkbox">本西奇</div>
-          <div class="rq-opt" data-player="施内德"><input type="checkbox">施内德</div>
-          <div class="rq-opt" data-player="玛利亚"><input type="checkbox">玛利亚</div>
-          <div class="rq-opt" data-player="布克沙"><input type="checkbox">布克沙</div>
-          <div class="rq-opt" data-player="赫瓦林斯卡"><input type="checkbox">赫瓦林斯卡</div>
-          <div class="rq-opt" data-player="奥斯塔彭科"><input type="checkbox">奥斯塔彭科</div>
-          <div class="rq-opt" data-player="弗雷希"><input type="checkbox">弗雷希</div>
-          <div class="rq-opt" data-player="汤森德"><input type="checkbox">汤森德</div>
-          <div class="rq-opt" data-player="雷巴金娜"><input type="checkbox">雷巴金娜</div>
-        </div>
-      </div>
-      <div class="rq-tags" id="rq-tags"></div>
-      <button class="rq-run-btn" id="rq-run-btn" type="button">查询 →</button>
-      <div class="rq-result-count" id="rq-result-count"></div>
-      <div class="rq-result-list" id="rq-result-list">
-        <div class="rq-empty">选择球员后点击查询查看结果</div>
-      </div>
-    </div>
-  </div>
-</div>
+        
 
         <div class="stats-row">
         <div class="row-count">显示 <b id="visible-count">0</b> / <b id="total-count">0</b> 行</div>
@@ -899,9 +771,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>巴尔通科娃</td>
+    <td>萨姆索诺娃</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>5705</td>
@@ -1214,9 +1086,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>科恰雷托</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>4162</td>
@@ -1394,9 +1266,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>乔因特</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>3825</td>
@@ -1874,9 +1746,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>卡-普利斯科娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>3331</td>
@@ -2474,9 +2346,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>萨姆索诺娃</td>
+    <td>凯莉耶娃</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>2928</td>
@@ -3824,9 +3696,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>阿朗戈</td>
+    <td>萨姆索诺娃</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>2290</td>
@@ -3899,9 +3771,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>乔因特</td>
+    <td>斯尼古尔</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>2246</td>
@@ -6284,9 +6156,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>巴尔通科娃</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>1062</td>
@@ -7035,7 +6907,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1</td>
     <td></td>
     <td>乔因特</td>
-    <td></td>
+    <td>科恰雷托</td>
     <td>已选</td>
     <td>23</td>
     <td>0</td>
@@ -9464,9 +9336,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>瓦伦托娃</td>
+    <td>塔格尔</td>
+    <td>已选</td>
     <td>23</td>
     <td>0</td>
     <td>182</td>
