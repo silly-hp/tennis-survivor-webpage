@@ -530,7 +530,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年08月24日 22:03:32</span>
+    <span class="updated">⏱ 2026年08月24日 22:16:28</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -554,9 +554,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 128 人已选</span>
+        <span class="meta-chip chip-valid">✓ 140 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">79 人未选</span>
+    <span class="meta-chip chip-nosel">67 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 207 人</span>
         </div>
@@ -570,7 +570,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 10 名球员）</span>
+        <span id="sumToggleTxt">显示全部 11 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -578,10 +578,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "吉隆", "normal": 44, "bye": 0}, {"name": "达克沃斯", "normal": 37, "bye": 0}, {"name": "达姆", "normal": 21, "bye": 0}, {"name": "科瓦切维奇", "normal": 16, "bye": 0}, {"name": "萨菲乌林", "normal": 5, "bye": 0}, {"name": "沃尔顿", "normal": 1, "bye": 0}, {"name": "索内戈", "normal": 1, "bye": 0}, {"name": "西西帕斯", "normal": 1, "bye": 0}, {"name": "阿尔特迈尔", "normal": 1, "bye": 0}, {"name": "霍因斯基", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 128, "bye": 0, "grand": 128};
-        var MAX_VAL = 44;
-        var CLIPBOARD_HEADER = "已选128 未选79";
+        var ROWS    = [{"name": "吉隆", "normal": 48, "bye": 0}, {"name": "达克沃斯", "normal": 40, "bye": 0}, {"name": "达姆", "normal": 22, "bye": 0}, {"name": "科瓦切维奇", "normal": 18, "bye": 0}, {"name": "萨菲乌林", "normal": 5, "bye": 0}, {"name": "沃尔顿", "normal": 2, "bye": 0}, {"name": "克-休伊特", "normal": 1, "bye": 0}, {"name": "索内戈", "normal": 1, "bye": 0}, {"name": "西西帕斯", "normal": 1, "bye": 0}, {"name": "阿尔特迈尔", "normal": 1, "bye": 0}, {"name": "霍因斯基", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 140, "bye": 0, "grand": 140};
+        var MAX_VAL = 48;
+        var CLIPBOARD_HEADER = "已选140 未选67";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -840,9 +840,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>吉隆</td>
+    <td>达克沃斯</td>
+    <td>已选</td>
     <td>7</td>
     <td>3620</td>
     <td><span class="rank same"></span></td>
@@ -1106,9 +1106,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>达克沃斯</td>
+    <td>科瓦切维奇</td>
+    <td>已选</td>
     <td>7</td>
     <td>2836</td>
     <td><span class="rank same"></span></td>
@@ -1568,9 +1568,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>科瓦切维奇</td>
+    <td>萨菲乌林</td>
+    <td>已选</td>
     <td>7</td>
     <td>2375</td>
     <td><span class="rank same"></span></td>
@@ -1610,9 +1610,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>达姆</td>
+    <td>萨菲乌林</td>
+    <td>已选</td>
     <td>7</td>
     <td>2358</td>
     <td><span class="rank same"></span></td>
@@ -1666,9 +1666,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>吉隆</td>
+    <td>达克沃斯</td>
+    <td>已选</td>
     <td>7</td>
     <td>2312</td>
     <td><span class="rank same"></span></td>
@@ -1778,9 +1778,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>达克沃斯</td>
+    <td>科瓦切维奇</td>
+    <td>已选</td>
     <td>7</td>
     <td>2256</td>
     <td><span class="rank same"></span></td>
@@ -2044,9 +2044,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>科瓦切维奇</td>
+    <td>吉隆</td>
+    <td>已选</td>
     <td>7</td>
     <td>2068</td>
     <td><span class="rank same"></span></td>
@@ -2744,9 +2744,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>达克沃斯</td>
+    <td>勒特格林</td>
+    <td>已选</td>
     <td>7</td>
     <td>1728</td>
     <td><span class="rank same"></span></td>
@@ -4214,9 +4214,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
+    <td>吉隆</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>7</td>
     <td>1150</td>
     <td><span class="rank same"></span></td>
@@ -5880,9 +5880,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>沃尔顿</td>
+    <td>阿尔特迈尔</td>
+    <td>已选</td>
     <td>7</td>
     <td>580</td>
     <td><span class="rank same"></span></td>
@@ -7854,9 +7854,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>吉隆</td>
+    <td>迈赫扎克</td>
+    <td>已选</td>
     <td>7</td>
     <td>112</td>
     <td><span class="rank up">+3</span></td>
@@ -8694,9 +8694,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>1</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>克-休伊特</td>
+    <td>索内戈</td>
+    <td>已选</td>
     <td>7</td>
     <td>57</td>
     <td><span class="rank up">+19</span></td>
