@@ -530,7 +530,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年09月07日 00:58:28</span>
+    <span class="updated">⏱ 2026年09月07日 07:05:02</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -553,9 +553,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 150 人已选</span>
+        <span class="meta-chip chip-valid">✓ 155 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">6 人未选</span>
+    <span class="meta-chip chip-nosel">0 人未选</span>
+    <span class="meta-sep">｜</span>
+    <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 156 人</span>
         </div>
@@ -577,10 +579,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "米克尔森", "normal": 81, "bye": 0}, {"name": "谢尔顿", "normal": 39, "bye": 0}, {"name": "阿尔卡拉斯", "normal": 14, "bye": 0}, {"name": "梅德韦杰夫", "normal": 11, "bye": 0}, {"name": "埃切韦里", "normal": 2, "bye": 0}, {"name": "西西帕斯", "normal": 2, "bye": 0}, {"name": "蒂亚福", "normal": 1, "bye": 0}];
-        var TOTALS  = {"normal": 150, "bye": 0, "grand": 150};
-        var MAX_VAL = 81;
-        var CLIPBOARD_HEADER = "已选150 未选6";
+        var ROWS    = [{"name": "米克尔森", "normal": 83, "bye": 0}, {"name": "谢尔顿", "normal": 40, "bye": 0}, {"name": "阿尔卡拉斯", "normal": 14, "bye": 0}, {"name": "梅德韦杰夫", "normal": 12, "bye": 0}, {"name": "西西帕斯", "normal": 3, "bye": 0}, {"name": "埃切韦里", "normal": 2, "bye": 0}, {"name": "蒂亚福", "normal": 1, "bye": 0}];
+        var TOTALS  = {"normal": 155, "bye": 0, "grand": 155};
+        var MAX_VAL = 83;
+        var CLIPBOARD_HEADER = "已选155 未选0 自杀1";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -758,13 +760,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
           <div class="rq-opt" data-player="勒纳-钱"><input type="checkbox">勒纳-钱</div>
           <div class="rq-opt" data-player="弗-塞伦多洛"><input type="checkbox">弗-塞伦多洛</div>
           <div class="rq-opt" data-player="布洛克斯"><input type="checkbox">布洛克斯</div>
-          <div class="rq-opt" data-player="梅德韦杰夫"><input type="checkbox">梅德韦杰夫</div>
-          <div class="rq-opt" data-player="蒂亚福"><input type="checkbox">蒂亚福</div>
-          <div class="rq-opt" data-player="米克尔森"><input type="checkbox">米克尔森</div>
-          <div class="rq-opt" data-player="埃切韦里"><input type="checkbox">埃切韦里</div>
           <div class="rq-opt" data-player="谢尔顿"><input type="checkbox">谢尔顿</div>
           <div class="rq-opt" data-player="西西帕斯"><input type="checkbox">西西帕斯</div>
-          <div class="rq-opt" data-player="保罗"><input type="checkbox">保罗</div>
+          <div class="rq-opt" data-player="蒂亚福"><input type="checkbox">蒂亚福</div>
+          <div class="rq-opt" data-player="米克尔森"><input type="checkbox">米克尔森</div>
           <div class="rq-opt" data-player="阿尔卡拉斯"><input type="checkbox">阿尔卡拉斯</div>
         </div>
       </div>
@@ -3208,9 +3207,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>7</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>西西帕斯</td>
+    <td>梅德韦杰夫</td>
+    <td>已选</td>
     <td>200</td>
     <td>1300</td>
     <td>871</td>
@@ -4049,7 +4048,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>7</td>
     <td></td>
     <td>米克尔森</td>
-    <td></td>
+    <td>西西帕斯</td>
     <td>已选</td>
     <td>200</td>
     <td>0</td>
@@ -4168,9 +4167,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>7</td>
     <td></td>
+    <td>谢尔顿</td>
     <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>已选</td>
     <td>200</td>
     <td>400</td>
     <td>1360</td>
@@ -6013,9 +6012,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>7</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>梅德韦杰夫</td>
+    <td>米克尔森</td>
+    <td>已选</td>
     <td>200</td>
     <td>75</td>
     <td>957</td>
@@ -6283,9 +6282,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>7</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>谢尔顿</td>
+    <td>米克尔森</td>
+    <td>自杀（重复）</td>
     <td>200</td>
     <td>0</td>
     <td>921</td>
@@ -6418,9 +6417,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>7</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>米克尔森</td>
+    <td>阿尔卡拉斯</td>
+    <td>已选</td>
     <td>200</td>
     <td>0</td>
     <td>871</td>
@@ -6523,9 +6522,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>存活</td>
     <td>7</td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
+    <td>米克尔森</td>
+    <td>梅德韦杰夫</td>
+    <td>已选</td>
     <td>200</td>
     <td>75</td>
     <td>758</td>
