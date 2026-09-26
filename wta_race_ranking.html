@@ -530,7 +530,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年09月26日 20:57:23</span>
+    <span class="updated">⏱ 2026年09月26日 21:10:24</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -544,188 +544,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </div>
 </div>
 
-                <div class="sum-box">
-        <div class="sum-header">
-        <div class="sum-title-row">
-        <span class="sum-title">今日选人统计</span>
-        <button class="sum-copy-btn" id="sumCopyBtn" onclick="copySumStats()" title="复制选人统计文本">
-            <span id="sumCopyIcon">⎘</span>
-            <span id="sumCopyTxt">复制</span>
-        </button>
-        </div>
-        <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 4 人已选</span>
-    <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">3 人未选</span>
-    <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-suicide">⚠ 2 人自杀</span>
-    <span class="meta-sep">｜</span>
-    <span class="meta-total">总计 9 人</span>
-        </div>
-        </div>
-            <div class="sum-col-hd">
-    <span class="sch-rank"></span>
-    <span class="sch-name"></span>
-    <span class="sch-bar"></span>
-    <span class="sch-count">人数</span>
-    <span class="sch-pct">占比</span>
-    </div>
-        <div class="sum-list" id="sumList"></div>
-        <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 2 名球员）</span>
-        <span class="sum-ticon" id="sumTicon">▼</span>
-        </button>
-    </div>
-    <script>
-    (function(){
-        var TOP_N   = 3;
-        var HAS_BYE = false;
-        var ROWS    = [{"name": "赫瓦林斯卡", "normal": 4, "bye": 0}, {"name": "蕾-费尔南德斯", "normal": 0, "bye": 0}];
-        var TOTALS  = {"normal": 4, "bye": 0, "grand": 4};
-        var MAX_VAL = 4;
-        var CLIPBOARD_HEADER = "已选4 未选3 自杀2";
-        var expanded = false;
-
-        function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
-
-        function trackClass(r){
-        if (!HAS_BYE) return 'solo-v';
-        if (r.normal > 0 && r.bye > 0) return 'both';
-        return r.bye > 0 ? 'solo-b' : 'solo-v';
-        }
-
-        function renderList(){
-        var list = document.getElementById('sumList');
-        list.innerHTML = '';
-
-        ROWS.forEach(function(r, i){
-            var tot   = r.normal + r.bye;
-        var normW = Math.round(r.normal / MAX_VAL * 100);
-        var byeW  = Math.round(r.bye    / MAX_VAL * 100);
-            var hidden = i >= TOP_N;
-
-            var cls = ['sbar-row',
-            hidden && !expanded ? 's-hidden' : '',
-            hidden &&  expanded ? 's-exp'    : '',
-            ].filter(Boolean).join(' ');
-
-            var inlineHtml = HAS_BYE
-            ? '<div class="sbar-inline">' +
-                '<span class="sbar-iv">' + r.normal + '</span>' +
-                '<span class="sbar-isep">/</span>' +
-                '<span class="sbar-ib">' + r.bye + '</span>' +
-                '</div>'
-            : '';
-
-            var row = document.createElement('div');
-            row.className = cls;
-            row.innerHTML =
-            '<span class="sbar-rank">' + (i+1) + '</span>' +
-            '<span class="sbar-name" title="' + r.name + '">' + r.name + '</span>' +
-            '<div class="sbar-track ' + trackClass(r) + '">' +
-                '<div class="sbar-seg seg-v" style="width:' + normW + '%"></div>' +
-                (HAS_BYE ? '<div class="sbar-seg seg-b" style="width:' + byeW + '%"></div>' : '') +
-            '</div>' +
-            inlineHtml +
-            '<div class="sbar-right">' +
-                '<span class="sbar-count">' + tot + '</span>' +
-                '<span class="sbar-pct">'  + pct(tot) + '</span>' +
-            '</div>';
-            list.appendChild(row);
-        });
-
-        /* totals row */
-        var totInline = HAS_BYE
-            ? '<div class="sbar-inline">' +
-            '<span class="sbar-iv">' + TOTALS.normal + '</span>' +
-            '<span class="sbar-isep">/</span>' +
-            '<span class="sbar-ib">' + TOTALS.bye + '</span>' +
-            '</div>'
-            : '';
-        var tot = document.createElement('div');
-        tot.className = 'sbar-row stotal';
-        tot.innerHTML =
-            '<span class="sbar-rank"></span>' +
-            '<span class="sbar-name">有效总计</span>' +
-            '<div class="sbar-track" style="opacity:0;flex:1;pointer-events:none"></div>' +
-            totInline +
-            '<div class="sbar-right">' +
-            '<span class="sbar-count">' + TOTALS.grand + '</span>' +
-            '<span class="sbar-pct">100%</span>' +
-            '</div>';
-        list.appendChild(tot);
-
-        /* button label */
-        var hidN = ROWS.length - TOP_N;
-        var btn  = document.getElementById('sumToggle');
-        var txt  = document.getElementById('sumToggleTxt');
-        var ico  = document.getElementById('sumTicon');
-        btn.classList.toggle('open', expanded);
-        ico.style.transform = expanded ? 'rotate(180deg)' : '';
-        txt.textContent = expanded
-            ? '收起'
-            : '显示全部 ' + ROWS.length + ' 名球员';
-        }
-
-        window.toggleSumPanel = function(){
-        expanded = !expanded;
-        renderList();
-        if (expanded) {
-            var segs = document.querySelectorAll('#sumList .sbar-row.s-exp .sbar-seg');
-            segs.forEach(function(el){
-            var w = el.style.width; el.style.width = '0%';
-            requestAnimationFrame(function(){ el.style.width = w; });
-            });
-            }
-        };
-
-        window.copySumStats = function(){
-            var lines = [CLIPBOARD_HEADER];
-            ROWS.forEach(function(r){
-                if (r.normal === 0 && r.bye === 0) return;
-                var line;
-                if (HAS_BYE) {
-                    line = r.name + ' ' + r.normal + '(' + r.bye + ')';
-                } else {
-                    line = r.name + ' ' + r.normal;
-                }
-                lines.push(line);
-            });
-            var text = lines.join('\n');
-            navigator.clipboard.writeText(text).then(function(){
-                var btn = document.getElementById('sumCopyBtn');
-                var txt = document.getElementById('sumCopyTxt');
-                if (!btn) return;
-                btn.classList.add('copied');
-                txt.textContent = '已复制';
-                setTimeout(function(){
-                    btn.classList.remove('copied');
-                    txt.textContent = '复制';
-                }, 2000);
-            }).catch(function(){
-                /* fallback for older browsers */
-                var ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                var btn = document.getElementById('sumCopyBtn');
-                var t   = document.getElementById('sumCopyTxt');
-                if (btn) { btn.classList.add('copied'); }
-                if (t)   { t.textContent = '已复制'; }
-                setTimeout(function(){
-                    if (btn) { btn.classList.remove('copied'); }
-                    if (t)   { t.textContent = '复制'; }
-                }, 2000);
-            });
-        };
-
-        renderList();
-    })();
-    </script>
+        
 
         <div class="route-entry" id="rq-entry">
   <div class="route-entry-icon">🏆</div>
@@ -1671,16 +1490,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3301</td>
     <td><span class="rank down">-3</span></td>
   </tr>
-  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;梅尔滕斯&quot;, &quot;吉布森&quot;, &quot;普罗佐罗娃&quot;]">
+  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;梅尔滕斯&quot;, &quot;吉布森&quot;, &quot;普罗佐罗娃&quot;, &quot;赫瓦林斯卡&quot;]">
     <td>56</td>
     <td>64</td>
     <td>Rockylababy</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>赫瓦林斯卡</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>195</td>
     <td>3385</td>
     <td><span class="rank up">+8</span></td>
@@ -2763,11 +2582,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2586</td>
     <td><span class="rank down">-6</span></td>
   </tr>
-  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;梅尔滕斯&quot;, &quot;吉布森&quot;, &quot;赫瓦林斯卡&quot;]">
+  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;梅尔滕斯&quot;, &quot;吉布森&quot;, &quot;赫瓦林斯卡&quot;, &quot;&quot;]">
     <td>129</td>
     <td>142</td>
     <td>人怪黄-</td>
-    <td>存活</td>
+    <td>自杀(退赛)</td>
     <td>5</td>
     <td></td>
     <td></td>
@@ -3281,11 +3100,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2393</td>
     <td><span class="rank up">+2</span></td>
   </tr>
-  <tr data-detail="[&quot;吉布森&quot;, &quot;萨卡里&quot;, &quot;蕾-费尔南德斯&quot;, &quot;王欣瑜&quot;, &quot;赫瓦林斯卡&quot;]">
+  <tr data-detail="[&quot;吉布森&quot;, &quot;萨卡里&quot;, &quot;蕾-费尔南德斯&quot;, &quot;王欣瑜&quot;, &quot;赫瓦林斯卡&quot;, &quot;&quot;]">
     <td>157</td>
     <td>179</td>
     <td>无***痕</td>
-    <td>存活</td>
+    <td>自杀(退赛)</td>
     <td>5</td>
     <td></td>
     <td></td>
@@ -4751,19 +4570,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1716</td>
     <td><span class="rank up">+8</span></td>
   </tr>
-  <tr data-detail="[&quot;日比野菜绪&quot;, &quot;克赖奇科娃&quot;, &quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;]">
-    <td>267</td>
+  <tr data-detail="[&quot;日比野菜绪&quot;, &quot;克赖奇科娃&quot;, &quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;, &quot;赫瓦林斯卡&quot;]">
+    <td>268</td>
     <td>284</td>
     <td>s***3</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>赫瓦林斯卡</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>195</td>
     <td>1797</td>
-    <td><span class="rank up">+17</span></td>
+    <td><span class="rank up">+16</span></td>
   </tr>
   <tr data-detail="[]">
     <td>292</td>
@@ -5325,16 +5144,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1499</td>
     <td><span class="rank up">+12</span></td>
   </tr>
-  <tr data-detail="[&quot;日比野菜绪&quot;, &quot;克赖奇科娃&quot;, &quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;]">
+  <tr data-detail="[&quot;日比野菜绪&quot;, &quot;克赖奇科娃&quot;, &quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;, &quot;赫瓦林斯卡&quot;]">
     <td>291</td>
     <td>325</td>
     <td>温网冠军诺斯科娃</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>赫瓦林斯卡</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>195</td>
     <td>1585</td>
     <td><span class="rank up">+34</span></td>
@@ -5591,16 +5410,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1243</td>
     <td><span class="rank down">-11</span></td>
   </tr>
-  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;克赖奇科娃&quot;, &quot;梅尔滕斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;]">
+  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;克赖奇科娃&quot;, &quot;梅尔滕斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;, &quot;赫瓦林斯卡&quot;]">
     <td>322</td>
     <td>344</td>
     <td>流星飞舞啦啦啦</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>赫瓦林斯卡</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>195</td>
     <td>1432</td>
     <td><span class="rank up">+22</span></td>
@@ -6193,16 +6012,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1108</td>
     <td><span class="rank up">+13</span></td>
   </tr>
-  <tr data-detail="[&quot;赫瓦林斯卡&quot;, &quot;帕克斯&quot;, &quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;]">
+  <tr data-detail="[&quot;赫瓦林斯卡&quot;, &quot;帕克斯&quot;, &quot;蕾-费尔南德斯&quot;, &quot;萨卡里&quot;, &quot;吉布森&quot;, &quot;蕾-费尔南德斯&quot;]">
     <td>360</td>
     <td>387</td>
     <td>塔姆科尔涅娃我老婆</td>
-    <td>存活</td>
+    <td>自杀(重复)</td>
     <td>5</td>
     <td></td>
-    <td>蕾-费尔南德斯</td>
     <td></td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td>未选</td>
     <td>195</td>
     <td>1194</td>
     <td><span class="rank up">+27</span></td>
@@ -6361,16 +6180,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1014</td>
     <td><span class="rank up">+6</span></td>
   </tr>
-  <tr data-detail="[&quot;吉布森&quot;, &quot;奥利尼科娃&quot;, &quot;蕾-费尔南德斯&quot;, &quot;王欣瑜&quot;, &quot;赫瓦林斯卡&quot;]">
+  <tr data-detail="[&quot;吉布森&quot;, &quot;奥利尼科娃&quot;, &quot;蕾-费尔南德斯&quot;, &quot;王欣瑜&quot;, &quot;赫瓦林斯卡&quot;, &quot;赫瓦林斯卡&quot;]">
     <td>375</td>
     <td>399</td>
     <td>PoppyBagel</td>
-    <td>存活</td>
+    <td>自杀(主备冲突)</td>
     <td>5</td>
     <td></td>
-    <td>赫瓦林斯卡</td>
-    <td>蕾-费尔南德斯</td>
-    <td>自杀（重复）</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>195</td>
     <td>1099</td>
     <td><span class="rank up">+24</span></td>
@@ -7397,11 +7216,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>530</td>
     <td><span class="rank down">-3</span></td>
   </tr>
-  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;帕克斯&quot;, &quot;梅尔滕斯&quot;, &quot;王欣瑜&quot;, &quot;赫瓦林斯卡&quot;]">
+  <tr data-detail="[&quot;蕾-费尔南德斯&quot;, &quot;帕克斯&quot;, &quot;梅尔滕斯&quot;, &quot;王欣瑜&quot;, &quot;赫瓦林斯卡&quot;, &quot;&quot;]">
     <td>439</td>
     <td>473</td>
     <td>Hakulamatata_-B</td>
-    <td>存活</td>
+    <td>自杀(退赛)</td>
     <td>5</td>
     <td></td>
     <td></td>
