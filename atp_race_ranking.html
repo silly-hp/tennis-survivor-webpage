@@ -530,7 +530,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年09月28日 22:44:24</span>
+    <span class="updated">⏱ 2026年09月28日 22:57:19</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -554,11 +554,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 30 人已选</span>
+        <span class="meta-chip chip-valid">✓ 0 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">0 人未选</span>
+    <span class="meta-chip chip-nosel">19 人未选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-total">总计 30 人</span>
+    <span class="meta-total">总计 19 人</span>
         </div>
         </div>
             <div class="sum-col-hd">
@@ -570,7 +570,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 4 名球员）</span>
+        <span id="sumToggleTxt">显示全部 0 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -578,10 +578,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "梅德韦杰夫", "normal": 10, "bye": 0}, {"name": "卢布列夫", "normal": 9, "bye": 0}, {"name": "雅凯", "normal": 8, "bye": 0}, {"name": "萨菲乌林", "normal": 3, "bye": 0}];
-        var TOTALS  = {"normal": 30, "bye": 0, "grand": 30};
-        var MAX_VAL = 10;
-        var CLIPBOARD_HEADER = "已选30 未选0";
+        var ROWS    = [];
+        var TOTALS  = {"normal": 0, "bye": 0, "grand": 1};
+        var MAX_VAL = 1;
+        var CLIPBOARD_HEADER = "已选0 未选19";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -787,18 +787,18 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <th>排名变化</th>
   </tr></thead>
   <tbody>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
     <td>1</td>
     <td>1</td>
     <td>wennuan78</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>雅凯</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>4418</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>4483</td>
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;埃切韦里&quot;]">
@@ -885,16 +885,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3803</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;, &quot;雅凯&quot;]">
     <td>6</td>
     <td>8</td>
     <td>卷毛Flis</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>雅凯</td>
-    <td>萨菲乌林</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>3851</td>
     <td><span class="rank up">+2</span></td>
@@ -969,16 +969,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3698</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;, &quot;萨菲乌林&quot;]">
     <td>13</td>
     <td>14</td>
     <td>荞二皮</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>萨菲乌林</td>
-    <td>雅凯</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>3706</td>
     <td><span class="rank up">+1</span></td>
@@ -998,7 +998,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;郑瑞&quot;]">
-    <td>16</td>
+    <td>17</td>
     <td>16</td>
     <td>做丞琳永远的歌迷ya</td>
     <td>球员输球</td>
@@ -1009,7 +1009,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>3605</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;埃切韦里&quot;]">
     <td>18</td>
@@ -1025,19 +1025,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3525</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;]">
-    <td>17</td>
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+    <td>16</td>
     <td>18</td>
     <td>victorgc</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>萨菲乌林</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>3546</td>
-    <td><span class="rank up">+1</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>3611</td>
+    <td><span class="rank up">+2</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;黄泽林&quot;, &quot;法里亚&quot;]">
     <td>20</td>
@@ -1053,16 +1053,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3483</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;, &quot;萨菲乌林&quot;]">
     <td>19</td>
     <td>20</td>
     <td>吡***吩</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>萨菲乌林</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>3510</td>
     <td><span class="rank up">+1</span></td>
@@ -1095,18 +1095,18 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3394</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
     <td>21</td>
     <td>23</td>
     <td>M***y</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>雅凯</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>3409</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>3474</td>
     <td><span class="rank up">+2</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;迈赫扎克&quot;]">
@@ -1124,7 +1124,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;法里亚&quot;]">
-    <td>25</td>
+    <td>26</td>
     <td>25</td>
     <td>就是爱吃虾_</td>
     <td>球员输球</td>
@@ -1135,10 +1135,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>3269</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>26</td>
+    <td>27</td>
     <td>26</td>
     <td>z***7</td>
     <td>未参赛</td>
@@ -1149,7 +1149,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>3245</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;迈赫扎克&quot;]">
     <td>28</td>
@@ -1165,22 +1165,22 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3211</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;]">
-    <td>27</td>
+  <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+    <td>25</td>
     <td>28</td>
     <td>相信科学是非明</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>已选</td>
-    <td>100</td>
-    <td>3216</td>
-    <td><span class="rank up">+1</span></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>3281</td>
+    <td><span class="rank up">+3</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>30</td>
+    <td>31</td>
     <td>29</td>
     <td>Dimitrov Go</td>
     <td>未参赛</td>
@@ -1191,10 +1191,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>3126</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>31</td>
+    <td>32</td>
     <td>30</td>
     <td>寻***9</td>
     <td>未参赛</td>
@@ -1205,10 +1205,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>3125</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>32</td>
+    <td>33</td>
     <td>31</td>
     <td>马仙洪_</td>
     <td>未参赛</td>
@@ -1219,24 +1219,24 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>3119</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;布云朝克特&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;布云朝克特&quot;, &quot;卢布列夫&quot;, &quot;雅凯&quot;]">
     <td>29</td>
     <td>32</td>
     <td>精神故乡丝芙兰</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>雅凯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>3160</td>
     <td><span class="rank up">+3</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>34</td>
+    <td>35</td>
     <td>33</td>
     <td>嗨嗨嗨改名字好难</td>
     <td>球员输球</td>
@@ -1247,10 +1247,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>3100</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;法里亚&quot;]">
-    <td>35</td>
+    <td>36</td>
     <td>34</td>
     <td>slay全场666</td>
     <td>球员输球</td>
@@ -1261,10 +1261,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>3093</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;布云朝克特&quot;]">
-    <td>33</td>
+    <td>34</td>
     <td>35</td>
     <td>为你而来呀</td>
     <td>球员输球</td>
@@ -1275,7 +1275,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>50</td>
     <td>3112</td>
-    <td><span class="rank up">+2</span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;, &quot;迈赫扎克&quot;]">
     <td>37</td>
@@ -1292,7 +1292,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>38</td>
+    <td>39</td>
     <td>37</td>
     <td>荞麦皮</td>
     <td>球员输球</td>
@@ -1303,10 +1303,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>3053</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;黄泽林&quot;]">
-    <td>39</td>
+    <td>40</td>
     <td>38</td>
     <td>滑板2号</td>
     <td>球员输球</td>
@@ -1317,10 +1317,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>50</td>
     <td>3020</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>40</td>
+    <td>41</td>
     <td>39</td>
     <td>IggyAzaleaChina</td>
     <td>球员输球</td>
@@ -1331,24 +1331,24 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>3006</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
-    <td>36</td>
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>30</td>
     <td>40</td>
     <td>一位神秘的来Ke</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>雅凯</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>3078</td>
-    <td><span class="rank up">+4</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>3143</td>
+    <td><span class="rank up">+10</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>41</td>
+    <td>42</td>
     <td>41</td>
     <td>__Novak__</td>
     <td>球员输球</td>
@@ -1359,10 +1359,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>3001</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;, &quot;布云朝克特&quot;]">
-    <td>43</td>
+    <td>44</td>
     <td>42</td>
     <td>Ace_Moment</td>
     <td>球员输球</td>
@@ -1373,24 +1373,24 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>50</td>
     <td>2950</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;]">
-    <td>42</td>
+  <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+    <td>38</td>
     <td>43</td>
     <td>年终的W</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2993</td>
-    <td><span class="rank up">+1</span></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>3058</td>
+    <td><span class="rank up">+5</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;法里亚&quot;]">
-    <td>44</td>
+    <td>45</td>
     <td>44</td>
     <td>没有滑板的张某某</td>
     <td>球员输球</td>
@@ -1401,10 +1401,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>2940</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>45</td>
+    <td>46</td>
     <td>45</td>
     <td>本命百香果柠檬</td>
     <td>球员输球</td>
@@ -1415,7 +1415,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2916</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>47</td>
@@ -1515,19 +1515,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2841</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;黄泽林&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;雅凯&quot;]">
-    <td>46</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;黄泽林&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;雅凯&quot;, &quot;卢布列夫&quot;]">
+    <td>43</td>
     <td>53</td>
     <td>taru wa</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>萨菲乌林</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2908</td>
-    <td><span class="rank up">+7</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2973</td>
+    <td><span class="rank up">+10</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>54</td>
@@ -1642,7 +1642,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[&quot;雅凯&quot;, &quot;巴列霍&quot;, &quot;法里亚&quot;]">
-    <td>63</td>
+    <td>64</td>
     <td>62</td>
     <td>Jiakun Yi</td>
     <td>球员输球</td>
@@ -1653,10 +1653,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>2753</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>64</td>
+    <td>65</td>
     <td>63</td>
     <td>爱网球的女孩子</td>
     <td>球员输球</td>
@@ -1667,10 +1667,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2751</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;轮空&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;布云朝克特&quot;]">
-    <td>62</td>
+    <td>63</td>
     <td>64</td>
     <td>交H于一点</td>
     <td>球员输球</td>
@@ -1681,10 +1681,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>50</td>
     <td>2756</td>
-    <td><span class="rank up">+2</span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>66</td>
+    <td>67</td>
     <td>65</td>
     <td>深***名</td>
     <td>球员输球</td>
@@ -1695,10 +1695,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2684</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>67</td>
+    <td>68</td>
     <td>66</td>
     <td>卑***高</td>
     <td>球员输球</td>
@@ -1709,10 +1709,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2680</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;埃切韦里&quot;]">
-    <td>68</td>
+    <td>69</td>
     <td>67</td>
     <td>用嘴倒立的乌鸦</td>
     <td>球员输球</td>
@@ -1723,7 +1723,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>2678</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>70</td>
@@ -1781,19 +1781,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2645</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;雅凯&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;]">
-    <td>65</td>
+  <tr data-detail="[&quot;雅凯&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;]">
+    <td>62</td>
     <td>72</td>
     <td>Zoey</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>梅德韦杰夫</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2691</td>
-    <td><span class="rank up">+7</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2756</td>
+    <td><span class="rank up">+10</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>74</td>
@@ -1837,22 +1837,22 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2614</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;]">
-    <td>69</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;]">
+    <td>66</td>
     <td>76</td>
     <td>131*****034</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>梅德韦杰夫</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2672</td>
-    <td><span class="rank up">+7</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2737</td>
+    <td><span class="rank up">+10</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;迈赫扎克&quot;]">
-    <td>77</td>
+    <td>78</td>
     <td>77</td>
     <td>德雨珀1</td>
     <td>球员输球</td>
@@ -1863,10 +1863,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>38</td>
     <td>2569</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>78</td>
+    <td>79</td>
     <td>78</td>
     <td>南半球的小狮子</td>
     <td>球员输球</td>
@@ -1877,10 +1877,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2548</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>79</td>
+    <td>80</td>
     <td>79</td>
     <td>1***2</td>
     <td>球员输球</td>
@@ -1891,7 +1891,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2546</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;法里亚&quot;]">
     <td>82</td>
@@ -1922,7 +1922,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;布云朝克特&quot;]">
-    <td>80</td>
+    <td>81</td>
     <td>82</td>
     <td>网球评级update</td>
     <td>球员输球</td>
@@ -1933,7 +1933,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>50</td>
     <td>2541</td>
-    <td><span class="rank up">+2</span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>84</td>
@@ -1991,22 +1991,22 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2499</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;布云朝克特&quot;, &quot;萨菲乌林&quot;]">
-    <td>81</td>
+  <tr data-detail="[&quot;轮空&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;布云朝克特&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;]">
+    <td>77</td>
     <td>87</td>
     <td>samsonyip</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>梅德韦杰夫</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2535</td>
-    <td><span class="rank up">+6</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2600</td>
+    <td><span class="rank up">+10</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>88</td>
+    <td>89</td>
     <td>88</td>
     <td>AlcarazTennis_bot</td>
     <td>未参赛</td>
@@ -2017,10 +2017,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2473</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>89</td>
+    <td>90</td>
     <td>89</td>
     <td>MobiusZH</td>
     <td>球员输球</td>
@@ -2031,10 +2031,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2463</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>90</td>
+    <td>91</td>
     <td>90</td>
     <td>c***i</td>
     <td>球员输球</td>
@@ -2045,10 +2045,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2416</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;, &quot;布云朝克特&quot;]">
-    <td>90</td>
+    <td>91</td>
     <td>90</td>
     <td>152*****282</td>
     <td>球员输球</td>
@@ -2059,7 +2059,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>50</td>
     <td>2416</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>93</td>
@@ -2201,19 +2201,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2347</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;雅凯&quot;, &quot;加斯东&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;]">
-    <td>92</td>
+  <tr data-detail="[&quot;雅凯&quot;, &quot;加斯东&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>88</td>
     <td>102</td>
     <td>外星驻地球代表</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>卢布列夫</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2411</td>
-    <td><span class="rank up">+10</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2476</td>
+    <td><span class="rank up">+14</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>104</td>
@@ -2412,7 +2412,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>117</td>
+    <td>118</td>
     <td>117</td>
     <td>猫崽孑丶</td>
     <td>球员输球</td>
@@ -2423,10 +2423,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2229</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>118</td>
+    <td>119</td>
     <td>118</td>
     <td>胡一统居士</td>
     <td>球员输球</td>
@@ -2437,10 +2437,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2212</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>119</td>
+    <td>120</td>
     <td>119</td>
     <td>Vintyovo</td>
     <td>未参赛</td>
@@ -2451,10 +2451,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2207</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>120</td>
+    <td>121</td>
     <td>120</td>
     <td>D***3</td>
     <td>未参赛</td>
@@ -2465,10 +2465,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2197</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>121</td>
+    <td>122</td>
     <td>121</td>
     <td>弗外外茨</td>
     <td>球员输球</td>
@@ -2479,10 +2479,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2181</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>123</td>
+    <td>124</td>
     <td>122</td>
     <td>MrProstitute_song_z1996</td>
     <td>未参赛</td>
@@ -2493,10 +2493,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2160</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>124</td>
+    <td>125</td>
     <td>123</td>
     <td>流星穹宇crazy</td>
     <td>未参赛</td>
@@ -2507,10 +2507,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2155</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>126</td>
+    <td>127</td>
     <td>124</td>
     <td>Leo_T1nyFo2est_autor</td>
     <td>球员输球</td>
@@ -2521,10 +2521,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2143</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>125</td>
+    <td>126</td>
     <td>125</td>
     <td>不管小哈是我的</td>
     <td>未参赛</td>
@@ -2535,10 +2535,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2143</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>129</td>
+    <td>130</td>
     <td>126</td>
     <td>顶***家</td>
     <td>球员输球</td>
@@ -2549,10 +2549,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2113</td>
-    <td><span class="rank down">-3</span></td>
+    <td><span class="rank down">-4</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>127</td>
+    <td>128</td>
     <td>127</td>
     <td>后曹操</td>
     <td>球员输球</td>
@@ -2563,10 +2563,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2113</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>128</td>
+    <td>129</td>
     <td>128</td>
     <td>神秘的药</td>
     <td>未参赛</td>
@@ -2577,10 +2577,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2113</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>130</td>
+    <td>131</td>
     <td>129</td>
     <td>日***岸</td>
     <td>球员输球</td>
@@ -2591,24 +2591,24 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2111</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;雅凯&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;]">
-    <td>122</td>
+  <tr data-detail="[&quot;雅凯&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>117</td>
     <td>130</td>
     <td>德约的粉丝</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
     <td></td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2166</td>
-    <td><span class="rank up">+8</span></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2231</td>
+    <td><span class="rank up">+13</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>132</td>
+    <td>133</td>
     <td>131</td>
     <td>浙江土特产</td>
     <td>球员输球</td>
@@ -2619,10 +2619,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2088</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>133</td>
+    <td>134</td>
     <td>132</td>
     <td>南柯一梦-mx</td>
     <td>球员输球</td>
@@ -2633,10 +2633,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2084</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>134</td>
+    <td>135</td>
     <td>133</td>
     <td>actor蔡</td>
     <td>球员输球</td>
@@ -2647,10 +2647,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2074</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>136</td>
+    <td>137</td>
     <td>134</td>
     <td>136******19</td>
     <td>未参赛</td>
@@ -2661,10 +2661,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>2062</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[&quot;雅凯&quot;, &quot;土方凛辉&quot;, &quot;埃切韦里&quot;]">
-    <td>135</td>
+    <td>136</td>
     <td>135</td>
     <td>akane 11</td>
     <td>球员输球</td>
@@ -2675,10 +2675,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>2068</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>137</td>
+    <td>138</td>
     <td>136</td>
     <td>吾***叔</td>
     <td>球员输球</td>
@@ -2689,10 +2689,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2055</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>138</td>
+    <td>139</td>
     <td>137</td>
     <td>锦暔</td>
     <td>球员输球</td>
@@ -2703,10 +2703,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2042</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;巴列霍&quot;]">
-    <td>139</td>
+    <td>140</td>
     <td>138</td>
     <td>Kwan-tennis</td>
     <td>球员输球</td>
@@ -2717,24 +2717,24 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>38</td>
     <td>2041</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;雅凯&quot;]">
-    <td>131</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;雅凯&quot;, &quot;卢布列夫&quot;]">
+    <td>123</td>
     <td>139</td>
     <td>马戏团冠军</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
     <td></td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2108</td>
-    <td><span class="rank up">+8</span></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2173</td>
+    <td><span class="rank up">+16</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>140</td>
+    <td>141</td>
     <td>140</td>
     <td>Chris Ivanovic</td>
     <td>球员输球</td>
@@ -2745,7 +2745,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>2030</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>142</td>
@@ -2789,20 +2789,6 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2002</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[]">
-    <td>145</td>
-    <td>144</td>
-    <td>liu8322925</td>
-    <td>未参赛</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td></td>
-    <td>1994</td>
-    <td><span class="rank down">-1</span></td>
-  </tr>
   <tr data-detail="[&quot;雅凯&quot;, &quot;萨菲乌林&quot;, &quot;法里亚&quot;]">
     <td>146</td>
     <td>144</td>
@@ -2816,6 +2802,20 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>25</td>
     <td>1994</td>
     <td><span class="rank down">-2</span></td>
+  </tr>
+  <tr data-detail="[]">
+    <td>145</td>
+    <td>144</td>
+    <td>liu8322925</td>
+    <td>未参赛</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td></td>
+    <td>1994</td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
     <td>147</td>
@@ -2943,19 +2943,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1961</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;]">
-    <td>141</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;]">
+    <td>132</td>
     <td>155</td>
     <td>法网冠军丰塞卡</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>卢布列夫</td>
-    <td>梅德韦杰夫</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>2029</td>
-    <td><span class="rank up">+14</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>2094</td>
+    <td><span class="rank up">+23</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
     <td>156</td>
@@ -3182,7 +3182,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>173</td>
+    <td>174</td>
     <td>172</td>
     <td>请微笑一下你</td>
     <td>未参赛</td>
@@ -3193,10 +3193,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1796</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>174</td>
+    <td>175</td>
     <td>173</td>
     <td>荞三皮</td>
     <td>球员输球</td>
@@ -3207,10 +3207,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1793</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>175</td>
+    <td>176</td>
     <td>174</td>
     <td>松松松松松songsong</td>
     <td>未参赛</td>
@@ -3221,7 +3221,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1785</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;法里亚&quot;]">
     <td>171</td>
@@ -3238,7 +3238,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank up">+4</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>176</td>
+    <td>177</td>
     <td>176</td>
     <td>FritzGo</td>
     <td>未参赛</td>
@@ -3249,10 +3249,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1779</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>177</td>
+    <td>178</td>
     <td>177</td>
     <td>A-ries_15</td>
     <td>球员输球</td>
@@ -3263,10 +3263,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1778</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>178</td>
+    <td>179</td>
     <td>178</td>
     <td>dhhdjfjdjdbcjjcnx</td>
     <td>未参赛</td>
@@ -3277,10 +3277,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1770</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;毛罗然&quot;, &quot;法里亚&quot;]">
-    <td>179</td>
+    <td>180</td>
     <td>179</td>
     <td>Ryan-Tennis</td>
     <td>球员输球</td>
@@ -3291,10 +3291,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>1766</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;&quot;]">
-    <td>180</td>
+    <td>181</td>
     <td>180</td>
     <td>迪***9</td>
     <td>自杀(退赛)</td>
@@ -3305,10 +3305,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>13</td>
     <td>1762</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>182</td>
+    <td>183</td>
     <td>181</td>
     <td>JuKKa_z</td>
     <td>球员输球</td>
@@ -3319,10 +3319,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1742</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>183</td>
+    <td>184</td>
     <td>182</td>
     <td>箐斓丶</td>
     <td>未参赛</td>
@@ -3333,10 +3333,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1740</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;法里亚&quot;]">
-    <td>181</td>
+    <td>182</td>
     <td>183</td>
     <td>啦***拉</td>
     <td>球员输球</td>
@@ -3347,10 +3347,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>1748</td>
-    <td><span class="rank up">+2</span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>184</td>
+    <td>185</td>
     <td>184</td>
     <td>Elroy ZHANG</td>
     <td>球员输球</td>
@@ -3361,10 +3361,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1736</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>185</td>
+    <td>186</td>
     <td>185</td>
     <td>我是霍小耳</td>
     <td>球员输球</td>
@@ -3375,7 +3375,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1732</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;&quot;]">
     <td>187</td>
@@ -3461,19 +3461,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1681</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
-    <td>186</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>173</td>
     <td>192</td>
     <td>爱***森</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>雅凯</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>1732</td>
-    <td><span class="rank up">+6</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>1797</td>
+    <td><span class="rank up">+19</span></td>
   </tr>
   <tr data-detail="[]">
     <td>193</td>
@@ -3534,7 +3534,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>197</td>
     <td>197</td>
-    <td>RV--RV</td>
+    <td>Raymond Wong</td>
     <td>球员输球</td>
     <td>0</td>
     <td>武基奇</td>
@@ -3548,7 +3548,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>197</td>
     <td>197</td>
-    <td>Raymond Wong</td>
+    <td>RV--RV</td>
     <td>球员输球</td>
     <td>0</td>
     <td>武基奇</td>
@@ -3630,7 +3630,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>205</td>
+    <td>206</td>
     <td>204</td>
     <td>杰***鞋</td>
     <td>球员输球</td>
@@ -3641,10 +3641,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1609</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;法里亚&quot;]">
-    <td>206</td>
+    <td>207</td>
     <td>205</td>
     <td>一***酒</td>
     <td>球员输球</td>
@@ -3655,10 +3655,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>1609</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>207</td>
+    <td>208</td>
     <td>206</td>
     <td>宋承宪我老公</td>
     <td>未参赛</td>
@@ -3669,7 +3669,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1608</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;雅凯&quot;, &quot;萨菲乌林&quot;, &quot;法里亚&quot;]">
     <td>204</td>
@@ -3686,7 +3686,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank up">+3</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>208</td>
+    <td>209</td>
     <td>208</td>
     <td>Emppu99</td>
     <td>球员输球</td>
@@ -3697,10 +3697,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1602</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>209</td>
+    <td>210</td>
     <td>209</td>
     <td>用户7376159987</td>
     <td>球员输球</td>
@@ -3711,10 +3711,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1594</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;埃切韦里&quot;]">
-    <td>210</td>
+    <td>211</td>
     <td>210</td>
     <td>林强行长的小挎包</td>
     <td>球员输球</td>
@@ -3725,10 +3725,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>1591</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>211</td>
+    <td>212</td>
     <td>211</td>
     <td>那不勒斯Jasper</td>
     <td>未参赛</td>
@@ -3739,10 +3739,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1590</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>212</td>
+    <td>213</td>
     <td>212</td>
     <td>Tallon Go</td>
     <td>未参赛</td>
@@ -3753,10 +3753,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1580</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>213</td>
+    <td>214</td>
     <td>213</td>
     <td>ET58202</td>
     <td>未参赛</td>
@@ -3767,10 +3767,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1579</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>215</td>
+    <td>216</td>
     <td>214</td>
     <td>田***妞</td>
     <td>未参赛</td>
@@ -3781,10 +3781,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1575</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>216</td>
+    <td>217</td>
     <td>215</td>
     <td>188*****126</td>
     <td>未参赛</td>
@@ -3795,10 +3795,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1575</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>217</td>
+    <td>218</td>
     <td>216</td>
     <td>H***n</td>
     <td>未参赛</td>
@@ -3809,10 +3809,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1573</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>218</td>
+    <td>219</td>
     <td>217</td>
     <td>y***7</td>
     <td>未参赛</td>
@@ -3823,10 +3823,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1565</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>221</td>
+    <td>222</td>
     <td>218</td>
     <td>用户7918293245</td>
     <td>未参赛</td>
@@ -3837,7 +3837,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1530</td>
-    <td><span class="rank down">-3</span></td>
+    <td><span class="rank down">-4</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;迈赫扎克&quot;]">
     <td>220</td>
@@ -3854,7 +3854,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;布云朝克特&quot;]">
-    <td>214</td>
+    <td>215</td>
     <td>220</td>
     <td>mj ouyang</td>
     <td>球员输球</td>
@@ -3865,10 +3865,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>50</td>
     <td>1575</td>
-    <td><span class="rank up">+6</span></td>
+    <td><span class="rank up">+5</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>223</td>
+    <td>224</td>
     <td>221</td>
     <td>唯爱张帅</td>
     <td>未参赛</td>
@@ -3879,10 +3879,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1504</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>224</td>
+    <td>225</td>
     <td>222</td>
     <td>无聊-消遣</td>
     <td>未参赛</td>
@@ -3893,24 +3893,24 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1503</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
-    <td>219</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>205</td>
     <td>223</td>
     <td>_被窝哲学家_-</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>雅凯</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>1546</td>
-    <td><span class="rank up">+4</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>1611</td>
+    <td><span class="rank up">+18</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>225</td>
+    <td>226</td>
     <td>224</td>
     <td>wenguang wu</td>
     <td>未参赛</td>
@@ -3921,10 +3921,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1493</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>227</td>
+    <td>228</td>
     <td>225</td>
     <td>白云静水</td>
     <td>球员输球</td>
@@ -3935,10 +3935,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>1483</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[&quot;雅凯&quot;, &quot;毛罗然&quot;, &quot;卢布列夫&quot;, &quot;巴列霍&quot;]">
-    <td>226</td>
+    <td>227</td>
     <td>226</td>
     <td>强化型米斯alternate</td>
     <td>球员输球</td>
@@ -3949,7 +3949,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>38</td>
     <td>1486</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
     <td>230</td>
@@ -4105,19 +4105,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1437</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;黄泽林&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
-    <td>222</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;黄泽林&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;, &quot;萨菲乌林&quot;]">
+    <td>223</td>
     <td>238</td>
     <td>老***6</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>萨菲乌林</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>1526</td>
-    <td><span class="rank up">+16</span></td>
+    <td><span class="rank up">+15</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>240</td>
@@ -4175,19 +4175,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1397</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
-    <td>228</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>221</td>
     <td>243</td>
     <td>Jiabei He</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
     <td></td>
-    <td>已选</td>
-    <td>100</td>
-    <td>1477</td>
-    <td><span class="rank up">+15</span></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>1542</td>
+    <td><span class="rank up">+22</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;法里亚&quot;]">
     <td>245</td>
@@ -4301,6 +4301,20 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1321</td>
     <td><span class="rank down">-1</span></td>
   </tr>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;黄泽林&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;, &quot;雅凯&quot;]">
+    <td>241</td>
+    <td>252</td>
+    <td>s***3</td>
+    <td>球员输球</td>
+    <td>5</td>
+    <td>雅凯</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>100</td>
+    <td>1418</td>
+    <td><span class="rank up">+11</span></td>
+  </tr>
   <tr data-detail="[]">
     <td>253</td>
     <td>252</td>
@@ -4314,20 +4328,6 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td></td>
     <td>1318</td>
     <td><span class="rank down">-1</span></td>
-  </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;黄泽林&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
-    <td>241</td>
-    <td>252</td>
-    <td>s***3</td>
-    <td>存活</td>
-    <td>5</td>
-    <td></td>
-    <td>雅凯</td>
-    <td></td>
-    <td>已选</td>
-    <td>100</td>
-    <td>1418</td>
-    <td><span class="rank up">+11</span></td>
   </tr>
   <tr data-detail="[]">
     <td>254</td>
@@ -4400,7 +4400,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[]">
-    <td>260</td>
+    <td>259</td>
     <td>259</td>
     <td>用户5638241188</td>
     <td>未参赛</td>
@@ -4411,7 +4411,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>1286</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[]">
     <td>261</td>
@@ -4623,16 +4623,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1194</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;, &quot;雅凯&quot;]">
     <td>259</td>
     <td>275</td>
     <td>是月牙呦</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>雅凯</td>
-    <td>萨菲乌林</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>1286</td>
     <td><span class="rank up">+16</span></td>
@@ -4679,16 +4679,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1178</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;]">
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;卢布列夫&quot;, &quot;黄泽林&quot;, &quot;梅德韦杰夫&quot;, &quot;雅凯&quot;]">
     <td>262</td>
     <td>279</td>
     <td>荞***记</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>雅凯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>1275</td>
     <td><span class="rank up">+17</span></td>
@@ -5043,16 +5043,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>1051</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;梅德韦杰夫&quot;, &quot;卢布列夫&quot;, &quot;雅凯&quot;]">
     <td>293</td>
     <td>305</td>
     <td>Tetrapod-0</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>雅凯</td>
     <td></td>
-    <td>已选</td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>1128</td>
     <td><span class="rank up">+12</span></td>
@@ -5170,7 +5170,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>316</td>
+    <td>317</td>
     <td>314</td>
     <td>1***许</td>
     <td>未参赛</td>
@@ -5181,10 +5181,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>996</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>317</td>
+    <td>318</td>
     <td>315</td>
     <td>WillKrisKai</td>
     <td>球员输球</td>
@@ -5195,7 +5195,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>988</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;斯威尼&quot;]">
     <td>315</td>
@@ -5212,7 +5212,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>318</td>
+    <td>319</td>
     <td>317</td>
     <td>Dylan B</td>
     <td>球员输球</td>
@@ -5223,7 +5223,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>985</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;雅凯&quot;, &quot;毛罗然&quot;, &quot;法里亚&quot;]">
     <td>313</td>
@@ -5240,7 +5240,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank up">+5</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>319</td>
+    <td>320</td>
     <td>319</td>
     <td>天***能</td>
     <td>未参赛</td>
@@ -5251,10 +5251,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>971</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>320</td>
+    <td>321</td>
     <td>320</td>
     <td>普普通通的成年人_</td>
     <td>未参赛</td>
@@ -5265,10 +5265,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>970</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>322</td>
+    <td>323</td>
     <td>321</td>
     <td>漪***7</td>
     <td>未参赛</td>
@@ -5279,10 +5279,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>964</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>323</td>
+    <td>324</td>
     <td>322</td>
     <td>变现狂魔_</td>
     <td>未参赛</td>
@@ -5293,10 +5293,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>961</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;雅凯&quot;, &quot;&quot;]">
-    <td>321</td>
+    <td>322</td>
     <td>323</td>
     <td>W***r</td>
     <td>自杀(退赛)</td>
@@ -5307,10 +5307,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>13</td>
     <td>969</td>
-    <td><span class="rank up">+2</span></td>
+    <td><span class="rank up">+1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>324</td>
+    <td>325</td>
     <td>324</td>
     <td>稳折kkl</td>
     <td>未参赛</td>
@@ -5321,10 +5321,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>956</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>325</td>
+    <td>326</td>
     <td>325</td>
     <td>中网亚军福基纳</td>
     <td>未参赛</td>
@@ -5335,7 +5335,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>938</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>327</td>
@@ -5617,19 +5617,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>836</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;迈赫扎克&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
-    <td>326</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;迈赫扎克&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>316</td>
     <td>346</td>
     <td>追星打工人</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>雅凯</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>934</td>
-    <td><span class="rank up">+20</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>999</td>
+    <td><span class="rank up">+30</span></td>
   </tr>
   <tr data-detail="[]">
     <td>347</td>
@@ -6430,7 +6430,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>404</td>
+    <td>405</td>
     <td>404</td>
     <td>憨皮儿不是小怪兽</td>
     <td>球员输球</td>
@@ -6441,10 +6441,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>545</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>405</td>
+    <td>406</td>
     <td>405</td>
     <td>J***o</td>
     <td>未参赛</td>
@@ -6455,10 +6455,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>541</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>407</td>
+    <td>408</td>
     <td>406</td>
     <td>灞***年</td>
     <td>球员输球</td>
@@ -6469,10 +6469,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>539</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>409</td>
+    <td>410</td>
     <td>407</td>
     <td>豆***B</td>
     <td>未参赛</td>
@@ -6483,10 +6483,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>522</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>410</td>
+    <td>411</td>
     <td>408</td>
     <td>刘宏阳manutdliu</td>
     <td>未参赛</td>
@@ -6497,10 +6497,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>516</td>
-    <td><span class="rank down">-2</span></td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;埃切韦里&quot;]">
-    <td>406</td>
+    <td>407</td>
     <td>409</td>
     <td>彼***好</td>
     <td>球员输球</td>
@@ -6511,10 +6511,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>540</td>
-    <td><span class="rank up">+3</span></td>
+    <td><span class="rank up">+2</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>411</td>
+    <td>412</td>
     <td>410</td>
     <td>A***4</td>
     <td>未参赛</td>
@@ -6525,10 +6525,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>515</td>
-    <td><span class="rank down">-1</span></td>
+    <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;法里亚&quot;]">
-    <td>408</td>
+    <td>409</td>
     <td>411</td>
     <td>紫葡萄126</td>
     <td>球员输球</td>
@@ -6539,10 +6539,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>25</td>
     <td>536</td>
-    <td><span class="rank up">+3</span></td>
+    <td><span class="rank up">+2</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
-    <td>412</td>
+    <td>413</td>
     <td>412</td>
     <td>用户7904914234</td>
     <td>球员输球</td>
@@ -6553,10 +6553,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>503</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;沃尔顿&quot;]">
-    <td>413</td>
+    <td>414</td>
     <td>413</td>
     <td>超级至尊芝心披萨</td>
     <td>球员输球</td>
@@ -6567,10 +6567,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>0</td>
     <td>500</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>414</td>
+    <td>415</td>
     <td>414</td>
     <td>Janevely想向乡巷</td>
     <td>未参赛</td>
@@ -6581,10 +6581,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>498</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>415</td>
+    <td>416</td>
     <td>415</td>
     <td>L***啊</td>
     <td>未参赛</td>
@@ -6595,10 +6595,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>497</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[]">
-    <td>416</td>
+    <td>417</td>
     <td>416</td>
     <td>本宫暴脾气不背锅</td>
     <td>未参赛</td>
@@ -6609,7 +6609,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td></td>
     <td>489</td>
-    <td><span class="rank same"></span></td>
+    <td><span class="rank down">-1</span></td>
   </tr>
   <tr data-detail="[&quot;武基奇&quot;]">
     <td>419</td>
@@ -6626,7 +6626,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td><span class="rank down">-2</span></td>
   </tr>
   <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;&quot;]">
-    <td>417</td>
+    <td>418</td>
     <td>418</td>
     <td>此号已废16</td>
     <td>自杀(退赛)</td>
@@ -6637,7 +6637,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>未选</td>
     <td>13</td>
     <td>486</td>
-    <td><span class="rank up">+1</span></td>
+    <td><span class="rank same"></span></td>
   </tr>
   <tr data-detail="[]">
     <td>422</td>
@@ -6821,20 +6821,6 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>408</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;武基奇&quot;]">
-    <td>435</td>
-    <td>432</td>
-    <td>暢遊煩惱海丶</td>
-    <td>球员输球</td>
-    <td>0</td>
-    <td>武基奇</td>
-    <td></td>
-    <td></td>
-    <td>未选</td>
-    <td>0</td>
-    <td>400</td>
-    <td><span class="rank down">-3</span></td>
-  </tr>
   <tr data-detail="[]">
     <td>434</td>
     <td>432</td>
@@ -6848,6 +6834,20 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td></td>
     <td>400</td>
     <td><span class="rank down">-2</span></td>
+  </tr>
+  <tr data-detail="[&quot;武基奇&quot;]">
+    <td>435</td>
+    <td>432</td>
+    <td>暢遊煩惱海丶</td>
+    <td>球员输球</td>
+    <td>0</td>
+    <td>武基奇</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>0</td>
+    <td>400</td>
+    <td><span class="rank down">-3</span></td>
   </tr>
   <tr data-detail="[]">
     <td>435</td>
@@ -6919,19 +6919,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>385</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
-    <td>418</td>
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;萨菲乌林&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;梅德韦杰夫&quot;]">
+    <td>404</td>
     <td>439</td>
     <td>用户8267496097</td>
     <td>存活</td>
-    <td>5</td>
+    <td>6</td>
     <td></td>
-    <td>梅德韦杰夫</td>
-    <td>雅凯</td>
-    <td>已选</td>
-    <td>100</td>
-    <td>481</td>
-    <td><span class="rank up">+21</span></td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
+    <td>165</td>
+    <td>546</td>
+    <td><span class="rank up">+35</span></td>
   </tr>
   <tr data-detail="[]">
     <td>441</td>
@@ -6947,16 +6947,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>375</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;]">
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;巴列霍&quot;, &quot;毛罗然&quot;, &quot;黄泽林&quot;, &quot;卢布列夫&quot;, &quot;雅凯&quot;]">
     <td>421</td>
     <td>441</td>
     <td>猪尔代夫</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>雅凯</td>
-    <td>梅德韦杰夫</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>473</td>
     <td><span class="rank up">+20</span></td>
@@ -7647,16 +7647,16 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>190</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;毛罗然&quot;, &quot;卢布列夫&quot;, &quot;布云朝克特&quot;, &quot;萨菲乌林&quot;]">
+  <tr data-detail="[&quot;鲁瓦耶&quot;, &quot;毛罗然&quot;, &quot;卢布列夫&quot;, &quot;布云朝克特&quot;, &quot;萨菲乌林&quot;, &quot;雅凯&quot;]">
     <td>464</td>
     <td>491</td>
     <td>牛哈奇</td>
-    <td>存活</td>
+    <td>球员输球</td>
     <td>5</td>
-    <td></td>
     <td>雅凯</td>
-    <td>梅德韦杰夫</td>
-    <td>已选</td>
+    <td></td>
+    <td></td>
+    <td>未选</td>
     <td>100</td>
     <td>287</td>
     <td><span class="rank up">+27</span></td>
