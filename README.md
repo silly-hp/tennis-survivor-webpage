@@ -1,39 +1,174 @@
-# 签表幸存者数据中心
+# 签表幸存者
 
-一个专为网球签表幸存者游戏玩家设计的数据查询平台，整合了 ATP 与 WTA 赛事的积分、排名、战绩等核心统计数据。
+ATP / WTA 签表幸存者游戏的数据处理与静态网页生成工具。参与者每天选一场比赛的胜者——选对存活得分，选错淘汰。系统从 [live-tennis.cn](https://www.live-tennis.cn) 抓取数据，按官方规则计算积分，生成页面发布至 GitHub Pages。
 
-## 功能模块
+---
 
-| 页面 | 功能说明 |
-|------|----------|
-| [首页](index.html) | 导航总览，快速跳转各功能模块 |
-| [ATP 幸存者积分排名](atp_ranking.html) | ATP 球员实时幸存者积分排名 |
-| [WTA 幸存者积分排名](wta_ranking.html) | WTA 球员实时幸存者积分排名 |
-| [ATP 幸存者冠军排名](atp_race_ranking.html) | ATP 年终总决赛 Race to Turin 积分 |
-| [WTA 幸存者冠军排名](wta_race_ranking.html) | WTA 年终总决赛 Race to Riyadh 积分 |
-| [ATP 冠军榜](atp_champion.html) | ATP 幸存者游戏历届赛事冠军记录 |
-| [WTA 冠军榜](wta_champion.html) | WTA 幸存者游戏历届赛事冠军记录 |
-| [2026 ATP杀手榜](2026atpkiller.html) | 2026 赛季 ATP 淘汰数排行榜 |
-| [2026 WTA杀手榜](2026wtakiller.html) | 2026 赛季 WTA 淘汰数排行榜 |
-| [ATP 历史杀手榜](atpkiller.html) | ATP 全历史终结者总榜 |
-| [WTA 历史杀手榜者](wtakiller.html) | WTA 全历史终结者总榜 |
-| [ATP 交手记录](h2h_atp.html) | ATP 任意两名球员历史对阵查询 |
-| [WTA 交手记录](h2h_wta.html) | WTA 任意两名球员历史对阵查询 |
+## 功能一览
 
-## 技术栈
+| 页面 / 能力 | 说明 |
+|-------------|------|
+| 首页 | 导航、赛况日历（上/本周）、赛地天气、暗色 / 场地主题 |
+| 即时 / 冠军积分排名 | ATP、WTA 单巡；含选人明细、今日状态、排名升降 |
+| 联合排名 | ATP+WTA 即时 / 冠军积分合计；支持积分构成图 |
+| 幸存者赛历 | 分 ATP / WTA；按年份、级别筛选；点进各站得分页 |
+| 各站得分页 | 冠军、单日/累计克星、最大爆冷；本站得分与选人明细 |
+| 生涯统计 | 周期参赛、夺冠夺亚、连胜连败、存活率等 |
+| 杀手榜 | 赛季 / 历年 |
+| H2H | 用户对战与汇总 |
+| 实时结算 | 签表比分提前判定胜负；**第一盘内退赛 / W/O 可启用备选** |
 
-- **前端**：纯 HTML + CSS + 原生 JavaScript，无任何外部框架依赖
-- **样式**：CSS 变量实现明暗双主题，配色灵感来自温布尔登（森林绿 `#1b5e37` + 紫色 `#7b3f9e`）
-- **字体**：Noto Serif SC（标题）/ Space Mono（数据标签）/ Noto Sans SC（正文）
-- **部署**：静态文件直接托管于 GitHub Pages
+> 冠军殿堂页（`atp_champion.html` / `wta_champion.html`）仍可生成，首页已不再入口；本站冠军见赛历得分页，生涯夺冠见生涯统计。
 
-## 数据来源与更新
+---
 
-页面数据由配套的 Python 数据生成器（`../tennis-draw_survivor/main.py`）自动抓取并渲染为静态 HTML，通过 `run.sh` 脚本完成「拉取 → 生成 → 提交 → 推送」的全流程更新。
+## 项目结构
 
-原始数据来源：[丘的网球 · 幸存者日历](https://www.live-tennis.cn/zh/survivor/calendar/2026)
+```
+frog_chen_web/
+├── index.html
+├── atp_ranking.html / wta_ranking.html
+├── atp_race_ranking.html / wta_race_ranking.html
+├── combined_instant_ranking.html / combined_ranking.html
+├── survivor_calendar.html              # 赛历入口（选巡）
+├── survivor_calendar_atp.html / _wta.html
+├── events/{year}/{MS|WS}_{event_id}.html   # 各站得分
+├── atp_show.html / wta_show.html       # 生涯统计
+├── atpkiller.html / wtakiller.html / 2026*killer.html
+├── h2h_atp.html / h2h_wta.html
+│
+├── data/                               # 运行时缓存（通常不提交）
+│   ├── champions.csv
+│   ├── h2h_records.csv
+│   ├── calendar_*.json
+│   ├── event_scores/                   # 各站得分缓存
+│   ├── event_draws/                    # 签表对阵缓存（克星/爆冷）
+│   ├── event_day_rounds/               # 选人日→轮次标签
+│   ├── breakdown_*.json / *.js         # 积分构成
+│   └── player_events.json              # 生涯统计缓存
+│
+├── src/
+│   ├── main.py                         # 入口
+│   ├── parser.py                       # 抓取
+│   ├── build_table.py / live_ranking.py
+│   ├── points_calculation.py           # 最佳 18 站
+│   ├── live_settlement.py / draw_status.py   # 签表实时结算
+│   ├── event_calendar.py               # 赛历 + 各站得分 + 统计条
+│   ├── user_breakdown.py               # 积分构成数据
+│   ├── combined_ranking.py
+│   ├── home_weeks.py                   # 首页周赛况
+│   ├── player_stats.py / champion_stats.py / h2h.py
+│   ├── site_html/                      # HTML 渲染
+│   └── …
+│
+├── config.yaml
+├── docs/feature-merge-plan.md          # 与 chen_web 功能并集说明
+├── requirements.txt
+└── README.md
+```
 
-## 相关链接
+---
 
-- [旧纳的幸存者冠军榜](https://zechen-3is.github.io/tennis_survivor/)
-- [炉网幸存者详细统计](https://xiaokang1217.github.io/tennis_survivor/)
+## 快速开始
+
+```bash
+pip install -r requirements.txt
+cd src
+python main.py
+```
+
+默认流程：更新赛事配置 → 抓取排名/提交/得分 → **签表实时结算** → 生成首页与排名页等。
+
+### 常用子命令
+
+```bash
+# 幸存者赛历 + 各站得分（增量抓缓存）
+python main.py --calendar
+python main.py --calendar-cache-only          # 只用本地缓存重生
+python main.py --calendar --calendar-year 2025
+
+# 球员生涯统计
+python main.py --stats
+python main.py --stats-cache-only
+```
+
+---
+
+## 配置（`config.yaml`）
+
+```yaml
+year: 2026
+theme: hard          # hard / clay / grass
+output_dir: ".."
+
+atp:
+  event: "25014"     # null = 本周无赛事
+  name: "上海"
+  bye_rate: 0.25
+  week_start_date: "2026-10-05"
+
+wta:
+  event: "31075"
+  name: "武汉"
+  bye_rate: 0.125
+  week_start_date: "2026-10-12"
+
+settlement:
+  enabled: true      # 签表实时结算开关
+
+h2h:
+  csv_path: "../data/h2h_records.csv"
+  update_hour: 23
+```
+
+赛事 ID / 名称等可由 `write_config.py` 按日历自动发现更新。
+
+---
+
+## 核心逻辑摘要
+
+### 积分（`points_calculation.py`）
+
+WTA / ATP 均为**最佳 18 站**（大满贯与强制 1000 等槽位规则见源码）。年终总决赛为额外奖励，不占 18 站。
+
+### 实时排名（`live_ranking.py`）
+
+去掉去年同站积分 → 加上本站当前得分 → 重算总分排名。本站得分可经实时结算提前更新。
+
+### 实时结算（`live_settlement.py` + `draw_status.py`）
+
+对照签表判定当日选人：胜 / 负 / 待定 / 自杀 / 首日轮空。
+
+**退赛与备选：**
+
+- 从签表比分识别 `Ret.` / `W/O` 及盘分（如 `52`、`64 Ret.`）
+- **第一盘未结束**即退赛（或 W/O）→ 可启用备选，按备选继续结算
+- 第一盘已结束再退 → 主选算输，不启用备选
+
+### 赛历统计条（`event_calendar.py`）
+
+各站得分页上方：
+
+| 指标 | 含义 |
+|------|------|
+| 冠军 | 得分 = 本站理论满分（大满贯 2000 等）；可无人夺冠 |
+| 单日克星 | 单场「赢球并送走选了对手的人」最多 |
+| 累计克星 | 各轮送走人数合计最多 |
+| 最大爆冷 | 同场两边都有人选，且选得少的一方赢了；主文展示选爆冷的用户，小字为比赛与选人比 |
+
+克星 / 爆冷依赖 `data/event_draws/` 签表对阵缓存（`--calendar` 时同步）。
+
+---
+
+## 数据来源
+
+[live-tennis.cn](https://www.live-tennis.cn)：
+
+- 排名 / 冠军积分 / 提交明细 / 本站得分
+- 赛历、签表（含比分与退赛标记）
+
+---
+
+## 相关文档
+
+- [`docs/feature-merge-plan.md`](docs/feature-merge-plan.md) — 与 chen_web 功能对照与实现落点
