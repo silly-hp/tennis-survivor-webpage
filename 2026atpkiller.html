@@ -118,15 +118,47 @@ body.dark .ttag-wta{border-color:rgba(232,96,60,.25);}
 .chip-bye    {background:var(--secondary-dim);color:var(--secondary);border:0.5px solid rgba(26,58,112,.25);}
 .chip-nosel  {background:var(--surface2);color:var(--muted);border:0.5px solid var(--border);}
 .chip-suicide{background:rgba(192,72,48,.10);color:var(--primary-dark);border:0.5px solid rgba(192,72,48,.22);}
+.chip-live   {background:rgba(184,122,42,.10);color:#8a5a18;border:0.5px solid rgba(184,122,42,.24);}
+.chip-alive  {background:rgba(46,125,92,.10);color:#2a6b4f;border:0.5px solid rgba(46,125,92,.22);}
+.chip-out    {background:rgba(120,124,132,.10);color:#6a7078;border:0.5px solid rgba(120,124,132,.22);}
+.chip-live .sdot,.chip-alive .sdot,.chip-out .sdot{
+    width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.chip-live .sdot{background:#c4892e;}
+.chip-alive .sdot{background:#2f8a62;}
+.chip-out .sdot{background:#8a9098;}
 body.dark .chip-valid  {border-color:rgba(232,96,60,.32);}
 body.dark .chip-bye    {color:var(--secondary);border-color:rgba(111,160,224,.28);}
 body.dark .chip-suicide{color:var(--primary-dark);}
+body.dark .chip-live   {background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .chip-alive  {background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+body.dark .chip-out    {background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .chip-live .sdot{background:#e0b56a;}
+body.dark .chip-alive .sdot{background:#7dcea0;}
+body.dark .chip-out .sdot{background:#a8adb4;}
 .meta-sep  {font-size:11px;color:var(--faint);}
 .meta-total{font-size:12px;color:var(--ink);font-weight:500;}
+/* early-retirement backup nested under pick rows */
+.tag-bak{background:rgba(184,122,42,.10);color:#8a5a18;border:0.5px solid rgba(184,122,42,.22);}
+.sbar-row.is-bak .sbar-dot{background:#c4892e;opacity:1;box-shadow:0 0 0 2px rgba(196,137,46,.16);}
+.sbar-row.is-bak .sbar-label{color:#7a4e14;font-weight:500;}
+.seg-bak{background:#c4892e;}
+.sbar-track.solo-bak{background:rgba(184,122,42,.12);}
+.sbar-bak{display:flex;align-items:center;gap:8px;padding:2px 14px 4px;
+    font-size:12px;color:var(--muted);}
+.sbar-bak.s-hidden{display:none;}
+.sbar-bak-main{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;
+    padding-left:22px;min-width:0;}
+.bak-arrow{color:var(--faint);font-size:12px;flex-shrink:0;}
+.bak-alt{font-size:12px;color:var(--ink);min-width:3.5em;}
+.bak-chips{display:inline-flex;flex-wrap:wrap;gap:4px;}
+body.dark .tag-bak{background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .sbar-row.is-bak .sbar-dot{background:#e0b56a;box-shadow:0 0 0 2px rgba(224,181,106,.16);}
+body.dark .sbar-row.is-bak .sbar-label{color:#ead0a0;}
+body.dark .seg-bak{background:#e0b56a;}
 /* col header */
 .sum-col-hd{display:flex;align-items:center;gap:8px;padding:5px 14px 3px;}
 .sch-rank{width:16px;flex-shrink:0;}
-.sch-name{width:120px;flex-shrink:0;}
+.sch-name{width:190px;flex-shrink:0;}
 .sch-bar{flex:1;}
 .sch-right{display:flex;align-items:center;gap:3px;flex-shrink:0;}
 .sch-tag{font-size:10px;font-weight:500;padding:1px 6px;border-radius:10px;white-space:nowrap;}
@@ -143,16 +175,49 @@ body.dark .sch-tag-b{color:var(--secondary);border-color:rgba(111,160,224,.28);}
 .sbar-row:hover{background:var(--surface2);}
 .sbar-rank{font-size:11px;color:var(--faint);width:16px;text-align:right;
     flex-shrink:0;font-variant-numeric:tabular-nums;}
-.sbar-name{font-size:13px;color:var(--ink);width:120px;flex-shrink:0;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sbar-name{font-size:13px;color:var(--ink);width:190px;flex-shrink:0;
+    display:inline-flex;align-items:center;gap:5px;min-width:0;}
+.sbar-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;
+    background:var(--faint);opacity:.55;}
+.sbar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.sbar-tag{font-size:9px;font-weight:500;letter-spacing:.04em;padding:1px 5px;
+    border-radius:8px;flex-shrink:0;line-height:1.35;white-space:nowrap;}
+.tag-live{background:rgba(184,122,42,.10);color:#8a5a18;border:0.5px solid rgba(184,122,42,.22);}
+.tag-alive{background:rgba(46,125,92,.10);color:#2a6b4f;border:0.5px solid rgba(46,125,92,.20);}
+.tag-out{background:rgba(120,124,132,.10);color:#6a7078;border:0.5px solid rgba(120,124,132,.20);}
+.sbar-row.is-live .sbar-dot{background:#c4892e;opacity:1;box-shadow:0 0 0 2px rgba(196,137,46,.16);}
+.sbar-row.is-live .sbar-label{color:#7a4e14;font-weight:500;}
+.sbar-row.is-alive .sbar-dot{background:#2f8a62;opacity:1;box-shadow:0 0 0 2px rgba(47,138,98,.14);}
+.sbar-row.is-alive .sbar-label{color:#1f4f3a;font-weight:500;}
+.sbar-row.is-out{opacity:.92;}
+.sbar-row.is-out .sbar-dot{background:#9aa0a8;opacity:1;}
+.sbar-row.is-out .sbar-label{color:var(--muted);}
+.sbar-row.is-out .sbar-count,.sbar-row.is-out .sbar-pct{color:var(--muted);}
+body.dark .tag-live{background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .tag-alive{background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+body.dark .tag-out{background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .sbar-row.is-live .sbar-dot{background:#e0b56a;box-shadow:0 0 0 2px rgba(224,181,106,.16);}
+body.dark .sbar-row.is-live .sbar-label{color:#ead0a0;}
+body.dark .sbar-row.is-alive .sbar-dot{background:#7dcea0;box-shadow:0 0 0 2px rgba(125,206,160,.16);}
+body.dark .sbar-row.is-alive .sbar-label{color:#b7e0c8;}
+body.dark .sbar-row.is-out .sbar-dot{background:#8a9098;}
 .sbar-track{flex:1;background:var(--surface2);border-radius:20px;height:8px;
     display:flex;overflow:hidden;}
 body.dark .sbar-track{background:var(--bg2);}
 .sbar-seg{height:100%;transition:width .38s cubic-bezier(.4,0,.2,1);}
 .seg-v{background:var(--primary);}
 .seg-b{background:var(--secondary);}
+.seg-live{background:linear-gradient(90deg,#d4a04a,#c4892e);}
+.seg-alive{background:linear-gradient(90deg,#3fa873,#2f8a62);}
+.seg-out{background:linear-gradient(90deg,rgba(140,146,154,.55),rgba(140,146,154,.38));}
 body.dark .seg-b{background:var(--secondary);}
-.sbar-track.solo-v .seg-v{border-radius:20px;}
+body.dark .seg-live{background:linear-gradient(90deg,#e0b56a,#c4892e);}
+body.dark .seg-alive{background:linear-gradient(90deg,#5fbf8a,#3fa873);}
+body.dark .seg-out{background:linear-gradient(90deg,rgba(130,136,144,.45),rgba(130,136,144,.28));}
+.sbar-track.solo-v .seg-v,
+.sbar-track.solo-live .seg-live,
+.sbar-track.solo-alive .seg-alive,
+.sbar-track.solo-out .seg-out{border-radius:20px;}
 .sbar-track.solo-b .seg-b{border-radius:20px;}
 .sbar-track.both   .seg-v{border-radius:20px 0 0 20px;}
 .sbar-track.both   .seg-b{border-radius:0 20px 20px 0;}
@@ -172,6 +237,7 @@ body.dark .sbar-ib{color:var(--secondary);}
 .sbar-row.stotal{border-top:1px solid var(--border2);margin-top:2px;
     padding-top:8px;padding-bottom:8px;}
 .sbar-row.stotal .sbar-name{font-size:12px;color:var(--muted);}
+.sbar-row.stotal .sbar-dot,.sbar-row.stotal .sbar-tag{display:none;}
 .sbar-row.stotal .sbar-count{color:var(--primary);}
 /* hidden / expanded rows */
 .sbar-row.s-hidden{display:none;}
@@ -200,6 +266,38 @@ body.dark .sbar-ib{color:var(--secondary);}
 body.dark .sum-copy-btn.copied{color:var(--primary);}
 .sum-title-row{display:flex;align-items:center;justify-content:space-between;
     gap:8px;margin-bottom:7px;}
+
+/* daily killer panel (F7) */
+.dk-box{margin:0 auto 18px;max-width:700px;background:var(--surface);
+    border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.dk-toggle{width:100%;padding:10px 14px;border:none;background:var(--surface2);
+    color:var(--muted);font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:color .15s,background .15s;}
+.dk-toggle:hover{color:var(--primary);}
+.dk-arrow{font-size:10px;display:inline-block;transition:transform .25s;}
+.dk-box.open .dk-arrow{transform:rotate(180deg);}
+.dk-body{display:none;border-top:1px solid var(--border2);padding:8px 0 10px;}
+.dk-box.open .dk-body{display:block;}
+.dk-hd{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;padding:4px 14px 6px;
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--faint);}
+.dk-row{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;padding:7px 14px;
+    align-items:center;border-top:1px solid var(--border2);}
+.dk-row:hover{background:var(--surface2);}
+.dk-day{font-family:'Space Mono',monospace;font-size:11px;color:var(--faint);}
+.dk-killers{display:contents;}
+.dk-k{font-size:13px;color:var(--ink);display:flex;align-items:baseline;gap:6px;min-width:0;}
+.dk-k b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dk-k em{font-style:normal;font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--primary-dark);font-weight:700;flex-shrink:0;}
+.dk-k.alt em{color:var(--secondary);}
+body.dark .dk-k em{color:var(--primary);}
+body.dark .dk-k.alt em{color:var(--secondary);}
+@media(max-width:640px){
+    .dk-hd,.dk-row{grid-template-columns:44px 1fr; }
+    .dk-hd-k:last-child,.dk-row .dk-k.alt{display:none;}
+}
 
 /* stats row */
 .stats-row{display:flex;align-items:center;justify-content:space-between;
@@ -267,6 +365,34 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
 .rank.up{color:#2a7a4a;}.rank.up::before{content:"▲";font-size:9px;}
 .rank.down{color:#c04830;}.rank.down::before{content:"▼";font-size:9px;}
 .rank.same{color:var(--faint);}.rank.same::before{content:"▶";font-size:9px;}
+
+/* user status: 存活 / 未完赛·未选 / 淘汰(含自杀·球员输球) */
+.st-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;
+    border-radius:10px;font-size:11px;font-weight:500;line-height:1.35;
+    white-space:nowrap;border:0.5px solid transparent;}
+.st-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.st-alive{background:rgba(46,125,92,.10);color:#2a6b4f;border-color:rgba(46,125,92,.22);}
+.st-alive::before{background:#2f8a62;}
+.st-live{background:rgba(184,122,42,.10);color:#8a5a18;border-color:rgba(184,122,42,.22);}
+.st-live::before{background:#c4892e;}
+.st-out{background:rgba(120,124,132,.10);color:#6a7078;border-color:rgba(120,124,132,.22);}
+.st-out::before{background:#9aa0a8;}
+.st-other{background:rgba(120,124,132,.10);color:#6a7078;border-color:rgba(120,124,132,.22);}
+.st-other::before{background:#9aa0a8;}
+body.dark .st-alive{background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+body.dark .st-alive::before{background:#7dcea0;}
+body.dark .st-live{background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .st-live::before{background:#e0b56a;}
+body.dark .st-out{background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .st-out::before{background:#a8adb4;}
+body.dark .st-other{background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .st-other::before{background:#a8adb4;}
+.filterable-table tr.row-alive td:first-child{box-shadow:inset 3px 0 0 #2f8a62;}
+.filterable-table tr.row-live td:first-child{box-shadow:inset 3px 0 0 #c4892e;}
+.filterable-table tr.row-out td{color:var(--muted);}
+.filterable-table tr.row-out td:first-child{box-shadow:inset 3px 0 0 rgba(154,160,168,.55);}
+body.dark .filterable-table tr.row-alive td:first-child{box-shadow:inset 3px 0 0 #7dcea0;}
+body.dark .filterable-table tr.row-live td:first-child{box-shadow:inset 3px 0 0 #e0b56a;}
 
 /* podium (killer page) */
 .podium{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
@@ -427,6 +553,8 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     .filterable-table td{padding:5px 6px;white-space:nowrap;}
     .table-wrapper{max-height:62vh;}
     .podium{grid-template-columns:1fr;}
+    .sch-name,.sbar-name{width:112px;}
+    .sbar-tag{display:none;}
 }
 .route-entry{display:flex;align-items:center;gap:14px;background:var(--surface);
     border:1px solid var(--border);border-radius:8px;padding:14px 18px;
@@ -480,6 +608,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
 @media(max-width:640px){
     .rq-result-pick{white-space:normal;}
 }
+
 </style>
 </head>
 <body>
@@ -530,7 +659,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年10月11日 23:54:29</span>
+    <span class="updated">⏱ 2026年10月16日 00:28:50</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -548,23 +677,23 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
 <div class="pod-card p1">
   <div class="pod-medal">#1</div>
   <div class="pod-name">哈恰诺夫</div>
-  <div class="pod-kills">275</div>
+  <div class="pod-kills">276</div>
   <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">杀人率 33.17%</div>
+  <div class="pod-rate">杀人率 32.55%</div>
 </div>
 <div class="pod-card p2">
   <div class="pod-medal">#2</div>
   <div class="pod-name">门希克</div>
-  <div class="pod-kills">241</div>
+  <div class="pod-kills">261</div>
   <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">杀人率 28.42%</div>
+  <div class="pod-rate">杀人率 30.00%</div>
 </div>
 <div class="pod-card p3">
   <div class="pod-medal">#3</div>
   <div class="pod-name">胡尔卡奇</div>
   <div class="pod-kills">226</div>
   <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">杀人率 36.69%</div>
+  <div class="pod-rate">杀人率 34.40%</div>
 </div>
 </div>
 
@@ -587,26 +716,26 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   <tr>
     <td>1</td>
     <td>哈恰诺夫</td>
-    <td>275</td>
-    <td>33.17%</td>
+    <td>276</td>
+    <td>32.55%</td>
     <td>65</td>
-    <td>829</td>
+    <td>848</td>
   </tr>
   <tr>
     <td>2</td>
     <td>门希克</td>
-    <td>241</td>
-    <td>28.42%</td>
+    <td>261</td>
+    <td>30.00%</td>
     <td>84</td>
-    <td>848</td>
+    <td>870</td>
   </tr>
   <tr>
     <td>3</td>
     <td>胡尔卡奇</td>
     <td>226</td>
-    <td>36.69%</td>
+    <td>34.40%</td>
     <td>73</td>
-    <td>616</td>
+    <td>657</td>
   </tr>
   <tr>
     <td>4</td>
@@ -643,18 +772,18 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   <tr>
     <td>8</td>
     <td>蒂亚福</td>
-    <td>205</td>
-    <td>19.09%</td>
+    <td>208</td>
+    <td>19.31%</td>
     <td>163</td>
-    <td>1074</td>
+    <td>1077</td>
   </tr>
   <tr>
     <td>9</td>
     <td>梅德韦杰夫</td>
     <td>199</td>
-    <td>23.69%</td>
+    <td>22.38%</td>
     <td>61</td>
-    <td>840</td>
+    <td>889</td>
   </tr>
   <tr>
     <td>10</td>
@@ -676,9 +805,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>12</td>
     <td>阿利亚西姆</td>
     <td>175</td>
-    <td>33.65%</td>
+    <td>33.21%</td>
     <td>58</td>
-    <td>520</td>
+    <td>527</td>
   </tr>
   <tr>
     <td>13</td>
@@ -699,26 +828,26 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   <tr>
     <td>15</td>
     <td>德米纳尔</td>
-    <td>167</td>
-    <td>15.46%</td>
+    <td>171</td>
+    <td>15.36%</td>
     <td>52</td>
-    <td>1080</td>
+    <td>1113</td>
   </tr>
   <tr>
     <td>16</td>
+    <td>谢尔顿</td>
+    <td>164</td>
+    <td>28.28%</td>
+    <td>37</td>
+    <td>580</td>
+  </tr>
+  <tr>
+    <td>17</td>
     <td>武基奇</td>
     <td>157</td>
     <td>89.20%</td>
     <td>139</td>
     <td>176</td>
-  </tr>
-  <tr>
-    <td>17</td>
-    <td>谢尔顿</td>
-    <td>155</td>
-    <td>27.15%</td>
-    <td>37</td>
-    <td>571</td>
   </tr>
   <tr>
     <td>18</td>
@@ -772,9 +901,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>24</td>
     <td>霍达尔</td>
     <td>137</td>
-    <td>25.90%</td>
+    <td>25.42%</td>
     <td>77</td>
-    <td>529</td>
+    <td>539</td>
   </tr>
   <tr>
     <td>25</td>
@@ -804,9 +933,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>28</td>
     <td>鲁德</td>
     <td>126</td>
-    <td>23.86%</td>
+    <td>23.77%</td>
     <td>49</td>
-    <td>528</td>
+    <td>530</td>
   </tr>
   <tr>
     <td>29</td>
@@ -859,10 +988,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   <tr>
     <td>35</td>
     <td>弗-塞伦多洛</td>
-    <td>116</td>
-    <td>17.39%</td>
+    <td>117</td>
+    <td>17.51%</td>
     <td>46</td>
-    <td>667</td>
+    <td>668</td>
   </tr>
   <tr>
     <td>36</td>
@@ -882,19 +1011,19 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </tr>
   <tr>
     <td>38</td>
+    <td>勒纳-钱</td>
+    <td>112</td>
+    <td>23.73%</td>
+    <td>26</td>
+    <td>472</td>
+  </tr>
+  <tr>
+    <td>39</td>
     <td>瓦舍罗</td>
     <td>111</td>
     <td>30.00%</td>
     <td>43</td>
     <td>370</td>
-  </tr>
-  <tr>
-    <td>39</td>
-    <td>勒纳-钱</td>
-    <td>110</td>
-    <td>23.40%</td>
-    <td>26</td>
-    <td>470</td>
   </tr>
   <tr>
     <td>40</td>
@@ -964,9 +1093,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>48</td>
     <td>保罗</td>
     <td>82</td>
-    <td>6.90%</td>
+    <td>6.75%</td>
     <td>29</td>
-    <td>1189</td>
+    <td>1214</td>
   </tr>
   <tr>
     <td>49</td>
@@ -1012,9 +1141,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>54</td>
     <td>亚-兹韦列夫</td>
     <td>66</td>
-    <td>10.05%</td>
+    <td>9.57%</td>
     <td>51</td>
-    <td>657</td>
+    <td>690</td>
   </tr>
   <tr>
     <td>55</td>
@@ -1042,6 +1171,14 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
   </tr>
   <tr>
     <td>58</td>
+    <td>菲斯</td>
+    <td>57</td>
+    <td>9.25%</td>
+    <td>16</td>
+    <td>616</td>
+  </tr>
+  <tr>
+    <td>59</td>
     <td>贝雷蒂尼</td>
     <td>54</td>
     <td>12.59%</td>
@@ -1049,7 +1186,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>429</td>
   </tr>
   <tr>
-    <td>59</td>
+    <td>60</td>
     <td>沃尔顿</td>
     <td>53</td>
     <td>94.64%</td>
@@ -1057,7 +1194,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>56</td>
   </tr>
   <tr>
-    <td>60</td>
+    <td>61</td>
     <td>乌戈-卡拉贝利</td>
     <td>52</td>
     <td>76.47%</td>
@@ -1065,7 +1202,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>68</td>
   </tr>
   <tr>
-    <td>61</td>
+    <td>62</td>
     <td>毛罗然</td>
     <td>52</td>
     <td>35.86%</td>
@@ -1073,7 +1210,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>145</td>
   </tr>
   <tr>
-    <td>62</td>
+    <td>63</td>
     <td>塔比洛</td>
     <td>50</td>
     <td>30.49%</td>
@@ -1081,7 +1218,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>164</td>
   </tr>
   <tr>
-    <td>63</td>
+    <td>64</td>
     <td>范德尚舒尔普</td>
     <td>49</td>
     <td>8.91%</td>
@@ -1089,7 +1226,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>550</td>
   </tr>
   <tr>
-    <td>64</td>
+    <td>65</td>
     <td>德雷珀</td>
     <td>48</td>
     <td>28.24%</td>
@@ -1097,7 +1234,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>170</td>
   </tr>
   <tr>
-    <td>65</td>
+    <td>66</td>
     <td>林德克内希</td>
     <td>47</td>
     <td>19.75%</td>
@@ -1105,20 +1242,12 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>238</td>
   </tr>
   <tr>
-    <td>66</td>
+    <td>67</td>
     <td>科瓦切维奇</td>
     <td>45</td>
     <td>37.50%</td>
     <td>20</td>
     <td>120</td>
-  </tr>
-  <tr>
-    <td>67</td>
-    <td>菲斯</td>
-    <td>42</td>
-    <td>6.99%</td>
-    <td>16</td>
-    <td>601</td>
   </tr>
   <tr>
     <td>68</td>
@@ -1164,9 +1293,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>73</td>
     <td>达维多维奇</td>
     <td>31</td>
-    <td>6.72%</td>
+    <td>6.47%</td>
     <td>15</td>
-    <td>461</td>
+    <td>479</td>
   </tr>
   <tr>
     <td>74</td>
@@ -2046,6 +2175,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
 </div>
 
 </div>
+
 <script>
 
 function toggleTheme(){
@@ -2104,12 +2234,17 @@ document.addEventListener('DOMContentLoaded',function(){
 
         if(isNumericCol){
             // ── build slider filter ──────────────────────────────
-            const minVal=Math.min(...parsedNums);
-            const maxVal=Math.max(...parsedNums);
-            const step=(maxVal-minVal)>20 ? 1 : (maxVal-minVal)/100 || 1;
+            const headerText=header.textContent.trim();
+            const forceInt=/天数|排名|周数|参赛|冠军数|亚军|连胜|连败|得分|积分/.test(headerText)
+                && !/率/.test(headerText);
+            const isIntCol=forceInt || parsedNums.every(n=>Number.isInteger(n));
+            let minVal=Math.min(...parsedNums);
+            let maxVal=Math.max(...parsedNums);
+            if(isIntCol){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
+            const step=isIntCol ? 1 : ((maxVal-minVal)>20 ? 1 : (maxVal-minVal)/100 || 1);
 
             columnMeta[index]={type:'numeric', min:minVal, max:maxVal,
-                                curMin:minVal, curMax:maxVal};
+                                curMin:minVal, curMax:maxVal, intCol:isIntCol};
 
             const dropdownWrapper=document.createElement('div');
             dropdownWrapper.className='filter-dropdown';
@@ -2123,11 +2258,13 @@ document.addEventListener('DOMContentLoaded',function(){
             const readout=document.createElement('div');
             readout.className='filter-slider-readout';
             const inMin=document.createElement('input');
-            inMin.type='number'; inMin.value=minVal;
+            inMin.type='number'; inMin.value=minVal; inMin.step=step;
+            if(isIntCol){ inMin.step='1'; inMin.setAttribute('inputmode','numeric'); }
             const sep=document.createElement('span');
             sep.className='filter-slider-sep'; sep.textContent='~';
             const inMax=document.createElement('input');
-            inMax.type='number'; inMax.value=maxVal;
+            inMax.type='number'; inMax.value=maxVal; inMax.step=step;
+            if(isIntCol){ inMax.step='1'; inMax.setAttribute('inputmode','numeric'); }
             readout.append(inMin,sep,inMax);
 
             const rangeWrap=document.createElement('div');
@@ -2150,10 +2287,12 @@ document.addEventListener('DOMContentLoaded',function(){
 
             function syncUI(){
                 let lo=parseFloat(rMin.value), hi=parseFloat(rMax.value);
+                if(isIntCol){ lo=Math.round(lo); hi=Math.round(hi); }
                 if(lo>hi){ const t=lo; lo=hi; hi=t; }
                 columnMeta[index].curMin=lo;
                 columnMeta[index].curMax=hi;
-                inMin.value=lo; inMax.value=hi;
+                inMin.value=isIntCol?String(lo):lo; inMax.value=isIntCol?String(hi):hi;
+                rMin.value=lo; rMax.value=hi;
                 const pct=v=>((v-minVal)/(maxVal-minVal||1))*100;
                 fill.style.left=pct(lo)+'%';
                 fill.style.width=(pct(hi)-pct(lo))+'%';
@@ -2163,8 +2302,16 @@ document.addEventListener('DOMContentLoaded',function(){
             }
             rMin.addEventListener('input',()=>{ if(+rMin.value>+rMax.value)rMin.value=rMax.value; syncUI(); });
             rMax.addEventListener('input',()=>{ if(+rMax.value<+rMin.value)rMax.value=rMin.value; syncUI(); });
-            inMin.addEventListener('change',()=>{ rMin.value=inMin.value; syncUI(); });
-            inMax.addEventListener('change',()=>{ rMax.value=inMax.value; syncUI(); });
+            inMin.addEventListener('change',()=>{
+                let v=parseFloat(inMin.value); if(isNaN(v))v=minVal;
+                if(isIntCol) v=Math.round(v);
+                rMin.value=v; syncUI();
+            });
+            inMax.addEventListener('change',()=>{
+                let v=parseFloat(inMax.value); if(isNaN(v))v=maxVal;
+                if(isIntCol) v=Math.round(v);
+                rMax.value=v; syncUI();
+            });
             resetBtn.addEventListener('click',()=>{ rMin.value=minVal; rMax.value=maxVal; syncUI(); });
             syncUI();
 
