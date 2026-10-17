@@ -95,20 +95,6 @@ body::before{
             font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:14px;}
         .hero-desc{font-size:14px;color:var(--muted);line-height:1.85;max-width:500px;}
 
-        /* stat strip */
-        .stat-strip{display:grid;grid-template-columns:repeat(4,1fr);
-            border:1px solid var(--border);border-radius:8px;overflow:hidden;
-            margin-bottom:52px;background:var(--surface);}
-        .stat-cell{padding:18px 16px;text-align:center;border-right:1px solid var(--border);}
-        .stat-cell:last-child{border-right:none;}
-        .stat-val{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;
-            color:var(--primary);line-height:1;margin-bottom:5px;}
-        .stat-lbl{font-size:11px;color:var(--faint);letter-spacing:.04em;}
-        .live-wrap{display:inline-flex;align-items:center;gap:5px;}
-        .ldot{width:7px;height:7px;border-radius:50%;background:var(--primary-dark);
-            animation:blink 1.4s ease-in-out infinite;}
-        @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
         /* ── weather strip ── */
         .weather-section{margin-bottom:44px;}
         .weather-details{margin-bottom:14px;}
@@ -149,6 +135,62 @@ body::before{
         .wx-row{font-size:10px;color:var(--faint);line-height:1.7;
             font-variant-numeric:tabular-nums;}
         .wx-rain{color:var(--secondary);}
+
+        /* week status (上/本周) */
+        .week-section{margin-bottom:44px;}
+        .wk-block{margin-bottom:16px;}
+        .wk-block:last-child{margin-bottom:0;}
+        .wk-block-hd{font-family:'Noto Serif SC',serif;font-size:14px;font-weight:600;
+            color:var(--ink);margin:0 0 10px 2px;letter-spacing:.02em;}
+        .wk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+        .wk-panel{display:block;text-decoration:none;background:var(--surface);
+            border:1px solid var(--border);border-radius:8px;padding:14px 16px;
+            position:relative;overflow:hidden;transition:border-color .18s,transform .18s;}
+        .wk-panel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+            opacity:.85;}
+        .wk-panel.atp::before{background:var(--secondary);}
+        .wk-panel.wta::before{background:var(--primary);}
+        .wk-eye{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.16em;
+            text-transform:uppercase;margin-bottom:8px;}
+        .wk-panel.atp .wk-eye{color:var(--secondary);}
+        .wk-panel.wta .wk-eye{color:var(--primary);}
+        .wk-event{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 8px;margin-bottom:8px;}
+        .wk-city{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;color:var(--ink);}
+        .wk-level{font-size:10px;padding:1px 6px;border-radius:8px;background:var(--surface2);
+            color:var(--muted);border:0.5px solid var(--border);}
+        .wk-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--faint);}
+        .wk-stats{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 10px;}
+        .wk-stat{display:inline-flex;align-items:baseline;gap:6px;
+            padding:4px 10px;border-radius:999px;background:var(--surface2);
+            border:0.5px solid var(--border);font-size:12px;}
+        .wk-stat-lbl{color:var(--faint);font-size:10px;letter-spacing:.04em;}
+        .wk-stats b{font-family:'Space Mono',monospace;color:var(--primary-dark);font-weight:700;}
+        body.dark .wk-stats b{color:var(--primary);}
+        .wk-label{font-size:11px;font-weight:600;letter-spacing:.04em;margin:8px 0 6px;}
+        .wk-label.win{color:#2a6b4f;}
+        .wk-label.out{color:var(--muted);}
+        .wk-label.pending{color:#8a5a18;}
+        .wk-label.soft{color:var(--faint);font-weight:500;margin-top:4px;}
+        body.dark .wk-label.win{color:#7dcea0;}
+        body.dark .wk-label.pending{color:#e0b56a;}
+        .wk-people{margin:0 0 2px;}
+        .wk-chips{display:flex;flex-wrap:wrap;gap:5px;}
+        .wk-chip{display:inline-block;max-width:100%;padding:3px 9px;border-radius:999px;
+            background:rgba(42,107,79,.08);border:0.5px solid rgba(42,107,79,.18);
+            color:#1f4f3a;font-size:12px;line-height:1.35;white-space:nowrap;
+            overflow:hidden;text-overflow:ellipsis;}
+        body.dark .wk-chip{background:rgba(125,206,160,.12);border-color:rgba(125,206,160,.22);
+            color:#b7e0c6;}
+        .wk-sub{font-size:12px;color:var(--muted);line-height:1.55;margin-top:4px;}
+        .wk-defend-card{margin-top:10px;padding:10px 12px;border-radius:8px;
+            background:var(--surface2);border:0.5px solid var(--border);}
+        .wk-defend-title{font-family:'Space Mono',monospace;font-size:9px;
+            letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+            margin:0 0 6px;}
+        .wk-defend-event{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;
+            margin-bottom:2px;}
+        .wk-defend-city{font-size:14px;font-weight:600;color:var(--ink);}
+        .wk-empty,.muted{color:var(--faint);font-size:13px;}
 
         /* sections */
         .section{margin-bottom:44px;}
@@ -198,9 +240,7 @@ body::before{
             header{margin-bottom:32px;}
             .hero{margin-bottom:36px;}
             .card-grid{grid-template-columns:1fr;}
-            .stat-strip{grid-template-columns:repeat(2,1fr);}
-            .stat-cell:nth-child(2){border-right:none;}
-            .stat-cell:nth-child(3){border-top:1px solid var(--border);}
+            .wk-grid{grid-template-columns:1fr;}
         }
     </style>
 </head>
@@ -262,23 +302,64 @@ body::before{
         <p class="hero-desc">ATP · WTA 签表幸存者游戏数据中心<br>即时排名、冠军积分、杀手榜一览无余</p>
     </div>
 
-    <div class="stat-strip">
-        <div class="stat-cell">
-            <div class="stat-val">348</div>
-            <div class="stat-lbl">ATP上海<br>参赛人数</div>
+    <div class="section week-section">
+        <div class="sec-hd"><span class="sec-label">赛况日历</span><div class="sec-rule"></div></div>
+    <div class="wk-block">
+        <div class="wk-block-hd">上周赛事结果</div>
+        <div class="wk-grid">
+        <div class="wk-panel atp">
+            <div class="wk-eye">ATP · 上周</div>
+                        <div class="wk-event">
+                <span class="wk-city">北京</span>
+                <span class="wk-level">ATP500</span>
+                <span class="wk-date">09/28开赛</span>
+            </div><div class="wk-label win">夺冠</div>
+<div class="wk-people"><span class="wk-chips"><span class="wk-chip">锦暔</span><span class="wk-chip">年终的W</span><span class="wk-chip">晨曦中的楷模Elroy</span><span class="wk-chip">李杨科-RM</span></span></div>
+        </div>        <div class="wk-panel wta">
+            <div class="wk-eye">WTA · 上周</div>
+                        <div class="wk-event">
+                <span class="wk-city">北京</span>
+                
+                <span class="wk-date">09/28开赛</span>
+            </div><div class="wk-label out">本站无人生还</div>
+<div class="wk-label soft">最高分 650</div>
+<div class="wk-people"><span class="wk-chips"><span class="wk-chip">风***虚</span></span></div>
         </div>
-        <div class="stat-cell">
-            <div class="stat-val">15</div>
-            <div class="stat-lbl">Day11 存活人数</div>
         </div>
-        <div class="stat-cell">
-            <div class="stat-val">402</div>
-            <div class="stat-lbl">WTA武汉<br>参赛人数</div>
+    </div>    <div class="wk-block">
+        <div class="wk-block-hd">本周赛事</div>
+        <div class="wk-grid">
+        <div class="wk-panel atp">
+            <div class="wk-eye">ATP · 本周</div>
+                        <div class="wk-event">
+                <span class="wk-city">上海</span>
+                
+                <span class="wk-date">10/05开赛</span>
+            </div><div class="wk-stats"><span class="wk-stat"><span class="wk-stat-lbl">参赛</span><b>348</b></span><span class="wk-stat"><span class="wk-stat-lbl">幸存</span><b>10</b></span></div>
+<div class="wk-defend-card">
+<div class="wk-defend-title">卫冕赛事</div>
+<div class="wk-defend-event"><span class="wk-defend-city">上海</span></div>
+<div class="wk-label out">卫冕站无人生还</div>
+<div class="wk-label soft">最高分 150</div>
+<div class="wk-people"><span class="wk-chips"><span class="wk-chip">做丞琳永远的歌迷ya</span></span></div>
+</div>
+        </div>        <div class="wk-panel wta">
+            <div class="wk-eye">WTA · 本周</div>
+                        <div class="wk-event">
+                <span class="wk-city">武汉</span>
+                
+                <span class="wk-date">10/12开赛</span>
+            </div><div class="wk-stats"><span class="wk-stat"><span class="wk-stat-lbl">参赛</span><b>402</b></span><span class="wk-stat"><span class="wk-stat-lbl">幸存</span><b>16</b></span></div>
+<div class="wk-defend-card">
+<div class="wk-defend-title">卫冕赛事</div>
+<div class="wk-defend-event"><span class="wk-defend-city">武汉</span></div>
+<div class="wk-label out">卫冕站无人生还</div>
+<div class="wk-label soft">最高分 650</div>
+<div class="wk-people"><span class="wk-chips"><span class="wk-chip">silver小小蓝</span><span class="wk-chip">梦是无尽的荒野</span><span class="wk-chip">黑***友</span><span class="wk-chip">黑白_大山</span><span class="wk-chip">Aeonbert</span><span class="wk-chip">后曹操</span><span class="wk-chip">板尼哟</span><span class="wk-chip">活宝哈u</span><span class="wk-chip">liangZxx</span><span class="wk-chip">WillKrisKai</span><span class="wk-chip">M***y</span><span class="wk-chip">Leo_T1nyFo2est_autor</span><span class="wk-chip">198******80</span><span class="wk-chip">无***痕</span><span class="wk-chip">pododic Tang</span></span></div>
+</div>
         </div>
-        <div class="stat-cell">
-            <div class="stat-val">37</div>
-            <div class="stat-lbl">Day6 存活人数</div>
         </div>
+    </div>
     </div>
 
     <div class="section weather-section">
@@ -288,6 +369,15 @@ body::before{
             <div class="weather-scroll">
                         <div class="wx now">
                             <div class="wx-day">Sat</div>
+                            <div class="wx-time">19:00</div>
+                            <div class="wx-icon">☁️</div>
+                            <div class="wx-temp">23°C</div>
+                            <div class="wx-cond">阴</div>
+                            <div class="wx-row"><span class="wx-rain">💧0%</span></div>
+                            <div class="wx-row">💨17.1km/h</div>
+                        </div>
+                        <div class="wx">
+                            <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">20:00</div>
                             <div class="wx-icon">⛅</div>
                             <div class="wx-temp">23°C</div>
@@ -436,7 +526,7 @@ body::before{
                             <div class="wx-icon">☀️</div>
                             <div class="wx-temp">30°C</div>
                             <div class="wx-cond">晴</div>
-                            <div class="wx-row"><span class="wx-rain">💧9%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧6%</span></div>
                             <div class="wx-row">💨10.9km/h</div>
                         </div>
                         <div class="wx">
@@ -445,7 +535,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">31°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧21%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧14%</span></div>
                             <div class="wx-row">💨9.8km/h</div>
                         </div>
                         <div class="wx">
@@ -454,7 +544,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">31°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧29%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧20%</span></div>
                             <div class="wx-row">💨10.5km/h</div>
                         </div>
                         <div class="wx">
@@ -463,7 +553,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">31°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧28%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧23%</span></div>
                             <div class="wx-row">💨7.2km/h</div>
                         </div>
                         <div class="wx">
@@ -472,7 +562,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">29°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧24%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧25%</span></div>
                             <div class="wx-row">💨6.5km/h</div>
                         </div>
                         <div class="wx">
@@ -481,7 +571,7 @@ body::before{
                             <div class="wx-icon">🌧️</div>
                             <div class="wx-temp">26°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧20%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧27%</span></div>
                             <div class="wx-row">💨5.4km/h</div>
                         </div>
                         <div class="wx">
@@ -490,17 +580,8 @@ body::before{
                             <div class="wx-icon">☁️</div>
                             <div class="wx-temp">26°C</div>
                             <div class="wx-cond">阴</div>
-                            <div class="wx-row"><span class="wx-rain">💧19%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧30%</span></div>
                             <div class="wx-row">💨5.6km/h</div>
-                        </div>
-                        <div class="wx">
-                            <div class="wx-day">&nbsp;</div>
-                            <div class="wx-time">19:00</div>
-                            <div class="wx-icon">🌦️</div>
-                            <div class="wx-temp">25°C</div>
-                            <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧20%</span></div>
-                            <div class="wx-row">💨11.6km/h</div>
                         </div>
             </div>
         </details>
@@ -509,11 +590,20 @@ body::before{
             <div class="weather-scroll">
                         <div class="wx now">
                             <div class="wx-day">Sat</div>
+                            <div class="wx-time">19:00</div>
+                            <div class="wx-icon">🌦️</div>
+                            <div class="wx-temp">26°C</div>
+                            <div class="wx-cond">毛毛雨</div>
+                            <div class="wx-row"><span class="wx-rain">💧11%</span></div>
+                            <div class="wx-row">💨7.6km/h</div>
+                        </div>
+                        <div class="wx">
+                            <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">20:00</div>
                             <div class="wx-icon">☁️</div>
                             <div class="wx-temp">26°C</div>
                             <div class="wx-cond">阴</div>
-                            <div class="wx-row"><span class="wx-rain">💧45%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧24%</span></div>
                             <div class="wx-row">💨4.6km/h</div>
                         </div>
                         <div class="wx">
@@ -522,7 +612,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">21°C</div>
                             <div class="wx-cond">阵雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧63%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧49%</span></div>
                             <div class="wx-row">💨16.0km/h</div>
                         </div>
                         <div class="wx">
@@ -531,7 +621,7 @@ body::before{
                             <div class="wx-icon">🌧️</div>
                             <div class="wx-temp">22°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧83%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧80%</span></div>
                             <div class="wx-row">💨12.0km/h</div>
                         </div>
                         <div class="wx">
@@ -540,7 +630,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">22°C</div>
                             <div class="wx-cond">阵雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧96%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧100%</span></div>
                             <div class="wx-row">💨12.9km/h</div>
                         </div>
                         <div class="wx">
@@ -549,7 +639,7 @@ body::before{
                             <div class="wx-icon">🌧️</div>
                             <div class="wx-temp">21°C</div>
                             <div class="wx-cond">强阵雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧99%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧98%</span></div>
                             <div class="wx-row">💨12.4km/h</div>
                         </div>
                         <div class="wx">
@@ -558,7 +648,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">21°C</div>
                             <div class="wx-cond">阵雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧97%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧85%</span></div>
                             <div class="wx-row">💨11.2km/h</div>
                         </div>
                         <div class="wx">
@@ -567,7 +657,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">20°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧94%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧76%</span></div>
                             <div class="wx-row">💨19.3km/h</div>
                         </div>
                         <div class="wx">
@@ -576,7 +666,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">18°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧93%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧77%</span></div>
                             <div class="wx-row">💨17.1km/h</div>
                         </div>
                         <div class="wx">
@@ -585,7 +675,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">17°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧93%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧82%</span></div>
                             <div class="wx-row">💨16.0km/h</div>
                         </div>
                         <div class="wx">
@@ -594,7 +684,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">17°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧92%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧86%</span></div>
                             <div class="wx-row">💨17.6km/h</div>
                         </div>
                         <div class="wx">
@@ -603,7 +693,7 @@ body::before{
                             <div class="wx-icon">🌦️</div>
                             <div class="wx-temp">16°C</div>
                             <div class="wx-cond">毛毛雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧91%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧89%</span></div>
                             <div class="wx-row">💨17.2km/h</div>
                         </div>
                         <div class="wx">
@@ -612,7 +702,7 @@ body::before{
                             <div class="wx-icon">⛈️</div>
                             <div class="wx-temp">16°C</div>
                             <div class="wx-cond">雷雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧89%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧91%</span></div>
                             <div class="wx-row">💨17.8km/h</div>
                         </div>
                         <div class="wx">
@@ -621,7 +711,7 @@ body::before{
                             <div class="wx-icon">⛈️</div>
                             <div class="wx-temp">16°C</div>
                             <div class="wx-cond">雷雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧88%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧92%</span></div>
                             <div class="wx-row">💨16.2km/h</div>
                         </div>
                         <div class="wx">
@@ -630,7 +720,7 @@ body::before{
                             <div class="wx-icon">🌧️</div>
                             <div class="wx-temp">16°C</div>
                             <div class="wx-cond">强阵雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧89%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧93%</span></div>
                             <div class="wx-row">💨14.1km/h</div>
                         </div>
                         <div class="wx">
@@ -639,7 +729,7 @@ body::before{
                             <div class="wx-icon">🌧️</div>
                             <div class="wx-temp">16°C</div>
                             <div class="wx-cond">强阵雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧91%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧93%</span></div>
                             <div class="wx-row">💨13.0km/h</div>
                         </div>
                         <div class="wx">
@@ -666,7 +756,7 @@ body::before{
                             <div class="wx-icon">🌧️</div>
                             <div class="wx-temp">17°C</div>
                             <div class="wx-cond">强阵雨</div>
-                            <div class="wx-row"><span class="wx-rain">💧92%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧93%</span></div>
                             <div class="wx-row">💨12.2km/h</div>
                         </div>
                         <div class="wx">
@@ -684,7 +774,7 @@ body::before{
                             <div class="wx-icon">☁️</div>
                             <div class="wx-temp">19°C</div>
                             <div class="wx-cond">阴</div>
-                            <div class="wx-row"><span class="wx-rain">💧68%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧65%</span></div>
                             <div class="wx-row">💨13.5km/h</div>
                         </div>
                         <div class="wx">
@@ -693,7 +783,7 @@ body::before{
                             <div class="wx-icon">☁️</div>
                             <div class="wx-temp">19°C</div>
                             <div class="wx-cond">阴</div>
-                            <div class="wx-row"><span class="wx-rain">💧43%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧37%</span></div>
                             <div class="wx-row">💨11.5km/h</div>
                         </div>
                         <div class="wx">
@@ -702,7 +792,7 @@ body::before{
                             <div class="wx-icon">⛅</div>
                             <div class="wx-temp">19°C</div>
                             <div class="wx-cond">局部多云</div>
-                            <div class="wx-row"><span class="wx-rain">💧25%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧18%</span></div>
                             <div class="wx-row">💨10.2km/h</div>
                         </div>
                         <div class="wx">
@@ -711,17 +801,8 @@ body::before{
                             <div class="wx-icon">🌤️</div>
                             <div class="wx-temp">19°C</div>
                             <div class="wx-cond">多云</div>
-                            <div class="wx-row"><span class="wx-rain">💧18%</span></div>
+                            <div class="wx-row"><span class="wx-rain">💧14%</span></div>
                             <div class="wx-row">💨10.3km/h</div>
-                        </div>
-                        <div class="wx">
-                            <div class="wx-day">&nbsp;</div>
-                            <div class="wx-time">19:00</div>
-                            <div class="wx-icon">☀️</div>
-                            <div class="wx-temp">19°C</div>
-                            <div class="wx-cond">晴</div>
-                            <div class="wx-row"><span class="wx-rain">💧18%</span></div>
-                            <div class="wx-row">💨10.2km/h</div>
                         </div>
             </div>
         </details>
@@ -758,18 +839,56 @@ body::before{
     </div>
 
         <div class="section">
-        <div class="sec-hd"><span class="sec-label">幸存者冠军榜</span><div class="sec-rule"></div></div>
+        <div class="sec-hd"><span class="sec-label">联合排名</span><div class="sec-rule"></div></div>
         <div class="card-grid">
-            <a href="atp_champion.html" class="card atp">
-                <div class="card-eye"><b>ATP · Hall of Champions</b></div>
-                <div class="card-title">ATP冠军榜</div>
-                <div class="card-desc">历届赛事幸存者冠军一览</div>
+            <a href="combined_instant_ranking.html" class="card all">
+                <div class="card-eye"><b>ALL · Combined Live</b></div>
+                <div class="card-title">联合即时排名</div>
+                <div class="card-desc">ATP + WTA 即时积分合计榜</div>
                 <span class="card-arrow">→</span>
             </a>
-            <a href="wta_champion.html" class="card wta">
-                <div class="card-eye"><b>WTA · Hall of Champions</b></div>
-                <div class="card-title">WTA冠军榜</div>
-                <div class="card-desc">历届赛事幸存者冠军一览</div>
+            <a href="combined_ranking.html" class="card all">
+                <div class="card-eye"><b>ALL · Combined Race</b></div>
+                <div class="card-title">联合冠军排名</div>
+                <div class="card-desc">ATP + WTA 冠军积分合计榜</div>
+                <span class="card-arrow">→</span>
+            </a>
+        </div>
+    </div>
+
+
+        <div class="section">
+        <div class="sec-hd"><span class="sec-label">幸存者赛历</span><div class="sec-rule"></div></div>
+        <div class="card-grid">
+            <a href="survivor_calendar_atp.html" class="card atp">
+                <div class="card-eye"><b>ATP · Season Calendar</b></div>
+                <div class="card-title">ATP幸存者赛历</div>
+                <div class="card-desc">男单赛程 · 按年份与级别浏览本站得分</div>
+                <span class="card-arrow">→</span>
+            </a>
+            <a href="survivor_calendar_wta.html" class="card wta">
+                <div class="card-eye"><b>WTA · Season Calendar</b></div>
+                <div class="card-title">WTA幸存者赛历</div>
+                <div class="card-desc">女单赛程 · 按年份与级别浏览本站得分</div>
+                <span class="card-arrow">→</span>
+            </a>
+        </div>
+    </div>
+
+
+        <div class="section">
+        <div class="sec-hd"><span class="sec-label">球员生涯统计</span><div class="sec-rule"></div></div>
+        <div class="card-grid">
+            <a href="atp_show.html" class="card atp">
+                <div class="card-eye"><b>ATP · Career Stats</b></div>
+                <div class="card-title">ATP 生涯统计</div>
+                <div class="card-desc">周期参赛、夺冠夺亚、连胜连败与存活率</div>
+                <span class="card-arrow">→</span>
+            </a>
+            <a href="wta_show.html" class="card wta">
+                <div class="card-eye"><b>WTA · Career Stats</b></div>
+                <div class="card-title">WTA 生涯统计</div>
+                <div class="card-desc">周期参赛、夺冠夺亚、连胜连败与存活率</div>
                 <span class="card-arrow">→</span>
             </a>
         </div>
