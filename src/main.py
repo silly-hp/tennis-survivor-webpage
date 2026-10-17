@@ -327,7 +327,9 @@ def prepare_weather(cfg, atp_cfg, wta_cfg, atp_name, wta_name, output_dir):
     """Build weather cards for all venues, with JSON cache fallback. Returns list of (label, cards_html)."""
     wx_cfg = cfg["weather"]
     weather_cache_path = (
-        wx_cfg.get("cache_path") or f"{output_dir}/weather_cards_cache.json"
+        wx_cfg.get("cache_path")
+        or cfg.get("cache_path")
+        or f"{output_dir}/weather_cards_cache.json"
     )
     try:
         with open(weather_cache_path, encoding="utf-8") as f:

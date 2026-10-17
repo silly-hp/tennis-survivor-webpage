@@ -63,12 +63,19 @@ def build_weather_cards(latitude, longitude, hours=12, step=3, wind_speed_unit="
         "wind_speed_unit": wind_speed_unit,
     }
 
-    try:
-        res = requests.get(url, params=params, timeout=10)
-        res.raise_for_status()
-        data = res.json()
-    except Exception as e:
-        logger.exception("天气获取失败:", e)
+    data = None
+    last_error = None
+    for attempt in range(3):
+        try:
+            res = requests.get(url, params=params, timeout=30)
+            res.raise_for_status()
+            data = res.json()
+            break
+        except Exception as e:
+            last_error = e
+            logger.warning("天气获取失败 (%s/3): %s", attempt + 1, e)
+    if data is None:
+        logger.error("天气获取失败: %s", last_error)
         return '<div class="wx"><div class="wx-cond">天气数据暂不可用</div></div>'
 
     h = data["hourly"]
