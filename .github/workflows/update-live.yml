@@ -1,0 +1,102 @@
+name: Update live (pick pages)
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: live-pages
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Connectivity check
+        run: |
+          python - <<'PY'
+          import urllib.request
+          url = "https://www.live-tennis.cn/zh/survivor/calendar/2026"
+          try:
+              with urllib.request.urlopen(url, timeout=30) as r:
+                  print("live-tennis status", r.status, "len", len(r.read(200)))
+          except Exception as e:
+              print("live-tennis UNREACHABLE:", type(e).__name__, e)
+          PY
+
+      - name: Generate pick-related pages
+        working-directory: src
+        env:
+          PYTHONUNBUFFERED: "1"
+          TZ: Asia/Shanghai
+        run: python -u main.py --live
+
+      - name: Publish onto main
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          year="$(python -c "import yaml; print(yaml.safe_load(open('config.yaml'))['year'])")"
+          paths=(
+            index.html
+            atp_ranking.html
+            wta_ranking.html
+            atp_race_ranking.html
+            wta_race_ranking.html
+            combined_instant_ranking.html
+            combined_ranking.html
+            survivor_calendar.html
+            survivor_calendar_atp.html
+            survivor_calendar_wta.html
+            config.yaml
+            data/players.json
+            data/weather_cards_cache.json
+            data/breakdown_live_atp.js
+            data/breakdown_live_atp.json
+            data/breakdown_live_wta.js
+            data/breakdown_live_wta.json
+            data/breakdown_race_atp.js
+            data/breakdown_race_atp.json
+            data/breakdown_race_wta.js
+            data/breakdown_race_wta.json
+            data/event_scores
+            data/event_draws
+            data/event_day_rounds
+            assets
+            "events/${year}"
+          )
+          existing=()
+          for path in "${paths[@]}"; do
+            if [[ -e "${path}" ]]; then
+              existing+=("${path}")
+            fi
+          done
+          git add -- "${existing[@]}"
+          if git diff --cached --quiet; then
+            echo unchanged
+            exit 0
+          fi
+          git commit -m "自动更新选人相关页面"
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "push rejected, retry ${attempt}"
+            git pull --rebase origin main || true
+            sleep $((attempt * 8))
+          done
+          echo "push failed after retries" >&2
+          exit 1
