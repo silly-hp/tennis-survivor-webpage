@@ -42,6 +42,7 @@ CANADA_EVENTS = {"蒙特利尔", "多伦多"}
 
 STATS_CACHE = Path(__file__).resolve().parent.parent / "data" / "player_events.json"
 ROLLING_SCORE_CACHE = Path(__file__).resolve().parent.parent / "data" / "rolling_scores.json"
+TOUR_DATES_PATH = Path(__file__).resolve().parent.parent / "data" / "tournament_dates.json"
 # Forced zeros start with 2026 Indian Wells. Rankings update every Monday
 # except the Monday inside a two-week event.
 FORCED_ZERO_START = datetime(2026, 3, 2)
@@ -517,11 +518,41 @@ def _catalog_events(tour: str) -> list[dict[str, Any]]:
             continue
         pending.append(row)
     events = sorted(pending, key=lambda item: (item["start"], item["name"], item["id"]))
+    dates = _tour_dates()
     for index, event in enumerate(events):
         nxt = events[index + 1]["start"] if index + 1 < len(events) else None
-        event["end"] = _event_end(event["name"], event["start"], nxt, tour)
+        event["survivor_end"] = _event_end(event["name"], event["start"], nxt, tour)
         event["two_week"] = _is_two_week(event["name"], event["start"], nxt, tour)
+        event["draw_end"] = event["survivor_end"]
+        found = dates.get(f"{event['year']}:{event['id']}")
+        if found and found.get("start") and found.get("end"):
+            event["open"] = datetime.strptime(found["start"], "%Y-%m-%d")
+            event["draw_end"] = datetime.strptime(found["end"], "%Y-%m-%d")
+        event["end"] = event["draw_end"]
     return events
+
+
+def _on_board(event: dict[str, Any], monday: datetime) -> bool:
+    """True when this edition is on the ranking board for ``monday``.
+
+    It enters on the first ranking Monday after its survivor week ends, even
+    if the draw-page end date is that Monday or later. It leaves 52 weeks
+    after the draw-page end date.
+    """
+    entered = event["survivor_end"] < monday
+    return entered and monday <= event["draw_end"] + timedelta(weeks=52)
+
+
+def _tour_dates() -> dict[str, dict[str, str]]:
+    """Start and end dates from each live-tennis draw page."""
+    if not TOUR_DATES_PATH.exists():
+        return {}
+    try:
+        payload = json.loads(TOUR_DATES_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    events = payload.get("events")
+    return events if isinstance(events, dict) else {}
 
 
 def _official_board(tour: str) -> tuple[dict[str, set[str]], dict[str, int], Optional[datetime]]:
@@ -628,7 +659,9 @@ def _rolling_peaks(
 
     From Indian Wells 2026 onward, a 0 already on the current official board
     stays in that edition until it expires. Which equal-score event is kept
-    is left to the existing points formula.
+    is left to the existing points formula. A finished survivor week enters
+    on the ranking Monday. Older editions leave 52 weeks after the draw-page
+    end date.
     """
     events = _catalog_events(tour)
     if not events:
@@ -689,7 +722,7 @@ def _rolling_peaks(
             continue
         active: dict[str, dict[str, tuple[datetime, int]]] = defaultdict(dict)
         for event in events:
-            if not (event["end"] < monday <= event["end"] + timedelta(weeks=52)):
+            if not _on_board(event, monday):
                 continue
             for uid, score in by_event.get((event["name"], event["start"]), []):
                 held = active[uid].get(event["name"])
@@ -700,7 +733,7 @@ def _rolling_peaks(
                 bucket = active[uid]
                 for name in names:
                     event = edition.get(name)
-                    if event is None or not (event["end"] < monday <= event["end"] + timedelta(weeks=52)):
+                    if event is None or not _on_board(event, monday):
                         continue
                     if name in bucket:
                         continue
