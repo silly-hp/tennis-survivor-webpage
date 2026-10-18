@@ -451,6 +451,7 @@ def _summary_bar_html(
             "normal": valid_total,
             "bye": bye_total,
             "grand": valid_denom,
+            "suicide": suicide_total,
         },
         ensure_ascii=False,
     )
@@ -668,6 +669,24 @@ def _summary_bar_html(
             }}
         }};
 
+        /* 未完赛 / 存活 / 出局: bye counts as alive and suicide as out whatever the
+           player result is; a retired primary is judged by its backup players. */
+        function outcomeLine(){{
+            var live = 0, alive = HAS_BYE ? TOTALS.bye : 0, out = TOTALS.suicide || 0;
+            for (var i = 0; i < ROWS.length; i++) {{
+                var r = ROWS[i];
+                if (r.backs && r.backs.length) {{
+                    r.backs.forEach(function(b){{
+                        live += b.live || 0; alive += b.alive || 0; out += b.out || 0;
+                    }});
+                }} else if (r.status === 'live') {{ live += r.normal;
+                }} else if (r.status === 'confirmed') {{ alive += r.normal;
+                }} else if (r.status === 'out') {{ out += r.normal;
+                }} else {{ return ''; }}
+            }}
+            return '未完赛' + live + ' 存活' + alive + ' 出局' + out;
+        }}
+
         window.copySumStats = function(){{
             var lines = [CLIPBOARD_HEADER];
             ROWS.forEach(function(r){{
@@ -693,6 +712,8 @@ def _summary_bar_html(
                     }});
                 }}
             }});
+            var outcome = outcomeLine();
+            if (outcome) lines.push(outcome);
             var text = lines.join('\\n');
             navigator.clipboard.writeText(text).then(function(){{
                 var btn = document.getElementById('sumCopyBtn');
