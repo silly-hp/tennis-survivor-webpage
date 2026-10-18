@@ -152,11 +152,21 @@ def _champions_for(
         if by_season.empty:
             return empty
         hit = by_season
+    elif week is not None and "season" in hit.columns:
+        # Week alone must not pull another year's champions (e.g. 2026 Wuhan
+        # must not fall back to 2024 Wuhan when champions.csv has no 2026 row).
+        week_season = int(pd.Timestamp(week).year)
+        by_season = hit.loc[
+            pd.to_numeric(hit["season"], errors="coerce") == week_season
+        ]
+        if by_season.empty:
+            return empty
+        hit = by_season
     if week is not None and "week" in hit.columns:
         w = pd.Timestamp(week).normalize()
         by_week = hit.loc[pd.to_datetime(hit["week"]).dt.normalize() == w]
         if by_week.empty:
-            # Season matched but not this Monday — still allow season rows
+            # Same season, different Monday — keep season rows for YoY lookup.
             pass
         else:
             hit = by_week
