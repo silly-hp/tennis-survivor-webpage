@@ -116,6 +116,25 @@ def build_ranking_table(
         ).sort_values(by="current_rank", ascending=True, na_position="last")
 
 
+def _day1_pick_text(value) -> str:
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return ""
+    text = str(value).strip()
+    if not text or text.lower() == "nan":
+        return ""
+    return text
+
+
+def _day1_pick_history(row: dict) -> list:
+    """Day 1 选人明细 is today's pick, or 轮空 when that is the only label."""
+    pick = _day1_pick_text(row.get("player"))
+    if pick:
+        return [pick]
+    if str(row.get("today_status") or "").strip() == "轮空":
+        return ["轮空"]
+    return []
+
+
 def _build_day1(
     rank_df: pd.DataFrame,
     submission_df: Optional[pd.DataFrame],
@@ -183,9 +202,11 @@ def _build_day1(
         p_df["bye"] = False
 
     p_df["score"] = 0
-    p_df["players"] = pd.NA
     p_df["status"] = ""
-    p_df["fill_status"] = ""
+    # Day 1 has no score-table status. Entrants are still in; everyone else
+    # has not joined. A blank status makes the ranking view drop today's picks.
+    p_df["fill_status"] = "未参赛"
+    p_df.loc[has_submission, "fill_status"] = "存活"
 
     p_df = get_today_status(p_df, bye=True)
     # Bye is shown only in today_status. Do not keep the synthetic "轮空" label
@@ -197,6 +218,7 @@ def _build_day1(
     if "player_alt" in p_df.columns:
         alt_is_bye = p_df["player_alt"].astype("string").str.strip().eq("轮空")
         p_df.loc[bye_mask & alt_is_bye, "player_alt"] = ""
+    p_df["players"] = [_day1_pick_history(row) for row in p_df.to_dict("records")]
     if not removed_tournaments:
         p_df["live_score"] = p_df["current_score"]
         p_df["removed_point"] = 0
