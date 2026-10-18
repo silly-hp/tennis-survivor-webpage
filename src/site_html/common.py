@@ -596,7 +596,7 @@ def _summary_bar_html(
             nameHtml(r) +
             '<div class="sbar-track ' + trackClass(r) + '">' +
                 '<div class="sbar-seg ' + segClass(r) + '" style="width:' + normW + '%"></div>' +
-                (HAS_BYE && r.status !== 'out' && r.status !== 'backup' ? '<div class="sbar-seg seg-b" style="width:' + byeW + '%"></div>' : '') +
+                (HAS_BYE && r.bye > 0 && r.status !== 'out' && r.status !== 'backup' ? '<div class="sbar-seg seg-alive seg-bye" style="width:' + byeW + '%"></div>' : '') +
             '</div>' +
             inlineHtml +
             '<div class="sbar-right">' +

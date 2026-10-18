@@ -72,7 +72,8 @@ def hide_today_picks_for_eliminated(df: pd.DataFrame) -> pd.DataFrame:
         return df
     out = df.copy()
     status = out["当前状态"].astype("string").fillna("").str.strip()
-    keep = status.isin(_KEEP_TODAY_PICK_STATUS)
+    # Blank status = not settled yet (Day1 bye stage); only settled losers are hidden.
+    keep = status.isin(_KEEP_TODAY_PICK_STATUS) | status.eq("")
     for col in ("今日主选", "今日备选", "今日状态"):
         if col in out.columns:
             out.loc[~keep, col] = ""
@@ -126,7 +127,7 @@ def mark_unpicked_status(df: pd.DataFrame) -> pd.DataFrame:
         return df
     out = df.copy()
     status = out["当前状态"].astype("string").fillna("").str.strip()
-    alive = status.eq("存活")
+    alive = status.eq("存活") | status.eq("")
     if not alive.any():
         return out
     if "今日状态" in out.columns:

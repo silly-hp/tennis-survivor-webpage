@@ -172,6 +172,10 @@ body.dark .seg-out{background:linear-gradient(90deg,rgba(130,136,144,.45),rgba(1
 .sbar-track.solo-alive .seg-alive,
 .sbar-track.solo-out .seg-out{border-radius:20px;}
 .sbar-track.solo-b .seg-b{border-radius:20px;}
+/* bye part of a live/confirmed pick bar: alive colour, joined to the normal part */
+.sbar-track.solo-live .seg-live:not(:last-child),
+.sbar-track.solo-alive .seg-alive:not(.seg-bye):not(:last-child){border-radius:20px 0 0 20px;}
+.sbar-seg.seg-bye{border-radius:0 20px 20px 0;}
 .sbar-track.both   .seg-v{border-radius:20px 0 0 20px;}
 .sbar-track.both   .seg-b{border-radius:0 20px 20px 0;}
 .sbar-inline{display:flex;align-items:center;gap:2px;flex-shrink:0;
