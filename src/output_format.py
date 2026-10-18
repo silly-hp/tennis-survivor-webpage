@@ -113,6 +113,9 @@ def mark_unfinished_status(
         unfinished = unfinished | pick.isin(live)
     if pending:
         unfinished = unfinished | _uid_series(out).isin(pending)
+    if "今日状态" in out.columns:
+        bye = out["今日状态"].astype("string").fillna("").str.strip().eq("轮空")
+        unfinished = unfinished & ~bye
     out.loc[status.eq("存活") & unfinished, "当前状态"] = "未完赛"
     return out
 
@@ -128,12 +131,13 @@ def mark_unpicked_status(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
     status = out["当前状态"].astype("string").fillna("").str.strip()
     alive = status.eq("存活") | status.eq("")
-    if not alive.any():
-        return out
     if "今日状态" in out.columns:
         today = out["今日状态"].astype("string").fillna("").str.strip()
         out.loc[alive & today.eq("未选"), "当前状态"] = "未选"
-        out.loc[alive & today.eq("轮空"), "当前状态"] = "轮空"
+        # 未完赛 is applied first; a bye must stay 轮空 even if that pass ran.
+        out.loc[status.isin(["存活", "未完赛", ""]) & today.eq("轮空"), "当前状态"] = "轮空"
+        return out
+    if not alive.any():
         return out
     if "今日主选" in out.columns:
         pick = out["今日主选"].astype("string").fillna("").str.strip()

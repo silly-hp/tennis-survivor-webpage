@@ -212,6 +212,7 @@ def _build_day1(
     # Bye is shown only in today_status. Do not keep the synthetic "轮空" label
     # in the pick columns (official API fills player="轮空" / fill="BYE").
     bye_mask = p_df["today_status"].astype("string").eq("轮空")
+    p_df.loc[bye_mask, "fill_status"] = "轮空"
     pick_is_bye = p_df["player"].astype("string").str.strip().eq("轮空")
     clear = bye_mask & pick_is_bye
     p_df.loc[clear, "player"] = ""
