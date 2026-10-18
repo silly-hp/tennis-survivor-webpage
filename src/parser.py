@@ -518,18 +518,25 @@ def fetch_survivor_calendar_event_df(
 
 
 def find_ongoing_event(calendar_df: pd.DataFrame, tour: str) -> dict:
-    """Return the earliest active event for the given tour from a calendar DataFrame.
+    """Return the event the site should be picking for this tour.
 
-    Filters for rows where page_type == 'my' and tour matches, sorts ascending
-    by week_start_date, and returns the first row as a dict. Returns {} if none found.
+    Same window as the homepage: the current calendar week, or an unfinished
+    earlier week when this Monday has not started. If that week is already
+    settled and the next week is open (``page_type == 'my'``), return the next
+    week. Returns {} when nothing is current.
     """
-    mask = (calendar_df["page_type"] == "my") & (
-        calendar_df["tour"].str.upper() == tour.strip().upper()
-    )
-    filtered = calendar_df.loc[mask].sort_values("week_start_date")
-    if filtered.empty:
+    from home_weeks import resolve_tour_week
+
+    week = resolve_tour_week(calendar_df, tour)
+    events = week.get("current_events") or []
+    if not events:
         return {}
-    return filtered.iloc[0].to_dict()
+    open_events = [
+        event
+        for event in events
+        if str(event.get("page_type") or "").lower() == "my"
+    ]
+    return (open_events or events)[0]
 
 
 def fetch_event_detail(

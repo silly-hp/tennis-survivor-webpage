@@ -754,8 +754,9 @@ def refresh_event_config():
         on=["event_id", "event_tour"],
         suffixes=("", "_en"),
     )
-    config_file = ConfigManager("test.yaml")
-    config_file.update({"year": CURRENT_YEAR})
+    config_file = ConfigManager(CONFIG_PATH)
+    if config_file.load().get("year") != CURRENT_YEAR:
+        config_file.update({"year": CURRENT_YEAR})
     for tour in [("atp", "ms"), ("wta", "ws")]:
         event = find_ongoing_event(new_calendar, tour[1])
         rank, _ = fetch_table(option="rank", tour=tour[1])

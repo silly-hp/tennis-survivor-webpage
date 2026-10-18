@@ -69,7 +69,10 @@ def resolve_tour_week(
     """
     Resolve previous / current / next event lists for one tour.
 
-    Mirrors chen unfinished-week carryover using calendar ``page_type == 'my'``.
+    An unfinished earlier week (``page_type == 'my'``) stays current when this
+    Monday has no new event. Once that current week is settled and the next
+    week is already open for picks, the next week becomes current. The pick
+    config uses the same current event.
     """
     monday = week_monday(this_monday)
     schedule = tour_schedule(calendar, tour_flag)
@@ -77,31 +80,42 @@ def resolve_tour_week(
     before = [(s, e) for s, e in schedule if s.date() < monday.date()]
     after = [(s, e) for s, e in schedule if s.date() > monday.date()]
     next_start, upcoming = after[0] if after else (None, [])
-    later = after[1][1] if len(after) > 1 else []
+    later_start, later = after[1] if len(after) > 1 else (None, [])
+    after_later = after[2][1] if len(after) > 2 else []
 
     if this_events:
         current_start, current = monday, this_events
         previous = before[-1][1] if before else []
-        nxt = upcoming
+        nxt_start, nxt = next_start, upcoming
+        following = later
     elif before:
         last_start, last_events = before[-1]
         previous_of_last = before[-2][1] if len(before) > 1 else []
         if _events_still_open(last_events):
             current_start, current = last_start, last_events
             previous = previous_of_last
-            nxt = upcoming
+            nxt_start, nxt = next_start, upcoming
+            following = later
         elif upcoming and _events_still_open(upcoming):
             current_start, current = next_start or monday, upcoming
             previous = last_events
-            nxt = later
+            nxt_start, nxt = later_start, later
+            following = after_later
         else:
             current_start, current = monday, []
             previous = last_events
-            nxt = upcoming
+            nxt_start, nxt = next_start, upcoming
+            following = later
     else:
         current_start, current = monday, []
         previous = []
-        nxt = upcoming
+        nxt_start, nxt = next_start, upcoming
+        following = later
+
+    if current and not _events_still_open(current) and nxt and _events_still_open(nxt):
+        previous = current
+        current_start, current = nxt_start or monday, nxt
+        nxt = following
 
     return {
         "tour": tour_flag,
