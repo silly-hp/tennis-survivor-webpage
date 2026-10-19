@@ -214,17 +214,13 @@ body.dark .seg-b{background:#7dcea0;}
 body.dark .seg-live{background:linear-gradient(90deg,#e0b56a,#c4892e);}
 body.dark .seg-alive{background:linear-gradient(90deg,#5fbf8a,#3fa873);}
 body.dark .seg-out{background:linear-gradient(90deg,rgba(130,136,144,.45),rgba(130,136,144,.28));}
-.sbar-track.solo-v .seg-v,
-.sbar-track.solo-live .seg-live,
-.sbar-track.solo-alive .seg-alive,
-.sbar-track.solo-out .seg-out{border-radius:20px;}
-.sbar-track.solo-b .seg-b{border-radius:20px;}
-/* bye part of a live/confirmed pick bar: alive colour, joined to the normal part */
-.sbar-track.solo-live .seg-live:not(:last-child),
-.sbar-track.solo-alive .seg-alive:not(.seg-bye):not(:last-child){border-radius:20px 0 0 20px;}
-.sbar-seg.seg-bye{border-radius:0 20px 20px 0;}
-.sbar-track.both   .seg-v{border-radius:20px 0 0 20px;}
-.sbar-track.both   .seg-b{border-radius:0 20px 20px 0;}
+/* One bar shape for every status: the track clips the ends, segments are flat.
+   Bye part is always alive-coloured; once settled alive the whole bar is one
+   solid colour and the bye part is only marked with a stripe overlay. */
+.sbar-track.solo-alive .sbar-seg{background:#35a06f;}
+body.dark .sbar-track.solo-alive .sbar-seg{background:#4fb582;}
+.sbar-track.solo-alive .seg-bye{background:repeating-linear-gradient(135deg,rgba(255,255,255,.42) 0 2px,transparent 2px 5px),#35a06f;}
+body.dark .sbar-track.solo-alive .seg-bye{background:repeating-linear-gradient(135deg,rgba(255,255,255,.32) 0 2px,transparent 2px 5px),#4fb582;}
 .sbar-inline{display:flex;align-items:center;gap:2px;flex-shrink:0;
     font-size:12px;font-variant-numeric:tabular-nums;width:60px;justify-content:flex-end;}
 .sbar-iv{color:var(--primary-dark);font-weight:500;}
@@ -791,7 +787,7 @@ body.dark .score-stat-val .wk-chip{background:rgba(125,206,160,.12);
     ← ATP赛历
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年10月19日 20:13:54</span>
+    <span class="updated">⏱ 2026年10月19日 20:29:03</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
