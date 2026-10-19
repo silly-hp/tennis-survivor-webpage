@@ -663,7 +663,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年10月19日 15:12:09</span>
+    <span class="updated">⏱ 2026年10月19日 15:22:54</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -895,8 +895,8 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
             }
         };
 
-        /* 未完赛 / 存活 / 出局 follow the player's match. 轮空 stays with that
-           same player instead of being booked entirely as 存活. */
+        /* 未完赛 / 存活 / 出局 follow the player's match. A personal 轮空
+           stays 存活; a lost pick without 轮空 is 出局. */
         function outcomeLine(){
             var live = 0, alive = 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {
@@ -907,10 +907,13 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
                     });
                     continue;
                 }
-                var n = (r.normal || 0) + (r.bye || 0);
-                if (r.status === 'out') { out += n;
-                } else if (r.status === 'live') { live += n;
-                } else if (r.status === 'confirmed' || !r.status) { alive += n;
+                var normal = r.normal || 0;
+                var bye = r.bye || 0;
+                // A personal 轮空 is still in. Everyone else follows the player.
+                alive += bye;
+                if (r.status === 'out') { out += normal;
+                } else if (r.status === 'live') { live += normal;
+                } else if (r.status === 'confirmed' || !r.status) { alive += normal;
                 } else { return ''; }
             }
             return '未完赛' + live + ' 存活' + alive + ' 出局' + out;
@@ -924,7 +927,9 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
                 var named = mark ? (mark + r.name) : r.name;
                 var line;
                 if (HAS_BYE) {
-                    line = named + ' ' + (r.normal + r.bye);
+                    var shown = r.normal;
+                    if (r.status === 'confirmed' || !r.status) shown += r.bye;
+                    line = named + ' ' + shown;
                 } else {
                     line = named + ' ' + r.normal;
                 }
