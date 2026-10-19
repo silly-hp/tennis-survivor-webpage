@@ -467,11 +467,11 @@ def _summary_bar_html(
     # ── meta summary text for clipboard (header line) ────────────────────────
     if has_bye:
         entrants = valid_total + bye_total
-        header_parts = [f"参赛{entrants}", f"轮空{bye_total}"]
+        header_parts = [f"参赛{entrants}", f"🟢轮空{bye_total}"]
     else:
         header_parts = [f"已选{valid_total}", f"未选{nosel_total}"]
     if suicide_total > 0:
-        header_parts.append(f"自杀{suicide_total}")
+        header_parts.append(f"🔴自杀{suicide_total}")
     clipboard_header = json.dumps(" ".join(header_parts), ensure_ascii=False)
 
     # ── assemble HTML ─────────────────────────────────────────────────────────
@@ -558,10 +558,10 @@ def _summary_bar_html(
         }}
 
         function statusMark(r){{
-        if (r.status === 'out') return '❌';
+        if (r.status === 'out') return '🔴';
         if (r.status === 'backup') return '↪️';
-        if (r.status === 'confirmed') return '✅';
-        if (r.status === 'live') return '⭕️';
+        if (r.status === 'confirmed') return '🟢';
+        if (r.status === 'live') return '🟡';
         return '';
         }}
 
@@ -678,7 +678,7 @@ def _summary_bar_html(
             }}
         }};
 
-        /* 未完赛 / 存活 / 出局 count non-bye picks only. 轮空 is the header total. */
+        /* 🔴出局 🟡待定 🟢晋级. Counts are non-bye picks; 轮空 is the green header total. */
         function outcomeLine(){{
             var live = 0, alive = 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {{
@@ -695,7 +695,7 @@ def _summary_bar_html(
                 }} else if (r.status === 'confirmed' || !r.status) {{ alive += normal;
                 }} else {{ return ''; }}
             }}
-            return '未完赛' + live + ' 存活' + alive + ' 出局' + out;
+            return '🔴出局' + out + ' 🟡待定' + live + ' 🟢晋级' + alive;
         }}
 
         window.copySumStats = function(){{
@@ -709,9 +709,9 @@ def _summary_bar_html(
                 if (r.backs && r.backs.length) {{
                     r.backs.forEach(function(b){{
                         var bits = [];
-                        if (b.alive) bits.push('存活' + b.alive);
-                        if (b.live) bits.push('未完赛' + b.live);
-                        if (b.out) bits.push('淘汰' + b.out);
+                        if (b.alive) bits.push('🟢晋级' + b.alive);
+                        if (b.live) bits.push('🟡待定' + b.live);
+                        if (b.out) bits.push('🔴出局' + b.out);
                         if (bits.length) {{
                             lines.push('→ ' + (b.name || '无备选') + ' ' + bits.join(' '));
                         }}
