@@ -137,10 +137,15 @@ def infer_day(submission_df, score_df) -> int:
     return int(score_df["day"].max()) + 1
 
 
+_STILL_IN_STATUS = frozenset({"存活", "未完赛", "未选", "轮空"})
+
+
 def get_meta_stats(day, table, submissions):
     if day > 1:
-        total = len(table[table["当前状态"] != "未参赛"])
-        today = len(table[table["当前状态"] == "存活"])
+        status = table["当前状态"].astype("string").fillna("").str.strip()
+        total = int((status != "未参赛").sum())
+        # 幸存 = still in the event, not only settled 存活.
+        today = int(status.isin(_STILL_IN_STATUS).sum())
     elif day == 1:
         # Count unique Day1 participants, not raw submission rows
         if submissions is None or getattr(submissions, "empty", True):
@@ -150,8 +155,8 @@ def get_meta_stats(day, table, submissions):
             total = int(day1["user_id"].nunique()) if not day1.empty else 0
         else:
             total = int(submissions["user_id"].nunique())
-        # Day1 homepage metric should show bye users instead of alive users
-        today = int((table["今日状态"] == "轮空").sum()) if "今日状态" in table.columns else 0
+        # Day 1 is unsettled: every entrant is still surviving (including 轮空).
+        today = total
     else:
         total, today = None, None
 
