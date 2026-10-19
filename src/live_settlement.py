@@ -321,14 +321,68 @@ def _next_day_open(
     )
 
 
+def _day_picks_settled(
+    draw: DrawStatus | None,
+    detail_rows: list[dict[str, Any]],
+    day: int,
+) -> bool:
+    """True when every pick made for ``day`` already has a win/loss result.
+
+    Picks that cannot be matched to the draw are ignored (nothing to wait on).
+    """
+    if draw is None or not draw.by_id:
+        return True
+    fills_by_match: dict[Any, set[str]] = defaultdict(set)
+    pick_players = []
+    for item in detail_rows:
+        player = draw.lookup(item.get("fill"), item.get("player"))
+        if player:
+            pick_players.append(player)
+        match_id = item.get("normal_match_id")
+        fill = str(item.get("fill") or "").strip()
+        if match_id and fill:
+            fills_by_match[match_id].add(fill)
+    live_round = min(
+        (p.round_rank for p in pick_players if p.live and p.round_rank), default=0
+    )
+    min_still_round = min(
+        (
+            p.round_rank
+            for p in pick_players
+            if not p.eliminated and not p.live and p.round_rank
+        ),
+        default=0,
+    )
+    for item in detail_rows:
+        if int(item.get("day") or 0) != day:
+            continue
+        pick = str(item.get("player") or "").strip()
+        if not pick or pick == "轮空":
+            continue
+        if draw.lookup(item.get("fill"), pick) is None:
+            continue
+        outcome, _ = _pick_outcome(
+            item, draw, fills_by_match, live_round, min_still_round
+        )
+        if outcome is None:
+            return False
+    return True
+
+
 def current_play_day(
     draw: DrawStatus | None,
     detail_rows: list[dict[str, Any]] | None = None,
 ) -> int:
+    """Current pick day.
+
+    Roll over from day N to N+1 only when (1) every day-N pick already has a
+    confirmed result and (2) day N+1 selection is already available.
+    """
     detail_rows = detail_rows or []
-    today = beijing_now().date()
     schedule = [item for item in (draw.pick_days if draw else []) if item.get("day")]
-    if not schedule:
+    if schedule:
+        play = int(schedule[0]["day"])
+    else:
         days = sorted(
             {
                 int(item.get("day") or 0)
@@ -336,38 +390,11 @@ def current_play_day(
                 if int(item.get("day") or 0) > 0
             }
         )
-        return days[0] if days else 1
-    play = int(schedule[0]["day"])
-    for item in schedule:
-        date = item.get("date")
-        if date is None or date <= today:
-            play = int(item["day"])
-        if date == today:
-            break
-        if date is not None and date > today:
-            break
-    field_n = len(draw.by_id) if draw else 0
-    while True:
-        nxt = play + 1
-        if not _next_day_open(draw, detail_rows, play):
-            break
-        current = next(
-            (item for item in schedule if int(item.get("day") or 0) == play), None
-        )
-        round_rank = _survivor_round_rank(
-            str((current or {}).get("round") or ""), field_n
-        )
-        if not round_rank:
-            round_rank = opening_round_rank(field_n) + play - 1
-        if _round_still_going(draw, round_rank):
-            break
-        nxt_item = next(
-            (item for item in schedule if int(item.get("day") or 0) == nxt), None
-        )
-        nxt_date = (nxt_item or {}).get("date")
-        play = nxt
-        if nxt_date is not None and nxt_date > today:
-            break
+        play = days[0] if days else 1
+    while _next_day_open(draw, detail_rows, play) and _day_picks_settled(
+        draw, detail_rows, play
+    ):
+        play += 1
     return play
 
 
