@@ -466,9 +466,8 @@ def _summary_bar_html(
 
     # ── meta summary text for clipboard (header line) ────────────────────────
     if has_bye:
-        # Day 1 is unsettled: every entrant, including 轮空, is still surviving.
         entrants = valid_total + bye_total
-        header_parts = [f"参赛{entrants}", f"幸存{entrants}"]
+        header_parts = [f"参赛{entrants}", f"轮空{bye_total}"]
     else:
         header_parts = [f"已选{valid_total}", f"未选{nosel_total}"]
     if suicide_total > 0:
@@ -679,8 +678,7 @@ def _summary_bar_html(
             }}
         }};
 
-        /* 未完赛 / 存活 / 出局 follow the player's match. A personal 轮空
-           stays 存活; a lost pick without 轮空 is 出局. */
+        /* 未完赛 / 存活 / 出局 count non-bye picks only. 轮空 is the header total. */
         function outcomeLine(){{
             var live = 0, alive = 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {{
@@ -692,9 +690,6 @@ def _summary_bar_html(
                     continue;
                 }}
                 var normal = r.normal || 0;
-                var bye = r.bye || 0;
-                // A personal 轮空 is still in. Everyone else follows the player.
-                alive += bye;
                 if (r.status === 'out') {{ out += normal;
                 }} else if (r.status === 'live') {{ live += normal;
                 }} else if (r.status === 'confirmed' || !r.status) {{ alive += normal;
@@ -706,17 +701,10 @@ def _summary_bar_html(
         window.copySumStats = function(){{
             var lines = [CLIPBOARD_HEADER];
             ROWS.forEach(function(r){{
-                if (r.normal === 0 && r.bye === 0) return;
+                if (!r.normal) return;
                 var mark = statusMark(r);
                 var named = mark ? (mark + r.name) : r.name;
-                var line;
-                if (HAS_BYE) {{
-                    var shown = r.normal;
-                    if (r.status === 'confirmed' || !r.status) shown += r.bye;
-                    line = named + ' ' + shown;
-                }} else {{
-                    line = named + ' ' + r.normal;
-                }}
+                var line = named + ' ' + r.normal;
                 lines.push(line);
                 if (r.backs && r.backs.length) {{
                     r.backs.forEach(function(b){{
