@@ -14,11 +14,12 @@ on:
   schedule:
     # If the chain dies, start it again. GitHub may delay this;
     # it is only a restart, not the 15-minute clock.
-    - cron: "7 * * * *"
+    - cron: "2,17,32,47 * * * *"
 
-concurrency:
-  group: live-tick
-  cancel-in-progress: false
+# No concurrency group on purpose: a group keeps only ONE pending run and
+# cancels the older one, which silently killed the chain when a restart and the
+# chain's own next tick queued together. Duplicate ticks are prevented by the
+# "skip restart" check below; update-live.yml serializes the actual work.
 
 permissions:
   actions: write
