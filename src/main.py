@@ -199,13 +199,14 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             .drop("removed_point", axis=1)
             .rename(COL_ZH_DICT, axis=1)
         )
-        return table, race, r, None, None, day, [], ra, set(), []
+        return table, race, r, None, None, day, [], ra, set(), [], []
 
     r, s, re, ra = fetch_all_tables(tour_cfg["event"], tour=tour_code)
     day = infer_day(s, re)
     use_settled = False
     bye_users: set[str] = set()
     live_players: list[str] = []
+    eliminated_players: list[str] = []
     pending_uids: set[str] = set()
     backup_events: list = []
 
@@ -222,6 +223,11 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                 p.name
                 for p in draw.by_id.values()
                 if p.live and not p.eliminated and str(p.name or "").strip()
+            ]
+            eliminated_players = [
+                p.name
+                for p in draw.by_id.values()
+                if p.eliminated and str(p.name or "").strip()
             ]
             re, counts, bye_users, play_day, pending_uids, backup_events = (
                 settle_tour_scores(re, s, draw, rank_df=r)
@@ -311,7 +317,19 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                 [*(live_players or []), *sorted(pending_picks)]
             )
         )
-    return table, race, r, s, re, day, live_players, ra, pending_uids, backup_events
+    return (
+        table,
+        race,
+        r,
+        s,
+        re,
+        day,
+        live_players,
+        ra,
+        pending_uids,
+        backup_events,
+        eliminated_players,
+    )
 
 
 def _log_submissions_for_users(submissions_df, day, user_ids):
@@ -452,6 +470,8 @@ def update_rank_pages(
     wta_race_raw: pd.DataFrame = None,
     atp_backup_events: list = None,
     wta_backup_events: list = None,
+    atp_eliminated: list = None,
+    wta_eliminated: list = None,
 ):
     # Mark 未完赛/未选 first (keep today's picks for losers so summary counts them),
     # then hide picks only on the rendered table.
@@ -490,6 +510,7 @@ def update_rank_pages(
         killer_df=atp_killers,
         available_players=atp_players,
         live_players=atp_live_players,
+        eliminated_players=atp_eliminated,
         backup_events=atp_backup,
         output_path="../atp_ranking.html",
     )
@@ -504,6 +525,7 @@ def update_rank_pages(
         extra_tags=["2026"],
         available_players=atp_players,
         live_players=atp_live_players,
+        eliminated_players=atp_eliminated,
         backup_events=atp_backup,
         output_path="../atp_race_ranking.html",
     )
@@ -543,6 +565,7 @@ def update_rank_pages(
         killer_df=wta_killers,
         available_players=wta_players,
         live_players=wta_live_players,
+        eliminated_players=wta_eliminated,
         backup_events=wta_backup,
         output_path="../wta_ranking.html",
     )
@@ -557,6 +580,7 @@ def update_rank_pages(
         extra_tags=["2026"],
         available_players=wta_players,
         live_players=wta_live_players,
+        eliminated_players=wta_eliminated,
         backup_events=wta_backup,
         output_path="../wta_race_ranking.html",
     )
@@ -886,6 +910,7 @@ def main(*, mode: str = "default"):
         atp_ra,
         atp_pending,
         atp_backup_events,
+        atp_eliminated,
     ) = build_tour_tables(atp_cfg, "MS", "ATP")
     (
         wta_table,
@@ -898,6 +923,7 @@ def main(*, mode: str = "default"):
         wta_ra,
         wta_pending,
         wta_backup_events,
+        wta_eliminated,
     ) = build_tour_tables(wta_cfg, "WS", "WTA")
     # Event detail: players, dates, rounds/scores for current day
     atp_players = []
@@ -1030,6 +1056,8 @@ def main(*, mode: str = "default"):
         wta_race_raw=wta_ra,
         atp_backup_events=atp_backup_events,
         wta_backup_events=wta_backup_events,
+        atp_eliminated=atp_eliminated,
+        wta_eliminated=wta_eliminated,
     )
 
     if mode == "live":

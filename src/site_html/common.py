@@ -236,6 +236,7 @@ def _summary_bar_html(
     top_n: int = 3,
     available_players: Optional[list[str]] = None,
     live_players: Optional[list[str]] = None,
+    eliminated_players: Optional[list[str]] = None,
     backup_events: Optional[list] = None,
 ) -> str:
     """
@@ -292,9 +293,16 @@ def _summary_bar_html(
         for p in (live_players or [])
         if str(p).strip()
     }
-    status_known = bool(alive_set)
+    eliminated_set = {
+        str(p).strip()
+        for p in (eliminated_players or [])
+        if str(p).strip()
+    }
+    status_known = bool(alive_set) or bool(eliminated_set)
 
     def _player_status(name: str) -> Optional[str]:
+        if name in eliminated_set:
+            return "out"
         if not status_known:
             return None
         if name in live_set:
@@ -671,8 +679,8 @@ def _summary_bar_html(
             }}
         }};
 
-        /* 未完赛 / 存活 / 出局 follow the player's match. 轮空 stays with that
-           same player instead of being booked entirely as 存活. */
+        /* 未完赛 / 存活 / 出局 follow the player's match. A personal 轮空
+           stays 存活; a lost pick without 轮空 is 出局. */
         function outcomeLine(){{
             var live = 0, alive = 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {{
@@ -683,10 +691,13 @@ def _summary_bar_html(
                     }});
                     continue;
                 }}
-                var n = (r.normal || 0) + (r.bye || 0);
-                if (r.status === 'out') {{ out += n;
-                }} else if (r.status === 'live') {{ live += n;
-                }} else if (r.status === 'confirmed' || !r.status) {{ alive += n;
+                var normal = r.normal || 0;
+                var bye = r.bye || 0;
+                // A personal 轮空 is still in. Everyone else follows the player.
+                alive += bye;
+                if (r.status === 'out') {{ out += normal;
+                }} else if (r.status === 'live') {{ live += normal;
+                }} else if (r.status === 'confirmed' || !r.status) {{ alive += normal;
                 }} else {{ return ''; }}
             }}
             return '未完赛' + live + ' 存活' + alive + ' 出局' + out;
@@ -700,7 +711,9 @@ def _summary_bar_html(
                 var named = mark ? (mark + r.name) : r.name;
                 var line;
                 if (HAS_BYE) {{
-                    line = named + ' ' + (r.normal + r.bye);
+                    var shown = r.normal;
+                    if (r.status === 'confirmed' || !r.status) shown += r.bye;
+                    line = named + ' ' + shown;
                 }} else {{
                     line = named + ' ' + r.normal;
                 }}
