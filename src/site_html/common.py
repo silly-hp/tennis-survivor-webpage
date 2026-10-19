@@ -671,8 +671,8 @@ def _summary_bar_html(
             }}
         }};
 
-        /* 未完赛 / 存活 / 出局. Day 1 (HAS_BYE) is unsettled, so 轮空 and
-           in-progress picks both count as 存活. Later days keep 未完赛 separate. */
+        /* 未完赛 / 存活 / 出局 follow the player's match. 轮空 stays with that
+           same player instead of being booked entirely as 存活. */
         function outcomeLine(){{
             var live = 0, alive = 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {{
@@ -683,10 +683,10 @@ def _summary_bar_html(
                     }});
                     continue;
                 }}
-                var n = (r.normal || 0) + (HAS_BYE ? (r.bye || 0) : 0);
+                var n = (r.normal || 0) + (r.bye || 0);
                 if (r.status === 'out') {{ out += n;
-                }} else if (r.status === 'live' && !HAS_BYE) {{ live += n;
-                }} else if (r.status === 'live' || r.status === 'confirmed' || !r.status) {{ alive += n;
+                }} else if (r.status === 'live') {{ live += n;
+                }} else if (r.status === 'confirmed' || !r.status) {{ alive += n;
                 }} else {{ return ''; }}
             }}
             return '未完赛' + live + ' 存活' + alive + ' 出局' + out;
