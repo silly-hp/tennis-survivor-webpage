@@ -19,6 +19,7 @@ from output_format import (
     drop_today_status_column,
     generate_summary,
     hide_today_picks_for_eliminated,
+    mark_eliminated_pick_status,
     mark_unfinished_status,
     mark_unpicked_status,
     prepare_rank_change,
@@ -486,19 +487,25 @@ def update_rank_pages(
     atp_stats = generate_summary(atp, atp_day1, atp_bye)
     atp_killers = daily_killer_stats(atp)
     atp_backup = summarize_backup_events(atp_backup_events)
-    atp_view = drop_today_status_column(hide_today_picks_for_eliminated(atp))
-    atp_race_view = drop_today_status_column(
-        hide_today_picks_for_eliminated(
-            prepare_rank_change(
-                mark_unpicked_status(
-                    mark_unfinished_status(
-                        atp_race,
-                        atp_live_players,
-                        atp_pending_uids,
+    atp_view = mark_eliminated_pick_status(
+        drop_today_status_column(hide_today_picks_for_eliminated(atp)),
+        atp_eliminated,
+    )
+    atp_race_view = mark_eliminated_pick_status(
+        drop_today_status_column(
+            hide_today_picks_for_eliminated(
+                prepare_rank_change(
+                    mark_unpicked_status(
+                        mark_unfinished_status(
+                            atp_race,
+                            atp_live_players,
+                            atp_pending_uids,
+                        )
                     )
                 )
             )
-        )
+        ),
+        atp_eliminated,
     )
     render_ranking_page(
         atp_view,
@@ -541,19 +548,25 @@ def update_rank_pages(
     wta_stats = generate_summary(wta, wta_day1, wta_bye)
     wta_killers = daily_killer_stats(wta)
     wta_backup = summarize_backup_events(wta_backup_events)
-    wta_view = drop_today_status_column(hide_today_picks_for_eliminated(wta))
-    wta_race_view = drop_today_status_column(
-        hide_today_picks_for_eliminated(
-            prepare_rank_change(
-                mark_unpicked_status(
-                    mark_unfinished_status(
-                        wta_race,
-                        wta_live_players,
-                        wta_pending_uids,
+    wta_view = mark_eliminated_pick_status(
+        drop_today_status_column(hide_today_picks_for_eliminated(wta)),
+        wta_eliminated,
+    )
+    wta_race_view = mark_eliminated_pick_status(
+        drop_today_status_column(
+            hide_today_picks_for_eliminated(
+                prepare_rank_change(
+                    mark_unpicked_status(
+                        mark_unfinished_status(
+                            wta_race,
+                            wta_live_players,
+                            wta_pending_uids,
+                        )
                     )
                 )
             )
-        )
+        ),
+        wta_eliminated,
     )
     render_ranking_page(
         wta_view,
@@ -590,25 +603,37 @@ def update_rank_pages(
         atp_cfg_local = (cfg or {}).get("atp") or {}
         wta_cfg_local = (cfg or {}).get("wta") or {}
         update_combined_pages(
-            mark_unpicked_status(
-                mark_unfinished_status(
-                    atp_table, atp_live_players, atp_pending_uids
-                )
+            mark_eliminated_pick_status(
+                mark_unpicked_status(
+                    mark_unfinished_status(
+                        atp_table, atp_live_players, atp_pending_uids
+                    )
+                ),
+                atp_eliminated,
             ),
-            mark_unpicked_status(
-                mark_unfinished_status(
-                    wta_table, wta_live_players, wta_pending_uids
-                )
+            mark_eliminated_pick_status(
+                mark_unpicked_status(
+                    mark_unfinished_status(
+                        wta_table, wta_live_players, wta_pending_uids
+                    )
+                ),
+                wta_eliminated,
             ),
-            mark_unpicked_status(
-                mark_unfinished_status(
-                    atp_race, atp_live_players, atp_pending_uids
-                )
+            mark_eliminated_pick_status(
+                mark_unpicked_status(
+                    mark_unfinished_status(
+                        atp_race, atp_live_players, atp_pending_uids
+                    )
+                ),
+                atp_eliminated,
             ),
-            mark_unpicked_status(
-                mark_unfinished_status(
-                    wta_race, wta_live_players, wta_pending_uids
-                )
+            mark_eliminated_pick_status(
+                mark_unpicked_status(
+                    mark_unfinished_status(
+                        wta_race, wta_live_players, wta_pending_uids
+                    )
+                ),
+                wta_eliminated,
             ),
             atp_event=atp_cfg_local.get("name"),
             wta_event=wta_cfg_local.get("name"),

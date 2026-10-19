@@ -120,6 +120,38 @@ def mark_unfinished_status(
     return out
 
 
+def mark_eliminated_pick_status(
+    df: pd.DataFrame,
+    eliminated_players: Optional[list] = None,
+) -> pd.DataFrame:
+    """
+    Display-only: a non-bye user whose today's primary is already out → 球员输球.
+
+    Bye users stay 轮空. Call after hide_today_picks so the pick name stays
+    visible next to the updated badge.
+    """
+    if (
+        df is None
+        or df.empty
+        or "当前状态" not in df.columns
+        or "今日主选" not in df.columns
+    ):
+        return df
+    gone = {
+        str(p).strip()
+        for p in (eliminated_players or [])
+        if p is not None and str(p).strip()
+    }
+    if not gone:
+        return df
+    out = df.copy()
+    status = out["当前状态"].astype("string").fillna("").str.strip()
+    pick = out["今日主选"].astype("string").fillna("").str.strip()
+    hit = pick.isin(gone) & status.isin(["存活", "未完赛", ""])
+    out.loc[hit, "当前状态"] = "球员输球"
+    return out
+
+
 def mark_unpicked_status(df: pd.DataFrame) -> pd.DataFrame:
     """
     Display-only: still-alive users with no today's pick → 未选 (or 轮空).
