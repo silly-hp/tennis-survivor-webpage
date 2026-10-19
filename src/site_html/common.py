@@ -458,7 +458,9 @@ def _summary_bar_html(
 
     # ── meta summary text for clipboard (header line) ────────────────────────
     if has_bye:
-        header_parts = [f"非轮空{valid_total}", f"轮空{bye_total}"]
+        # Day 1 is unsettled: every entrant, including 轮空, is still surviving.
+        entrants = valid_total + bye_total
+        header_parts = [f"参赛{entrants}", f"幸存{entrants}"]
     else:
         header_parts = [f"已选{valid_total}", f"未选{nosel_total}"]
     if suicide_total > 0:
@@ -669,19 +671,22 @@ def _summary_bar_html(
             }}
         }};
 
-        /* 未完赛 / 存活 / 出局: bye counts as alive and suicide as out whatever the
-           player result is; a retired primary is judged by its backup players. */
+        /* 未完赛 / 存活 / 出局. Day 1 (HAS_BYE) is unsettled, so 轮空 and
+           in-progress picks both count as 存活. Later days keep 未完赛 separate. */
         function outcomeLine(){{
-            var live = 0, alive = HAS_BYE ? TOTALS.bye : 0, out = TOTALS.suicide || 0;
+            var live = 0, alive = 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {{
                 var r = ROWS[i];
                 if (r.backs && r.backs.length) {{
                     r.backs.forEach(function(b){{
                         live += b.live || 0; alive += b.alive || 0; out += b.out || 0;
                     }});
-                }} else if (r.status === 'live') {{ live += r.normal;
-                }} else if (r.status === 'confirmed') {{ alive += r.normal;
-                }} else if (r.status === 'out') {{ out += r.normal;
+                    continue;
+                }}
+                var n = (r.normal || 0) + (HAS_BYE ? (r.bye || 0) : 0);
+                if (r.status === 'out') {{ out += n;
+                }} else if (r.status === 'live' && !HAS_BYE) {{ live += n;
+                }} else if (r.status === 'live' || r.status === 'confirmed' || !r.status) {{ alive += n;
                 }} else {{ return ''; }}
             }}
             return '未完赛' + live + ' 存活' + alive + ' 出局' + out;
@@ -695,7 +700,7 @@ def _summary_bar_html(
                 var named = mark ? (mark + r.name) : r.name;
                 var line;
                 if (HAS_BYE) {{
-                    line = named + ' ' + r.normal + '(' + r.bye + ')';
+                    line = named + ' ' + (r.normal + r.bye);
                 }} else {{
                     line = named + ' ' + r.normal;
                 }}
