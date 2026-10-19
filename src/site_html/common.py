@@ -467,12 +467,12 @@ def _summary_bar_html(
     # ── meta summary text for clipboard (header line) ────────────────────────
     if has_bye:
         entrants = valid_total + bye_total
-        header_parts = [f"参赛{entrants}", f"🟢轮空{bye_total}"]
+        header_lines = [f"参赛{entrants}", f"🟢轮空{bye_total}"]
     else:
-        header_parts = [f"已选{valid_total}", f"未选{nosel_total}"]
+        header_lines = [f"已选{valid_total}", f"未选{nosel_total}"]
     if suicide_total > 0:
-        header_parts.append(f"🔴自杀{suicide_total}")
-    clipboard_header = json.dumps(" ".join(header_parts), ensure_ascii=False)
+        header_lines.append(f"🔴自杀{suicide_total}")
+    clipboard_header = json.dumps("\n".join(header_lines), ensure_ascii=False)
 
     # ── assemble HTML ─────────────────────────────────────────────────────────
     return f"""\
@@ -678,9 +678,9 @@ def _summary_bar_html(
             }}
         }};
 
-        /* 🔴出局 🟡待定 🟢晋级. Counts are non-bye picks; 轮空 is the green header total. */
+        /* 🔴出局 🟡待定 🟢存活. 存活 includes non-bye advancers plus 轮空. */
         function outcomeLine(){{
-            var live = 0, alive = 0, out = TOTALS.suicide || 0;
+            var live = 0, alive = TOTALS.bye || 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {{
                 var r = ROWS[i];
                 if (r.backs && r.backs.length) {{
@@ -695,7 +695,7 @@ def _summary_bar_html(
                 }} else if (r.status === 'confirmed' || !r.status) {{ alive += normal;
                 }} else {{ return ''; }}
             }}
-            return '🔴出局' + out + ' 🟡待定' + live + ' 🟢晋级' + alive;
+            return '🔴出局' + out + ' 🟡待定' + live + ' 🟢存活' + alive;
         }}
 
         window.copySumStats = function(){{
@@ -709,7 +709,7 @@ def _summary_bar_html(
                 if (r.backs && r.backs.length) {{
                     r.backs.forEach(function(b){{
                         var bits = [];
-                        if (b.alive) bits.push('🟢晋级' + b.alive);
+                        if (b.alive) bits.push('🟢存活' + b.alive);
                         if (b.live) bits.push('🟡待定' + b.live);
                         if (b.out) bits.push('🔴出局' + b.out);
                         if (bits.length) {{
