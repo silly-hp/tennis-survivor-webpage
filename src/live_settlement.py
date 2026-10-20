@@ -197,6 +197,15 @@ def _pick_outcome(
         opp = draw.lookup(opp_id, None)
         if opp and opp.eliminated:
             return "win", detail
+    day_rank = _pick_day_round_rank(draw, int(detail.get("day") or 0))
+    if (
+        day_rank
+        and player.round_rank > day_rank
+        and not _round_still_going(draw, day_rank)
+    ):
+        # The pick day's round is fully played; a player already in a later
+        # round must have won it even if nobody picked the loser.
+        return "win", detail
     if live_round and player.round_rank > live_round:
         return "win", detail
     if min_still_round and player.round_rank > min_still_round:
@@ -293,6 +302,13 @@ def _survivor_round_rank(label: str, field_n: int) -> int:
         "F": 7,
         "W": 8,
     }.get(text, 0)
+
+
+def _pick_day_round_rank(draw: DrawStatus, day: int) -> int:
+    for item in draw.pick_days or []:
+        if int(item.get("day") or 0) == day:
+            return _survivor_round_rank(item.get("round"), len(draw.by_id))
+    return 0
 
 
 def _round_still_going(draw: DrawStatus | None, round_rank: int) -> bool:
