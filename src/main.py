@@ -50,6 +50,7 @@ from player_stats import update_player_stats_pages
 from combined_ranking import update_combined_pages
 from event_calendar import update_survivor_calendar_pages
 from home_weeks import load_calendar_json, prepare_home_weeks
+from survivor_trend import pick_summary, summary_checkin, survivor_series
 from day_killers import daily_killer_stats
 
 logger = get_logger(__name__)
@@ -1044,6 +1045,18 @@ def main(*, mode: str = "default"):
             weather=weather,
             weather_label=cfg["weather"]["label"],
             week_data=week_data,
+            trends={
+                "ATP": survivor_series(atp_re, atp_day, summary_checkin(
+                    atp_table, atp_day, atp_cfg["bye_rate"] != 0,
+                    atp_players, atp_live, atp_pending, atp_eliminated)),
+                "WTA": survivor_series(wta_re, wta_day, summary_checkin(
+                    wta_table, wta_day, wta_cfg["bye_rate"] != 0,
+                    wta_players, wta_live, wta_pending, wta_eliminated)),
+            },
+            picks={
+                "ATP": pick_summary(atp_table) if atp_day else None,
+                "WTA": pick_summary(wta_table) if wta_day else None,
+            },
             output_path=index_output,
         )
         logger.info("Index page updated")

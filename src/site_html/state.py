@@ -7,6 +7,7 @@ VERSION = "0.4.2"
 
 # Mutated at runtime via apply_theme() / set_css_vars().
 css_vars: str = CSS_VARS_HARD
+theme_name: str = "hard"
 
 
 def set_css_vars(value: str) -> None:
@@ -17,4 +18,6 @@ def set_css_vars(value: str) -> None:
 
 def apply_theme(theme: str) -> None:
     """Apply a named theme from themes.THEMES (hard / clay / grass)."""
+    global theme_name
+    theme_name = theme
     set_css_vars(THEMES[theme])

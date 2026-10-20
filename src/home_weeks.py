@@ -305,6 +305,24 @@ def _event_link(event: Optional[dict]) -> str:
     return ""
 
 
+def _local_score_page(event: Optional[dict]) -> str:
+    """Site-relative 各站得分 page for an event, matching event_calendar's naming."""
+    if not event:
+        return ""
+    eid = str(event.get("event_id") or "").strip()
+    year = event.get("event_year") or event.get("year")
+    tour = str(event.get("event_tour") or event.get("tour") or "").strip()
+    tour = TOUR_CODE.get(tour, tour)
+    if not eid or not year or tour not in {"MS", "WS"}:
+        return ""
+    from event_calendar import score_html_relpath
+
+    try:
+        return score_html_relpath(tour, eid, int(year))
+    except (TypeError, ValueError):
+        return ""
+
+
 def _correspond_cities(
     event: dict,
     this_calendar: pd.DataFrame,
@@ -336,6 +354,7 @@ class TourWeekCard:
     level: str = ""
     week_start: Optional[pd.Timestamp] = None
     link: str = ""
+    page: str = ""  # site-relative 各站得分 page (events/{year}/{MS|WS}_{id}.html)
     participants: Optional[int] = None
     survivors: Optional[int] = None
     champions: list[str] = field(default_factory=list)
@@ -378,6 +397,7 @@ def build_tour_week_cards(
             level=ch.get("level") or "",
             week_start=pd.Timestamp(prev["week_start_date"]).normalize(),
             link=_event_link(prev),
+            page=_local_score_page(prev),
             champions=ch.get("names") or [],
             top_names=ch.get("top_names") or [],
             top_score=int(ch.get("score") or 0),
