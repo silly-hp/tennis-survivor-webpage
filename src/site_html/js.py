@@ -58,10 +58,10 @@ document.addEventListener('DOMContentLoaded',function(){
         const nonEmpty=rawValues.filter(v=>v!==''&&v.toLowerCase()!=='nan'&&v!=='-');
         const parsedNums=nonEmpty.map(parseCellNumber);
         const isNumericCol = nonEmpty.length>0 && parsedNums.every(n=>!isNaN(n));
+        const headerText=header.textContent.trim();
 
         if(isNumericCol){
             // ── build slider filter ──────────────────────────────
-            const headerText=header.textContent.trim();
             const forceInt=/天数|排名|周数|参赛|冠军数|亚军|连胜|连败|得分|积分/.test(headerText)
                 && !/率/.test(headerText);
             const isIntCol=forceInt || parsedNums.every(n=>Number.isInteger(n));
@@ -71,7 +71,8 @@ document.addEventListener('DOMContentLoaded',function(){
             const step=isIntCol ? 1 : ((maxVal-minVal)>20 ? 1 : (maxVal-minVal)/100 || 1);
 
             columnMeta[index]={type:'numeric', min:minVal, max:maxVal,
-                                curMin:minVal, curMax:maxVal, intCol:isIntCol};
+                                curMin:minVal, curMax:maxVal, intCol:isIntCol,
+                                header:headerText};
 
             const dropdownWrapper=document.createElement('div');
             dropdownWrapper.className='filter-dropdown';
@@ -167,7 +168,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
         } else {
             // ── original categorical checkbox dropdown ───────────
-            columnMeta[index]={type:'category'};
+            columnMeta[index]={type:'category', header:headerText};
             const dropdownWrapper=document.createElement('div');
             dropdownWrapper.className='filter-dropdown';
             const trigger=document.createElement('div');
@@ -296,6 +297,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
     function filterTable(){
         let visibleCount=0;
+        const statusIndex=columnMeta.findIndex(meta=>meta&&meta.type==='category'&&meta.header==='当前状态');
         rows.forEach(row=>{
             let showRow=true;
             const cells=row.querySelectorAll('td');
@@ -304,6 +306,11 @@ document.addEventListener('DOMContentLoaded',function(){
                 const cellText=cells[index].textContent.trim();
                 if(meta.type==='numeric'){
                     const n=parseCellNumber(cellText);
+                    const narrowed=meta.curMin!==meta.min||meta.curMax!==meta.max;
+                    if(meta.header==='存活天数' && narrowed){
+                        const statusText=statusIndex>=0&&cells[statusIndex]?cells[statusIndex].textContent.trim():'';
+                        if(statusText==='未参赛'||isNaN(n)) showRow=false;
+                    }
                     if(!isNaN(n) && (n<meta.curMin || n>meta.curMax)) showRow=false;
                 } else {
                     const oc=allOptionContainers[index];
