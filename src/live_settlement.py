@@ -217,8 +217,12 @@ def _pick_outcome(
             return "win", detail
     # Advanced past this pick day's round (e.g. R32 done, now sitting at R16)
     # even when nobody else submitted the opponent on the same match id.
-    if pick_round_rank and player.round_rank > pick_round_rank:
-        return "win", detail
+    if pick_round_rank:
+        # Round is known, so the cross-pick heuristics below would misfire
+        # when stragglers from an earlier round are still unplayed.
+        if player.round_rank > pick_round_rank:
+            return "win", detail
+        return None, detail
     if live_round and player.round_rank > live_round:
         return "win", detail
     if min_still_round and player.round_rank > min_still_round:
@@ -746,6 +750,27 @@ def apply_live_settlement(
             result.at[index, "killer"] = ""
             continue
         pending = False
+        # The official row can already credit today's pick before the match is
+        # played; re-open it so it is judged against the draw, not trusted.
+        if draw is not None and draw.by_id and official_day == play_day:
+            for detail in grouped.get(uid, []):
+                if int(detail.get("day") or 0) != official_day:
+                    continue
+                pick = str(detail.get("player") or "").strip()
+                if not pick or pick == "轮空" or not used or used[-1] != pick:
+                    break
+                outcome, _ = _pick_outcome(
+                    detail,
+                    draw,
+                    fills_by_match,
+                    live_round,
+                    min_still_round,
+                    pick_round_rank=_pick_day_round_rank(draw, official_day),
+                )
+                if outcome is None:
+                    used = used[:-1]
+                    official_day -= 1
+                break
         for detail in grouped.get(uid, []):
             day = int(detail.get("day") or 0)
             if day <= official_day:
