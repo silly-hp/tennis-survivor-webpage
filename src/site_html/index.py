@@ -283,8 +283,8 @@ def _last_week_html(week_data) -> str:
         return ""
     return f"""\
     <section class="block">
-        <details class="lw" open>
-            <summary class="block-hd lw-sum">上周赛况 <span class="chev">▾</span></summary>
+        <details class="lw">
+            <summary class="block-hd lw-sum">点击查看上周战况 <span class="chev">▾</span></summary>
             <div class="lw-grid">
 {"".join(items)}
             </div>
