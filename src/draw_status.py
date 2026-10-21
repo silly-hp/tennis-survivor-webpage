@@ -99,6 +99,14 @@ class DrawStatus:
     first_day_bye_quota: int = 0
     is_slam: bool = False
     pick_days: list[dict[str, Any]] = field(default_factory=list)
+    # Bracket slots: draw row seq -> {round column: player_id}. Column ``r`` holds
+    # the round-``r`` participants, ``r + 1`` the winners of that round.
+    bracket: dict[int, dict[int, str]] = field(default_factory=dict)
+
+    def bracket_span(self, rnd: int, match_no: int) -> range:
+        """Draw rows covered by match ``match_no`` of round ``rnd``."""
+        size = 2 ** int(rnd)
+        return range((int(match_no) - 1) * size + 1, int(match_no) * size + 1)
 
     def lookup(self, player_id: str | None, name: str | None) -> DrawPlayer | None:
         pid = str(player_id or "").strip()
@@ -521,6 +529,34 @@ def _parse_round_points(soup: BeautifulSoup, gender: str) -> dict[str, int]:
     return points
 
 
+def _parse_bracket_slots(soup: BeautifulSoup, gender: str) -> dict[int, dict[int, str]]:
+    """Map each draw row (``cDrawSeq``) to the players shown per round column.
+
+    Only a single-table bracket is trusted; anything else returns ``{}`` so
+    callers fall back to the coarser settlement rules.
+    """
+    for part in soup.select(".cDrawPart"):
+        if part.get("data-id") != gender:
+            continue
+        tables = part.select("table.cDrawBlock")
+        if len(tables) != 1:
+            return {}
+        slots: dict[int, dict[int, str]] = {}
+        for tr in tables[0].select("tr"):
+            seq_el = tr.select_one(".cDrawSeq")
+            if seq_el is None or not seq_el.get_text(strip=True).isdigit():
+                continue
+            cols: dict[int, str] = {}
+            for col, td in enumerate(tr.find_all("td")):
+                pname = td.select_one("pname")
+                pid = str(pname.get("data-id") or "").strip() if pname else ""
+                if pid and pid not in {"LIVE", "COMEUP", "0"}:
+                    cols[col] = pid
+            slots[int(seq_el.get_text(strip=True))] = cols
+        return slots
+    return {}
+
+
 def parse_draw_status(html: str, gender: str) -> DrawStatus:
     gender = str(gender).strip().upper()
     soup = BeautifulSoup(html, "html.parser")
@@ -583,7 +619,10 @@ def parse_draw_status(html: str, gender: str) -> DrawStatus:
     assign_draw_byes(by_id)
     by_name = {player.name: player for player in by_id.values() if player.name}
     status = DrawStatus(
-        by_id=by_id, by_name=by_name, round_points=_parse_round_points(soup, gender)
+        by_id=by_id,
+        by_name=by_name,
+        round_points=_parse_round_points(soup, gender),
+        bracket=_parse_bracket_slots(soup, gender),
     )
     _annotate_elim_scores(status, soup, gender)
     return status
