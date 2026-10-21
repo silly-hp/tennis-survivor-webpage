@@ -708,13 +708,10 @@ def _summary_bar_html(
                 lines.push(line);
                 if (r.backs && r.backs.length) {{
                     r.backs.forEach(function(b){{
-                        var bits = [];
-                        if (b.alive) bits.push('🟢存活' + b.alive);
-                        if (b.live) bits.push('🟡待定' + b.live);
-                        if (b.out) bits.push('🔴出局' + b.out);
-                        if (bits.length) {{
-                            lines.push('→ ' + (b.name || '无备选') + ' ' + bits.join(' '));
-                        }}
+                        var label = b.name || '无备选';
+                        if (b.alive) lines.push('→ 🟢' + label + ' ' + b.alive);
+                        if (b.live) lines.push('→ 🟡' + label + ' ' + b.live);
+                        if (b.out) lines.push('→ 🔴' + label + ' ' + b.out);
                     }});
                 }}
             }});

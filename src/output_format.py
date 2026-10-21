@@ -120,6 +120,17 @@ def mark_unfinished_status(
     return out
 
 
+def _last_settled_pick(players) -> str:
+    """Last non-empty, non-bye name in 选人明细 / players."""
+    if not isinstance(players, (list, tuple)):
+        return ""
+    for item in reversed(players):
+        text = str(item or "").strip()
+        if text and text != "轮空" and text.lower() != "nan":
+            return text
+    return ""
+
+
 def mark_eliminated_pick_status(
     df: pd.DataFrame,
     eliminated_players: Optional[list] = None,
@@ -129,6 +140,9 @@ def mark_eliminated_pick_status(
 
     Bye users stay 轮空. Call after hide_today_picks so the pick name stays
     visible next to the updated badge.
+
+    Skip when 选人明细's last pick differs from 今日主选 — live settlement
+    already replaced an early-ret primary with the backup.
     """
     if (
         df is None
@@ -148,6 +162,14 @@ def mark_eliminated_pick_status(
     status = out["当前状态"].astype("string").fillna("").str.strip()
     pick = out["今日主选"].astype("string").fillna("").str.strip()
     hit = pick.isin(gone) & status.isin(["存活", "未完赛", ""])
+    detail_col = next(
+        (c for c in ("选人明细", "players") if c in out.columns),
+        None,
+    )
+    if detail_col is not None:
+        last = out[detail_col].map(_last_settled_pick)
+        # Backup already written into the pick history — trust settlement.
+        hit = hit & ~(last.ne("") & last.ne(pick))
     out.loc[hit, "当前状态"] = "球员输球"
     return out
 
