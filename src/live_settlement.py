@@ -12,6 +12,7 @@ from typing import Any, Optional
 import pandas as pd
 
 from draw_status import (
+    DrawPlayer,
     DrawStatus,
     beijing_now,
     opening_round_name,
@@ -166,6 +167,35 @@ def _pick_day_round_rank(draw: DrawStatus | None, day: int) -> int:
     return opening + day - 1 if opening else 0
 
 
+def _bracket_progress(
+    draw: DrawStatus, detail: dict[str, Any], player: DrawPlayer
+) -> str | None:
+    """Where the picked player stands against the pick's ``normal_match_id``.
+
+    The id names the last match the player is scheduled for that day
+    (``[tour][round][match no]``). Surviving means winning every match up to
+    and including it, so look at the furthest bracket column the player has
+    reached inside that match's draw rows: past the match's round → ``won``,
+    otherwise ``pending`` (an elimination is handled by the caller). ``None``
+    when the id or bracket cannot be read, so older heuristics apply.
+    """
+    mid = str(detail.get("normal_match_id") or "").strip()
+    if not draw.bracket or len(mid) != 4 or not mid.isdigit():
+        return None
+    rnd, match_no = int(mid[1]), int(mid[2:])
+    if rnd < 1 or match_no < 1:
+        return None
+    reached = [
+        col
+        for seq in draw.bracket_span(rnd, match_no)
+        for col, pid in draw.bracket.get(seq, {}).items()
+        if pid == player.player_id
+    ]
+    if not reached:
+        return None
+    return "won" if max(reached) > rnd else "pending"
+
+
 def _pick_outcome(
     detail: dict[str, Any],
     draw: DrawStatus,
@@ -189,6 +219,9 @@ def _pick_outcome(
     player = draw.lookup(detail.get("fill"), pick)
     if player is None:
         return None, detail
+    progress = _bracket_progress(draw, detail, player)
+    if progress == "won":
+        return "win", detail
     if player.eliminated:
         # Conflict / suicide already handled upstream; never activate backup
         # onto the opponent who just eliminated the primary.
@@ -207,6 +240,8 @@ def _pick_outcome(
                     )
         return "loss", detail
     if player.live:
+        return None, detail
+    if progress == "pending":
         return None, detail
     fill = str(detail.get("fill") or "").strip()
     for opp_id in fills_by_match.get(detail.get("normal_match_id")) or set():
