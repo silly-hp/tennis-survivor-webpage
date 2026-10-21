@@ -946,7 +946,8 @@ def build_player_stats(
                 "主键": uid,
                 "用户名": meta["用户名"],
                 "周期参赛数": int(len(cycle)),
-                "周期冠军数": int(cycle["champion"].sum()),
+                # Current calendar year only (not the rolling 52-week window).
+                "周期冠军数": int(season["champion"].sum()) if not season.empty else 0,
                 "历史冠军数": int(titles.shape[0]),
                 "历史亚军数": int(runners.shape[0]),
                 "历史最佳排名": int(best_rank.get(uid, 0)),
