@@ -511,13 +511,22 @@ def _repair_early_retirement_rows(
     """
     Fix official rows that already marked death on an early-ret/W/O primary.
 
-    - Primary still alive in the draw: revive (official often mis-tags the
-      winner when the opponent retires, e.g. 亚历山德罗娃 d. 科斯秋克 ``64 Ret.``).
+    - ``自杀(退赛)`` while the last named pick is still in the draw means the
+      user missed the next day's selection. Keep that label and do not credit
+      the last pick as the killer.
     - With backup: revive to 存活 and drop the primary from ``players`` so the
       main loop can settle on the backup (killer follows backup outcome).
     - Without backup: normalize ``自杀(退赛)`` → ``球员输球`` with killer=primary.
     """
     repaired = 0
+
+    def _keep_missed_pick(index, used_picks) -> None:
+        result.at[index, "fill_status"] = "自杀(退赛)"
+        result.at[index, "killer"] = ""
+        result.at[index, "players"] = used_picks
+        if "status" in result.columns:
+            result.at[index, "status"] = FILL_TO_STATUS.get("自杀(退赛)", 0)
+
     for index, row in result.iterrows():
         status = str(row.get("fill_status") or "").strip()
         if status not in {"球员输球", "自杀(退赛)"}:
@@ -530,31 +539,15 @@ def _repair_early_retirement_rows(
         detail = _detail_for_pick(grouped.get(uid, []), last)
         if detail is None:
             if status == "自杀(退赛)":
-                result.at[index, "fill_status"] = "球员输球"
-                result.at[index, "killer"] = last
-                result.at[index, "players"] = used
+                _keep_missed_pick(index, used)
                 repaired += 1
             continue
         player = draw.lookup(detail.get("fill"), last)
-        if player is None:
-            # Cannot verify against the draw; only normalize the official label.
+        if player is None or not player.eliminated:
+            # Still in the draw, or not on it: this is a missed pick, not a loss.
             if status == "自杀(退赛)":
-                result.at[index, "fill_status"] = "球员输球"
-                result.at[index, "killer"] = last
-                result.at[index, "players"] = used
+                _keep_missed_pick(index, used)
                 repaired += 1
-            continue
-        if not player.eliminated:
-            # Official death on a still-alive primary (e.g. opponent's Ret.
-            # mis-tagged onto 亚历山德罗娃). Revive for re-settlement.
-            death_day = int(detail.get("day") or 0) or len(used)
-            result.at[index, "players"] = used
-            result.at[index, "fill_status"] = "存活"
-            result.at[index, "killer"] = ""
-            result.at[index, "day"] = max(0, death_day)
-            if "status" in result.columns:
-                result.at[index, "status"] = FILL_TO_STATUS.get("存活", 2)
-            repaired += 1
             continue
         early = retirement_backup_allowed(player.elim_score)
         alt = str(detail.get("player_alt") or "").strip()
