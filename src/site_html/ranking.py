@@ -17,15 +17,36 @@ from site_html.common import (
     _inner_page_shell,
     _killer_panel_html,
     _load_available_players,
-    _route_query_block,
     _summary_bar_html,
+)
+from site_html.rank_ui import (
+    CSS_RANK,
+    JS_RANK,
+    help_button_html,
+    help_modal_html,
+    history_modal_html,
+    me_card_html,
+    table_card_close,
+    table_card_open,
 )
 from site_html.js import (
     _CSS_CAREER_DETAIL,
     _JS_CAREER_DETAIL,
     _JS_RANKING_DETAIL,
-    _JS_ROUTE_QUERY,
 )
+
+
+def _rank_first(df: pd.DataFrame) -> tuple[pd.DataFrame, Optional[str]]:
+    """Order columns as rank · 当前排名 · 用户名 · rest (frozen on desktop).
+
+    Returns the reordered frame and the column that carries the rank change
+    (the 即时排名 / 排名 column).
+    """
+    cols = list(df.columns)
+    rank = next((c for c in ("即时排名", "排名") if c in cols), None)
+    lead = [c for c in (rank, "当前排名", "用户名") if c and c in cols]
+    target = rank
+    return df[lead + [c for c in cols if c not in lead]], target
 
 
 def render_ranking_page(
@@ -40,6 +61,7 @@ def render_ranking_page(
     rank_change_col: Optional[str] = "排名变化",
     extra_tags: Optional[list[str]] = None,
     available_players: Union[list[str], str, Path, None] = None,
+    finals_top: int = 0,
     live_players: Optional[list[str]] = None,
     eliminated_players: Optional[list[str]] = None,
     backup_events: Optional[list] = None,
@@ -131,6 +153,11 @@ def render_ranking_page(
         summary_js = ""
 
     killer_block = _killer_panel_html(killer_df)
+    df, change_target = _rank_first(df)
+    # day-1 bye: the summary is split 非轮空 / 轮空 (see _summary_bar_html)
+    bye_day = summary_df is not None and any(
+        "非轮空" in str(c) for c in summary_df.columns
+    )
 
     if enable_career_detail:
         detail_col = "_生涯明细"
@@ -147,14 +174,16 @@ def render_ranking_page(
         uid_col="主键" if enable_breakdown else None,
         hide_uid_col=True,
         row_click_class="bd-clickable" if enable_breakdown else "",
+        merge_change_into=change_target if rank_change_col else None,
     )
-
-    route_query_html = _route_query_block(_players) if _players else ""
 
     detail_modal = ""
     no_detail_style = ""
     detail_title = "生涯明细" if enable_career_detail else "选人明细"
-    if enable_detail or enable_career_detail:
+    rank_history = enable_detail and not enable_career_detail
+    if rank_history:
+        detail_modal = history_modal_html(eyebrow)
+    elif enable_detail or enable_career_detail:
         detail_modal = f"""\
     <div id="detail-modal" class="detail-modal">
       <div class="detail-card">
@@ -184,32 +213,33 @@ def render_ranking_page(
         else ""
     )
 
+    top = (
+        f'<div class="rk-top">{summary_block}<aside class="rk-aside">{me_card_html()}{killer_block}</aside></div>'
+        if summary_block
+        else f'<div class="rk-top rk-top-solo"><aside class="rk-aside">{me_card_html()}{killer_block}</aside></div>'
+    )
     body = f"""\
         {no_detail_style}
-        {summary_block}
-        {killer_block}
-
-        {route_query_html}
-
-        <div class="stats-row">
-        <div class="row-count">显示 <b id="visible-count">0</b> / <b id="total-count">0</b> 行</div>
-        </div>
-
+<div class="rk" id="rk" data-tour="{tour.upper()}" data-finals="{int(finals_top)}" data-byeday="{int(bye_day)}">
+{top}
+{table_card_open(_players)}
         <div class="table-wrapper">
             <div id="table-container">
             {main_table_html}
         </div>
     </div>
-{detail_modal}"""
+{table_card_close()}
+{detail_modal}
+{help_modal_html(title, bool(finals_top), combined=enable_breakdown)}
+</div>"""
 
     if enable_career_detail:
         detail_js = _JS_CAREER_DETAIL
-    elif enable_detail:
+    elif enable_detail and not rank_history:
         detail_js = _JS_RANKING_DETAIL
     else:
         detail_js = ""
-    route_js = _JS_ROUTE_QUERY if _players else ""
-    extra_css_parts = []
+    extra_css_parts = [CSS_RANK]
     if enable_breakdown:
         extra_css_parts.append(_CSS_BREAKDOWN)
     if enable_career_detail:
@@ -222,12 +252,13 @@ def render_ranking_page(
         updated=updated,
         extra_tags=extra_tags,
         body_content=body,
-        extra_js=summary_js + "\n" + detail_js + "\n" + route_js + "\n" + bd_boot,
+        extra_js=summary_js + "\n" + detail_js + "\n" + bd_boot,
         extra_css="\n".join(extra_css_parts),
         # Modal must sit outside .page stacking context or it can be covered
         after_page=bd_modal,
         page=str(output_path),
-        subtitle=f"失效分数：{expired_label}" if expired_label else "",
+        late_js=JS_RANK,
+        title_extra=help_button_html(),
     )
 
     Path(output_path).write_text(html_str, encoding="utf-8")

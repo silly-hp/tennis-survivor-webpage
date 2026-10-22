@@ -413,6 +413,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 .pill-btn:hover,.theme-btn:hover{border-color:var(--primary);color:var(--primary);}
 .pill-btn.off,.pill-btn.off:hover{opacity:.55;cursor:not-allowed;border-color:var(--border);color:var(--ink2);}
 .pill-btn.off .dev-badge{margin-left:2px;}
+.pill-btn{text-decoration:none;}
+.pill-n{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);}
 button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
 
 .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:36px;}
@@ -599,8 +601,7 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
     header{margin-bottom:20px;}
     .logo-en{display:none;}
     .pill-btn .pill-label{display:none;}
-    .pill-btn{width:44px;padding:0;justify-content:center;}
-    .pill-btn.off{width:auto;padding:0 10px;gap:4px;}
+    .pill-btn{min-width:44px;padding:0 12px;justify-content:center;gap:4px;}
     .logo{gap:8px;} .logo svg{width:36px !important;height:36px !important;}
     .logo-cn{font-size:17px;white-space:nowrap;}
     .theme-btn{white-space:nowrap;min-height:40px;}
@@ -741,6 +742,19 @@ _JS_INDEX = r"""
 """
 
 
+# Count of watched users (ranking page watch lists); storage throws on data: URLs.
+_JS_WATCH_COUNT = """\
+(function(){
+  var el=document.getElementById('watchCount'); if(!el) return;
+  var n=0;
+  try{
+    var s=JSON.parse(localStorage.getItem('ts.watch.v1')||'null'), seen={};
+    (s&&s.lists||[]).forEach(function(l){ (l.users||[]).forEach(function(u){ if(!seen[u]){ seen[u]=1; n++; } }); });
+  }catch(e){}
+  if(n){ el.textContent=n; el.hidden=false; el.parentNode.setAttribute('aria-label','我的关注 · '+n+' 人'); }
+})();"""
+
+
 def render_index(
     stats: dict,
     version: str = VERSION,
@@ -804,7 +818,7 @@ def render_index(
             </div>
         </a>
         <div class="hd-actions">
-            <span class="pill-btn off" aria-disabled="true" title="我的关注 · 开发中"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:var(--secondary)"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span class="pill-label">我的关注</span><span class="dev-badge">开发中</span></span>
+            <a class="pill-btn" href="atp_ranking.html#watch" title="我的关注" aria-label="我的关注"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:var(--secondary)"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span class="pill-label">我的关注</span><span class="pill-n" id="watchCount" hidden></span></a>
             <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
         </div>
     </header>
@@ -847,6 +861,9 @@ def render_index(
 </script>
 <script>
 {_JS_INDEX}
+</script>
+<script>
+{_JS_WATCH_COUNT}
 </script>
 </body>
 </html>"""

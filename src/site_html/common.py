@@ -17,17 +17,25 @@ from site_html.js import _JS_TABLE, _JS_THEME
 from site_html.logos import _logo_pair
 
 
-def _rank_change_cell(value) -> str:
-    """Convert a numeric rank-change value to a styled <span>."""
+def _rank_change_cell(value, arrow_attr: bool = False) -> str:
+    """Convert a numeric rank-change value to a styled <span>.
+
+    ``arrow_attr`` puts the ▲n/▼n/— text in ``data-a`` (shown via CSS ::after) so it
+    adds nothing to the host cell's textContent.
+    """
     try:
         v = int(value)
     except (ValueError, TypeError):
-        return f'<span class="rank same"></span>'
+        v = 0
     if v > 0:
-        return f'<span class="rank up">+{v}</span>'
-    if v < 0:
-        return f'<span class="rank down">{v}</span>'
-    return f'<span class="rank same"></span>'
+        cls, label = "up", f"▲{v}"
+    elif v < 0:
+        cls, label = "down", f"▼{-v}"
+    else:
+        cls, label = "same", "—"
+    if arrow_attr:
+        return f'<span class="rank {cls} rank-a" data-d="{v}" data-a="{label}"></span>'
+    return f'<span class="rank {cls}" data-d="{v}">{label}</span>'
 
 
 def _status_badge_html(val) -> str:
@@ -120,6 +128,7 @@ def _df_to_html_table(
     uid_col: Optional[str] = "主键",
     hide_uid_col: bool = True,
     row_click_class: str = "",
+    merge_change_into: Optional[str] = None,
 ) -> str:
     """
     Convert a DataFrame to a styled filterable HTML table.
@@ -138,6 +147,14 @@ def _df_to_html_table(
         skip.add(detail_col)
     if hide_uid_col and uid_col and uid_col in df.columns:
         skip.add(uid_col)
+    if (
+        merge_change_into
+        and rank_change_col in df.columns
+        and merge_change_into in df.columns
+    ):
+        skip.add(rank_change_col)
+    else:
+        merge_change_into = None
     render_cols = [c for c in df.columns if c not in skip]
     status_cols = {c for c in render_cols if c == "当前状态" or str(c).endswith("状态")}
     status_col = (
@@ -207,7 +224,13 @@ def _df_to_html_table(
             val = row[col]
             if isinstance(val, pd.Series):
                 val = val.iloc[0]
-            if rank_change_col and col == rank_change_col:
+            if merge_change_into and col == merge_change_into:
+                # the arrow lives in ::after so the cell text stays the bare number (filter / sort)
+                ch = row[rank_change_col]
+                cell_html = html.escape(
+                    _format_table_cell(col, val)
+                ) + _rank_change_cell(ch, arrow_attr=True)
+            elif rank_change_col and col == rank_change_col:
                 cell_html = _rank_change_cell(val)
             elif col in status_cols:
                 cell_html = _status_badge_html(val)
@@ -470,10 +493,10 @@ def _summary_bar_html(
         <div class="sum-header">
         <div class="sum-title-row">
         <span class="sum-title">今日选人统计</span>
-        <button class="sum-copy-btn" id="sumCopyBtn" onclick="copySumStats()" title="复制选人统计文本">
-            <span id="sumCopyIcon">⎘</span>
-            <span id="sumCopyTxt">复制</span>
-        </button>
+        <span class="sum-copy-wrap"><span class="sum-copy-note" id="sumCopyNote" aria-live="polite"></span>
+        <button class="sum-copy-btn" id="sumCopyBtn" type="button" onclick="copySumStats()" title="复制选人统计文本">
+            <span class="cp-in" id="sumCopyIn">复制统计</span>
+        </button></span>
         </div>
         <div class="sum-meta">
         {meta_html}
@@ -708,35 +731,36 @@ def _summary_bar_html(
             var outcome = outcomeLine();
             if (outcome) lines.push(outcome);
             var text = lines.join('\\n');
-            navigator.clipboard.writeText(text).then(function(){{
+            var OK = '<svg class="cp-draw" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>已复制';
+            var ERR = '<svg class="cp-draw" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>复制失败';
+            function setCopy(state){{
                 var btn = document.getElementById('sumCopyBtn');
-                var txt = document.getElementById('sumCopyTxt');
-                if (!btn) return;
-                btn.classList.add('copied');
-                txt.textContent = '已复制';
-                setTimeout(function(){{
-                    btn.classList.remove('copied');
-                    txt.textContent = '复制';
-                }}, 2000);
-            }}).catch(function(){{
-                /* fallback for older browsers */
+                var inner = document.getElementById('sumCopyIn');
+                var note = document.getElementById('sumCopyNote');
+                if (!btn || !inner) return;
+                btn.classList.remove('ok', 'err', 'back');
+                void btn.offsetWidth;  // restart the swap animation
+                if (state === 'ok') {{ btn.classList.add('ok'); inner.innerHTML = OK; if (note) note.textContent = '已复制到剪贴板'; }}
+                else if (state === 'err') {{ btn.classList.add('err'); inner.innerHTML = ERR; if (note) note.textContent = '剪贴板不可用，请手动选择文本'; }}
+                else {{ btn.classList.add('back'); inner.textContent = '复制统计'; if (note) note.textContent = ''; }}
+                clearTimeout(setCopy._t);
+                if (state !== 'idle') setCopy._t = setTimeout(function(){{ setCopy('idle'); }}, 1500);
+            }}
+            function legacyCopy(){{
                 var ta = document.createElement('textarea');
                 ta.value = text;
                 ta.style.position = 'fixed';
                 ta.style.opacity = '0';
                 document.body.appendChild(ta);
                 ta.select();
-                document.execCommand('copy');
+                var ok = false;
+                try {{ ok = document.execCommand('copy'); }} catch (e) {{ ok = false; }}
                 document.body.removeChild(ta);
-                var btn = document.getElementById('sumCopyBtn');
-                var t   = document.getElementById('sumCopyTxt');
-                if (btn) {{ btn.classList.add('copied'); }}
-                if (t)   {{ t.textContent = '已复制'; }}
-                setTimeout(function(){{
-                    if (btn) {{ btn.classList.remove('copied'); }}
-                    if (t)   {{ t.textContent = '复制'; }}
-                }}, 2000);
-            }});
+                setCopy(ok ? 'ok' : 'err');
+            }}
+            try {{
+                navigator.clipboard.writeText(text).then(function(){{ setCopy('ok'); }}, legacyCopy);
+            }} catch (e) {{ legacyCopy(); }}
         }};
 
         renderList();
@@ -918,10 +942,13 @@ def _inner_page_shell(
     extra_css: str = "",
     after_page: str = "",
     page: str = "",
+    late_js: str = "",
+    title_extra: str = "",
 ) -> str:
     """Wrap body_content in the full inner-page HTML shell.
 
     ``page`` is the output path; the shared header reads its section and tour from it.
+    ``late_js`` gets its own ``<script>`` after the shared ones (runs once the table is built).
     """
     tags_html = _title_tags(tour, extra_tags)
     subtitle_html = (
@@ -953,6 +980,7 @@ def _inner_page_shell(
   <div class="page-title">
     {html.escape(title)}
     {tags_html}
+    {title_extra}
   </div>
   {subtitle_html}
 </div>
@@ -969,5 +997,6 @@ def _inner_page_shell(
 <script>
 {JS_HEADER}
 </script>
+{f"<script>{late_js}</script>" if late_js else ""}
 </body>
 </html>"""
