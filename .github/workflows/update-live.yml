@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: live-pages
+  group: pages-publish
   cancel-in-progress: false
 
 permissions:
@@ -90,12 +90,19 @@ jobs:
             exit 0
           fi
           git commit -m "自动更新选人相关页面"
+          # Drop leftovers outside the publish list; they would block the rebase.
+          git reset --hard HEAD
+          git clean -fd
           for attempt in 1 2 3 4 5; do
             if git push origin HEAD:main; then
               exit 0
             fi
             echo "push rejected, retry ${attempt}"
-            git pull --rebase origin main || true
+            # Generated pages are whole-file overwrites: on conflict keep ours.
+            if ! git pull --rebase -X theirs origin main; then
+              echo "rebase failed, aborting it"
+              git rebase --abort || true
+            fi
             sleep $((attempt * 8))
           done
           echo "push failed after retries" >&2
