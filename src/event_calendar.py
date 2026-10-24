@@ -674,7 +674,8 @@ def list_calendar_events(
             continue
         for _, row in frame.iterrows():
             ev = _event_dict(row)
-            if ev["event_id"] and ev["tour"] in {"MS", "WS"}:
+            # Rows without an event id are upstream placeholders (no score page).
+            if ev["event_id"] and ev["event_id"].lower() not in {"nan", "none", "<na>"} and ev["tour"] in {"MS", "WS"}:
                 events.append(ev)
     events.sort(key=lambda e: (e["year"], e["week_start"], e["tour"], e["city"]))
     return events

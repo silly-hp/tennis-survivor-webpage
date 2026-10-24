@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from datetime import date as _date
+import json
+from pathlib import Path
 from geopy.geocoders import Nominatim
 import html as html_lib
 from logger import get_logger
@@ -381,6 +383,154 @@ def parse_survivor_level_logo(src: str) -> tuple[str, str]:
     return "", ""
 
 
+_DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+_PLACEHOLDER_MAX_DAY_GAP = 10
+
+
+def _is_blank_event_id(value) -> bool:
+    return str(value if value is not None else "").strip().lower() in {"", "nan", "none", "<na>"}
+
+
+def _prior_year_start_days(event_id: str, year: int, dates: dict) -> list[int]:
+    """Day-of-year of this event's start date in earlier seasons (tournament_dates.json)."""
+    out = []
+    for key, rec in dates.items():
+        y, _, eid = str(key).partition(":")
+        if eid != event_id or not y.isdigit() or int(y) >= year:
+            continue
+        try:
+            out.append(pd.Timestamp(rec["start"]).dayofyear)
+        except Exception:
+            continue
+    return out
+
+
+_EVENT_END_CACHE: dict[tuple, Optional[_date]] = {}
+
+
+def _event_end_date(
+    event_id: str, year: int, tour: str, monday: pd.Timestamp, dates: dict
+) -> Optional[_date]:
+    """Last day of an event: its pick-day dates, else prior-season length, else None."""
+    key = (event_id, year, tour)
+    if key in _EVENT_END_CACHE:
+        return _EVENT_END_CACHE[key]
+    end = None
+    try:
+        days = fetch_event_detail(event_id, year, tour).get("days") or {}
+        stamps = [pd.Timestamp(d["date"]) for d in days.values() if d.get("date")]
+        if stamps:
+            end = max(stamps).date()
+    except Exception as err:
+        logger.warning("event %s %s %s detail fetch failed: %s", tour, event_id, year, err)
+    if end is None:
+        spans = []
+        for k, rec in dates.items():
+            y, _, eid = str(k).partition(":")
+            if eid == event_id and y.isdigit() and int(y) < year:
+                try:
+                    spans.append((pd.Timestamp(rec["end"]) - pd.Timestamp(rec["start"])).days)
+                except Exception:
+                    continue
+        if spans:
+            end = (monday + pd.Timedelta(days=max(spans))).date()
+    if end is not None:
+        _EVENT_END_CACHE[key] = end
+    return end
+
+
+def _repair_placeholder_events(
+    df: pd.DataFrame, calendar_year: int, language: str, data_dir: Path = _DATA_DIR
+) -> pd.DataFrame:
+    """Fill calendar rows that upstream lists with a city but no event link.
+
+    live-tennis.cn sometimes shows a placeholder (``href="#"``, wrong city) for a
+    week whose real event page still exists. Such rows have no event_id and used to
+    vanish from the calendar page while the home page showed the wrong city. Match
+    them to a cached score file of the same tour/year that the calendar no longer
+    links, confirmed by the event's start date in earlier seasons.
+    """
+    if df.empty:
+        return df
+    blank = df["event_id"].map(_is_blank_event_id)
+    for _, row in df.loc[blank].iterrows():
+        logger.warning(
+            "calendar %s %s %s %s has no event link (url=%r); upstream placeholder",
+            calendar_year,
+            row["tour"],
+            row["week_start_mmdd"],
+            row["city"],
+            row["url"],
+        )
+    if not blank.any():
+        return df
+
+    try:
+        dates = json.loads((data_dir / "tournament_dates.json").read_text("utf-8")).get("events") or {}
+    except Exception:
+        dates = {}
+
+    df = df.copy()
+    for idx in df.index[blank]:
+        row = df.loc[idx]
+        tour = str(row["tour"]).upper()
+        monday = row["week_start_date"]
+        if pd.isna(monday):
+            continue
+        linked = set(
+            df.loc[(df["tour"] == row["tour"]) & ~blank, "event_id"].astype(str)
+        )
+        found = []  # (day gap or None, event_id, payload)
+        for path in sorted((data_dir / "event_scores").glob(f"{tour}_*_{int(calendar_year)}.json")):
+            try:
+                payload = json.loads(path.read_text("utf-8"))
+            except Exception:
+                continue
+            eid = str(payload.get("event_id") or "")
+            if not eid or eid in linked or not str(payload.get("city") or "").strip():
+                continue
+            days = _prior_year_start_days(eid, int(calendar_year), dates)
+            gap = min((abs(d - monday.dayofyear) for d in days), default=None)
+            if gap is not None and gap > _PLACEHOLDER_MAX_DAY_GAP:
+                continue
+            found.append((gap, eid, payload))
+        if not found:
+            logger.warning(
+                "calendar %s %s %s %s: no cached event matches the placeholder",
+                calendar_year, tour, row["week_start_mmdd"], row["city"],
+            )
+            continue
+        found.sort(key=lambda f: (f[0] is None, f[0] or 0))
+        if len(found) > 1 and found[0][0] == found[1][0]:
+            logger.warning(
+                "calendar %s %s %s %s: ambiguous placeholder candidates %s",
+                calendar_year, tour, row["week_start_mmdd"], row["city"],
+                [f[1] for f in found],
+            )
+            continue
+        _, eid, payload = found[0]
+        page_type = str(payload.get("page_type") or "my").lower()
+        # Upstream never links a score page for a placeholder; close the event
+        # ourselves once its last day (from the event's own pick days) has passed.
+        end = _event_end_date(eid, int(calendar_year), tour, monday, dates)
+        if end is not None and end < _date.today():
+            page_type = "score"
+        df.at[idx, "event_id"] = eid
+        df.at[idx, "event_year"] = int(calendar_year)
+        df.at[idx, "event_tour"] = tour
+        df.at[idx, "page_type"] = page_type
+        df.at[idx, "url"] = (
+            f"https://www.live-tennis.cn/{language}/survivor/event/{eid}/{int(calendar_year)}/{tour}/{page_type}"
+        )
+        if language == "zh":
+            df.at[idx, "city"] = str(payload["city"]).strip()
+        logger.info(
+            "calendar %s %s %s: placeholder %r repaired to event %s (%s)",
+            calendar_year, tour, row["week_start_mmdd"], row["city"], eid, payload.get("city"),
+        )
+    return df
+
+
 def fetch_survivor_calendar_event_df(
     calendar_year: int, language: str = "zh"
 ) -> tuple[pd.DataFrame, dict]:
@@ -470,6 +620,7 @@ def fetch_survivor_calendar_event_df(
         emit_from_column("cSurvivorWSColumn", "WS")
 
     df = pd.DataFrame(rows)
+    df = _repair_placeholder_events(df, int(calendar_year), language)
 
     # Normalize dtypes for stable downstream behavior
     if not df.empty:

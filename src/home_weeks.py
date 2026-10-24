@@ -284,6 +284,17 @@ def _result_for_event(
     return ch
 
 
+PENDING_CITY = "待定"
+
+
+def _is_placeholder_event(event: Optional[dict]) -> bool:
+    """Upstream lists a city without an event link (e.g. a mislabelled week)."""
+    if not event:
+        return False
+    eid = str(event.get("event_id") if event.get("event_id") is not None else "").strip()
+    return eid.lower() in {"", "nan", "none", "<na>"}
+
+
 def _primary_event(events: list[dict]) -> Optional[dict]:
     return events[0] if events else None
 
@@ -387,7 +398,14 @@ def build_tour_week_cards(
     nxt = _primary_event(week["next_events"])
 
     # ── last week ──
-    if prev:
+    if _is_placeholder_event(prev):
+        last = TourWeekCard(
+            tour=tour_label,
+            kind="last",
+            city=PENDING_CITY,
+            week_start=pd.Timestamp(prev["week_start_date"]).normalize(),
+        )
+    elif prev:
         city = str(prev.get("city") or "")
         ch = _result_for_event(prev, tour_label, champions)
         last = TourWeekCard(
@@ -407,7 +425,14 @@ def build_tour_week_cards(
         last = TourWeekCard(tour=tour_label, kind="last", empty_label="无赛事")
 
     # ── this week (+ YoY correspondence for 卫冕) ──
-    if curr:
+    if _is_placeholder_event(curr):
+        this = TourWeekCard(
+            tour=tour_label,
+            kind="this",
+            city=PENDING_CITY,
+            week_start=pd.Timestamp(curr["week_start_date"]).normalize(),
+        )
+    elif curr:
         city = str(curr.get("city") or "")
         # Prefer live meta when this is the event main.py is tracking
         use_live = (
@@ -474,7 +499,14 @@ def build_tour_week_cards(
         this = TourWeekCard(tour=tour_label, kind="this", empty_label="无赛事")
 
     # ── next week ──
-    if nxt:
+    if _is_placeholder_event(nxt):
+        next_card = TourWeekCard(
+            tour=tour_label,
+            kind="next",
+            city=PENDING_CITY,
+            week_start=pd.Timestamp(nxt["week_start_date"]).normalize(),
+        )
+    elif nxt:
         city = str(nxt.get("city") or "")
         corr = _correspond_cities(
             nxt, this_calendar, last_calendar, tour_flag, replace_map
