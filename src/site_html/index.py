@@ -99,7 +99,10 @@ def _event_card_html(tour: str, card, trend: Optional[dict], wx_cards: str) -> s
     )
 
     chart = ""
-    if trend and len(trend["days"]) > 1:
+    if not trend:
+        chart = """\
+            <div class="ev-pending"><span class="ev-pending-icon" aria-hidden="true">⏱</span>选人尚未开始</div>"""
+    elif len(trend["days"]) > 1:
         chart = f"""\
             <div class="trend" data-tour="{tour}">
                 <div class="trend-hd"><span>幸存人数走势 · 共 {len(trend["days"]) - 1} 个比赛日</span>
@@ -122,13 +125,18 @@ def _event_card_html(tour: str, card, trend: Optional[dict], wx_cards: str) -> s
                 </div>
             </div>"""
 
+    stats = (
+        f'<div class="ev-stats">{stat("参赛", participants)}{stat("幸存", survivors)}{stat("存活率", rate)}</div>'
+        if trend or participants is not None
+        else ""
+    )
     return f"""\
-        <article class="ev-card {t}">
+        <article class="ev-card {t}{"" if trend else " pending"}">
             <div class="ev-head">
                 <span class="ev-city">{html.escape(str(getattr(card, "city", "") or ""))}{level_html}</span>
                 <span class="ev-eye">{tour}{f" · {date} 开赛" if date else ""}</span>
             </div>
-            <div class="ev-stats">{stat("参赛", participants)}{stat("幸存", survivors)}{stat("存活率", rate)}</div>
+            {stats}
 {chart}
 {wx}
         </article>"""
@@ -194,17 +202,24 @@ def _this_week_html(week_data, trends, weather) -> str:
     live = {t: _card(week_data, t, "this") for t in _TOURS}
     if not any(live.values()):
         return _off_week_html(week_data)
+    trends = trends or {}
+    # 一站已有选人记录、另一站尚未开始时：有数据的放前面占宽列，待开始的收窄
+    started = [t for t in _TOURS if live[t] is not None and trends.get(t)]
+    pending = [t for t in _TOURS if live[t] is not None and not trends.get(t)]
+    lopsided = len(started) == 1 and len(pending) == 1
+    order = started + [t for t in _TOURS if t not in started] if lopsided else list(_TOURS)
     cards = []
-    for tour in _TOURS:
+    for tour in order:
         if live[tour] is not None:
             cards.append(
-                _event_card_html(tour, live[tour], (trends or {}).get(tour), wx.get(tour, ""))
+                _event_card_html(tour, live[tour], trends.get(tour), wx.get(tour, ""))
             )
         else:
             cards.append(
                 _rest_card_html(tour, _card(week_data, tour, "next"), _card(week_data, tour, "last"))
             )
     solo = " solo" if sum(c is not None for c in live.values()) == 1 else ""
+    solo += " lopsided" if lopsided else ""
     return f"""\
     <section class="block">
         <h2 class="block-hd">本周赛况</h2>
@@ -437,6 +452,11 @@ body:not(.dark) .atp .ev-eye{filter:brightness(.72);}
 .ev-wx-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--border2);padding-top:12px;}
 .ev-wx-now{font-size:13px;color:var(--ink2);}
 .wx-panel{animation:fadeUp .22s ease-out both;}
+.ev-grid.lopsided{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);align-items:stretch;}
+.ev-card.pending .ev-pending{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    min-height:160px;background:var(--surface2);border-radius:10px;font-size:15px;font-weight:700;color:var(--ink2);}
+.ev-pending-icon{font-size:22px;color:var(--muted);}
+.ev-card.pending .ev-wx-row{margin-top:auto;}
 .rest-card{border-style:dashed;border-top-style:solid;background:var(--surface2);gap:8px;justify-content:center;}
 .rest-title{font-size:16px;font-weight:700;}
 .rest-sub{font-size:13px;color:var(--muted);line-height:1.5;}
@@ -588,7 +608,8 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
     .theme-btn{padding:0 12px;}
     .hero{margin-bottom:24px;}
     .hero-main{padding-left:14px;}
-    .ev-grid,.pk-grid{grid-template-columns:minmax(0,1fr);}
+    .ev-grid,.ev-grid.lopsided,.pk-grid{grid-template-columns:minmax(0,1fr);}
+    .ev-card.pending .ev-pending{min-height:96px;}
     .ev-card{padding:16px;}
     .ev-stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:8px;}
     .ev-stat{align-items:center;}
