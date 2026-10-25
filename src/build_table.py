@@ -41,6 +41,13 @@ OUTPUT_COLUMNS = [
     "day",
     "killer",
 ]
+
+# Settlement uses ASCII (); pick-board / summary use full-width （）.
+_FILL_TO_TODAY_SUICIDE = {
+    "自杀(重复)": "自杀（重复）",
+    "自杀(主备冲突)": "自杀（主备冲突）",
+    "自杀(退赛)": "自杀（退赛）",
+}
 # Rendered as whole numbers (no trailing .0) in HTML tables.
 INT_OUTPUT_COLS = [
     "current_rank",
@@ -334,6 +341,14 @@ def _build_non_day1(
         "",
         "未选",
     ]
+    # Empty-pool / live suicides land on fill_status but today_status may stay
+    # 未选 (no pick). Mirror them so summary suicide chips include no-submit cases.
+    if "fill_status" in live_rank_df.columns and "today_status" in live_rank_df.columns:
+        fill = live_rank_df["fill_status"].astype("string").fillna("").str.strip()
+        for fill_label, today_label in _FILL_TO_TODAY_SUICIDE.items():
+            live_rank_df.loc[alive_open & fill.eq(fill_label), "today_status"] = (
+                today_label
+            )
 
     return _as_nullable_int(
         live_rank_df.loc[:, [c for c in OUTPUT_COLUMNS if c in live_rank_df.columns]]

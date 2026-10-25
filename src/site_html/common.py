@@ -282,6 +282,7 @@ def _summary_bar_html(
                 break
     suicide_col = "自杀（重复）" if "自杀（重复）" in cols else None
     invalid_col = "自杀（主备冲突）" if "自杀（主备冲突）" in cols else None
+    miss_col = "自杀（退赛）" if "自杀（退赛）" in cols else None
     nosel_col = "未选" if "未选" in cols else None
     alive_set = {
         str(p).strip()
@@ -328,16 +329,18 @@ def _summary_bar_html(
         bye_total = _int(total_row.get("轮空", 0)) if has_bye else 0
         repeat_total = _int(total_row.get(suicide_col, 0)) if suicide_col else 0
         invalid_total = _int(total_row.get(invalid_col, 0)) if invalid_col else 0
+        miss_total = _int(total_row.get(miss_col, 0)) if miss_col else 0
         nosel_total = _int(total_row.get(nosel_col, 0)) if nosel_col else 0
-        suicide_total = repeat_total + invalid_total
+        suicide_total = repeat_total + invalid_total + miss_total
         grand_total = _int(total_row.get("总计", 0))
     else:
         valid_total = int(data_df[normal_col].sum()) if normal_col in cols else 0
         bye_total = int(data_df["轮空"].sum()) if has_bye else 0
         repeat_total = int(data_df[suicide_col].sum()) if suicide_col in cols else 0
-        invalid_total = int(data_df[invalid_col].sum()) if suicide_col in cols else 0
+        invalid_total = int(data_df[invalid_col].sum()) if invalid_col in cols else 0
+        miss_total = int(data_df[miss_col].sum()) if miss_col in cols else 0
         nosel_total = int(data_df[nosel_col].sum()) if nosel_col in cols else 0
-        suicide_total = repeat_total + invalid_total
+        suicide_total = repeat_total + invalid_total + miss_total
         grand_total = valid_total + bye_total + suicide_total
 
     # denominator for % column = all valid selections (non-suicide)
