@@ -12,7 +12,7 @@ from pathlib import Path
 
 from site_html.logos import _logo_pair
 
-# section key → (tab label, {tour: filename}); no "ALL" key = no 合计 page
+# section key → (tab label, {tour: filename}); no "ALL" key = no 联合 page
 _SECTIONS: dict[str, tuple[str, dict[str, str]]] = {
     "live": ("即时排名", {"ATP": "atp_ranking.html", "WTA": "wta_ranking.html",
                           "ALL": "combined_instant_ranking.html"}),
@@ -23,7 +23,7 @@ _SECTIONS: dict[str, tuple[str, dict[str, str]]] = {
     "career": ("生涯统计", {"ATP": "atp_show.html", "WTA": "wta_show.html"}),
     "h2h": ("H2H", {"ATP": "h2h_atp.html", "WTA": "h2h_wta.html"}),
 }
-_TOUR_LABEL = {"ATP": "ATP", "WTA": "WTA", "ALL": "合计"}
+_TOUR_LABEL = {"ATP": "ATP", "WTA": "WTA", "ALL": "联合"}
 
 
 def _resolve(page: str) -> tuple[str, str, dict[str, str], str]:
@@ -38,9 +38,11 @@ def _resolve(page: str) -> tuple[str, str, dict[str, str], str]:
         year = m.group(1) or ""
         links = {t: f"{year}{t.lower()}killer.html" for t in ("ATP", "WTA")}
         return "killer", m.group(2).upper(), links, prefix
-    if m := re.fullmatch(r"(atp|wta)_champion\.html", name):
-        links = {t: f"{t.lower()}_champion.html" for t in ("ATP", "WTA")}
-        return "race", m.group(1).upper(), links, prefix
+    if m := re.fullmatch(r"(atp|wta|combined)_champion\.html", name):
+        # Hall of Fame sits under 冠军排名; its tour switch stays on the hall pages
+        links = {"ATP": "atp_champion.html", "WTA": "wta_champion.html", "ALL": "combined_champion.html"}
+        tour = "ALL" if m.group(1) == "combined" else m.group(1).upper()
+        return "race", tour, links, prefix
     if name == "survivor_calendar.html":  # legacy hub: no tour selected
         return "cal", "", dict(_SECTIONS["cal"][1]), prefix
     for key, (_, links) in _SECTIONS.items():
@@ -81,7 +83,7 @@ def site_header(updated: str, page: str = "", back_label: str = "← 首页",
         label = _TOUR_LABEL[t]
         if t not in links:
             seg.append(f'<span class="hd-seg-btn" aria-disabled="true" tabindex="0" '
-                       f'data-tip="{esc(sec_label)}暂无合计页">{label}</span>')
+                       f'data-tip="{esc(sec_label)}暂无联合页">{label}</span>')
         else:
             on = ' aria-current="page"' if t == tour else ""
             seg.append(f'<a class="hd-seg-btn" href="{prefix}{esc(links[t])}"{on}>{label}</a>')

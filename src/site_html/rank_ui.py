@@ -193,7 +193,7 @@ def _help_steps(has_finals: bool) -> list[tuple[str, str, str]]:
 
 def _help_steps_combined() -> list[tuple[str, str, str]]:
     chip = '<span class="hp-chip">{}</span>'
-    s1 = ("ATP + WTA 合计排名",
+    s1 = ("ATP + WTA 联合排名",
           "这一页把两个巡回赛的成绩合在一起：总分 = ATP 总分 + WTA 总分，按总分排名。右侧列出每站赛事的得分，状态列分别显示两边的今日状态；点任意一行可看积分构成。",
           '<div class="hp-grid"><b>排名</b><b>用户名</b><b>总分</b><b>ATP / WTA</b>'
           '<span>1 —</span><span>wennuan78</span><span class="on">9750</span><span>4778 / 4972</span>'
@@ -222,9 +222,13 @@ def _help_steps_combined() -> list[tuple[str, str, str]]:
     return [s1, s2, s3, s4, s5]
 
 
-def help_modal_html(page_title: str, has_finals: bool = False, combined: bool = False) -> str:
-    """使用说明: five auto-advancing steps with small animated previews."""
-    steps = _help_steps_combined() if combined else _help_steps(has_finals)
+def help_modal_html(page_title: str, has_finals: bool = False, combined: bool = False,
+                    steps: list[tuple[str, str, str]] | None = None) -> str:
+    """使用说明: five auto-advancing steps with small animated previews.
+
+    ``steps`` ((title, body, demo html) tuples) replaces the ranking-page steps.
+    """
+    steps = steps or (_help_steps_combined() if combined else _help_steps(has_finals))
     n = len(steps)
     panes = "".join(
         f'<section class="hp-step" data-i="{i}" aria-label="{html.escape(t)}" hidden>'

@@ -315,7 +315,8 @@ def _nav_cards(season) -> dict[str, list[dict[str, Any]]]:
              "href": f"{t}_ranking.html"},
             {"eye": race, "title": "即时冠军排名", "desc": "年终总决赛资格积分榜",
              "href": f"{t}_race_ranking.html"},
-            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "历年冠军次数排行", "dev": True},
+            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "历年各站冠军与用户夺冠次数排行",
+             "href": f"{t}_champion.html"},
             {"eye": "Survivor Killer Stats", "title": "杀手榜", "desc": "带走幸存者最多的球员",
              "links": [(f"{season} 赛季", f"{season}{t}killer.html"), ("历年总榜", f"{t}killer.html")]},
             {"eye": "Tour Calendar", "title": "幸存者赛历", "desc": "按年份与级别浏览本站得分",
@@ -332,7 +333,8 @@ def _nav_cards(season) -> dict[str, list[dict[str, Any]]]:
              "href": "combined_instant_ranking.html"},
             {"eye": "Combined Race", "title": "联合冠军排名", "desc": "ATP + WTA 冠军积分合计",
              "href": "combined_ranking.html"},
-            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "历年冠军次数排行，标注 ATP / WTA", "dev": True},
+            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "ATP + WTA 冠军合并排行，标注 ATP / WTA",
+             "href": "combined_champion.html"},
         ],
     }
 
@@ -380,7 +382,7 @@ def _nav_html(season) -> str:
             <div class="seg" role="tablist" aria-label="选择巡回赛">
                 <button type="button" role="tab" data-tour="ATP" aria-selected="true">ATP</button>
                 <button type="button" role="tab" data-tour="WTA" aria-selected="false">WTA</button>
-                <button type="button" role="tab" data-tour="ALL" aria-selected="false">合计</button>
+                <button type="button" role="tab" data-tour="ALL" aria-selected="false">联合</button>
             </div>
         </div>
 {"".join(groups)}
@@ -390,9 +392,9 @@ def _nav_html(season) -> str:
 _GUIDE = [
     ("本周赛况", "本周每站的参赛、幸存人数和存活率；走势图悬停或点选比赛日可看当日淘汰明细，「逐小时天气」展开赛地天气。"),
     ("今日选人", "比赛日显示各站选人最多的球员与已选 / 轮空人数，点进去看完整明细。"),
-    ("即时排名", "实时积分、今日主选 / 备选与存活状态；合计 = ATP + WTA 积分之和。"),
+    ("即时排名", "实时积分、今日主选 / 备选与存活状态；联合 = ATP + WTA 积分之和。"),
     ("即时冠军排名", "Race 积分榜，看谁离年终总决赛资格最近。"),
-    ("历史冠军榜", "历年冠军 / 亚军次数排行（开发中）。"),
+    ("历史冠军榜", "按赛事看每站冠军，或按用户看夺冠次数排行；可按赛季、级别筛选，联合页标注 ATP / WTA。"),
     ("杀手榜", "哪些球员淘汰了最多幸存者，可看本赛季与历年总榜。"),
     ("幸存者赛历", "按年份、级别浏览每站赛事的本站得分与冠军。"),
     ("幸存者生涯统计", "个人生涯参赛、夺冠、连胜与存活率；H2H 查你与某位球员的胜负。"),
@@ -850,7 +852,7 @@ def render_index(
 <dialog class="guide" id="guide" aria-label="使用指南">
     <div class="guide-inner">
         <div class="guide-hd"><h2>使用指南</h2><button type="button" class="guide-close" aria-label="关闭">✕</button></div>
-        <p>每天选一名球员，赢了存活得分，输了淘汰。数据查询处可切换 ATP / WTA / 合计，以下是各板块能做什么：</p>
+        <p>每天选一名球员，赢了存活得分，输了淘汰。数据查询处可切换 ATP / WTA / 联合，以下是各板块能做什么：</p>
         <div class="guide-grid">{guide_items}</div>
     </div>
 </dialog>
