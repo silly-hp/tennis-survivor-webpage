@@ -123,6 +123,11 @@ body:not(.dark) .atp .ev-eye{filter:brightness(.72);}
 .ev-wx-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--border2);padding-top:12px;}
 .ev-wx-now{font-size:13px;color:var(--ink2);}
 .wx-panel{animation:fadeUp .22s ease-out both;}
+.ev-grid.lopsided{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);align-items:stretch;}
+.ev-card.pending .ev-pending{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    min-height:160px;background:var(--surface2);border-radius:10px;font-size:15px;font-weight:700;color:var(--ink2);}
+.ev-pending-icon{font-size:22px;color:var(--muted);}
+.ev-card.pending .ev-wx-row{margin-top:auto;}
 .rest-card{border-style:dashed;border-top-style:solid;background:var(--surface2);gap:8px;justify-content:center;}
 .rest-title{font-size:16px;font-weight:700;}
 .rest-sub{font-size:13px;color:var(--muted);line-height:1.5;}
@@ -274,7 +279,8 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
     .theme-btn{padding:0 12px;}
     .hero{margin-bottom:24px;}
     .hero-main{padding-left:14px;}
-    .ev-grid,.pk-grid{grid-template-columns:minmax(0,1fr);}
+    .ev-grid,.ev-grid.lopsided,.pk-grid{grid-template-columns:minmax(0,1fr);}
+    .ev-card.pending .ev-pending{min-height:96px;}
     .ev-card{padding:16px;}
     .ev-stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:8px;}
     .ev-stat{align-items:center;}
@@ -363,7 +369,7 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
             <div class="hero-label">Tennis Draw Survivor · 2026 Hard-Court Swing</div>
             <h1 class="hero-title">每一场，都是生死之战</h1>
         </div>
-        <span class="live-pill"><span class="live-dot"></span>10/26 00:36 更新</span>
+        <span class="live-pill"><span class="live-dot"></span>10/26 00:51 更新</span>
     </div>
 
     <section class="block">
@@ -374,10 +380,16 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
                 <span class="ev-city">巴塞尔</span>
                 <span class="ev-eye">ATP · 10/26 开赛</span>
             </div>
-            <div class="ev-stats"><div class="ev-stat"><b>—</b><span>参赛</span></div><div class="ev-stat"><b>—</b><span>幸存</span></div><div class="ev-stat"><b>—</b><span>存活率</span></div></div>
-
+            <div class="ev-stats"><div class="ev-stat"><b>2</b><span>参赛</span></div><div class="ev-stat"><b>2</b><span>幸存</span></div><div class="ev-stat"><b>100%</b><span>存活率</span></div></div>
+            <div class="trend" data-tour="ATP">
+                <div class="trend-hd"><span>幸存人数走势 · 共 1 个比赛日</span>
+                    <button type="button" class="chip-btn trend-replay" aria-label="重播动画">↻ 重播</button></div>
+                <svg class="trend-svg" viewBox="0 0 480 200" role="img" aria-label="ATP 每日幸存人数折线图"></svg>
+                <div class="trend-days" role="group" aria-label="选择比赛日"></div>
+                <div class="trend-tip" aria-live="polite"></div>
+            </div>
             <div class="ev-wx-row">
-                <span class="ev-wx-now">🌤️ 12°C 多云</span>
+                <span class="ev-wx-now">🌤️ 11°C 多云</span>
                 <button type="button" class="chip-btn wx-toggle" aria-expanded="false" aria-controls="wx-atp">逐小时天气 <span class="chev">▾</span></button>
             </div>
             <div class="wx-panel" id="wx-atp" hidden>
@@ -386,55 +398,55 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
                             <div class="wx-day">Sun</div>
                             <div class="wx-time">17:00</div>
                             <div class="wx-icon">🌤️</div>
-                            <div class="wx-temp">12°C</div>
+                            <div class="wx-temp">11°C</div>
                             <div class="wx-cond">多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨17.6km/h</div>
+                            <div class="wx-row">💨19.1km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">18:00</div>
-                            <div class="wx-icon">🌦️</div>
+                            <div class="wx-icon">🌤️</div>
                             <div class="wx-temp">11°C</div>
-                            <div class="wx-cond">阵雨</div>
+                            <div class="wx-cond">多云</div>
                             <div class="wx-row"><span class="wx-rain">💧3%</span></div>
-                            <div class="wx-row">💨16.1km/h</div>
+                            <div class="wx-row">💨15.4km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">19:00</div>
-                            <div class="wx-icon">🌦️</div>
+                            <div class="wx-icon">🌤️</div>
                             <div class="wx-temp">11°C</div>
-                            <div class="wx-cond">阵雨</div>
+                            <div class="wx-cond">多云</div>
                             <div class="wx-row"><span class="wx-rain">💧3%</span></div>
-                            <div class="wx-row">💨14.9km/h</div>
+                            <div class="wx-row">💨16.3km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">20:00</div>
                             <div class="wx-icon">⛅</div>
-                            <div class="wx-temp">11°C</div>
+                            <div class="wx-temp">10°C</div>
                             <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨12.6km/h</div>
+                            <div class="wx-row">💨12.0km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">21:00</div>
-                            <div class="wx-icon">🌤️</div>
-                            <div class="wx-temp">11°C</div>
-                            <div class="wx-cond">多云</div>
+                            <div class="wx-icon">☀️</div>
+                            <div class="wx-temp">10°C</div>
+                            <div class="wx-cond">晴</div>
                             <div class="wx-row"><span class="wx-rain">💧10%</span></div>
-                            <div class="wx-row">💨12.5km/h</div>
+                            <div class="wx-row">💨14.0km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">22:00</div>
-                            <div class="wx-icon">⛅</div>
+                            <div class="wx-icon">🌤️</div>
                             <div class="wx-temp">10°C</div>
-                            <div class="wx-cond">局部多云</div>
+                            <div class="wx-cond">多云</div>
                             <div class="wx-row"><span class="wx-rain">💧8%</span></div>
-                            <div class="wx-row">💨10.8km/h</div>
+                            <div class="wx-row">💨12.4km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
@@ -443,34 +455,34 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
                             <div class="wx-temp">10°C</div>
                             <div class="wx-cond">阴</div>
                             <div class="wx-row"><span class="wx-rain">💧3%</span></div>
-                            <div class="wx-row">💨11.5km/h</div>
+                            <div class="wx-row">💨9.9km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">Mon</div>
                             <div class="wx-time">00:00</div>
-                            <div class="wx-icon">⛅</div>
+                            <div class="wx-icon">☁️</div>
                             <div class="wx-temp">10°C</div>
-                            <div class="wx-cond">局部多云</div>
+                            <div class="wx-cond">阴</div>
                             <div class="wx-row"><span class="wx-rain">💧5%</span></div>
-                            <div class="wx-row">💨10.8km/h</div>
+                            <div class="wx-row">💨9.8km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">01:00</div>
-                            <div class="wx-icon">☁️</div>
+                            <div class="wx-icon">⛅</div>
                             <div class="wx-temp">10°C</div>
-                            <div class="wx-cond">阴</div>
+                            <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧3%</span></div>
-                            <div class="wx-row">💨9.0km/h</div>
+                            <div class="wx-row">💨9.4km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">02:00</div>
                             <div class="wx-icon">⛅</div>
-                            <div class="wx-temp">10°C</div>
+                            <div class="wx-temp">9°C</div>
                             <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧5%</span></div>
-                            <div class="wx-row">💨5.0km/h</div>
+                            <div class="wx-row">💨7.3km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
@@ -479,7 +491,7 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
                             <div class="wx-temp">9°C</div>
                             <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧3%</span></div>
-                            <div class="wx-row">💨6.3km/h</div>
+                            <div class="wx-row">💨7.9km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
@@ -488,83 +500,74 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
                             <div class="wx-temp">9°C</div>
                             <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨4.7km/h</div>
+                            <div class="wx-row">💨7.4km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">05:00</div>
-                            <div class="wx-icon">⛅</div>
-                            <div class="wx-temp">8°C</div>
-                            <div class="wx-cond">局部多云</div>
+                            <div class="wx-icon">🌤️</div>
+                            <div class="wx-temp">9°C</div>
+                            <div class="wx-cond">多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨1.6km/h</div>
+                            <div class="wx-row">💨3.4km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">06:00</div>
-                            <div class="wx-icon">☁️</div>
+                            <div class="wx-icon">🌤️</div>
                             <div class="wx-temp">8°C</div>
-                            <div class="wx-cond">阴</div>
+                            <div class="wx-cond">多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨3.1km/h</div>
+                            <div class="wx-row">💨1.9km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">07:00</div>
-                            <div class="wx-icon">⛅</div>
+                            <div class="wx-icon">☀️</div>
                             <div class="wx-temp">7°C</div>
-                            <div class="wx-cond">局部多云</div>
+                            <div class="wx-cond">晴</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨3.1km/h</div>
+                            <div class="wx-row">💨3.4km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">08:00</div>
                             <div class="wx-icon">⛅</div>
-                            <div class="wx-temp">7°C</div>
+                            <div class="wx-temp">6°C</div>
                             <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨3.5km/h</div>
+                            <div class="wx-row">💨3.2km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">09:00</div>
-                            <div class="wx-icon">☁️</div>
+                            <div class="wx-icon">⛅</div>
                             <div class="wx-temp">8°C</div>
-                            <div class="wx-cond">阴</div>
+                            <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨4.3km/h</div>
+                            <div class="wx-row">💨4.0km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">10:00</div>
-                            <div class="wx-icon">☁️</div>
+                            <div class="wx-icon">🌤️</div>
                             <div class="wx-temp">9°C</div>
-                            <div class="wx-cond">阴</div>
+                            <div class="wx-cond">多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨3.8km/h</div>
+                            <div class="wx-row">💨3.3km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">11:00</div>
-                            <div class="wx-icon">☁️</div>
-                            <div class="wx-temp">10°C</div>
-                            <div class="wx-cond">阴</div>
+                            <div class="wx-icon">⛅</div>
+                            <div class="wx-temp">11°C</div>
+                            <div class="wx-cond">局部多云</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨4.9km/h</div>
+                            <div class="wx-row">💨3.7km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">12:00</div>
-                            <div class="wx-icon">☁️</div>
-                            <div class="wx-temp">11°C</div>
-                            <div class="wx-cond">阴</div>
-                            <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨5.2km/h</div>
-                        </div>
-                        <div class="wx">
-                            <div class="wx-day">&nbsp;</div>
-                            <div class="wx-time">13:00</div>
                             <div class="wx-icon">☁️</div>
                             <div class="wx-temp">12°C</div>
                             <div class="wx-cond">阴</div>
@@ -573,30 +576,39 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
-                            <div class="wx-time">14:00</div>
+                            <div class="wx-time">13:00</div>
                             <div class="wx-icon">☁️</div>
-                            <div class="wx-temp">12°C</div>
+                            <div class="wx-temp">13°C</div>
                             <div class="wx-cond">阴</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨4.5km/h</div>
+                            <div class="wx-row">💨1.4km/h</div>
+                        </div>
+                        <div class="wx">
+                            <div class="wx-day">&nbsp;</div>
+                            <div class="wx-time">14:00</div>
+                            <div class="wx-icon">☁️</div>
+                            <div class="wx-temp">13°C</div>
+                            <div class="wx-cond">阴</div>
+                            <div class="wx-row"><span class="wx-rain">💧0%</span></div>
+                            <div class="wx-row">💨1.1km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">15:00</div>
                             <div class="wx-icon">☁️</div>
-                            <div class="wx-temp">12°C</div>
+                            <div class="wx-temp">13°C</div>
                             <div class="wx-cond">阴</div>
                             <div class="wx-row"><span class="wx-rain">💧0%</span></div>
-                            <div class="wx-row">💨4.2km/h</div>
+                            <div class="wx-row">💨1.3km/h</div>
                         </div>
                         <div class="wx">
                             <div class="wx-day">&nbsp;</div>
                             <div class="wx-time">16:00</div>
                             <div class="wx-icon">☁️</div>
-                            <div class="wx-temp">12°C</div>
+                            <div class="wx-temp">13°C</div>
                             <div class="wx-cond">阴</div>
                             <div class="wx-row"><span class="wx-rain">💧5%</span></div>
-                            <div class="wx-row">💨4.0km/h</div>
+                            <div class="wx-row">💨4.3km/h</div>
                         </div>
                 </div>
             </div>
@@ -605,7 +617,7 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
                 <span class="ev-city">东京</span>
                 <span class="ev-eye">WTA · 10/26 开赛</span>
             </div>
-            <div class="ev-stats"><div class="ev-stat"><b>112</b><span>参赛</span></div><div class="ev-stat"><b>112</b><span>幸存</span></div><div class="ev-stat"><b>100%</b><span>存活率</span></div></div>
+            <div class="ev-stats"><div class="ev-stat"><b>116</b><span>参赛</span></div><div class="ev-stat"><b>116</b><span>幸存</span></div><div class="ev-stat"><b>100%</b><span>存活率</span></div></div>
             <div class="trend" data-tour="WTA">
                 <div class="trend-hd"><span>幸存人数走势 · 共 1 个比赛日</span>
                     <button type="button" class="chip-btn trend-replay" aria-label="重播动画">↻ 重播</button></div>
@@ -843,10 +855,15 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
     <section class="block">
         <h2 class="block-hd">今日选人 <span class="block-note">仅在比赛日显示</span></h2>
         <div class="pk-grid">
-            <a class="pk-card wta" href="wta_ranking.html">
+            <a class="pk-card atp" href="atp_ranking.html">
+                <div class="pk-hd"><span class="ev-eye">ATP · 巴塞尔</span>
+                    <span class="pk-meta">已选 <b>2</b> · 轮空 <b>0</b> · 共 2</span></div>
+                <div class="pk-row"><span class="pk-name">鲁内</span><span class="pk-track"><span class="pk-bar" style="width:100%"></span></span><span class="pk-pct">50%</span></div><div class="pk-row"><span class="pk-name">鲁德</span><span class="pk-track"><span class="pk-bar" style="width:100%"></span></span><span class="pk-pct">50%</span></div>
+                <span class="text-link">查看完整选人明细 →</span>
+            </a>            <a class="pk-card wta" href="wta_ranking.html">
                 <div class="pk-hd"><span class="ev-eye">WTA · 东京</span>
-                    <span class="pk-meta">已选 <b>98</b> · 轮空 <b>14</b> · 共 112</span></div>
-                <div class="pk-row"><span class="pk-name">伊埃拉</span><span class="pk-track"><span class="pk-bar" style="width:100%"></span></span><span class="pk-pct">43%</span></div><div class="pk-row"><span class="pk-name">梅尔滕斯</span><span class="pk-track"><span class="pk-bar" style="width:75%"></span></span><span class="pk-pct">32%</span></div><div class="pk-row"><span class="pk-name">巴尔通科娃</span><span class="pk-track"><span class="pk-bar" style="width:29%"></span></span><span class="pk-pct">12%</span></div>
+                    <span class="pk-meta">已选 <b>102</b> · 轮空 <b>14</b> · 共 116</span></div>
+                <div class="pk-row"><span class="pk-name">伊埃拉</span><span class="pk-track"><span class="pk-bar" style="width:100%"></span></span><span class="pk-pct">43%</span></div><div class="pk-row"><span class="pk-name">梅尔滕斯</span><span class="pk-track"><span class="pk-bar" style="width:76%"></span></span><span class="pk-pct">33%</span></div><div class="pk-row"><span class="pk-name">巴尔通科娃</span><span class="pk-track"><span class="pk-bar" style="width:28%"></span></span><span class="pk-pct">12%</span></div>
                 <span class="text-link">查看完整选人明细 →</span>
             </a>
         </div>
@@ -902,7 +919,7 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
     </div>
 </dialog>
 
-<script type="application/json" id="trend-data">{"WTA": {"total": 112, "days": [{"day": 0, "alive": 112, "out": {}}, {"day": 1, "alive": 112, "out": {}, "checkin": {"未完赛": 98, "轮空": 14, "未选": 746}}], "live": true}}</script>
+<script type="application/json" id="trend-data">{"ATP": {"total": 2, "days": [{"day": 0, "alive": 2, "out": {}}, {"day": 1, "alive": 2, "out": {}, "checkin": {"未完赛": 2, "未选": 759}}], "live": true}, "WTA": {"total": 116, "days": [{"day": 0, "alive": 116, "out": {}}, {"day": 1, "alive": 116, "out": {}, "checkin": {"未完赛": 102, "轮空": 14, "未选": 742}}], "live": true}}</script>
 <script>
 function toggleTheme(){
     const going=!document.body.classList.contains('dark');
