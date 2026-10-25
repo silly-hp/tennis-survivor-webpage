@@ -438,7 +438,8 @@ def _summary_bar_html(
         bye_n = int(r.get("轮空", 0) or 0) if has_bye else 0
         name = str(r["今日主选"]).strip()
         # Skip empty / synthetic bye label — bye count lives in meta chips only.
-        if name and name != "轮空":
+        # Also skip 0-pick rows (e.g. 自杀(重复) still keyed by a living player).
+        if name and name != "轮空" and (normal_n + bye_n) > 0:
             status = _player_status(name)
             backs = backup_by_primary.get(name) or []
             if backs:
