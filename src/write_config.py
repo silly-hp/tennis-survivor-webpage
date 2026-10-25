@@ -340,59 +340,69 @@ def find_corresponding_week_events(
     max_day_delta: int = 10,
 ) -> list[str]:
     """
-    Map this year's event to last year's corresponding replacement event(s).
+    Map this year's event week to last year's same slot (−52 weeks).
 
-    Uses Grand Slam + 1000 tournaments as season anchors (always 1:1), then
-    places mid-tier events by relative time between neighbouring anchors.
-    2025 may have empty weeks while 2026 is denser — those map to [].
+    ``this_event_id`` / ``this_calendar`` are accepted for call-site compatibility
+    but unused: rolling weeks are dated off ``this_week_start`` only.
     """
+    del this_event_id, this_calendar  # API compat; rolling uses week date only
     this_week_start = pd.Timestamp(this_week_start).normalize()
-    if this_calendar is None or this_calendar.empty:
-        # Minimal single-row this-year frame so mapping still runs
-        this_calendar = pd.DataFrame(
-            [
-                {
-                    "tour": tour_flag,
-                    "week_start_date": this_week_start,
-                    "city": this_city or "",
-                    "event_id": str(this_event_id or ""),
-                    "page_type": "score",
-                }
-            ]
-        )
-
-    replace_map = build_replace_map(
-        this_calendar, last_calendar, tour_flag, max_day_delta=max_day_delta
+    target = this_week_start - pd.Timedelta(weeks=52)
+    tour = last_calendar.loc[last_calendar["tour"] == tour_flag].copy()
+    if tour.empty or "week_start_date" not in tour.columns:
+        return []
+    tour["week_start_date"] = pd.to_datetime(tour["week_start_date"])
+    tour = tour.dropna(subset=["week_start_date"])
+    if "event_id" in tour.columns:
+        tour = tour.drop_duplicates(subset=["event_id"], keep="first")
+    tour = tour.assign(_delta=(tour["week_start_date"] - target).abs().dt.days)
+    hit = tour.loc[tour["_delta"] <= int(max_day_delta)].sort_values(
+        ["_delta", "week_start_date"]
     )
-    eid = str(this_event_id).strip() if this_event_id is not None else ""
-    if eid and eid in replace_map:
-        names = replace_map[eid]
+    if hit.empty:
         logger.info(
-            f"{tour_flag} replace (anchor-map) "
-            f"{this_week_start.date()} {this_city or ''} → {names or '∅'}"
+            f"{tour_flag} replace (-52w) {this_week_start.date()} "
+            f"{this_city or ''} → ∅ (no event within {max_day_delta}d of {target.date()})"
         )
-        return names
-
-    # Fallback: locate by week_start + city in this calendar
-    this_cal = _prep_tour_calendar(this_calendar, tour_flag)
-    if this_city:
-        hit = this_cal.loc[
-            (this_cal["week_start_date"] == this_week_start)
-            & (this_cal["city"] == str(this_city).strip())
-        ]
-        if not hit.empty:
-            names = replace_map.get(str(hit.iloc[0]["event_id"]), [])
-            logger.info(
-                f"{tour_flag} replace (anchor-map/city) "
-                f"{this_week_start.date()} {this_city} → {names or '∅'}"
-            )
-            return names
-
-    logger.warning(
-        f"{tour_flag} replace map miss for {this_week_start.date()} "
-        f"id={this_event_id} city={this_city}"
+        return []
+    min_delta = int(hit.iloc[0]["_delta"])
+    names: list[str] = []
+    for name in (
+        hit.loc[hit["_delta"] == min_delta, "city"].astype(str).str.strip().tolist()
+    ):
+        if name and name not in names:
+            names.append(name)
+    logger.info(
+        f"{tour_flag} replace (-52w) {this_week_start.date()} "
+        f"{this_city or ''} → {names} (target {target.date()}, Δ={min_delta}d)"
     )
-    return []
+    return names
+
+
+def _resolve_removed_names(
+    last_yr_calendar_path: str,
+    tour_flag: str,
+    event_dict: dict,
+    current_id,
+) -> list[str]:
+    """Load last-year calendar and return −52w counterpart city name(s)."""
+    calendar_path = Path(last_yr_calendar_path)
+    if not calendar_path.exists():
+        logger.warning(
+            "last-year calendar missing at %s; skip replace-map", calendar_path
+        )
+        return []
+    last_calendar = pd.read_json(calendar_path, orient="table")
+    for col in ["week_start_date", "valid_from", "invalid_date"]:
+        if col in last_calendar.columns:
+            last_calendar[col] = pd.to_datetime(last_calendar[col])
+    return find_corresponding_week_events(
+        last_calendar,
+        tour_flag,
+        event_dict["week_start_date"],
+        this_event_id=current_id,
+        this_city=event_dict.get("city"),
+    )
 
 
 def build_tour_config(
@@ -425,36 +435,9 @@ def build_tour_config(
             "name": event_dict["city"],
             "week_start_date": event_dict["week_start_date"].strftime("%Y-%m-%d"),
         }
-        # Anchor-based replace: slam/1000 first, mid-tier by time between anchors.
-        calendar_path = Path(last_yr_calendar_path)
-        week_names: list[str] = []
-        if not calendar_path.exists():
-            logger.warning(
-                "last-year calendar missing at %s; skip replace-map", calendar_path
-            )
-        elif event_dict is None:
-            logger.warning("no current event; skip replace-map for %s", tour_label)
-        else:
-            last_calendar = pd.read_json(calendar_path, orient="table")
-            for col in ["week_start_date", "valid_from", "invalid_date"]:
-                if col in last_calendar.columns:
-                    last_calendar[col] = pd.to_datetime(last_calendar[col])
-
-            this_year = int(
-                event_dict["event_year"]
-                if event_dict.get("event_year") is not None
-                else pd.Timestamp(event_dict["week_start_date"]).year
-            )
-            this_calendar, _ = fetch_survivor_calendar_event_df(this_year)
-
-            week_names = find_corresponding_week_events(
-                last_calendar,
-                tour_flag,
-                event_dict["week_start_date"],
-                this_event_id=current_id,
-                this_calendar=this_calendar,
-                this_city=event_dict.get("city"),
-            )
+        week_names = _resolve_removed_names(
+            last_yr_calendar_path, tour_flag, event_dict, current_id
+        )
         if week_names:
             config_dict["removed_tournament_name"] = (
                 week_names[0] if len(week_names) == 1 else week_names
@@ -485,8 +468,29 @@ def build_tour_config(
         if debug_flag:
             print(config_dict)
         return config_dict
-    else:
-        return config[tour_label]
+
+    # Same event: still refresh −52w removed mapping (algorithm / calendar drift).
+    config_dict = dict(config.get(tour_label) or {})
+    if valid_flag and event_dict is not None:
+        week_names = _resolve_removed_names(
+            last_yr_calendar_path, tour_flag, event_dict, current_id
+        )
+        new_removed = (
+            week_names[0]
+            if len(week_names) == 1
+            else (week_names if week_names else None)
+        )
+        if config_dict.get("removed_tournament_name") != new_removed:
+            config_dict["removed_tournament_name"] = new_removed
+            config_manager.update(
+                {tour_label: {"removed_tournament_name": new_removed}}
+            )
+            logger.info(
+                "Refresh %s removed_tournament_name → %s (−52w)",
+                tour_label,
+                new_removed,
+            )
+    return config_dict
 
 
 def _write_point_removal_date(year: int, path: str):

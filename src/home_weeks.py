@@ -341,12 +341,11 @@ def _correspond_cities(
     tour_flag: str,
     replace_map: Optional[dict[str, list[str]]] = None,
 ) -> list[str]:
-    """YoY corresponding cities via slam/1000 anchor map (not naive −52w)."""
+    """YoY corresponding cities via −52 week rolling slot."""
     eid = str(event.get("event_id") or "")
     city = str(event.get("city") or "").strip()
     week = event.get("week_start_date")
-    if replace_map is not None and eid in replace_map:
-        return list(replace_map.get(eid) or [])
+    # Prefer rolling −52w (same as ranking removed_tournament_name).
     return find_corresponding_week_events(
         last_calendar,
         tour_flag,
