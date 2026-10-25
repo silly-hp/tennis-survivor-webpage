@@ -818,7 +818,7 @@ def render_index(
             </div>
         </a>
         <div class="hd-actions">
-            <a class="pill-btn" href="atp_ranking.html#watch" title="我的关注" aria-label="我的关注"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:var(--secondary)"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span class="pill-label">我的关注</span><span class="pill-n" id="watchCount" hidden></span></a>
+            <a class="pill-btn" href="watchlist.html" title="我的关注" aria-label="我的关注"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:var(--secondary)"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span class="pill-label">我的关注</span><span class="pill-n" id="watchCount" hidden></span></a>
             <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
         </div>
     </header>

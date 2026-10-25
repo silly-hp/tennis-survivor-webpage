@@ -76,7 +76,8 @@ def site_header(updated: str, page: str = "", back_label: str = "← 首页",
 
     seg = []
     sec_label = _SECTIONS[section][0] if section else "本页"
-    for t in ("ATP", "WTA", "ALL"):
+    # pages outside the sections (watchlist.html) cover both tours: no switch
+    for t in ("ATP", "WTA", "ALL") if links else ():
         label = _TOUR_LABEL[t]
         if t not in links:
             seg.append(f'<span class="hd-seg-btn" aria-disabled="true" tabindex="0" '
@@ -93,7 +94,7 @@ def site_header(updated: str, page: str = "", back_label: str = "← 首页",
   </a>
   <nav class="hd-tabs" aria-label="栏目">{"".join(tabs)}</nav>
   <div class="hd-right">
-    <div class="hd-seg" role="group" aria-label="巡回赛">{"".join(seg)}</div>
+    {f'<div class="hd-seg" role="group" aria-label="巡回赛">{"".join(seg)}</div>' if seg else ""}
     <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">{esc(updated)}</span><span class="hd-suffix"> 更新</span></span>
     <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗">{_MOON}{_SUN}<span class="theme-label">暗色</span></button>
   </div>

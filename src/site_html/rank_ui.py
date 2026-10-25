@@ -104,7 +104,19 @@ def table_card_close() -> str:
     <button type="button" class="rk-btn" id="rkMore" hidden>再显示 50 行</button>
   </div>
 </section>
-<div class="rk-pop rk-picker" id="rkPicker" role="dialog" aria-label="加入哪个列表" hidden></div>"""
+<div class="rk-pop rk-picker" id="rkPicker" role="dialog" aria-label="加入哪个列表" hidden></div>
+{ask_modal_html()}"""
+
+
+def ask_modal_html() -> str:
+    """In-page confirm (window.confirm is blocked in embedded browsers and returns false)."""
+    return """<div class="rk-modal" id="rkAsk" hidden>
+  <div class="rk-dlg rk-ask" role="alertdialog" aria-modal="true" aria-labelledby="rkAskT" aria-describedby="rkAskD" tabindex="-1">
+    <div class="rk-dlg-hd"><div class="rk-dlg-ttl"><span class="rk-eye">CONFIRM</span><h2 id="rkAskT"></h2></div></div>
+    <p class="rk-ask-d" id="rkAskD"></p>
+    <div class="rk-dlg-ft"><span></span><span class="rk-dlg-nav"><button type="button" class="rk-btn" data-close="1" data-v="0">取消</button><button type="button" class="rk-btn rk-ask-ok" data-v="1" id="rkAskOk"></button></span></div>
+  </div>
+</div>"""
 
 
 _CLOSE = ('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
@@ -119,13 +131,22 @@ def help_button_html() -> str:
     return f'<button type="button" class="rk-help-btn" id="rkHelpBtn" aria-haspopup="dialog" aria-label="使用说明" title="使用说明">{_HELP}</button>'
 
 
-def history_modal_html(eyebrow: str) -> str:
-    """选人历史 dialog; JS_RANK fills it from the clicked row."""
+def history_modal_html(eyebrow: str, tour_switch: bool = False) -> str:
+    """选人历史 dialog; JS_RANK (or the watch page) fills it via ``tsHist``.
+
+    ``tour_switch`` adds an ATP / WTA toggle (watch page: one user, two tours).
+    """
+    seg = (
+        '<div class="rk-hist-seg" id="rkHistSeg" role="group" aria-label="巡回赛">'
+        '<button type="button" data-t="ATP" aria-pressed="true">ATP</button>'
+        '<button type="button" data-t="WTA" aria-pressed="false">WTA</button></div>'
+        if tour_switch else ""
+    )
     return f"""<div class="rk-modal" id="rkHist" hidden>
   <div class="rk-dlg rk-dlg-hist" role="dialog" aria-modal="true" aria-labelledby="rkHistName" tabindex="-1">
     <div class="rk-dlg-hd">
-      <div class="rk-dlg-ttl"><span class="rk-eye rk-eye-tour">PICK HISTORY · {html.escape(eyebrow)}</span><h2 id="rkHistName"></h2></div>
-      <button type="button" class="rk-x" data-close="1" aria-label="关闭">{_CLOSE}</button>
+      <div class="rk-dlg-ttl"><span class="rk-eye rk-eye-tour" id="rkHistEye">PICK HISTORY · {html.escape(eyebrow)}</span><h2 id="rkHistName"></h2></div>
+      <span class="rk-dlg-act">{seg}<button type="button" class="rk-x" data-close="1" aria-label="关闭">{_CLOSE}</button></span>
     </div>
     <div class="rk-hist-stats" id="rkHistStats"></div>
     <div class="rk-hist-head"><span>天数</span><span>选人</span><span>结果</span></div>
@@ -460,10 +481,22 @@ body.dark .rk-help-btn{color:#8fb0ff;}
     display:flex;flex-direction:column;overflow:hidden;animation:rkRise .26s cubic-bezier(.22,.68,0,1.2) both;outline:0;}
 .rk-dlg-hist{border-top:3px solid var(--tour);}
 .rk-dlg-help{border-top:3px solid var(--me);width:min(560px,100%);}
+.rk-ask{width:min(420px,100%);border-top:3px solid var(--bad);}
+.rk-ask h2{white-space:normal;font-size:18px;}
+.rk-ask-d{margin:0;padding:0 20px 16px;font-size:14px;line-height:1.6;color:var(--muted);}
+.rk-ask-ok{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:700;}
+.rk-ask-ok:hover{color:#fff;border-color:var(--bad);filter:brightness(1.08);}
+body.dark .rk-ask-ok{color:#1a0904;}
 .rk-dlg-hd{display:flex;justify-content:space-between;gap:12px;padding:18px 20px 12px;}
 .rk-dlg-ttl{display:flex;flex-direction:column;gap:4px;min-width:0;}
 .rk-dlg-ttl h2{margin:0;font-family:'Noto Serif SC',serif;font-size:22px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .rk-eye-tour{color:var(--tour);}
+.rk-dlg-act{display:flex;align-items:flex-start;gap:10px;flex-shrink:0;}
+.rk-hist-seg{display:flex;gap:3px;padding:3px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;}
+.rk-hist-seg button{min-height:36px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:13px;font-weight:700;
+    transition:background-color .18s,color .18s;}
+.rk-hist-seg button[aria-pressed="true"]{background:#1c3f94;color:#fff;}
+.rk-hist-seg button:disabled{opacity:.45;cursor:not-allowed;}
 .rk-x{flex-shrink:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--ink);
     display:flex;align-items:center;justify-content:center;}
 .rk-hist-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 20px 14px;}
@@ -665,7 +698,42 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
 }"""
 
 
-JS_RANK = r"""
+# Shared by the ranking and watch pages: status groups + 选人历史 day alignment.
+JS_HIST = r"""
+function tsGrp(s){ if(s==='存活')return 'alive'; if(s==='未完赛')return 'live'; if(s==='轮空')return 'bye'; if(s==='未选')return 'none';
+  if(s==='未参赛'||s==='')return 'absent'; if(s.indexOf('自杀')===0)return 'suicide'; if(s==='球员输球')return 'out'; return 'other'; }
+function tsEsc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+// same classes as _status_badge_html
+function tsBadge(s){ s=String(s||'').trim(); if(!s) return '';
+  const c=(s==='存活'||s==='轮空')?'st-alive':(s==='未完赛'||s==='未选')?'st-live':(s==='球员输球'||s==='未参赛'||s.indexOf('自杀')===0)?'st-out':'st-other';
+  return '<span class="st-badge '+c+'">'+tsEsc(s)+'</span>'; }
+// o: {picks, st, stHtml, days, main, alt, hasSt} → {rows (html), sum (text)}
+function tsHist(o){
+  const picks=Array.isArray(o.picks)?o.picks:[];
+  // picks hold settled days only. A pick that knocked the user out is the extra
+  // entry past 存活天数; otherwise the status belongs to the next day (today's pick, or
+  // "-" when nothing was submitted, e.g. 自杀(退赛) for an empty day).
+  const g=tsGrp(o.st||''), survived=parseInt(o.days,10);
+  const lostOnLast=(g==='out'||g==='suicide')&&!isNaN(survived)&&picks.length>survived;
+  const items=picks.map((v,i)=>{ const raw=String(v).trim(), bye0=i===0&&raw==='轮空', val=bye0?'':raw;
+    return {val, bye:bye0||raw==='轮空', res:null}; });
+  if(lostOnLast&&items.length) items[items.length-1].res=o.stHtml;
+  else if(g!=='absent'&&o.hasSt) items.push({val:o.main||'', bye:g==='bye', res:o.stHtml, alt:o.alt||''});
+  const last=items.length-1;
+  const rows=items.length?items.map((it,i)=>{
+    const empty=!it.val||it.val.toLowerCase()==='nan';
+    const res=it.res!=null?it.res:it.bye?'<span class="st-badge st-alive">轮空</span>'
+      :empty?'<span class="st-badge st-out">未选</span>':'<span class="st-badge st-alive">晋级</span>';
+    const alt=it.alt&&!empty?'<span class="a">备 '+tsEsc(it.alt)+'</span>':'';
+    return '<div class="rk-hist-row'+(i===last?' today':'')+'" style="animation-delay:'+Math.min(i,12)*50+'ms"><b>'+(i+1)+'</b>'
+      +'<span class="p'+(empty?' none':'')+'">'+(empty?'-':tsEsc(it.val))+alt+'</span>'+res+'</div>';
+  }).join(''):'<div class="rk-empty">暂无选人记录</div>';
+  const valid=items.filter(it=>it.val&&it.val!=='轮空'&&it.val.toLowerCase()!=='nan').length;
+  return {rows, sum:'共 '+items.length+' 天 · '+valid+' 天有效选人 · 点击空白处或按 Esc 关闭'};
+}
+"""
+
+JS_RANK = JS_HIST + r"""
 (function(){
 function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
 ready(function(){
@@ -697,15 +765,20 @@ ready(function(){
   const delta=r=>{ const s=r.cells[C.d]&&r.cells[C.d].querySelector('.rank'); return s?(parseInt(s.dataset.d||'0',10)||0):0; };
 
   // ── status groups ──
-  function grp(s){ if(s==='存活')return 'alive'; if(s==='未完赛')return 'live'; if(s==='轮空')return 'bye'; if(s==='未选')return 'none';
-    if(s==='未参赛'||s==='')return 'absent'; if(s.indexOf('自杀')===0)return 'suicide'; if(s==='球员输球')return 'out'; return 'other'; }
+  const grp=tsGrp;
   const G=rows.map(r=>grp(txt(r,C.st)));
   // 轮空 / 未轮空 only on a day-1 bye; 自杀 is a subset of 淘汰
   const BYE_DAY=root.dataset.byeday==='1';
-  const CHIPS=[['all','全部'],['picked','已选'],...(BYE_DAY?[['bye','轮空'],['nobye','未轮空']]:[]),['alive','存活'],['live','未完赛'],
+  // 参赛 = picked at some point this event; 已选 = made a valid pick today (matches 今日选人统计):
+  // still in today (存活/未完赛/轮空) or knocked out by today's pick. Earlier losers have 存活天数 < today's.
+  const CHIPS=[['all','全部'],['entered','参赛'],['picked','已选'],...(BYE_DAY?[['bye','轮空'],['nobye','未轮空']]:[]),['alive','存活'],['live','未完赛'],
                ['outall','淘汰'],['suicide','自杀'],['none','未选']];
-  const PICKED=['alive','live','bye','out','suicide'];
-  const inChip=(k,g)=>k==='all'||(k==='picked'?PICKED.includes(g):k==='nobye'?PICKED.includes(g)&&g!=='bye':k==='outall'?(g==='out'||g==='suicide'):g===k);
+  const ENTERED=['alive','live','bye','out','suicide'];
+  const DAYS=rows.map(r=>parseInt(txt(r,C.days),10));
+  const TODAY_D=Math.max(-1,...DAYS.filter((d,i)=>G[i]!=='absent'&&!isNaN(d)));
+  const TODAY=rows.map((r,i)=>['alive','live','bye'].includes(G[i])||(G[i]==='out'&&DAYS[i]===TODAY_D&&used(r).length>TODAY_D));
+  const inChip=(k,i)=>{ const g=G[i]; return k==='all'||(k==='entered'?ENTERED.includes(g):k==='picked'?TODAY[i]:k==='nobye'?ENTERED.includes(g)&&g!=='bye'
+    :k==='outall'?(g==='out'||g==='suicide'):g===k); };
   let chip=C.st>=0?'picked':'all', list='', routes=new Set(), limit=PAGE;
   const rowIdx=new Map(rows.map((r,i)=>[r,i]));
 
@@ -718,7 +791,7 @@ ready(function(){
   const allFav=()=>new Set(S.lists.flatMap(l=>l.users));
   function listOk(u){ if(!list) return true; if(list==='*') return allFav().has(u); const l=S.lists.find(x=>x.id===list); return !!l&&l.users.includes(u); }
   TS.extra.push(function(r){ const i=rowIdx.get(r), u=uname(r);
-    return (list?true:inChip(chip,G[i])) && listOk(u) && routeOk(r); });
+    return (list?true:inChip(chip,i)) && listOk(u) && routeOk(r); });
 
   // ── pagination + counts after every filter pass ──
   let matched=[];
@@ -744,7 +817,7 @@ ready(function(){
   const chipBox=document.getElementById('rkChips');
   function renderChips(){
     if(C.st<0){ chipBox.hidden=true; return; }
-    chipBox.innerHTML=CHIPS.map(([k,l])=>{ const n=G.filter(g=>inChip(k,g)).length;
+    chipBox.innerHTML=CHIPS.map(([k,l])=>{ const n=G.filter((g,i)=>inChip(k,i)).length;
       return '<button type="button" class="rk-chip" data-k="'+k+'" aria-pressed="'+(!list&&chip===k)+'">'+l+'<span class="n">'+n+'</span></button>'; }).join('');
   }
   chipBox.addEventListener('click',e=>{ const b=e.target.closest('.rk-chip'); if(!b) return; chip=b.dataset.k; list=''; renderChips(); renderWatch(); refresh(true); });
@@ -847,7 +920,15 @@ ready(function(){
     if(n){ const id='l'+Date.now().toString(36); S.lists.push({id,name:n,users:[]}); list=id; save(); } renderWatch(); renderChips(); refresh(true); });
   manage.addEventListener('click',e=>{ const cur=S.lists.find(l=>l.id===list); if(!cur) return;
     if(e.target.id==='rkRenameSave'){ const n=document.getElementById('rkRename').value.trim(); if(n){ cur.name=n; afterChange(); } }
-    if(e.target.id==='rkDel'){ if(window.confirm('删除列表「'+cur.name+'」？')){ S.lists=S.lists.filter(l=>l!==cur); list=''; afterChange(); renderChips(); refresh(true); } } });
+    if(e.target.id==='rkDel') ask('删除列表「'+cur.name+'」？','列表里的 '+cur.users.length+' 人只会从这个列表移出，其他列表不受影响。','删除列表',e.target,()=>{
+      S.lists=S.lists.filter(l=>l!==cur); list=''; afterChange(); renderChips(); refresh(true); }); });
+  // in-page confirm: window.confirm is blocked in embedded browsers (returns false)
+  const askM=document.getElementById('rkAsk'); let askFn=null;
+  function ask(title,desc,okLabel,from,fn){
+    document.getElementById('rkAskT').textContent=title; document.getElementById('rkAskD').textContent=desc;
+    document.getElementById('rkAskOk').textContent=okLabel; askFn=fn; openModal(askM,from);
+    askM.querySelector('[data-v="0"]').focus(); }
+  askM.addEventListener('click',e=>{ if(!e.target.closest('[data-v="1"]')) return; const fn=askFn; askFn=null; closeModal(askM); if(fn) fn(); });
   function afterChange(){ save(); paintAll(); renderWatch(); renderMe(); if(list) refresh(false); else renderCards(); }
 
   // ── share link (#w=) ──
@@ -895,14 +976,16 @@ ready(function(){
     if(byUser.has(v)){ S.me=v; afterChange(); } else { document.getElementById('rkMeInput').setCustomValidity('找不到这个用户名'); document.getElementById('rkMeInput').reportValidity(); } });
   document.getElementById('rkMeInput').addEventListener('input',e=>e.target.setCustomValidity(''));
   document.getElementById('rkMeChange').addEventListener('click',()=>{ S.me=''; afterChange(); document.getElementById('rkMeInput').focus(); });
-  document.getElementById('rkMeJump').addEventListener('click',()=>{
-    const r=byUser.get(S.me); if(!r) return;
+  document.getElementById('rkMeJump').addEventListener('click',()=>jumpTo(S.me));
+  // reveal a user's row (clears filters that hide it), scroll to it and flash it
+  function jumpTo(u){
+    const r=byUser.get(u); if(!r) return;
     if(r.style.display==='none'||r.classList.contains('rk-pg')){ chip='all'; list=''; routes.clear(); renderChips(); renderWatch();
       if(rBtn){ routes.clear(); document.getElementById('rkRouteSel').innerHTML=''; document.getElementById('rkRouteRes').hidden=true; document.getElementById('rkRouteLbl').textContent='选择球员…'; } TS.refresh(); }
     const idx=matched.indexOf(r); if(idx>=limit){ limit=Math.ceil((idx+1)/PAGE)*PAGE; paginate(); }
-    const target=mqMobile.matches?root.querySelector('.rk-card-row[data-u="'+CSS.escape(S.me)+'"]'):r;
+    const target=mqMobile.matches?root.querySelector('.rk-card-row[data-u="'+CSS.escape(u)+'"]'):r;
     if(target){ target.scrollIntoView({block:'center',behavior:still()?'auto':'smooth'}); flash(target); }
-  });
+  }
   function flash(el){ el.classList.remove('rk-mv0','rk-mv1'); void el.offsetWidth; el.style.setProperty('--dy','0px'); el.classList.add('rk-mv0'); }
 
   // ── frozen rank / change / user columns (desktop) ──
@@ -1023,26 +1106,10 @@ ready(function(){
       +(C.pts>=0?stat(ths[C.pts],esc(r.cells[C.pts].dataset.v||txt(r,C.pts))):'')
       +(C.days>=0?stat('存活天数',esc(txt(r,C.days)||'0')):'')
       +(C.st>=0?'<span>当前状态'+stCell+'</span>':'');
-    // data-detail holds settled days only. A pick that knocked the user out is the extra
-    // entry past 存活天数; otherwise the status belongs to the next day (today's pick, or
-    // "-" when nothing was submitted, e.g. 自杀(退赛) for an empty day).
-    const g=grp(txt(r,C.st)), survived=parseInt(txt(r,C.days),10);
-    const lostOnLast=(g==='out'||g==='suicide')&&!isNaN(survived)&&picks.length>survived;
-    const items=picks.map((v,i)=>{ const raw=String(v).trim(), bye0=i===0&&raw==='轮空', val=bye0?'':raw;
-      return {val, bye:bye0||raw==='轮空', res:null}; });
-    if(lostOnLast&&items.length) items[items.length-1].res=stCell;
-    else if(g!=='absent'&&C.st>=0) items.push({val:C.main>=0?txt(r,C.main):'', bye:g==='bye', res:stCell, alt:C.alt>=0?txt(r,C.alt):''});
-    const last=items.length-1;
-    document.getElementById('rkHistList').innerHTML=items.length?items.map((it,i)=>{
-      const empty=!it.val||it.val.toLowerCase()==='nan';
-      const res=it.res!=null?it.res:it.bye?'<span class="st-badge st-alive">轮空</span>'
-        :empty?'<span class="st-badge st-out">未选</span>':'<span class="st-badge st-alive">晋级</span>';
-      const alt=it.alt&&!empty?'<span class="a">备 '+esc(it.alt)+'</span>':'';
-      return '<div class="rk-hist-row'+(i===last?' today':'')+'" style="animation-delay:'+Math.min(i,12)*50+'ms"><b>'+(i+1)+'</b>'
-        +'<span class="p'+(empty?' none':'')+'">'+(empty?'-':esc(it.val))+alt+'</span>'+res+'</div>';
-    }).join(''):'<div class="rk-empty">暂无选人记录</div>';
-    const valid=items.filter(it=>it.val&&it.val!=='轮空'&&it.val.toLowerCase()!=='nan').length;
-    document.getElementById('rkHistSum').textContent='共 '+items.length+' 天 · '+valid+' 天有效选人 · 点击空白处或按 Esc 关闭';
+    const h=tsHist({picks, st:txt(r,C.st), stHtml:stCell, days:txt(r,C.days), hasSt:C.st>=0,
+      main:C.main>=0?txt(r,C.main):'', alt:C.alt>=0?txt(r,C.alt):''});
+    document.getElementById('rkHistList').innerHTML=h.rows;
+    document.getElementById('rkHistSum').textContent=h.sum;
     openModal(hist,from);
   }
   table.addEventListener('click',e=>{ if(e.target.closest('.rk-star')) return; const r=e.target.closest('tbody tr'); if(r) openHist(r,r); });
@@ -1089,6 +1156,10 @@ ready(function(){
   if(location.hash==='#watch'&&allFav().size){ list='*'; renderWatch(); renderChips(); }
   TS.refresh(); freeze();
   window.addEventListener('resize',()=>{ clearTimeout(freeze._t); freeze._t=setTimeout(freeze,150); });
+  // #u=<name>: opened from the watch page — jump to that user's row
+  const hu=location.hash.match(/^#u=(.+)$/);
+  if(hu){ let u=''; try{ u=decodeURIComponent(hu[1]); }catch(e){}
+    if(byUser.has(u)){ setTimeout(()=>jumpTo(u),300); return; } }
   requestAnimationFrame(()=>play());
 });
 })();
