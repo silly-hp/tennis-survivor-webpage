@@ -661,7 +661,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     ← 首页
   </a>
   <div class="topbar-right">
-    <span class="updated">⏱ 2026年10月25日 11:31:58</span>
+    <span class="updated">⏱ 2026年10月25日 11:47:04</span>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
   </div>
 </div>
@@ -685,13 +685,13 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
         </button>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 5 人已选</span>
+        <span class="meta-chip chip-valid">✓ 6 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">10 人未选</span>
+    <span class="meta-chip chip-nosel">3 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-chip chip-suicide">⚠ 1 人自杀</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-total">总计 16 人</span>
+    <span class="meta-total">总计 10 人</span>
         </div>
         </div>
             <div class="sum-col-hd">
@@ -703,7 +703,7 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     </div>
         <div class="sum-list" id="sumList"></div>
         <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 1 名球员）</span>
+        <span id="sumToggleTxt">显示全部 2 名球员）</span>
         <span class="sum-ticon" id="sumTicon">▼</span>
         </button>
     </div>
@@ -711,10 +711,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "巴斯拉什维利", "normal": 5, "bye": 0, "status": "live"}];
-        var TOTALS  = {"normal": 5, "bye": 0, "grand": 5, "suicide": 1};
+        var ROWS    = [{"name": "巴斯拉什维利", "normal": 5, "bye": 0, "status": "live"}, {"name": "梅德韦杰夫", "normal": 1, "bye": 0, "status": "live"}];
+        var TOTALS  = {"normal": 6, "bye": 0, "grand": 6, "suicide": 1};
         var MAX_VAL = 5;
-        var CLIPBOARD_HEADER = "已选5\n未选10\n🔴自杀1";
+        var CLIPBOARD_HEADER = "已选6\n未选3\n🔴自杀1";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -1179,11 +1179,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>4046</td>
     <td><span class="rank down">-3</span></td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;轮空&quot;, &quot;毛罗然&quot;, &quot;马哈奇&quot;, &quot;梅德韦杰夫&quot;, &quot;西西帕斯&quot;, &quot;巴斯拉什维利&quot;]">
+  <tr class="row-out" data-detail="[&quot;轮空&quot;, &quot;毛罗然&quot;, &quot;马哈奇&quot;, &quot;梅德韦杰夫&quot;, &quot;西西帕斯&quot;, &quot;巴斯拉什维利&quot;]">
     <td>7</td>
     <td>10</td>
     <td>荞二皮</td>
-    <td><span class="st-badge st-live">未选</span></td>
+    <td><span class="st-badge st-out">自杀(退赛)</span></td>
     <td>6</td>
     <td></td>
     <td></td>
@@ -1235,11 +1235,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3961</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;轮空&quot;, &quot;毛罗然&quot;, &quot;西西帕斯&quot;, &quot;哈恰诺夫&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
+  <tr class="row-out" data-detail="[&quot;轮空&quot;, &quot;毛罗然&quot;, &quot;西西帕斯&quot;, &quot;哈恰诺夫&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
     <td>10</td>
     <td>14</td>
     <td>强化型米斯prototype</td>
-    <td><span class="st-badge st-live">未选</span></td>
+    <td><span class="st-badge st-out">自杀(退赛)</span></td>
     <td>6</td>
     <td></td>
     <td></td>
@@ -1347,11 +1347,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3770</td>
     <td><span class="rank same"></span></td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;轮空&quot;, &quot;哈恰诺夫&quot;, &quot;西西帕斯&quot;, &quot;布勃利克&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
+  <tr class="row-out" data-detail="[&quot;轮空&quot;, &quot;哈恰诺夫&quot;, &quot;西西帕斯&quot;, &quot;布勃利克&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
     <td>22</td>
     <td>22</td>
     <td>吡***吩</td>
-    <td><span class="st-badge st-live">未选</span></td>
+    <td><span class="st-badge st-out">自杀(退赛)</span></td>
     <td>6</td>
     <td></td>
     <td></td>
@@ -1431,11 +1431,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3465</td>
     <td><span class="rank down">-2</span></td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;轮空&quot;, &quot;西西帕斯&quot;, &quot;马哈奇&quot;, &quot;布勃利克&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
+  <tr class="row-out" data-detail="[&quot;轮空&quot;, &quot;西西帕斯&quot;, &quot;马哈奇&quot;, &quot;布勃利克&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
     <td>25</td>
     <td>28</td>
     <td>就是爱吃虾_</td>
-    <td><span class="st-badge st-live">未选</span></td>
+    <td><span class="st-badge st-out">自杀(退赛)</span></td>
     <td>6</td>
     <td></td>
     <td></td>
@@ -1449,10 +1449,10 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>28</td>
     <td>29</td>
     <td>samsonyip</td>
-    <td><span class="st-badge st-live">未选</span></td>
+    <td><span class="st-badge st-live">未完赛</span></td>
     <td>6</td>
     <td></td>
-    <td></td>
+    <td>梅德韦杰夫</td>
     <td></td>
     <td>165</td>
     <td>0</td>
@@ -1641,11 +1641,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>3221</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;轮空&quot;, &quot;哈恰诺夫&quot;, &quot;西西帕斯&quot;, &quot;阿特马纳&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
+  <tr class="row-out" data-detail="[&quot;轮空&quot;, &quot;哈恰诺夫&quot;, &quot;西西帕斯&quot;, &quot;阿特马纳&quot;, &quot;梅德韦杰夫&quot;, &quot;巴斯拉什维利&quot;]">
     <td>37</td>
     <td>43</td>
     <td>Ace_Moment</td>
-    <td><span class="st-badge st-live">未选</span></td>
+    <td><span class="st-badge st-out">自杀(退赛)</span></td>
     <td>6</td>
     <td></td>
     <td></td>
@@ -2845,11 +2845,11 @@ body.dark .detail-day{border-color:rgba(232,96,60,.28);}
     <td>2329</td>
     <td><span class="rank down">-1</span></td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;巴斯拉什维利&quot;, &quot;哈恰诺夫&quot;, &quot;西西帕斯&quot;, &quot;阿特马纳&quot;, &quot;布勃利克&quot;, &quot;梅德韦杰夫&quot;]">
+  <tr class="row-out" data-detail="[&quot;巴斯拉什维利&quot;, &quot;哈恰诺夫&quot;, &quot;西西帕斯&quot;, &quot;阿特马纳&quot;, &quot;布勃利克&quot;, &quot;梅德韦杰夫&quot;]">
     <td>115</td>
     <td>129</td>
     <td>青花比目</td>
-    <td><span class="st-badge st-live">未选</span></td>
+    <td><span class="st-badge st-out">自杀(退赛)</span></td>
     <td>6</td>
     <td></td>
     <td></td>
