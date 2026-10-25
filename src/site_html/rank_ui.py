@@ -441,7 +441,49 @@ body.dark .rk-pop{box-shadow:0 10px 28px rgba(0,0,0,.5);}
 .rk .filterable-table td{font-size:14px;padding:9px 10px;white-space:nowrap;}
 .rk .filterable-table td:nth-child(3),.rk .filterable-table td:nth-child(4){font-family:inherit;font-weight:inherit;color:inherit;font-size:14px;}
 .rk .filterable-table td:first-child{font-family:'Space Mono',monospace;font-weight:700;color:var(--ink);font-size:14px;}
-.rk .filter-trigger{min-height:28px;font-size:11px;color:var(--muted);border-radius:8px;padding:0 8px;font-family:'Noto Sans SC',sans-serif;}
+.rk .filter-trigger{min-height:36px;font-size:12px;color:var(--muted);border-radius:8px;padding:0 8px;gap:4px;font-family:'Noto Sans SC',sans-serif;
+    letter-spacing:0;background:var(--surface);border:1px solid var(--border);transition:border-color .15s,color .15s;}
+.rk .filter-trigger>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.rk .filter-trigger .rk-chev{flex-shrink:0;font-size:11px;opacity:.7;}
+.rk .filter-trigger.on{border-color:var(--me);color:var(--me);font-weight:700;background:var(--me-dim);}
+.rk .filter-trigger[aria-expanded="true"]{border-color:var(--me);}
+.rk .filter-trigger[aria-expanded="true"] .rk-chev{transform:rotate(180deg);}
+.rk .filter-trigger:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
+.rk .filterable-table .filter-row th{padding:6px 6px;}
+
+/* column filter popovers (built by _JS_TABLE, moved to <body>: tokens defined here) */
+.dropdown-content.rk-fpop{--me:#1c3f94;--me-dim:rgba(28,63,148,.07);border-radius:12px;padding:8px;min-width:220px;max-height:min(360px,60vh);
+    box-shadow:0 10px 28px rgba(5,20,32,.16);flex-direction:column;gap:2px;overflow:hidden;}
+body.dark .dropdown-content.rk-fpop{--me:#8fb0ff;--me-dim:rgba(143,176,255,.10);box-shadow:0 10px 28px rgba(0,0,0,.5);}
+.dropdown-content.rk-fpop.show{display:flex;animation:rkPop .18s ease-out both;}
+.rk-fpop .rk-pop-eye{padding:6px 8px;flex-shrink:0;}
+.rk-fpop .rk-fopts{overflow-y:auto;display:flex;flex-direction:column;gap:2px;min-height:0;}
+.rk-fpop .dropdown-search{font:inherit;font-size:14px;min-height:40px;border:1px solid var(--border);border-radius:10px;padding:0 12px;
+    margin:0 0 4px;background:var(--drop-bg);color:var(--ink);flex-shrink:0;width:100%;box-sizing:border-box;}
+.rk-fpop .dropdown-search:focus{border-color:var(--me);outline:0;}
+.rk-fpop .option-item{min-height:40px;padding:0 10px;border:0 !important;border-radius:8px;gap:10px;font-size:14px;color:var(--ink);cursor:pointer;}
+.rk-fpop .option-item:hover{background:var(--row-hover);}
+.rk-fpop .option-item>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rk-fpop .option-item .n{flex:0 0 auto;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);font-style:normal;}
+.rk-fpop .select-all-item{font-weight:700;border-bottom:1px solid var(--border2) !important;border-radius:8px 8px 0 0;flex-shrink:0;}
+.rk-fpop .option-item input[type=checkbox]{-webkit-appearance:none;appearance:none;width:18px;height:18px;flex-shrink:0;margin:0;border-radius:5px;
+    border:1.5px solid var(--border);background:var(--surface) center/12px no-repeat;cursor:pointer;}
+.rk-fpop .option-item input[type=checkbox]:checked{background-color:var(--me);border-color:var(--me);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E");}
+.rk-fpop .option-item input[type=checkbox]:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
+.rk-fpop .rk-pop-ft{flex-shrink:0;}
+.rk-fpop .rk-btn-text{min-height:40px;font-size:13px;}
+.rk-fpop .rk-btn{min-height:40px;font-size:13px;}
+.rk-fpop.filter-slider{padding:8px;}
+.rk-fpop .filter-slider-readout{margin:4px 8px 10px;gap:8px;font-size:12px;}
+.rk-fpop .filter-slider-readout input[type=number]{width:auto;flex:1;min-width:0;min-height:40px;border-radius:8px;font-family:'Space Mono',monospace;font-size:14px;}
+.rk-fpop .filter-slider-readout input[type=number]:focus{border-color:var(--me);}
+.rk-fpop .filter-slider-range{margin:0 8px 6px;}
+.rk-fpop .filter-slider-fill{background:var(--me);}
+.rk-fpop .filter-slider-range input[type=range]::-webkit-slider-thumb{background:var(--me);width:18px;height:18px;}
+.rk-fpop .filter-slider-range input[type=range]::-moz-range-thumb{background:var(--me);width:18px;height:18px;}
+.rk-fpop .filter-slider-reset{display:none;}
+@media(prefers-reduced-motion:reduce){.dropdown-content.rk-fpop.show{animation:none;}.rk .filter-trigger{transition:none;}}
 .rk .filterable-table tr:nth-child(even) td{background:transparent;}
 .rk .filterable-table tr:hover td,.rk .filterable-table tr:nth-child(even):hover td{background:var(--row-hover);}
 .rk .filterable-table .rk-frz{position:sticky;z-index:2;background:var(--surface);}
@@ -1149,6 +1191,52 @@ ready(function(){
     const num=r=>{ const n=parseFloat(txt(r,C.rank)); return isNaN(n)?Infinity:n; };
     const tb=table.tBodies[0];
     rows.slice().sort((a,b)=>num(a)-num(b)).forEach(r=>tb.appendChild(r));
+  }
+
+  // ── column filters: v3 popovers on top of _JS_TABLE's dropdowns (moved to <body>, same order as columns) ──
+  const fTrig=[...table.querySelectorAll('.filter-row .filter-trigger')];
+  const fPops=[...document.querySelectorAll('body > .dropdown-content')];
+  const fCbs=pop=>[...pop.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]')];
+  if(fTrig.length&&fTrig.length===fPops.length){
+    fTrig.forEach((tr,i)=>{
+      const pop=fPops[i], head=ths[i]||'', range=pop.classList.contains('filter-slider');
+      pop.classList.add('rk-fpop'); pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','筛选 '+head);
+      tr.setAttribute('role','button'); tr.tabIndex=0; tr.setAttribute('aria-haspopup','dialog');
+      tr.setAttribute('aria-expanded','false'); tr.setAttribute('aria-label','筛选 '+head);
+      const chev=tr.lastElementChild; chev.removeAttribute('style'); chev.className='rk-chev'; chev.setAttribute('aria-hidden','true'); chev.textContent='▾';
+      pop.insertAdjacentHTML('afterbegin','<span class="rk-eye rk-pop-eye">'+esc(head)+' · '+(range?'RANGE':'FILTER')+'</span>');
+      if(!range){
+        const all=pop.querySelector('.select-all-item'); if(all) all.removeAttribute('style');
+        const counts=new Map(); rows.forEach(r=>{ const v=txt(r,i); counts.set(v,(counts.get(v)||0)+1); });
+        const box=document.createElement('div'); box.className='rk-fopts';
+        pop.querySelectorAll('.option-item:not([data-select-all])').forEach(it=>{
+          const v=it.querySelector('input').value;
+          if(v==='') it.querySelector('span').textContent='（空）';
+          it.insertAdjacentHTML('beforeend','<em class="n">'+(counts.get(v)||0)+'</em>'); box.appendChild(it); });
+        pop.appendChild(box);
+      }
+      pop.insertAdjacentHTML('beforeend','<div class="rk-pop-ft"><button type="button" class="rk-btn-text" data-f="clr">清除</button><button type="button" class="rk-btn rk-btn-pri" data-f="done">完成</button></div>');
+      const close=()=>{ pop.classList.remove('show'); tr.focus({preventScroll:true}); };
+      pop.addEventListener('click',e=>{ const b=e.target.closest('[data-f]'); if(!b) return;
+        if(b.dataset.f==='done') return close();
+        if(range){ const rs=pop.querySelector('.filter-slider-reset'); if(rs) rs.click(); return; }
+        const q=pop.querySelector('.dropdown-search'); if(q&&q.value){ q.value=''; q.dispatchEvent(new Event('input')); }
+        const sa=pop.querySelector('[data-select-all] input'); if(sa){ sa.checked=true; sa.dispatchEvent(new Event('change',{bubbles:true})); } });
+      pop.addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.stopPropagation(); close(); } });
+      tr.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tr.click(); } });
+      // aria-expanded follows _JS_TABLE's .show toggling; focus the first field on open
+      new MutationObserver(()=>{ const o=pop.classList.contains('show'); if(tr.getAttribute('aria-expanded')===String(o)) return;
+        tr.setAttribute('aria-expanded',String(o));
+        if(o){ const f=pop.querySelector('.dropdown-search,input[type=number]'); if(f) f.focus({preventScroll:true}); } }).observe(pop,{attributes:true,attributeFilter:['class']});
+    });
+    // trigger shows what is selected ("西里奇 等 2 项" / "1 ~ 10"); .on marks an active column filter
+    const paintTriggers=()=>fTrig.forEach((tr,i)=>{
+      const pop=fPops[i], lbl=tr.firstElementChild; let on;
+      if(pop.classList.contains('filter-slider')) on=lbl.textContent!=='全部';
+      else { const cbs=fCbs(pop), sel=cbs.filter(c=>c.checked); on=sel.length>0&&sel.length<cbs.length;
+        lbl.textContent=on?((sel[0].value||'（空）')+(sel.length>1?' 等 '+sel.length+' 项':'')):'全部'; }
+      tr.classList.toggle('on',on); });
+    document.addEventListener('ts:filtered',paintTriggers); paintTriggers();
   }
 
   // ── boot ──
