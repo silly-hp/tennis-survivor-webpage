@@ -25,6 +25,7 @@ logger = get_logger(__name__)
 
 SUICIDE_REPEAT = "自杀(重复)"
 SUICIDE_CONFLICT = "自杀(主备冲突)"
+SUICIDE_MISS = "自杀(退赛)"
 
 FILL_TO_STATUS = {
     "存活": 2,
@@ -93,6 +94,37 @@ def _primary_early_retirement(detail: dict[str, Any], draw: DrawStatus | None) -
     if player is None or not player.eliminated:
         return False
     return retirement_backup_allowed(player.elim_score)
+
+
+def _selectable_open_names(draw: DrawStatus | None) -> list[str]:
+    """Still-in-draw display names (= system open pick list; eliminated excluded)."""
+    if draw is None or not draw.by_id:
+        return []
+    names: list[str] = []
+    seen: set[str] = set()
+    for player in draw.by_id.values():
+        name = str(player.name or "").strip()
+        if not name or player.eliminated or name in seen:
+            continue
+        seen.add(name)
+        names.append(name)
+    return names
+
+
+def _legal_pool_empty(used: list[str], open_names: list[str]) -> bool:
+    """True when every remaining open player was already used by this survivor.
+
+    Empty ``open_names`` (no field / event over) is not treated as empty-pool
+    suicide — that would mass-kill everyone.
+    """
+    if not open_names:
+        return False
+    used_set = {
+        str(p).strip()
+        for p in used
+        if str(p).strip() and str(p).strip() != "轮空"
+    }
+    return all(name in used_set for name in open_names)
 
 
 def _suicide_reason(
@@ -776,6 +808,7 @@ def apply_live_settlement(
     counts = dict(empty)
     pending_users: set[str] = set()
     backup_events: list[dict[str, Any]] = []
+    open_names = _selectable_open_names(draw)
     for index, row in result.iterrows():
         if str(row.get("fill_status") or "") != "存活":
             continue
@@ -924,6 +957,16 @@ def apply_live_settlement(
                 break
             pending = True
             break
+        # Legal pool empty and a new pick day is already required: any real
+        # submission is 自杀(重复) (handled above); no submission → 自杀(退赛).
+        need_pick = official_day < play_day and _legal_pool_empty(used, open_names)
+        if need_pick and str(result.at[index, "fill_status"] or "") == "存活":
+            result.at[index, "fill_status"] = SUICIDE_MISS
+            result.at[index, "killer"] = ""
+            result.at[index, "day"] = official_day
+            result.at[index, "players"] = used
+            counts["suicide"] += 1
+            pending = False
         if pending:
             counts["pending"] += 1
             if uid:
