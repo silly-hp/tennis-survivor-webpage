@@ -258,7 +258,10 @@ def render_ranking_page(
         after_page=bd_modal,
         page=str(output_path),
         late_js=JS_RANK,
-        title_extra=help_button_html(),
+        title_extra=help_button_html(
+            hint=not enable_breakdown,
+            expired=expired_label,
+        ),
     )
 
     Path(output_path).write_text(html_str, encoding="utf-8")

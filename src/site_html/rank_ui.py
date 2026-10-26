@@ -127,8 +127,16 @@ _HELP = ('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="cu
 _CURSOR = '<svg class="hp-cur" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l16 9-7 2-3 7z"/></svg>'
 
 
-def help_button_html() -> str:
-    return f'<button type="button" class="rk-help-btn" id="rkHelpBtn" aria-haspopup="dialog" aria-label="使用说明" title="使用说明">{_HELP}</button>'
+def help_button_html(hint: bool = False, expired: Optional[str] = None) -> str:
+    """? button beside the page title, a quiet hint next to it, and (when ``expired`` is
+    given) this settlement week's expiring points on a line of its own under the title."""
+    out = f'<button type="button" class="rk-help-btn" id="rkHelpBtn" aria-haspopup="dialog" aria-label="使用说明" title="使用说明">{_HELP}</button>'
+    if hint:
+        out += f'<span class="rk-tnote">点击<span class="rk-tnote-ic" aria-hidden="true">{_HELP}</span>查看页面说明</span>'
+    if expired is not None:
+        out += (f'<span class="rk-tline"><span class="rk-tnote rk-tnote-exp" title="本结算周期失效的去年同周积分">'
+                f'失效分数：{html.escape(expired.strip() or "无")}</span></span>')
+    return out
 
 
 def history_modal_html(eyebrow: str, tour_switch: bool = False) -> str:
@@ -529,6 +537,15 @@ body.dark .dropdown-content.rk-fpop{--me:#8fb0ff;--me-dim:rgba(143,176,255,.10);
 .rk-help-btn:hover{transform:scale(1.06);}
 .rk-help-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
 body.dark .rk-help-btn{color:#8fb0ff;}
+/* quiet title notes: theme-tinted, small */
+.rk-tnote{display:inline-flex;align-items:center;gap:4px;font-family:'Noto Sans SC',sans-serif;font-weight:400;font-size:12px;line-height:1;
+    color:var(--muted);letter-spacing:0;}
+.rk-tnote-ic{display:inline-flex;color:var(--muted);}
+.rk-tnote-ic svg{width:14px;height:14px;}
+/* own row under the title, left-aligned with it (.page-title wraps) */
+.rk-tline{flex-basis:100%;display:flex;margin-top:-2px;}
+.rk-tnote-exp{padding:6px 10px;border-radius:999px;background:var(--primary-dim);border:1px solid var(--primary-rim);color:var(--primary-dark);}
+@media(max-width:720px){.rk-tnote:not(.rk-tnote-exp){flex-basis:100%;}}
 .rk-modal{position:fixed;inset:0;z-index:9000;background:rgba(5,20,32,.45);display:flex;align-items:center;justify-content:center;padding:20px;
     animation:rkFade .2s ease-out both;}
 .rk-modal[hidden]{display:none;}
@@ -811,7 +828,11 @@ function tsHist(o){
   const lostOnLast=(g==='out'||g==='suicide')&&!isNaN(survived)&&picks.length>survived;
   const items=picks.map((v,i)=>{ const raw=String(v).trim(), bye0=i===0&&raw==='轮空', val=bye0?'':raw;
     return {val, bye:bye0||raw==='轮空', res:null}; });
+  const lastIt=items[items.length-1];
   if(lostOnLast&&items.length) items[items.length-1].res=o.stHtml;
+  // picks can already hold today's unsettled pick (e.g. on day 1); players never repeat,
+  // so a last entry equal to 今日主选 is today, not a settled day
+  else if(lastIt&&o.main&&lastIt.val===o.main){ lastIt.res=o.stHtml; lastIt.alt=o.alt||''; }
   else if(g!=='absent'&&o.hasSt) items.push({val:o.main||'', bye:g==='bye', res:o.stHtml, alt:o.alt||''});
   const last=items.length-1;
   const rows=items.length?items.map((it,i)=>{
@@ -822,7 +843,8 @@ function tsHist(o){
     return '<div class="rk-hist-row'+(i===last?' today':'')+'" style="animation-delay:'+Math.min(i,12)*50+'ms"><b>'+(i+1)+'</b>'
       +'<span class="p'+(empty?' none':'')+'">'+(empty?'-':tsEsc(it.val))+alt+'</span>'+res+'</div>';
   }).join(''):'<div class="rk-empty">暂无选人记录</div>';
-  const valid=items.filter(it=>it.val&&it.val!=='轮空'&&it.val.toLowerCase()!=='nan').length;
+  // a pick that broke the rules (自杀: 退赛 / 主备冲突 / 重复) is not a valid pick
+  const valid=items.filter(it=>it.val&&it.val!=='轮空'&&it.val.toLowerCase()!=='nan'&&!(g==='suicide'&&it.res!=null)).length;
   return {rows, sum:'共 '+items.length+' 天 · '+valid+' 天有效选人 · 点击空白处或按 Esc 关闭'};
 }
 """
