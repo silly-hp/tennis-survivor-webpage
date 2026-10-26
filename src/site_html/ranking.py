@@ -47,6 +47,7 @@ def render_ranking_page(
     enable_breakdown: bool = False,
     breakdown_atp_url: str = "data/breakdown_live_atp.json",
     breakdown_wta_url: str = "data/breakdown_live_wta.json",
+    expired_label: Optional[str] = None,
 ) -> str:
     """
     Build and write a ranking-table page.
@@ -100,6 +101,9 @@ def render_ranking_page(
         Career stats: row click opens 夺冠/夺亚 chip modal from ``_生涯明细``.
     enable_breakdown : bool
         Combined-ranking mode: row click opens ATP/WTA points charts.
+    expired_label : str or None
+        Bold line under the title, e.g. "2025九江"; "无" when nothing is removed.
+        None hides the line.
     breakdown_atp_url / breakdown_wta_url : str
         JSON paths (relative to the HTML file) for per-user event composition.
 
@@ -222,6 +226,7 @@ def render_ranking_page(
         extra_css="\n".join(extra_css_parts),
         # Modal must sit outside .page stacking context or it can be covered
         after_page=bd_modal,
+        subtitle=f"失效分数：{expired_label}" if expired_label else "",
     )
 
     Path(output_path).write_text(html_str, encoding="utf-8")

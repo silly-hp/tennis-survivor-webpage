@@ -73,7 +73,12 @@ def hide_today_picks_for_eliminated(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
     status = out["当前状态"].astype("string").fillna("").str.strip()
     # Blank status = not settled yet (Day1 bye stage); only settled losers are hidden.
-    keep = status.isin(_KEEP_TODAY_PICK_STATUS) | status.eq("")
+    # Suicides (重复 / 主备冲突) keep the pick that caused them, like 球员输球.
+    keep = (
+        status.isin(_KEEP_TODAY_PICK_STATUS)
+        | status.eq("")
+        | status.str.startswith("自杀")
+    )
     for col in ("今日主选", "今日备选", "今日状态"):
         if col in out.columns:
             out.loc[~keep, col] = ""
@@ -188,6 +193,11 @@ def mark_unpicked_status(df: pd.DataFrame) -> pd.DataFrame:
     if "今日状态" in out.columns:
         today = out["今日状态"].astype("string").fillna("").str.strip()
         out.loc[alive & today.eq("未选"), "当前状态"] = "未选"
+        # Suicide (重复 / 主备冲突) counts as out right away: surface it as the status.
+        suicide = today.str.startswith("自杀") & status.isin(
+            ["存活", "未完赛", "未选", ""]
+        )
+        out.loc[suicide, "当前状态"] = today[suicide]
         # 未完赛 is applied first; a bye must stay 轮空 even if that pass ran.
         out.loc[status.isin(["存活", "未完赛", ""]) & today.eq("轮空"), "当前状态"] = "轮空"
         return out

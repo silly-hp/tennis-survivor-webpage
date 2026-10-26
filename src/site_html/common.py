@@ -936,9 +936,13 @@ def _inner_page_shell(
     back_href: str = "index.html",
     extra_css: str = "",
     after_page: str = "",
+    subtitle: str = "",
 ) -> str:
     """Wrap body_content in the full inner-page HTML shell."""
     tags_html = _title_tags(tour, extra_tags)
+    subtitle_html = (
+        f'<div class="page-sub">{html.escape(subtitle)}</div>' if subtitle else ""
+    )
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -965,6 +969,7 @@ def _inner_page_shell(
     {html.escape(title)}
     {tags_html}
   </div>
+  {subtitle_html}
 </div>
 
 {body_content}

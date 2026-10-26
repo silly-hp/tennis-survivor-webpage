@@ -20,6 +20,12 @@ from draw_status import (
     retirement_backup_allowed,
 )
 from logger import get_logger
+from points_calculation import (
+    ATP_MANDATORY,
+    GRAND_SLAMS,
+    WTA1000_COMBINED,
+    WTA1000_NON_COMBINED,
+)
 
 logger = get_logger(__name__)
 
@@ -295,6 +301,16 @@ def _pick_outcome(
     if min_still_round and player.round_rank > min_still_round:
         return "win", detail
     return None, detail
+
+
+def day1_out_points(event_name: str | None, tour: str) -> int:
+    """Points for a Day1 exit: Slam / 1000 → 10; other ATP → 0; other WTA → 1."""
+    name = str(event_name or "").strip()
+    is_wta = str(tour).strip().upper() == "WTA"
+    top = GRAND_SLAMS | (WTA1000_COMBINED | WTA1000_NON_COMBINED if is_wta else ATP_MANDATORY)
+    if name in top:
+        return 10
+    return 1 if is_wta else 0
 
 
 def _settled_event_points(
@@ -737,9 +753,13 @@ def apply_live_settlement(
     detail_rows: list[dict[str, Any]],
     draw: DrawStatus | None,
     rank_by_id: dict[str, int] | None = None,
+    base_score: int = 0,
 ) -> tuple[pd.DataFrame, dict[str, int], set[str], set[str], list[dict[str, Any]]]:
     """
     Settle alive users against the live draw.
+
+    ``base_score`` is what a Day1 exit earns (see ``day1_out_points``); it is the
+    floor for every settled user and what a Day2 loser who had a Day1 bye keeps.
 
     Returns
     -------
@@ -817,6 +837,8 @@ def apply_live_settlement(
             pd.to_numeric(row.get("day"), errors="coerce") or len(used) or 0
         )
         uid = _as_key(row.get("user_id"))
+        if int(result.at[index, "score"] or 0) < base_score:
+            result.at[index, "score"] = base_score
         day1_pick = any(
             int(item.get("day") or 0) == 1 and str(item.get("player") or "").strip()
             for item in grouped.get(uid, [])
@@ -952,6 +974,9 @@ def apply_live_settlement(
                     eff_pick if eff_pick and eff_pick != "轮空" else ""
                 )
                 result.at[index, "day"] = official_day
+                if official_day == 1 and (uid in bye_users or bool(had_day1_bye.get(index))):
+                    # Day2 exit after a Day1 bye is scored as a Day1 exit.
+                    result.at[index, "score"] = base_score
                 counts["loss"] += 1
                 pending = False
                 break
@@ -993,6 +1018,7 @@ def settle_tour_scores(
     submission_df: Optional[pd.DataFrame],
     draw: DrawStatus | None,
     rank_df: Optional[pd.DataFrame] = None,
+    base_score: int = 0,
 ) -> tuple[
     Optional[pd.DataFrame], dict[str, int], set[str], int, set[str], list[dict[str, Any]]
 ]:
@@ -1015,7 +1041,7 @@ def settle_tour_scores(
 
     ranks = rank_by_id_from_df(rank_df)
     settled, counts, bye_users, pending_users, backup_events = apply_live_settlement(
-        ensured, detail_rows, draw, ranks
+        ensured, detail_rows, draw, ranks, base_score=base_score
     )
     play_day = current_play_day(draw, detail_rows)
     if any(counts.values()):

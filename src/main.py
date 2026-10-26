@@ -45,7 +45,7 @@ from survivor_html import (
 from champion_stats import render_champion_pages
 from weather import build_weather_cards
 from draw_status import fetch_draw_status
-from live_settlement import settle_tour_scores, summarize_backup_events
+from live_settlement import day1_out_points, settle_tour_scores, summarize_backup_events
 from player_stats import update_player_stats_pages
 from combined_ranking import update_combined_pages
 from event_calendar import update_survivor_calendar_pages
@@ -82,6 +82,15 @@ COL_ZH_DICT = {
     "count": "人数",
     "possible_selection": "剩余可选",
 }
+
+
+def _expired_label(tour_cfg) -> str:
+    """Last year's event(s) whose points drop out this week, e.g. ``2025九江``."""
+    removed = (tour_cfg or {}).get("removed_tournament_name")
+    names = [removed] if isinstance(removed, str) else list(removed or [])
+    names = [str(n).strip() for n in names if n and str(n).strip()]
+    year = int((cfg or {}).get("year") or datetime.today().year) - 1
+    return "、".join(f"{year}{n}" for n in names) or "无"
 
 
 def _venue_key(venue_cfg):
@@ -232,7 +241,13 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                 if p.eliminated and str(p.name or "").strip()
             ]
             re, counts, bye_users, play_day, pending_uids, backup_events = (
-                settle_tour_scores(re, s, draw, rank_df=r)
+                settle_tour_scores(
+                    re,
+                    s,
+                    draw,
+                    rank_df=r,
+                    base_score=day1_out_points(tour_cfg.get("name"), tour_label),
+                )
             )
             if play_day > 0:
                 day = play_day
@@ -520,6 +535,7 @@ def update_rank_pages(
         live_players=atp_live_players,
         eliminated_players=atp_eliminated,
         backup_events=atp_backup,
+        expired_label=_expired_label((cfg or {}).get("atp")),
         output_path="../atp_ranking.html",
     )
     render_ranking_page(
@@ -581,6 +597,7 @@ def update_rank_pages(
         live_players=wta_live_players,
         eliminated_players=wta_eliminated,
         backup_events=wta_backup,
+        expired_label=_expired_label((cfg or {}).get("wta")),
         output_path="../wta_ranking.html",
     )
     render_ranking_page(

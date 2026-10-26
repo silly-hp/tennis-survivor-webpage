@@ -94,6 +94,7 @@ def build_ranking_table(
             removed_tournament_name,
             tour,
             bye_user_ids=bye_user_ids,
+            settled_score_df=score_df,
         ).sort_values(by="current_rank", ascending=True, na_position="last")
     elif day == 0:
         return _build_day0(rank_df, removed_tournament_name, tour).sort_values(
@@ -110,6 +111,7 @@ def build_ranking_table(
                     removed_tournament_name,
                     tour,
                     bye_user_ids=bye_user_ids,
+                    settled_score_df=score_df,
                 ).sort_values(by="current_rank", ascending=True, na_position="last")
             raise ValueError("score_df is required when day > 1")
         return _build_non_day1(
@@ -150,6 +152,7 @@ def _build_day1(
     removed_tournament_name: Optional[Union[str, List[str]]],
     tour: str,
     bye_user_ids: Optional[Set[str]] = None,
+    settled_score_df: Optional[pd.DataFrame] = None,
 ) -> pd.DataFrame:
     submission_day1 = submission_df.loc[
         submission_df["day"] == 1,
@@ -209,6 +212,16 @@ def _build_day1(
         p_df["bye"] = False
 
     p_df["score"] = 0
+    # Live-settled points (win / bye / Day1 exit). Without them the score stays 0.
+    settled_scores: dict[str, int] = {}
+    if settled_score_df is not None and not settled_score_df.empty:
+        settled_scores = {
+            _uid_key(u): int(pd.to_numeric(v, errors="coerce") or 0)
+            for u, v in zip(settled_score_df["user_id"], settled_score_df["score"])
+        }
+        p_df["score"] = (
+            p_df["user_id"].map(_uid_key).map(settled_scores).fillna(0).astype(int)
+        )
     p_df["status"] = ""
     # Day 1 has no score-table status. Entrants are still in; everyone else
     # has not joined. A blank status makes the ranking view drop today's picks.
@@ -227,7 +240,7 @@ def _build_day1(
         alt_is_bye = p_df["player_alt"].astype("string").str.strip().eq("轮空")
         p_df.loc[bye_mask & alt_is_bye, "player_alt"] = ""
     p_df["players"] = [_day1_pick_history(row) for row in p_df.to_dict("records")]
-    if not removed_tournaments:
+    if not removed_tournaments and not settled_scores:
         p_df["live_score"] = p_df["current_score"]
         p_df["removed_point"] = 0
     else:
@@ -246,7 +259,12 @@ def _build_day1(
                 p_df["new_details"] = p_df["new_details"].apply(
                     lambda d: {**(d or {}), tn: 0}
                 )
-        # p_df["new_details"][new_tournament_name] = p_df["score"]
+        if settled_scores and new_tournament_name:
+            # Add this event's settled points for everyone who submitted.
+            p_df["new_details"] = [
+                {**(d or {}), new_tournament_name: int(sc)} if sub else d
+                for d, sc, sub in zip(p_df["new_details"], p_df["score"], has_submission)
+            ]
         p_df["live_score"] = p_df.apply(
             lambda r: calculate_points(r["new_details"], tour=tour)["total_points"],
             axis=1,

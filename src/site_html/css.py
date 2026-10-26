@@ -47,6 +47,7 @@ body{padding:24px 20px 60px;}
 .page-header{margin-bottom:24px;}
 .page-eye{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.28em;
     color:var(--primary);text-transform:uppercase;margin-bottom:10px;}
+.page-sub{margin-top:6px;font-size:12px;font-weight:700;color:var(--primary);}
 .page-title{font-family:'Noto Serif SC',serif;font-size:clamp(22px,3vw,32px);
     font-weight:700;color:var(--ink);line-height:1.2;
     display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
