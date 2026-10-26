@@ -314,9 +314,10 @@ body.dark .ch-me::after{color:#06142a;}
 
 /* ranking table */
 .ch-sorts{display:none;}
-.ch-tcard{overflow:hidden;}
+.ch-tcard{overflow:clip;}  /* clip, not hidden: keeps the header row sticky */
 .ch-t{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed;}
-.ch-t th{background:var(--th-bg);color:#fff;font-size:12px;font-weight:700;text-align:left;padding:0 10px;height:44px;}
+.ch-t th{background:var(--th-bg);color:#fff;font-size:12px;font-weight:700;text-align:left;padding:0 10px;height:44px;
+    position:sticky;top:0;z-index:5;}
 .ch-t .c-star{width:44px;}.ch-t .c-rank{width:56px;}.ch-t th.c-n{width:96px;}.ch-t th.c-lv{width:76px;text-align:center;}
 .ch-t th.c-last{width:22%;}.ch-t .c-strip{display:none;}
 .ch-t td.c-lv{text-align:center;}

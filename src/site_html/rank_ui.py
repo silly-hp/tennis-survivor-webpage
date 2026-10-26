@@ -1115,6 +1115,9 @@ ready(function(){
       all.forEach(tr=>{ const c=tr.children[i]; if(!c) return; c.classList.add('rk-frz'); c.style.left=left+'px'; if(i===C.user) c.classList.add('rk-frz-last'); });
       left+=w; }
   }
+  // column widths shift after load (web fonts, re-rendered / filtered rows): re-pin on any header resize
+  if(window.ResizeObserver){ let fq=0; const ro=new ResizeObserver(()=>{ if(!fq) fq=requestAnimationFrame(()=>{ fq=0; freeze(); }); });
+    [...table.querySelector('thead tr').children].forEach(th=>ro.observe(th)); }
 
   // ── mobile cards (mirror the visible page of rows) ──
   const cardsBox=document.getElementById('rkCards'); const openCards=new Set();
