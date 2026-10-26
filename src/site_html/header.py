@@ -18,6 +18,8 @@ _SECTIONS: dict[str, tuple[str, dict[str, str]]] = {
                           "ALL": "combined_instant_ranking.html"}),
     "race": ("冠军排名", {"ATP": "atp_race_ranking.html", "WTA": "wta_race_ranking.html",
                           "ALL": "combined_ranking.html"}),
+    "hof": ("冠军榜", {"ATP": "atp_champion.html", "WTA": "wta_champion.html",
+                       "ALL": "combined_champion.html"}),
     "killer": ("杀手榜", {"ATP": "atpkiller.html", "WTA": "wtakiller.html"}),
     "cal": ("赛历", {"ATP": "survivor_calendar_atp.html", "WTA": "survivor_calendar_wta.html"}),
     "career": ("生涯统计", {"ATP": "atp_show.html", "WTA": "wta_show.html"}),
@@ -38,11 +40,6 @@ def _resolve(page: str) -> tuple[str, str, dict[str, str], str]:
         year = m.group(1) or ""
         links = {t: f"{year}{t.lower()}killer.html" for t in ("ATP", "WTA")}
         return "killer", m.group(2).upper(), links, prefix
-    if m := re.fullmatch(r"(atp|wta|combined)_champion\.html", name):
-        # Hall of Fame sits under 冠军排名; its tour switch stays on the hall pages
-        links = {"ATP": "atp_champion.html", "WTA": "wta_champion.html", "ALL": "combined_champion.html"}
-        tour = "ALL" if m.group(1) == "combined" else m.group(1).upper()
-        return "race", tour, links, prefix
     if name == "survivor_calendar.html":  # legacy hub: no tour selected
         return "cal", "", dict(_SECTIONS["cal"][1]), prefix
     for key, (_, links) in _SECTIONS.items():
