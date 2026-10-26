@@ -2,21 +2,28 @@
 from __future__ import annotations
 
 _JS_THEME = """\
+function _themeLabel(dark){
+    const btn=document.getElementById('themeBtn');
+    if(!btn)return;
+    const lbl=btn.querySelector('.theme-label');  // shared header: keep the SVG icons
+    if(lbl)lbl.textContent=dark?'亮色':'暗色';
+    else btn.textContent=dark?'☀ 亮色':'🌙 暗色';
+}
 function toggleTheme(){
     const going=!document.body.classList.contains('dark');
     document.body.classList.toggle('dark',going);
-    document.getElementById('themeBtn').textContent=going?'☀ 亮色':'🌙 暗色';
+    _themeLabel(going);
     document.querySelectorAll('.logo-light').forEach(e=>e.style.display=going?'none':'block');
     document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=going?'block':'none');
-    localStorage.setItem('theme',going?'dark':'light');
+    try{localStorage.setItem('theme',going?'dark':'light');}catch(e){}
 }
 (function(){
-    const dark=localStorage.getItem('theme')==='dark';
+    let dark=false;
+    try{dark=localStorage.getItem('theme')==='dark';}catch(e){}  // throws on data: URLs
     document.body.classList.toggle('dark',dark);
     document.querySelectorAll('.logo-light').forEach(e=>e.style.display=dark?'none':'block');
     document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=dark?'block':'none');
-    const btn=document.getElementById('themeBtn');
-    if(btn)btn.textContent=dark?'☀ 亮色':'🌙 暗色';
+    _themeLabel(dark);
 })();"""
 
 # Full interactive filter+sort JS (identical logic to original pages)
@@ -28,8 +35,13 @@ document.addEventListener('DOMContentLoaded',function(){
     const tbody=table.querySelector('tbody');
     const rows=tbody.querySelectorAll('tr');
     const totalCount=rows.length;
-    document.getElementById('total-count').textContent=totalCount;
-    document.getElementById('visible-count').textContent=totalCount;
+    const totalEl=document.getElementById('total-count');
+    const visibleEl=document.getElementById('visible-count');
+    if(totalEl)totalEl.textContent=totalCount;
+    if(visibleEl)visibleEl.textContent=totalCount;
+    // page scripts add row predicates to TS.extra and call TS.refresh(); 'ts:filtered' fires after each pass
+    window.TS=window.TS||{extra:[]};
+    window.TS.refresh=()=>filterTable();
     const headerRow=thead.querySelector('tr');
     const headers=headerRow.querySelectorAll('th');
     const filterRow=document.createElement('tr');
@@ -156,8 +168,10 @@ document.addEventListener('DOMContentLoaded',function(){
                 panel.classList.toggle('show');
                 if(!isOpen){
                     const rect=trigger.getBoundingClientRect();
-                    panel.style.width=Math.max(rect.width,190)+'px';
-                    panel.style.left=rect.left+'px';
+                    const w=Math.max(rect.width,190);
+                    panel.style.width=w+'px';
+                    // keep right-hand columns' panels inside the viewport
+                    panel.style.left=Math.max(8,Math.min(rect.left,document.documentElement.clientWidth-w-8))+'px';
                     const dropH=panel.scrollHeight;
                     const spaceBelow=window.innerHeight-rect.bottom;
                     panel.style.top=(spaceBelow>=dropH||spaceBelow>=140?rect.bottom:(rect.top-dropH))+'px';
@@ -182,11 +196,12 @@ document.addEventListener('DOMContentLoaded',function(){
             searchInput.placeholder='搜索...';
             optionsContainer.prepend(searchInput);
             searchInput.addEventListener('input',(e)=>{
-                const query=e.target.value.toLowerCase().trim();
+                // comma/space separated terms match any of them (e.g. "zoe, eric")
+                const terms=e.target.value.toLowerCase().split(/[,，\\s]+/).filter(Boolean);
                 optionsContainer.querySelectorAll('.option-item').forEach(item=>{
                     if(item.dataset.selectAll)return;
                     const label=item.querySelector('span').textContent.toLowerCase();
-                    item.style.display=label.includes(query)?'flex':'none';
+                    item.style.display=!terms.length||terms.some(q=>label.includes(q))?'flex':'none';
                 });
                 const visibleCbs=Array.from(
                     optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
@@ -241,9 +256,10 @@ document.addEventListener('DOMContentLoaded',function(){
                     const rect=trigger.getBoundingClientRect();
                     const dropH=Math.min(250,optionsContainer.scrollHeight);
                     const spaceBelow=window.innerHeight-rect.bottom;
-                    optionsContainer.style.width=rect.width+'px';
+                    const w=Math.max(rect.width,200);
+                    optionsContainer.style.width=w+'px';
                     optionsContainer.style.top=(spaceBelow>=dropH||spaceBelow>=120?rect.bottom:(rect.top-dropH))+'px';
-                    optionsContainer.style.left=rect.left+'px';
+                    optionsContainer.style.left=Math.max(8,Math.min(rect.left,document.documentElement.clientWidth-w-8))+'px';
                 }
             });
             optionsContainer.addEventListener('change',(e)=>{
@@ -281,6 +297,7 @@ document.addEventListener('DOMContentLoaded',function(){
                     return A.localeCompare(B,'zh')*(sortDirection==='asc'?1:-1);
                 });
                 rowsArray.forEach(row=>tbody.appendChild(row));
+                document.dispatchEvent(new Event('ts:filtered'));
             }
         });
     });
@@ -319,10 +336,12 @@ document.addEventListener('DOMContentLoaded',function(){
                     if(selected.length>0 && !selected.includes(cellText)) showRow=false;
                 }
             });
+            if(showRow)showRow=window.TS.extra.every(f=>f(row));
             row.style.display=showRow?'':'none';
             if(showRow)visibleCount++;
         });
-        document.getElementById('visible-count').textContent=visibleCount;
+        if(visibleEl)visibleEl.textContent=visibleCount;
+        document.dispatchEvent(new Event('ts:filtered'));
     }
 
     document.addEventListener('click',()=>{
@@ -348,8 +367,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     modal.addEventListener('click',(e)=>{ if(e.target===modal)closeModal(); });
     document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'&&modal.classList.contains('show'))closeModal(); });
 
+    const userIdx=[...document.querySelectorAll('.filterable-table thead tr:first-child th')]
+        .findIndex(th=>th.textContent.trim()==='用户名');
     function getPlayerName(row){
         const cells=row.querySelectorAll('td');
+        if(userIdx>=0&&cells[userIdx])return cells[userIdx].textContent.trim();
         for(let i=0;i<cells.length;i++){
             const t=cells[i].textContent.trim();
             if(t&&i>0&&isNaN(parseFloat(t)))return t;

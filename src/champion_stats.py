@@ -255,41 +255,33 @@ def render_champion_pages(
     champions_path: str = "../data/champions.csv",
     datetime_format: str = "%Y年%m月%d日 %H:%M:%S",
 ) -> None:
-    """Re-render ATP and WTA champion HTML pages from the current champions.csv."""
+    """Re-render the ATP, WTA and 联合 Hall of Fame pages from the current champions.csv."""
     if not Path(champions_path).exists():
         logger.warning("[Champion] %s not found, skipping render.", champions_path)
         return
 
-    champions_df = pd.read_csv(champions_path, encoding="utf-8-sig")
+    champions_df = pd.read_csv(champions_path, encoding="utf-8-sig").dropna(how="all")
     updated = datetime.now().strftime(datetime_format)
 
-    for tc in [
-        {
-            "tour_code": "MS", "tour_label": "ATP",
-            "output": "../atp_champion.html",
-            "title": "ATP冠军榜", "eyebrow": "ATP · Hall of Champions · All Time",
-        },
-        {
-            "tour_code": "WS", "tour_label": "WTA",
-            "output": "../wta_champion.html",
-            "title": "WTA冠军榜", "eyebrow": "WTA · Hall of Champions · All Time",
-        },
-    ]:
+    # refresh usernames from each tour's live rank table (user_id is the identity)
+    parts = []
+    for tour_code, tour_label in (("MS", "ATP"), ("WS", "WTA")):
+        part = champions_df[champions_df["tour"] == tour_label]
         try:
-            rank_df, _ = fetch_table(option="rank", tour=tc["tour_code"])
-            rank_df = rank_df.loc[:, ["user_id", "username"]]
-            render_champion_page(
-                df=update_username(rank_df, champions_df[champions_df["tour"] == tc["tour_label"]]),
-                title=tc["title"],
-                tour=tc["tour_label"],
-                eyebrow=tc["eyebrow"],
-                updated=updated,
-                extra_tags=["历年总榜"],
-                output_path=tc["output"],
-            )
-            logger.info("[Champion] Written: %s", tc["output"])
+            rank_df, _ = fetch_table(option="rank", tour=tour_code)
+            part = update_username(rank_df.loc[:, ["user_id", "username"]], part)
         except Exception:
-            logger.exception("[Champion] Failed to render %s champion page", tc["tour_label"])
+            logger.exception("[Champion] Could not refresh %s usernames; using champions.csv", tour_label)
+        parts.append(part)
+    df = pd.concat(parts, ignore_index=True)
+
+    for tour, output in (("ATP", "../atp_champion.html"), ("WTA", "../wta_champion.html"),
+                         ("ALL", "../combined_champion.html")):
+        try:
+            render_champion_page(df=df, tour=tour, updated=updated, output_path=output)
+            logger.info("[Champion] Written: %s", output)
+        except Exception:
+            logger.exception("[Champion] Failed to render %s champion page", tour)
 
 
 def update_username(rank: pd.DataFrame, champions: pd.DataFrame) -> pd.DataFrame:
@@ -315,36 +307,4 @@ if __name__ == "__main__":
     # update_champion(event_id=cfg["wta"]["event"], season=cfg["year"], tour="WS")
     update_champion(event_id=cfg["atp"]["event"], season=cfg["year"], tour="MS")
 
-    df_all = pd.read_csv("../data/champions.csv", encoding="utf-8-sig")
-    updated = datetime.now().strftime("%Y年%m月%d日 %H:%M:%S")
-    atp_rank, _ = fetch_table(option="rank", tour="MS")
-    atp_rank = atp_rank.loc[:, ["user_id", "username"]]
-    # wta_rank, _ = fetch_table(option="rank", tour="WS")
-    # wta_rank = wta_rank.loc[:, ["user_id", "username"]]
-
-    for tour_name, out, t, e, r in [
-        (
-            "ATP",
-            "../atp_champion.html",
-            "ATP冠军榜",
-            "ATP · Hall of Champions · All Time",
-            atp_rank,
-        ),
-        # (
-        #     "WTA",
-        #     "../wta_champion.html",
-        #     "WTA冠军榜",
-        #     "WTA · Hall of Champions · All Time",
-        #     wta_rank,
-        # ),
-    ]:
-        render_champion_page(
-            df=update_username(r, df_all[df_all["tour"] == tour_name]),
-            title=t,
-            tour=tour_name,
-            eyebrow=e,
-            updated=updated,
-            extra_tags=["历年总榜"],
-            output_path=out,
-        )
-        print(f"Written: {out}")
+    render_champion_pages()

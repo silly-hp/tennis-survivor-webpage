@@ -316,9 +316,9 @@ th.sort-desc::after{content:" ▼";font-size:9px;}
 
 /* rank change badges */
 .rank{font-weight:600;display:inline-flex;align-items:center;gap:3px;font-size:11px;}
-.rank.up{color:#2a7a4a;}.rank.up::before{content:"▲";font-size:9px;}
-.rank.down{color:#c04830;}.rank.down::before{content:"▼";font-size:9px;}
-.rank.same{color:var(--faint);}.rank.same::before{content:"▶";font-size:9px;}
+.rank.up{color:#2a7a4a;}
+.rank.down{color:#c04830;}
+.rank.same{color:var(--muted);}
 
 /* user status: 存活 / 未完赛·未选 / 淘汰(含自杀·球员输球) */
 .st-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;

@@ -41,6 +41,7 @@ from survivor_html import (
     render_killer_page,
     render_ranking_page,
     render_h2h_page,
+    render_watch_page,
 )
 from champion_stats import render_champion_pages
 from weather import build_weather_cards
@@ -547,6 +548,7 @@ def update_rank_pages(
         summary_df=atp_stats,
         killer_df=atp_killers,
         extra_tags=["2026"],
+        finals_top=8,
         available_players=atp_players,
         live_players=atp_live_players,
         eliminated_players=atp_eliminated,
@@ -609,11 +611,24 @@ def update_rank_pages(
         summary_df=wta_stats,
         killer_df=wta_killers,
         extra_tags=["2026"],
+        finals_top=8,
         available_players=wta_players,
         live_players=wta_live_players,
         eliminated_players=wta_eliminated,
         backup_events=wta_backup,
         output_path="../wta_race_ranking.html",
+    )
+
+    # 我的关注: same views as the live ranking pages, both tours on one card
+    atp_cfg_watch = (cfg or {}).get("atp") or {}
+    wta_cfg_watch = (cfg or {}).get("wta") or {}
+    render_watch_page(
+        atp_view,
+        wta_view,
+        datetime.now().strftime(datetime_format),
+        atp_event=atp_cfg_watch.get("name") if atp_cfg_watch.get("event") is not None else None,
+        wta_event=wta_cfg_watch.get("name") if wta_cfg_watch.get("event") is not None else None,
+        output_path="../watchlist.html",
     )
 
     # Combined ATP+WTA boards (chen-compatible filenames)

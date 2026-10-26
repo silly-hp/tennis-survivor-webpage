@@ -25,6 +25,7 @@ from site_html.index import render_index
 from site_html.killer import render_killer_page
 from site_html.ranking import render_ranking_page
 from site_html.state import VERSION, apply_theme, set_css_vars
+from site_html.watch import render_watch_page
 from site_html import state as _state
 
 __all__ = [
@@ -37,6 +38,7 @@ __all__ = [
     "render_killer_page",
     "render_champion_page",
     "render_h2h_page",
+    "render_watch_page",
     "render_calendar_hub_page",
     "render_calendar_page",
     "render_event_score_page",

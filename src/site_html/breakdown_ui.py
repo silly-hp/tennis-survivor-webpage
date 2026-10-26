@@ -3,49 +3,69 @@ from __future__ import annotations
 
 _CSS_BREAKDOWN = """\
 .filterable-table tbody tr.bd-clickable{cursor:pointer;}
-.bd-modal{display:none;position:fixed;inset:0;z-index:10050;background:rgba(20,22,28,.55);
+/* surface colours: AO blue / Roland-Garros clay / Wimbledon green (also read by the charts) */
+.bd-modal{--bd-hard:#0088bb;--bd-clay:#d0573a;--bd-grass:#1b5e37;
+    display:none;position:fixed;inset:0;z-index:10050;background:rgba(5,20,32,.45);
     align-items:center;justify-content:center;padding:20px;}
-.bd-modal.open{display:flex;}
-.bd-card{width:min(1120px,96vw);max-height:92vh;background:#fff;border-radius:12px;
-    box-shadow:0 18px 50px rgba(0,0,0,.22);display:flex;flex-direction:column;overflow:hidden;
-    color:#1a1a1a;}
-.bd-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
-    padding:16px 18px;border-bottom:1px solid #e8e8e8;background:#fff;}
-.bd-title{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:600;}
-.bd-sub{font-size:12px;color:#6a7078;margin-top:4px;}
-.bd-close{border:1px solid #ddd;background:#f7f7f7;border-radius:6px;padding:6px 10px;
-    cursor:pointer;font-size:12px;}
-.bd-close:hover{border-color:#bbb;}
-.bd-body{padding:14px 18px 20px;overflow:auto;background:#fff;}
-.bd-filters{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
-.bd-filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.bd-gender-lbl,.bd-view-lbl{font-size:12px;color:#6a7078;margin-right:4px;min-width:4.5em;}
-.bd-chip{font-size:12px;padding:5px 14px;border-radius:16px;border:1px solid #d8d8d8;
-    background:#f5f5f5;color:#555;cursor:pointer;}
-.bd-chip.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+body.dark .bd-modal{--bd-hard:#00b8f0;--bd-clay:#ff7a54;--bd-grass:#4ca86a;}
+.bd-modal.open{display:flex;animation:bdFade .2s ease-out both;}
+.bd-card{width:min(1120px,96vw);max-height:92vh;background:var(--surface);border-radius:14px;border-top:3px solid var(--primary);
+    box-shadow:0 18px 50px rgba(5,20,32,.25);display:flex;flex-direction:column;overflow:hidden;color:var(--ink);
+    animation:bdRise .26s cubic-bezier(.22,.68,0,1.2) both;}
+.bd-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px 12px;}
+.bd-hd::before{content:none;}
+.bd-eye{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--primary);margin-bottom:4px;}
+.bd-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;}
+.bd-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+.bd-sub b{font-family:'Space Mono',monospace;color:var(--ink);}
+.bd-close{flex-shrink:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--ink);
+    cursor:pointer;font-size:0;display:flex;align-items:center;justify-content:center;}
+.bd-close::before{content:"";width:14px;height:14px;background:currentColor;
+    -webkit-mask:linear-gradient(45deg,transparent 45%,#000 45%,#000 55%,transparent 55%),linear-gradient(-45deg,transparent 45%,#000 45%,#000 55%,transparent 55%);
+    mask:linear-gradient(45deg,transparent 45%,#000 45%,#000 55%,transparent 55%),linear-gradient(-45deg,transparent 45%,#000 45%,#000 55%,transparent 55%);}
+.bd-close:hover{border-color:var(--primary-rim);color:var(--primary-dark);}
+.bd-close:focus-visible,.bd-chip:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
+.bd-body{padding:4px 20px 20px;overflow:auto;}
+.bd-filters{display:flex;flex-wrap:wrap;gap:10px 20px;margin-bottom:14px;}
+.bd-filter-row{display:flex;gap:4px;align-items:center;padding:3px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;}
+.bd-gender-lbl,.bd-view-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+.bd-chip{font-family:inherit;font-size:12px;min-height:36px;padding:0 14px;border-radius:999px;border:0;background:transparent;color:var(--muted);
+    cursor:pointer;transition:background-color .18s,color .18s;}
+.bd-chip:hover{color:var(--primary-dark);}
+.bd-chip.active,.bd-chip.active:hover{background:#1c3f94;color:#fff;font-weight:700;}
 .bd-view{display:none;}
-.bd-view.active{display:block;}
-.bd-split{display:grid;grid-template-columns:minmax(280px,1.05fr) minmax(280px,1fr);gap:14px;}
-.bd-panel{border:1px solid #ececec;border-radius:10px;background:#fff;overflow:hidden;}
-.bd-panel-hd{padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:12px;color:#666;
-    background:#fafafa;}
+.bd-view.active{display:block;animation:bdIn .22s ease-out both;}
+.bd-split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px;}
+.bd-panel{border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden;}
+.bd-panel-hd{padding:10px 14px;border-bottom:1px solid var(--border2);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+    letter-spacing:.12em;color:var(--muted);}
 .bd-list{max-height:420px;overflow:auto;}
-.bd-group-hd{padding:8px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;
-    background:#f3f3f3;color:#444;border-top:1px solid #eaeaea;position:sticky;top:0;}
-.bd-group-hd.surf-hard{border-left:3px solid #2f6fed;}
-.bd-group-hd.surf-clay{border-left:3px solid #c23b2a;}
-.bd-group-hd.surf-grass{border-left:3px solid #2f9e44;}
-.bd-row{display:grid;grid-template-columns:1.4fr .7fr .9fr 1fr;gap:8px;padding:8px 12px;
-    font-size:12px;border-top:1px solid #f2f2f2;}
-.bd-row:hover{background:#fafafa;}
-.bd-row .pts{font-family:'Space Mono',monospace;font-weight:600;}
+.bd-group-hd{padding:8px 14px;font-size:12px;font-weight:700;background:var(--surface2);color:var(--ink2);border-top:1px solid var(--border2);
+    position:sticky;top:0;box-shadow:inset 3px 0 0 var(--border);}
+.bd-group-hd.surf-hard{box-shadow:inset 3px 0 0 var(--bd-hard);}
+.bd-group-hd.surf-clay{box-shadow:inset 3px 0 0 var(--bd-clay);}
+.bd-group-hd.surf-grass{box-shadow:inset 3px 0 0 var(--bd-grass);}
+.bd-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.7fr) minmax(0,.9fr) minmax(0,1fr);gap:8px;padding:9px 14px;
+    font-size:13px;border-top:1px solid var(--border2);color:var(--ink);}
+.bd-row:hover{background:var(--row-hover);}
+.bd-row .pts{font-family:'Space Mono',monospace;font-weight:700;}
+.bd-row>div:nth-child(n+3){color:var(--muted);}
 .bd-chart{height:420px;width:100%;}
 .bd-chart.tall{height:460px;}
-.bd-empty{padding:28px;text-align:center;color:#999;font-size:13px;}
+.bd-empty{padding:28px;text-align:center;color:var(--muted);font-size:13px;}
+@keyframes bdFade{from{opacity:0}to{opacity:1}}
+@keyframes bdRise{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes bdIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media(max-width:860px){
-  .bd-split{grid-template-columns:1fr;}
-  .bd-chart{height:360px;}
+  .bd-split{grid-template-columns:minmax(0,1fr);}
+  .bd-chart{height:340px;}
 }
+@media(max-width:720px){
+  .bd-modal{padding:0;align-items:flex-end;}
+  .bd-card{width:100%;max-height:94vh;border-radius:16px 16px 0 0;}
+  .bd-hd,.bd-body{padding-left:16px;padding-right:16px;}
+}
+@media(prefers-reduced-motion:reduce){.bd-modal.open,.bd-card,.bd-view.active{animation:none;}.bd-chip{transition:none;}}
 """
 
 _JS_BREAKDOWN = r"""
@@ -55,7 +75,11 @@ _JS_BREAKDOWN = r"""
   var cache = {atp:null, wta:null};
   var state = {uid:null, name:'', gender:'atp', view:'level', loading:false};
   var charts = {level:null, surface:null, month:null};
-  var SURFACE_COLORS = {'硬地':'#2f6fed', '红土':'#c23b2a', '草地':'#2f9e44'};
+  // chart colours come from the page theme (and the modal's surface tokens)
+  function cv(name, el){ return getComputedStyle(el || document.body).getPropertyValue(name).trim(); }
+  function surfaceColors(){ var m = $('bd-modal');
+    return {'硬地':cv('--bd-hard',m), '红土':cv('--bd-clay',m), '草地':cv('--bd-grass',m)}; }
+  function levelColors(){ return [cv('--primary'), cv('--secondary'), cv('--primary-dark'), cv('--muted')]; }
 
   function $(id){ return document.getElementById(id); }
   function ensureCharts(){
@@ -180,24 +204,25 @@ _JS_BREAKDOWN = r"""
       totals[g] = (totals[g]||0) + p;
     });
     var total = totalOf(payload);
+    var SC = surfaceColors(), LC = levelColors();
     var data = order.filter(function(g){ return (totals[g]||0)>0; }).map(function(g){
       var item = {name:g, value:totals[g]};
-      if (groupKey==='surface' && SURFACE_COLORS[g]) {
-        item.itemStyle = {color: SURFACE_COLORS[g]};
-      }
+      if (groupKey==='surface' && SC[g]) item.itemStyle = {color: SC[g]};
+      else item.itemStyle = {color: LC[order.indexOf(g) % LC.length]};
       return item;
     });
+    var ink = cv('--ink'), muted = cv('--muted'), surf = cv('--surface');
     if (!charts[chartKey]) charts[chartKey] = echarts.init($(elId), null, {renderer:'canvas'});
     charts[chartKey].setOption({
-      backgroundColor:'#fff',
+      backgroundColor:'transparent',
       tooltip:{trigger:'item', formatter:function(p){
         var pct = total? ((p.value/total)*100).toFixed(1):'0';
         return (titleTip? (titleTip+' · ') : '')+p.name+'<br/>积分：'+p.value+'（'+pct+'%）';
       }},
       series:[{
         type:'pie', radius:['48%','72%'],
-        itemStyle:{borderColor:'#fff', borderWidth:3},
-        label:{formatter:function(p){
+        itemStyle:{borderColor:surf, borderWidth:3, borderRadius:4},
+        label:{color:ink, fontSize:12, lineHeight:16, formatter:function(p){
           var pct = total? ((p.value/total)*100).toFixed(1):'0';
           return p.name+'\n'+p.value+' · '+pct+'%';
         }},
@@ -207,8 +232,8 @@ _JS_BREAKDOWN = r"""
       graphic:[{
         type:'group', left:'center', top:'center',
         children:[
-          {type:'text', style:{text:'总分', fill:'#888', fontSize:12, textAlign:'center'}, top:-14},
-          {type:'text', style:{text:String(total), fill:'#111', fontSize:22, fontWeight:600, textAlign:'center', fontFamily:'Space Mono, monospace'}, top:6}
+          {type:'text', style:{text:'总分', fill:muted, fontSize:12, textAlign:'center'}, top:-14},
+          {type:'text', style:{text:String(total), fill:ink, fontSize:22, fontWeight:700, textAlign:'center', fontFamily:'Space Mono, monospace'}, top:6}
         ]
       }]
     }, true);
@@ -228,8 +253,9 @@ _JS_BREAKDOWN = r"""
     // Latest expiry first in data → ECharts category axis draws index 0 at BOTTOM.
     var months = Object.keys(byMonth).sort().reverse();
     var values = months.map(function(m){ return byMonth[m].points; });
+    var ink = cv('--ink'), muted = cv('--muted'), line = cv('--border');
     charts.month.setOption({
-      backgroundColor:'#fff',
+      backgroundColor:'transparent',
       tooltip:{trigger:'axis', axisPointer:{type:'shadow'}, formatter:function(params){
         var p = params[0];
         var m = p.name;
@@ -241,12 +267,12 @@ _JS_BREAKDOWN = r"""
         return lines.join('<br/>');
       }},
       grid:{left:72, right:72, top:20, bottom:24, containLabel:false},
-      xAxis:{type:'value', name:'积分', splitLine:{lineStyle:{color:'#eee'}}, axisLabel:{color:'#666'}},
-      yAxis:{type:'category', data:months, axisLabel:{color:'#333'}, axisTick:{show:false}},
+      xAxis:{type:'value', name:'积分', nameTextStyle:{color:muted}, splitLine:{lineStyle:{color:line}}, axisLabel:{color:muted}},
+      yAxis:{type:'category', data:months, axisLabel:{color:ink}, axisTick:{show:false}, axisLine:{lineStyle:{color:line}}},
       series:[{
         type:'bar', data:values, barWidth:14,
-        itemStyle:{borderRadius:[0,6,6,0]},
-        label:{show:true, position:'right', color:'#333',
+        itemStyle:{borderRadius:[0,6,6,0], color:cv('--primary')},
+        label:{show:true, position:'right', color:ink, fontFamily:'Space Mono, monospace',
           formatter:function(p){ return p.value>0 ? p.value : ''; }}
       }],
       graphic:[]
@@ -263,7 +289,7 @@ _JS_BREAKDOWN = r"""
       var y = topPad + (plotH / n) * ((n - 1 - i) + 0.82);
       children.push({
         type:'text', left:78, top:y, z:10,
-        style:{text:text, fill:'#8a8a8a', fontSize:10, width: Math.max(200, ($('bd-chart-month').clientWidth||600)-160), overflow:'truncate'}
+        style:{text:text, fill:muted, fontSize:11, width: Math.max(200, ($('bd-chart-month').clientWidth||600)-160), overflow:'truncate'}
       });
     });
     charts.month.setOption({graphic:children});
@@ -279,8 +305,8 @@ _JS_BREAKDOWN = r"""
   function renderAll(){
     var payload = userPayload();
     var total = totalOf(payload);
-    $('bd-title').textContent = (state.name || '用户') + ' · 积分构成';
-    $('bd-sub').textContent = (state.gender==='atp'?'ATP 男单':'WTA 女单') + ' · 总分 ' + total;
+    $('bd-title').textContent = state.name || '用户';
+    $('bd-sub').innerHTML = (state.gender==='atp'?'ATP 男单':'WTA 女单') + ' · 总分 <b>' + total + '</b>';
     applyView();
     if (!payload){
       ['bd-list-level','bd-list-surface'].forEach(function(id){
@@ -330,7 +356,7 @@ _JS_BREAKDOWN = r"""
     if (!modal) return;
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
-    $('bd-title').textContent = (state.name || '用户') + ' · 积分构成';
+    $('bd-title').textContent = state.name || '用户';
     $('bd-sub').textContent = '加载中…';
     ['bd-list-level','bd-list-surface'].forEach(function(id){
       $(id).innerHTML = '<div class="bd-empty">加载积分数据中…</div>';
@@ -407,20 +433,21 @@ _JS_BREAKDOWN = r"""
 def breakdown_modal_html() -> str:
     return """\
 <div id="bd-modal" class="bd-modal" aria-hidden="true">
-  <div class="bd-card" role="dialog" aria-modal="true">
+  <div class="bd-card" role="dialog" aria-modal="true" aria-labelledby="bd-title">
     <div class="bd-hd">
       <div>
+        <div class="bd-eye">POINTS BREAKDOWN · 积分构成</div>
         <div class="bd-title" id="bd-title">积分构成</div>
         <div class="bd-sub" id="bd-sub"></div>
       </div>
-      <button type="button" class="bd-close" id="bd-close">✕ 关闭</button>
+      <button type="button" class="bd-close" id="bd-close" aria-label="关闭">关闭</button>
     </div>
     <div class="bd-body">
       <div class="bd-filters">
         <div class="bd-filter-row">
-          <span class="bd-gender-lbl">性别</span>
-          <button type="button" class="bd-chip active" data-gender="atp">男 · ATP</button>
-          <button type="button" class="bd-chip" data-gender="wta">女 · WTA</button>
+          <span class="bd-gender-lbl">巡回赛</span>
+          <button type="button" class="bd-chip active" data-gender="atp">ATP</button>
+          <button type="button" class="bd-chip" data-gender="wta">WTA</button>
         </div>
         <div class="bd-filter-row">
           <span class="bd-view-lbl">视图</span>
@@ -433,7 +460,7 @@ def breakdown_modal_html() -> str:
       <div class="bd-view active" data-view="level">
         <div class="bd-split">
           <div class="bd-panel">
-            <div class="bd-panel-hd">赛事清单（按级别）</div>
+            <div class="bd-panel-hd">赛事清单 · 按级别</div>
             <div class="bd-list" id="bd-list-level"></div>
           </div>
           <div class="bd-panel">
@@ -446,7 +473,7 @@ def breakdown_modal_html() -> str:
       <div class="bd-view" data-view="surface">
         <div class="bd-split">
           <div class="bd-panel">
-            <div class="bd-panel-hd">赛事清单（按场地）</div>
+            <div class="bd-panel-hd">赛事清单 · 按场地</div>
             <div class="bd-list" id="bd-list-surface"></div>
           </div>
           <div class="bd-panel">

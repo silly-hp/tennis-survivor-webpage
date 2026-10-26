@@ -315,7 +315,8 @@ def _nav_cards(season) -> dict[str, list[dict[str, Any]]]:
              "href": f"{t}_ranking.html"},
             {"eye": race, "title": "即时冠军排名", "desc": "年终总决赛资格积分榜",
              "href": f"{t}_race_ranking.html"},
-            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "历年冠军次数排行", "dev": True},
+            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "历年各站冠军与用户夺冠次数排行",
+             "href": f"{t}_champion.html"},
             {"eye": "Survivor Killer Stats", "title": "杀手榜", "desc": "带走幸存者最多的球员",
              "links": [(f"{season} 赛季", f"{season}{t}killer.html"), ("历年总榜", f"{t}killer.html")]},
             {"eye": "Tour Calendar", "title": "幸存者赛历", "desc": "按年份与级别浏览本站得分",
@@ -332,7 +333,8 @@ def _nav_cards(season) -> dict[str, list[dict[str, Any]]]:
              "href": "combined_instant_ranking.html"},
             {"eye": "Combined Race", "title": "联合冠军排名", "desc": "ATP + WTA 冠军积分合计",
              "href": "combined_ranking.html"},
-            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "历年冠军次数排行，标注 ATP / WTA", "dev": True},
+            {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "ATP + WTA 冠军合并排行，标注 ATP / WTA",
+             "href": "combined_champion.html"},
         ],
     }
 
@@ -380,7 +382,7 @@ def _nav_html(season) -> str:
             <div class="seg" role="tablist" aria-label="选择巡回赛">
                 <button type="button" role="tab" data-tour="ATP" aria-selected="true">ATP</button>
                 <button type="button" role="tab" data-tour="WTA" aria-selected="false">WTA</button>
-                <button type="button" role="tab" data-tour="ALL" aria-selected="false">合计</button>
+                <button type="button" role="tab" data-tour="ALL" aria-selected="false">联合</button>
             </div>
         </div>
 {"".join(groups)}
@@ -390,9 +392,9 @@ def _nav_html(season) -> str:
 _GUIDE = [
     ("本周赛况", "本周每站的参赛、幸存人数和存活率；走势图悬停或点选比赛日可看当日淘汰明细，「逐小时天气」展开赛地天气。"),
     ("今日选人", "比赛日显示各站选人最多的球员与已选 / 轮空人数，点进去看完整明细。"),
-    ("即时排名", "实时积分、今日主选 / 备选与存活状态；合计 = ATP + WTA 积分之和。"),
+    ("即时排名", "实时积分、今日主选 / 备选与存活状态；联合 = ATP + WTA 积分之和。"),
     ("即时冠军排名", "Race 积分榜，看谁离年终总决赛资格最近。"),
-    ("历史冠军榜", "历年冠军 / 亚军次数排行（开发中）。"),
+    ("历史冠军榜", "按赛事看每站冠军，或按用户看夺冠次数排行；可按赛季、级别筛选，联合页标注 ATP / WTA。"),
     ("杀手榜", "哪些球员淘汰了最多幸存者，可看本赛季与历年总榜。"),
     ("幸存者赛历", "按年份、级别浏览每站赛事的本站得分与冠军。"),
     ("幸存者生涯统计", "个人生涯参赛、夺冠、连胜与存活率；H2H 查你与某位球员的胜负。"),
@@ -413,6 +415,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 .pill-btn:hover,.theme-btn:hover{border-color:var(--primary);color:var(--primary);}
 .pill-btn.off,.pill-btn.off:hover{opacity:.55;cursor:not-allowed;border-color:var(--border);color:var(--ink2);}
 .pill-btn.off .dev-badge{margin-left:2px;}
+.pill-btn{text-decoration:none;}
+.pill-n{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);}
 button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
 
 .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:36px;}
@@ -599,8 +603,7 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
     header{margin-bottom:20px;}
     .logo-en{display:none;}
     .pill-btn .pill-label{display:none;}
-    .pill-btn{width:44px;padding:0;justify-content:center;}
-    .pill-btn.off{width:auto;padding:0 10px;gap:4px;}
+    .pill-btn{min-width:44px;padding:0 12px;justify-content:center;gap:4px;}
     .logo{gap:8px;} .logo svg{width:36px !important;height:36px !important;}
     .logo-cn{font-size:17px;white-space:nowrap;}
     .theme-btn{white-space:nowrap;min-height:40px;}
@@ -741,6 +744,19 @@ _JS_INDEX = r"""
 """
 
 
+# Count of watched users (ranking page watch lists); storage throws on data: URLs.
+_JS_WATCH_COUNT = """\
+(function(){
+  var el=document.getElementById('watchCount'); if(!el) return;
+  var n=0;
+  try{
+    var s=JSON.parse(localStorage.getItem('ts.watch.v1')||'null'), seen={};
+    (s&&s.lists||[]).forEach(function(l){ (l.users||[]).forEach(function(u){ if(!seen[u]){ seen[u]=1; n++; } }); });
+  }catch(e){}
+  if(n){ el.textContent=n; el.hidden=false; el.parentNode.setAttribute('aria-label','我的关注 · '+n+' 人'); }
+})();"""
+
+
 def render_index(
     stats: dict,
     version: str = VERSION,
@@ -804,7 +820,7 @@ def render_index(
             </div>
         </a>
         <div class="hd-actions">
-            <span class="pill-btn off" aria-disabled="true" title="我的关注 · 开发中"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:var(--secondary)"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span class="pill-label">我的关注</span><span class="dev-badge">开发中</span></span>
+            <a class="pill-btn" href="watchlist.html" title="我的关注" aria-label="我的关注"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:var(--secondary)"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span class="pill-label">我的关注</span><span class="pill-n" id="watchCount" hidden></span></a>
             <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
         </div>
     </header>
@@ -836,7 +852,7 @@ def render_index(
 <dialog class="guide" id="guide" aria-label="使用指南">
     <div class="guide-inner">
         <div class="guide-hd"><h2>使用指南</h2><button type="button" class="guide-close" aria-label="关闭">✕</button></div>
-        <p>每天选一名球员，赢了存活得分，输了淘汰。数据查询处可切换 ATP / WTA / 合计，以下是各板块能做什么：</p>
+        <p>每天选一名球员，赢了存活得分，输了淘汰。数据查询处可切换 ATP / WTA / 联合，以下是各板块能做什么：</p>
         <div class="guide-grid">{guide_items}</div>
     </div>
 </dialog>
@@ -847,6 +863,9 @@ def render_index(
 </script>
 <script>
 {_JS_INDEX}
+</script>
+<script>
+{_JS_WATCH_COUNT}
 </script>
 </body>
 </html>"""
