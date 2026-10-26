@@ -891,15 +891,15 @@ ready(function(){
   const G=rows.map(r=>grp(txt(r,C.st)));
   // 轮空 / 未轮空 only on a day-1 bye; 自杀 is a subset of 淘汰
   const BYE_DAY=root.dataset.byeday==='1';
-  // 参赛 = picked at some point this event; 已选 = made a valid pick today (matches 今日选人统计):
+  // 参赛 = picked on day 1 (anyone not 未参赛, incl. today's 未选); 已选 = made a valid pick today (matches 今日选人统计):
   // still in today (存活/未完赛/轮空) or knocked out by today's pick. Earlier losers have 存活天数 < today's.
   const CHIPS=[['all','全部'],['entered','参赛'],['picked','已选'],...(BYE_DAY?[['bye','轮空'],['nobye','未轮空']]:[]),['alive','存活'],['live','未完赛'],
                ['outall','淘汰'],['suicide','自杀'],['none','未选']];
-  const ENTERED=['alive','live','bye','out','suicide'];
+  const ENTERED=['alive','live','bye','out','suicide','none'];
   const DAYS=rows.map(r=>parseInt(txt(r,C.days),10));
   const TODAY_D=Math.max(-1,...DAYS.filter((d,i)=>G[i]!=='absent'&&!isNaN(d)));
   const TODAY=rows.map((r,i)=>['alive','live','bye'].includes(G[i])||(G[i]==='out'&&DAYS[i]===TODAY_D&&used(r).length>TODAY_D));
-  const inChip=(k,i)=>{ const g=G[i]; return k==='all'||(k==='entered'?ENTERED.includes(g):k==='picked'?TODAY[i]:k==='nobye'?ENTERED.includes(g)&&g!=='bye'
+  const inChip=(k,i)=>{ const g=G[i]; return k==='all'||(k==='entered'?ENTERED.includes(g):k==='picked'?TODAY[i]:k==='nobye'?TODAY[i]&&g!=='bye'
     :k==='outall'?(g==='out'||g==='suicide'):g===k); };
   let chip=C.st>=0?'picked':'all', list='', routes=new Set(), limit=PAGE;
   const rowIdx=new Map(rows.map((r,i)=>[r,i]));
