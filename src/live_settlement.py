@@ -463,16 +463,18 @@ def current_play_day(
         current = next(
             (item for item in schedule if int(item.get("day") or 0) == play), None
         )
-        round_rank = _survivor_round_rank(
-            str((current or {}).get("round") or ""), field_n
-        )
-        if not round_rank:
-            round_rank = opening_round_rank(field_n) + play - 1
-        if _round_still_going(draw, round_rank):
-            break
         nxt_item = next(
             (item for item in schedule if int(item.get("day") or 0) == nxt), None
         )
+        # A round spread over two days (e.g. R1 on day 1 and day 2): the round is
+        # still going by design, so an open next day of the same round takes over.
+        cur_round = str((current or {}).get("round") or "").strip()
+        same_round = bool(cur_round) and cur_round == str((nxt_item or {}).get("round") or "").strip()
+        round_rank = _survivor_round_rank(cur_round, field_n)
+        if not round_rank:
+            round_rank = opening_round_rank(field_n) + play - 1
+        if not same_round and _round_still_going(draw, round_rank):
+            break
         nxt_date = (nxt_item or {}).get("date")
         play = nxt
         if nxt_date is not None and nxt_date > today:

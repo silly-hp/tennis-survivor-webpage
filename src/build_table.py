@@ -276,6 +276,10 @@ def _build_day1(
         .rank(method="min")
         .astype("Int64")
     )
+    # 存活天数 counts settled days (0-based, as on later days): nobody has one yet on
+    # Day 1. Entrants get 0; non-entrants stay blank.
+    p_df["day"] = pd.Series(pd.NA, index=p_df.index, dtype="Int64")
+    p_df.loc[has_submission, "day"] = 0
     return _as_nullable_int(
         p_df.loc[:, [c for c in OUTPUT_COLUMNS if c in p_df.columns]]
     ).reset_index(drop=True)

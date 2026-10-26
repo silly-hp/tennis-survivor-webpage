@@ -821,19 +821,25 @@ function tsMatch(names,q,skip){
 // o: {picks, st, stHtml, days, main, alt, hasSt} → {rows (html), sum (text)}
 function tsHist(o){
   const picks=Array.isArray(o.picks)?o.picks:[];
-  // picks hold settled days only. A pick that knocked the user out is the extra
-  // entry past 存活天数; otherwise the status belongs to the next day (today's pick, or
-  // "-" when nothing was submitted, e.g. 自杀(退赛) for an empty day).
+  // picks are per-day entries (a bye is stored as 轮空). 存活天数 = settled days the user
+  // survived, so entries [0, survived) are settled and the entry at [survived] — if any —
+  // is the deciding day: today's pick, or the pick that knocked the user out. Without it
+  // the status goes on a new row (today's pick, or "-" when nothing was submitted).
   const g=tsGrp(o.st||''), survived=parseInt(o.days,10);
-  const lostOnLast=(g==='out'||g==='suicide')&&!isNaN(survived)&&picks.length>survived;
-  const items=picks.map((v,i)=>{ const raw=String(v).trim(), bye0=i===0&&raw==='轮空', val=bye0?'':raw;
-    return {val, bye:bye0||raw==='轮空', res:null}; });
-  const lastIt=items[items.length-1];
-  if(lostOnLast&&items.length) items[items.length-1].res=o.stHtml;
-  // picks can already hold today's unsettled pick (e.g. on day 1); players never repeat,
-  // so a last entry equal to 今日主选 is today, not a settled day
-  else if(lastIt&&o.main&&lastIt.val===o.main){ lastIt.res=o.stHtml; lastIt.alt=o.alt||''; }
-  else if(g!=='absent'&&o.hasSt) items.push({val:o.main||'', bye:g==='bye', res:o.stHtml, alt:o.alt||''});
+  const items=picks.map(v=>{ const raw=String(v).trim(), bye=raw==='轮空';
+    return {val:bye?'':raw, bye, res:null}; });
+  const today={val:o.main||'', bye:g==='bye', res:o.stHtml, alt:o.alt||''};
+  if(!isNaN(survived)){
+    if(items.length>survived){ items.length=survived+1; const it=items[survived]; it.res=o.stHtml;
+      if(o.main&&it.val===o.main) it.alt=o.alt||''; }
+    else if(g!=='absent'&&o.hasSt) items.push(today);
+  } else {
+    // no 存活天数 (e.g. combined pages): players never repeat, so a last entry equal to
+    // 今日主选 — or a bye while the status is 轮空 — is today, not a settled day
+    const lastIt=items[items.length-1];
+    if(lastIt&&((o.main&&lastIt.val===o.main)||(lastIt.bye&&g==='bye'))){ lastIt.res=o.stHtml; lastIt.alt=o.alt||''; }
+    else if(g!=='absent'&&o.hasSt) items.push(today);
+  }
   const last=items.length-1;
   const rows=items.length?items.map((it,i)=>{
     const empty=!it.val||it.val.toLowerCase()==='nan';
@@ -843,8 +849,8 @@ function tsHist(o){
     return '<div class="rk-hist-row'+(i===last?' today':'')+'" style="animation-delay:'+Math.min(i,12)*50+'ms"><b>'+(i+1)+'</b>'
       +'<span class="p'+(empty?' none':'')+'">'+(empty?'-':tsEsc(it.val))+alt+'</span>'+res+'</div>';
   }).join(''):'<div class="rk-empty">暂无选人记录</div>';
-  // a pick that broke the rules (自杀: 退赛 / 主备冲突 / 重复) is not a valid pick
-  const valid=items.filter(it=>it.val&&it.val!=='轮空'&&it.val.toLowerCase()!=='nan'&&!(g==='suicide'&&it.res!=null)).length;
+  // a bye is a pick (the user entered); a pick that broke the rules (自杀) is not
+  const valid=items.filter(it=>(it.bye||(it.val&&it.val.toLowerCase()!=='nan'))&&!(g==='suicide'&&it.res!=null)).length;
   return {rows, sum:'共 '+items.length+' 天 · '+valid+' 天有效选人 · 点击空白处或按 Esc 关闭'};
 }
 """
