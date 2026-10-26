@@ -162,13 +162,7 @@ def render_champion_page(
     <div class="rk-chip-row ch-sorts" id="chSortsM" role="group" aria-label="排序"></div>
     <section class="rk-card ch-tcard">
       <table class="ch-t">
-        <thead><tr>
-          <th scope="col"><span class="rk-sr">关注</span></th><th scope="col">排名</th><th scope="col">用户名</th>
-          <th scope="col" data-sort="titles" aria-sort="descending"><button type="button" data-sort="titles">冠军数</button></th>
-          <th scope="col">级别分布</th>
-          <th scope="col" data-sort="level" aria-sort="none"><button type="button" data-sort="level">最高级别</button></th>
-          <th scope="col" data-sort="last" aria-sort="none"><button type="button" data-sort="last">最近夺冠</button></th>
-        </tr></thead>
+        <thead><tr id="chHead"></tr></thead>
         <tbody id="chRows"></tbody>
       </table>
       <p class="rk-note ch-tnote">冠军数相同时依次比较大满贯 › 年终总决赛 › 合赛/双周 1000 › 单周 1000 › 奥运会 › 500 › 250 的冠军数，奥运年的蒙特利尔 / 多伦多、辛辛那提按单周计；全部相同则名次并列 · 点击用户名查看全部冠军记录</p>
@@ -312,7 +306,6 @@ body.dark .ch-chip[data-me]::after{color:#06142a;}
 .ch-pod-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ch-pod-n{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--muted);}
 .ch-pod-n b{font-family:'Space Mono',monospace;font-size:36px;line-height:1;color:var(--ink);}
-.ch-pod-split{font-size:13px;color:var(--ink2);}
 .ch-pod-last{font-size:12px;color:var(--muted);border-top:1px solid var(--border2);padding-top:8px;}
 .ch-me::after{content:"我";flex-shrink:0;font-family:'Noto Sans SC',sans-serif;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;
     background:var(--me);color:#fff;}
@@ -324,8 +317,10 @@ body.dark .ch-me::after{color:#06142a;}
 .ch-tcard{overflow:hidden;}
 .ch-t{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed;}
 .ch-t th{background:var(--th-bg);color:#fff;font-size:12px;font-weight:700;text-align:left;padding:0 10px;height:44px;}
-.ch-t th:nth-child(1){width:44px;}.ch-t th:nth-child(2){width:56px;}.ch-t th:nth-child(4){width:96px;}
-.ch-t th:nth-child(6){width:120px;}.ch-t th:nth-child(7){width:22%;}.ch-t th:nth-child(5){width:26%;}
+.ch-t .c-star{width:44px;}.ch-t .c-rank{width:56px;}.ch-t th.c-n{width:96px;}.ch-t th.c-lv{width:76px;text-align:center;}
+.ch-t th.c-last{width:22%;}.ch-t .c-strip{display:none;}
+.ch-t td.c-lv{text-align:center;}
+.ch-t th.c-lv button{justify-content:center;white-space:nowrap;}
 .ch-t th button{font:inherit;border:0;background:transparent;color:var(--th-text,#9cbdd4);min-height:44px;padding:0;cursor:pointer;
     display:inline-flex;align-items:center;gap:4px;}
 .ch-t th[aria-sort="descending"] button{color:#fff;}
@@ -343,7 +338,28 @@ body.dark .ch-me::after{color:#06142a;}
 .ch-aw{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
 .ch-aw i{font-style:normal;font-weight:700;color:var(--atp-ink);}
 .ch-aw i+i,.ch-aw .w{color:var(--wta-ink);}
-.ch-split{display:flex;gap:6px;flex-wrap:wrap;}
+/* level columns: label once (header / small label), the cell holds only the count */
+.ch-sw{width:8px;height:8px;border-radius:2px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);}
+.ch-sw[data-lv="大满贯"]{background:#fff;border-color:#fff;}
+.ch-sw[data-lv="年终总决赛"]{background:var(--star-dim);border-color:var(--star);}
+.ch-sw[data-lv="1000"]{background:var(--primary-dim);border-color:var(--primary);}
+.ch-sw[data-lv="奥运会"]{border-color:var(--me);}
+.ch-cnt,.ch-sc{--lv-bg:var(--surface2);--lv-fg:var(--ink2);}
+[data-lv="大满贯"]{--lv-bg:rgba(0,45,68,.10);--lv-fg:var(--ink);}
+body.dark [data-lv="大满贯"]{--lv-bg:rgba(221,238,248,.12);}
+[data-lv="年终总决赛"]{--lv-bg:var(--star-dim);--lv-fg:var(--atp-ink);}
+[data-lv="1000"]{--lv-bg:var(--primary-dim);--lv-fg:var(--primary-dark);}
+[data-lv="奥运会"]{--lv-bg:var(--me-dim);--lv-fg:var(--me);}
+[data-lv="250"]{--lv-bg:var(--surface2);--lv-fg:var(--muted);}
+.ch-cnt{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:30px;border-radius:8px;
+    font-family:'Space Mono',monospace;font-size:15px;font-weight:700;background:var(--lv-bg);color:var(--lv-fg);}
+.ch-cnt.z,.ch-sc.z{background:transparent;color:var(--faint,var(--muted));font-weight:400;}
+.ch-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border:1px solid var(--border2);border-radius:10px;overflow:hidden;}
+.ch-sc{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;background:var(--lv-bg);color:var(--lv-fg);min-width:0;}
+.ch-sc+.ch-sc{border-left:1px solid var(--border2);}
+.ch-sc small{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.ch-sc b{font-family:'Space Mono',monospace;font-size:18px;line-height:1.1;}
+.ch-sc.z small{color:var(--muted);font-weight:500;}
 .ch-last{display:flex;flex-direction:column;gap:1px;min-width:0;}
 .ch-last span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ch-last small{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
@@ -413,7 +429,7 @@ body.dark .ch-me::after{color:#06142a;}
     .ch-chip{min-height:44px;}
     .ch-podium{grid-template-columns:minmax(0,1fr);gap:10px;}
     .ch-pod{padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;}
-    .ch-pod-top,.ch-pod-split,.ch-pod-last{grid-column:1/-1;}
+    .ch-pod-top,.ch-pod .ch-strip,.ch-pod-last{grid-column:1/-1;}
     .ch-pod-n{grid-column:2;grid-row:2;}
     .ch-pod-n b{font-size:30px;}
     .ch-pod-name{font-size:18px;}
@@ -426,13 +442,15 @@ body.dark .ch-me::after{color:#06142a;}
         background:var(--surface);border:1px solid var(--border);border-radius:12px;}
     .ch-t tr[data-me]{border-color:var(--me-rim);}
     .ch-t td{display:block;padding:0;border:0;min-width:0;}
-    .ch-t td:nth-child(1){grid-column:4;grid-row:1;}
-    .ch-t td:nth-child(2){grid-column:1;grid-row:1;color:var(--muted);}
-    .ch-t td:nth-child(3){grid-column:2;grid-row:1;}
-    .ch-t td:nth-child(4){grid-column:3;grid-row:1;}
-    .ch-t td:nth-child(5){grid-column:2/-1;grid-row:2;}
-    .ch-t td:nth-child(6){display:none;}
-    .ch-t td:nth-child(7){grid-column:2/-1;grid-row:3;}
+    .ch-t td.c-star{grid-column:4;grid-row:1;}
+    .ch-t td.c-rank{grid-column:1;grid-row:1;color:var(--muted);}
+    .ch-t td.c-user{grid-column:2;grid-row:1;}
+    .ch-t td.c-n{grid-column:3;grid-row:1;}
+    .ch-t td.c-lv{display:none;}
+    .ch-t td.c-strip{display:block;grid-column:2/-1;grid-row:2;padding-right:6px;}
+    .ch-t td.c-last{grid-column:2/-1;grid-row:3;}
+    .ch-sc{padding:4px 0;}
+    .ch-sc b{font-size:15px;}
     .ch-uname{font-size:16px;font-weight:700;min-height:44px;}
     .ch-n{flex-direction:row;align-items:baseline;gap:6px;}
     .ch-n b{font-size:20px;}
@@ -492,13 +510,18 @@ ready(function(){
     chips($('chLevels'),[['all','全部']].concat(levels.map(l=>[l,lab(l,tl)])),st.lv,'lv');
     if(ALL) chips($('chTours'),[['all','全部'],['A','ATP'],['W','WTA']],st.tf,'tf');
     chips($('chSortsM'),[['titles','冠军数'],['last','最近夺冠'],['level','最高级别']],st.sort,'sort');
-    root.querySelectorAll('.ch-t th[data-sort]').forEach(th=>th.setAttribute('aria-sort',th.dataset.sort===st.sort?'descending':'none'));
+    $('chHead').innerHTML='<th scope="col" class="c-star"><span class="rk-sr">关注</span></th><th scope="col" class="c-rank">排名</th><th scope="col" class="c-user">用户名</th>'
+      +sortTh('titles','冠军数','c-n')
+      +levels.map(l=>sortTh('lv:'+l,'<i class="ch-sw" data-lv="'+esc(l)+'"></i>'+esc(lab(l,tl)),'c-lv',lab(l,tl)+' 冠军数')).join('')
+      +sortTh('last','最近夺冠','c-last');
   }
   root.addEventListener('click',e=>{
     const b=e.target.closest('.rk-chip[data-k]'); if(!b) return;
     const k=b.dataset.k, v=b.dataset.v; st[k]=(k==='season'&&v!=='all')?parseInt(v,10):v; renderChips(); render();
   });
-  root.querySelectorAll('.ch-t th button').forEach(b=>b.addEventListener('click',()=>{ st.sort=b.dataset.sort; renderChips(); render(); }));
+  function sortTh(k,label,cls,aria){ const on=st.sort===k;
+    return '<th scope="col" class="'+cls+'" aria-sort="'+(on?'descending':'none')+'"><button type="button" data-sort="'+esc(k)+'"'+(aria?' aria-label="按'+esc(aria)+'排序"':'')+'>'+label+'</button></th>'; }
+  $('chHead').addEventListener('click',e=>{ const b=e.target.closest('button[data-sort]'); if(!b) return; st.sort=b.dataset.sort; renderChips(); render(); });
 
   // ── aggregate ──
   function filtered(){
@@ -515,7 +538,10 @@ ready(function(){
     ps.forEach((p,i)=>{ const q=ps[i-1]; p.rank=i&&q.titles===p.titles&&tie(q,p)===0?q.rank:i+1; });
     return ps;
   }
-  const splitText=p=>ORDER.filter(l=>p.by[l]).map(l=>lab(l,tl)+' '+p.by[l]).join(' · ');
+  // one cell per level on the page: the level is labelled once, the cell only holds the count
+  const strip=p=>'<span class="ch-strip">'+levels.map(l=>{ const n=p.by[l]||0;
+    return '<span class="ch-sc'+(n?'':' z')+'" data-lv="'+esc(l)+'"><small>'+esc(lab(l,tl))+'</small><b>'+(n||'–')+'</b></span>'; }).join('')+'</span>';
+  const cnt=(p,l)=>{ const n=p.by[l]||0; return '<span class="ch-cnt'+(n?'':' z')+'" data-lv="'+esc(l)+'">'+(n||'–')+'</span>'; };
   const lastText=e=>(ALL?(e[0]==='A'?'ATP ':'WTA '):'')+e[2]+' '+e[1];
 
   // ── render ──
@@ -533,7 +559,7 @@ ready(function(){
     let rows=st.follow?all.filter(p=>followSet(p.name)):all;
     if(st.q){ const q=st.q.toLowerCase(); rows=rows.filter(p=>p.name.toLowerCase().includes(q)); }
     const k=st.sort;
-    rows=rows.slice().sort((a,b)=>k==='last'?b.last[3].localeCompare(a.last[3])||a.rank-b.rank:k==='level'?b.top-a.top||a.rank-b.rank:a.rank-b.rank);
+    rows=rows.slice().sort((a,b)=>k==='last'?b.last[3].localeCompare(a.last[3])||a.rank-b.rank:k==='level'?b.top-a.top||a.rank-b.rank:k.indexOf('lv:')===0?(b.by[k.slice(3)]||0)-(a.by[k.slice(3)]||0)||a.rank-b.rank:a.rank-b.rank);
     $('chNE').textContent=evs.length; $('chNP').textContent=all.length;
     const isE=st.view==='events';
     $('chTabE').setAttribute('aria-selected',isE); $('chTabP').setAttribute('aria-selected',!isE);
@@ -562,15 +588,15 @@ ready(function(){
     $('chPodium').innerHTML=pod.map(p=>'<button type="button" class="rk-card ch-pod" data-u="'+p.id+'" aria-haspopup="dialog"'+(p.name===S.me?' data-me':'')+'>'
       +'<span class="ch-pod-top"><span class="ch-pod-no">NO.'+p.rank+'</span>'+(ALL?'<span class="ch-pod-tours"><span>ATP '+p.a+'</span><span>WTA '+p.w+'</span></span>':'')+'</span>'
       +'<span class="ch-pod-name"><span class="'+(p.name===S.me?'ch-me':'')+'">'+esc(p.name)+'</span></span>'
-      +'<span class="ch-pod-n"><b>'+p.titles+'</b>冠</span><span class="ch-pod-split">'+esc(splitText(p))+'</span>'
+      +'<span class="ch-pod-n"><b>'+p.titles+'</b>冠</span>'+strip(p)
       +'<span class="ch-pod-last">最近夺冠 · '+esc(lastText(p.last))+' · '+esc(lab(p.last[4],p.last[0]))+'</span></button>').join('');
     $('chRows').innerHTML=rows.map(p=>{ const fav=isFav(p.name);
-      return '<tr'+(p.name===S.me?' data-me':'')+'><td><button type="button" class="rk-star'+(fav?' on':'')+'" data-star="'+p.id+'" aria-haspopup="dialog" aria-expanded="false" aria-label="关注 '+esc(p.name)+'">'+STAR+'</button></td>'
-        +'<td class="ch-rank">'+p.rank+'</td><td>'+nameCell(p)+'</td>'
-        +'<td><span class="ch-n"><b>'+p.titles+'</b>'+(ALL?'<span class="ch-aw"><i>A</i>'+p.a+' · <i class="w">W</i>'+p.w+'</span>':'')+'</span></td>'
-        +'<td><span class="ch-split">'+ORDER.filter(l=>p.by[l]).map(l=>badge(l,tl,p.by[l])).join('')+'</span></td>'
-        +'<td>'+badge(p.topLv,p.topT)+'</td>'
-        +'<td><span class="ch-last"><span>'+esc(lastText(p.last))+'</span><small>'+p.last[3]+'</small></span></td></tr>'; }).join('');
+      return '<tr'+(p.name===S.me?' data-me':'')+'><td class="c-star"><button type="button" class="rk-star'+(fav?' on':'')+'" data-star="'+p.id+'" aria-haspopup="dialog" aria-expanded="false" aria-label="关注 '+esc(p.name)+'">'+STAR+'</button></td>'
+        +'<td class="ch-rank c-rank">'+p.rank+'</td><td class="c-user">'+nameCell(p)+'</td>'
+        +'<td class="c-n"><span class="ch-n"><b>'+p.titles+'</b>'+(ALL?'<span class="ch-aw"><i>A</i>'+p.a+' · <i class="w">W</i>'+p.w+'</span>':'')+'</span></td>'
+        +levels.map(l=>'<td class="c-lv">'+cnt(p,l)+'</td>').join('')
+        +'<td class="c-strip">'+strip(p)+'</td>'
+        +'<td class="c-last"><span class="ch-last"><span>'+esc(lastText(p.last))+'</span><small>'+p.last[3]+'</small></span></td></tr>'; }).join('');
   }
   const STAR=document.querySelector('#chFollow svg').outerHTML;
 

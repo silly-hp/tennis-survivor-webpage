@@ -33,9 +33,9 @@ def me_card_html() -> str:
   <div class="rk-me-hd"><span class="rk-eye rk-eye-me">MY STATUS</span><span class="rk-me-name" id="rkMeName"></span></div>
   <div class="rk-me-set" id="rkMeSet">
     <label class="rk-me-lbl" for="rkMeInput">输入你的用户名，置顶显示你的状态</label>
-    <div class="rk-me-row"><input id="rkMeInput" class="rk-input" list="rkUsers" autocomplete="off" placeholder="你的用户名">
-    <button type="button" class="rk-btn rk-btn-pri" id="rkMeSave">设为我</button></div>
-    <datalist id="rkUsers"></datalist>
+    <div class="rk-me-row"><input id="rkMeInput" class="rk-input" autocomplete="off" placeholder="你的用户名">
+    <button type="button" class="rk-btn rk-btn-pri" id="rkMeSave">设为我</button>
+    <div class="rk-pop rk-sug" id="rkMeSug" role="listbox" aria-label="用户名建议" hidden></div></div>
     <span class="rk-note">也可在任意行的 ☆ 菜单里选“设为我”。只保存在本机浏览器。</span>
   </div>
   <div class="rk-me-body" id="rkMeBody" hidden>
@@ -336,7 +336,16 @@ body.dark .rk .sum-copy-btn.ok{color:#06140c;}
 .rk-me-name{font-size:13px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .rk-me-set{display:flex;flex-direction:column;gap:8px;}
 .rk-me-lbl{font-size:13px;color:var(--muted);}
-.rk-me-row{display:flex;gap:8px;}
+.rk-me-row{display:flex;gap:8px;position:relative;}
+/* username suggestions (tsSuggest) */
+.rk-sug{top:calc(100% + 6px);left:0;right:0;max-height:min(340px,50vh);overflow-y:auto;}
+/* the hover lift (transform) makes a card its own stacking context: tsSuggest puts .rk-sug-open
+   on the card (o.host) so the whole card sits above later content while its list is open */
+.rk-sug-open{position:relative;z-index:30;}
+.rk-sug .rk-opt{justify-content:space-between;}
+.rk-sug .rk-opt[aria-selected="true"]{background:var(--row-hover);}
+.rk-sug .t{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);flex-shrink:0;}
+.rk-sug .rk-note{padding:6px 10px;}
 .rk-me-row .rk-input{flex:1;}
 .rk-me-body{display:flex;flex-direction:column;gap:12px;}
 .rk-me-body[hidden],.rk-me-set[hidden]{display:none;}
@@ -753,6 +762,45 @@ function tsEsc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;
 function tsBadge(s){ s=String(s||'').trim(); if(!s) return '';
   const c=(s==='存活'||s==='轮空')?'st-alive':(s==='未完赛'||s==='未选')?'st-live':(s==='球员输球'||s==='未参赛'||s.indexOf('自杀')===0)?'st-out':'st-other';
   return '<span class="st-badge '+c+'">'+tsEsc(s)+'</span>'; }
+// Username combobox in the site's own popover (a native <datalist> popup can't be styled and
+// renders white-on-white in some browsers). o: {match(q) → {opts, note}, meta(u) → text,
+// pick(u, typed), eye, host (card raised while the list is open)}. Enter picks the highlighted option, or passes the typed text (typed=true).
+function tsSuggest(input,pop,o){
+  let opts=[], act=-1;
+  input.setAttribute('role','combobox'); input.setAttribute('aria-autocomplete','list');
+  input.setAttribute('aria-controls',pop.id); input.setAttribute('aria-expanded','false');
+  const optId=i=>pop.id+'-o'+i;
+  function paint(){ [...pop.querySelectorAll('.rk-opt')].forEach((b,i)=>b.setAttribute('aria-selected',String(i===act)));
+    input.setAttribute('aria-activedescendant',act>=0?optId(act):''); }
+  const lift=on=>{ if(o.host) o.host.classList.toggle('rk-sug-open',on); };
+  function close(){ lift(false); pop.hidden=true; input.setAttribute('aria-expanded','false'); input.setAttribute('aria-activedescendant',''); }
+  function show(){
+    const q=input.value.trim(); if(!q){ opts=[]; act=-1; close(); return; }
+    const r=o.match(q.toLowerCase()); opts=r.opts||[]; act=opts.length?0:-1;
+    pop.innerHTML=opts.length?(o.eye?'<span class="rk-eye rk-pop-eye">'+o.eye+'</span>':'')+opts.map((u,i)=>
+      '<button type="button" role="option" tabindex="-1" class="rk-opt" id="'+optId(i)+'" data-u="'+tsEsc(u)+'" aria-selected="'+(i===act)+'"><span class="rk-opt-l">'+tsEsc(u)+'</span>'
+      +(o.meta?'<span class="t">'+tsEsc(o.meta(u))+'</span>':'')+'</button>').join('')
+      :'<span class="rk-note">'+tsEsc(r.note||'')+'</span>';
+    lift(true); pop.hidden=false; input.setAttribute('aria-expanded','true'); paint();
+  }
+  input.addEventListener('input',()=>{ input.setCustomValidity(''); show(); });
+  input.addEventListener('focus',()=>{ if(input.value.trim()) show(); });
+  input.addEventListener('keydown',e=>{
+    if((e.key==='ArrowDown'||e.key==='ArrowUp')&&opts.length&&!pop.hidden){ e.preventDefault(); act=(act+(e.key==='ArrowDown'?1:-1)+opts.length)%opts.length; paint(); }
+    else if(e.key==='Enter'){ e.preventDefault(); const u=!pop.hidden&&act>=0?opts[act]:''; close(); o.pick(u||input.value.trim(),!u); }
+    else if(e.key==='Escape'&&!pop.hidden){ e.stopPropagation(); close(); } });
+  pop.addEventListener('mousedown',e=>e.preventDefault());  // keep focus in the input
+  pop.addEventListener('click',e=>{ e.stopPropagation(); const b=e.target.closest('.rk-opt'); if(b){ close(); o.pick(b.dataset.u,false); } });
+  document.addEventListener('click',e=>{ if(e.target!==input&&!pop.contains(e.target)) close(); });
+  // the highlighted option, for a separate submit button
+  return {current:()=>!pop.hidden&&act>=0?opts[act]:'', refresh:show, close};
+}
+// default matcher: names containing q, earliest match then shortest first
+function tsMatch(names,q,skip){
+  const hit=names.filter(u=>u.toLowerCase().includes(q));
+  const opts=hit.filter(u=>!(skip&&skip(u))).sort((a,b)=>(a.toLowerCase().indexOf(q)-b.toLowerCase().indexOf(q))||a.length-b.length).slice(0,8);
+  return {opts, hit};
+}
 // o: {picks, st, stHtml, days, main, alt, hasSt} → {rows (html), sum (text)}
 function tsHist(o){
   const picks=Array.isArray(o.picks)?o.picks:[];
@@ -1002,8 +1050,6 @@ ready(function(){
   })();
 
   // ── "me" card ──
-  const dl=document.getElementById('rkUsers');
-  if(dl&&rows.length<=3000) dl.innerHTML=rows.map(r=>'<option value="'+esc(uname(r))+'">').join('');
   const meSet=document.getElementById('rkMeSet'), meBody=document.getElementById('rkMeBody');
   function deltaHtml(d){ return d>0?'<span class="rank up">▲'+d+'</span>':d<0?'<span class="rank down">▼'+(-d)+'</span>':'<span class="rank same">—</span>'; }
   function renderMe(){
@@ -1018,9 +1064,12 @@ ready(function(){
     const pick=C.main>=0?(txt(r,C.main)||'今日未选'):'';
     document.getElementById('rkMePick').innerHTML=(pick||st)?'<span>'+esc(pick)+'</span>'+st:'';
   }
-  document.getElementById('rkMeSave').addEventListener('click',()=>{ const v=document.getElementById('rkMeInput').value.trim();
-    if(byUser.has(v)){ S.me=v; afterChange(); } else { document.getElementById('rkMeInput').setCustomValidity('找不到这个用户名'); document.getElementById('rkMeInput').reportValidity(); } });
-  document.getElementById('rkMeInput').addEventListener('input',e=>e.target.setCustomValidity(''));
+  const meIn=document.getElementById('rkMeInput'), NAMES=[...byUser.keys()];
+  function setMe(v){ if(byUser.has(v)){ meIn.value=''; S.me=v; afterChange(); } else { meIn.setCustomValidity('找不到这个用户名'); meIn.reportValidity(); } }
+  const meSug=tsSuggest(meIn,document.getElementById('rkMeSug'),{
+    match:q=>{ const m=tsMatch(NAMES,q); return {opts:m.opts, note:'找不到包含「'+meIn.value.trim()+'」的用户'}; },
+    pick:u=>setMe(u), host:document.getElementById('rkMe')});
+  document.getElementById('rkMeSave').addEventListener('click',()=>setMe(meSug.current()||meIn.value.trim()));
   document.getElementById('rkMeChange').addEventListener('click',()=>{ S.me=''; afterChange(); document.getElementById('rkMeInput').focus(); });
   document.getElementById('rkMeJump').addEventListener('click',()=>jumpTo(S.me));
   // reveal a user's row (clears filters that hide it), scroll to it and flash it

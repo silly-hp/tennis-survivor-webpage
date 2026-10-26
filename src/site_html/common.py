@@ -944,6 +944,7 @@ def _inner_page_shell(
     page: str = "",
     late_js: str = "",
     title_extra: str = "",
+    subtitle: str = "",
 ) -> str:
     """Wrap body_content in the full inner-page HTML shell.
 

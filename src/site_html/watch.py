@@ -108,8 +108,9 @@ def render_watch_page(
     <p>先告诉我们你是谁，你的 ATP 和 WTA 状态会固定在最上面。之后可以新建列表。</p>
     <form class="wl-me-form" id="wlMeForm">
       <label class="rk-me-lbl" for="wlMeInput">你的用户名</label>
-      <span class="wl-me-row"><input id="wlMeInput" class="rk-input" autocomplete="off" placeholder="输入你的用户名" list="wlUsers">
-      <button type="submit" class="rk-btn rk-btn-pri">设为我</button></span>
+      <span class="wl-me-row"><input id="wlMeInput" class="rk-input" autocomplete="off" placeholder="输入你的用户名">
+      <button type="submit" class="rk-btn rk-btn-pri">设为我</button>
+      <div class="rk-pop rk-sug" id="wlMeSug" role="listbox" aria-label="用户名建议" hidden></div></span>
     </form>
     <div class="wl-start-act">
       <button type="button" class="rk-btn rk-tab-new" id="wlStartNew">+ 新建列表</button>
@@ -123,9 +124,9 @@ def render_watch_page(
       <span class="rk-watch-new" id="wlNew"></span>
       <div class="wl-add">
         <label class="wl-add-box">{_PLUS}<span class="rk-sr" id="wlAddLbl">添加用户</span>
-          <input id="wlAdd" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="wlSug" aria-labelledby="wlAddLbl">
+          <input id="wlAdd" autocomplete="off" aria-labelledby="wlAddLbl">
           <button type="button" class="rk-btn rk-btn-sm rk-btn-pri" id="wlAddBtn">关注</button></label>
-        <div class="rk-pop wl-sug" id="wlSug" role="listbox" aria-label="用户名建议" hidden></div>
+        <div class="rk-pop rk-sug wl-sug" id="wlSug" role="listbox" aria-label="用户名建议" hidden></div>
       </div>
     </div>
     <div class="rk-manage" id="wlManage" hidden></div>
@@ -134,7 +135,6 @@ def render_watch_page(
   <div class="wl-grid" id="wlGrid"></div>
   <div class="wl-empty" id="wlEmpty" hidden></div>
   <p class="rk-note wl-foot">关注列表只保存在本机浏览器，和排名页的 ☆ 菜单共用；“复制分享链接”可在其他设备打开同一份列表。▲▼ 为相对当前排名的变化。</p>
-  <datalist id="wlUsers"></datalist>
   {history_modal_html("ATP", tour_switch=True)}
   {ask_modal_html()}
 </div>"""
@@ -202,11 +202,7 @@ body.dark .wl-share.ok{color:#06140c;}
 .wl-add-box:focus-within{border-color:var(--primary);}
 .wl-add-box input{border:0;outline:0;background:transparent;font:inherit;font-size:14px;color:var(--ink);width:180px;min-width:0;}
 .wl-add-box .rk-btn{min-height:32px;}
-.wl-sug{top:46px;right:0;width:280px;}
-.wl-sug .rk-opt{justify-content:space-between;}
-.wl-sug .rk-opt[aria-selected="true"]{background:var(--row-hover);}
-.wl-sug .t{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);flex-shrink:0;}
-.wl-sug .rk-note{padding:6px 10px;}
+.wl-sug{top:46px;left:auto;right:0;width:280px;}
 .wl-manage-t{flex:1;font-size:13px;color:var(--muted);}
 .wl-manage-t b{font-family:'Noto Serif SC',serif;font-size:15px;color:var(--ink);}
 
@@ -222,7 +218,7 @@ body.dark .wl-share.ok{color:#06140c;}
 .wl-start-ic svg{width:40px;height:40px;fill:none;stroke:var(--star);stroke-width:1.6;}
 .wl-start p{margin:0;font-size:14px;line-height:1.7;color:var(--muted);}
 .wl-me-form{width:100%;display:flex;flex-direction:column;gap:6px;}
-.wl-me-row{display:flex;gap:8px;}
+.wl-me-row{display:flex;gap:8px;position:relative;}
 .wl-me-row .rk-input{flex:1;min-height:44px;}
 .wl-start-act{display:flex;flex-wrap:wrap;gap:10px;}
 .wl-start-act a{text-decoration:none;}
@@ -379,42 +375,25 @@ ready(function(){
     if(e.key==='Escape'){ delete manage.dataset.edit; renderTabs(); } });
 
   // ── add a user (suggestions from both tours) ──
-  const add=$('wlAdd'), sug=$('wlSug'); let opts=[], act=-1;
-  function suggest(){
-    const q=add.value.trim().toLowerCase(); const l=cur(); const inList=new Set(l?l.users:listed());
-    const hit=q?ALL.filter(u=>u.toLowerCase().includes(q)):[];
-    opts=hit.filter(u=>!inList.has(u)&&u!==S.me)
-      .sort((a,b)=>(a.toLowerCase().indexOf(q)-b.toLowerCase().indexOf(q))||a.length-b.length).slice(0,8);
-    act=opts.length?0:-1;
-    sug.innerHTML=opts.length?'<span class="rk-eye rk-pop-eye">ATP + WTA USERS</span>'+opts.map((u,i)=>'<button type="button" role="option" class="rk-opt" id="wlOpt'+i+'" data-u="'+esc(u)+'" aria-selected="'+(i===act)+'"><span class="rk-opt-l">'+esc(u)+'</span><span class="t">'+TOURS.filter(t=>D[t].users[u]).join(' · ')+'</span></button>').join('')
-      :(q?'<span class="rk-note">'+(hit.length?'匹配的用户都已在这个列表里':'找不到包含「'+esc(add.value.trim())+'」的用户')+'</span>':'');
-    sug.hidden=!q; add.setAttribute('aria-expanded',String(!!q));
-    add.setAttribute('aria-activedescendant',act>=0?'wlOpt'+act:'');
-  }
-  function paintAct(){ [...sug.querySelectorAll('.rk-opt')].forEach((o,i)=>o.setAttribute('aria-selected',String(i===act)));
-    add.setAttribute('aria-activedescendant',act>=0?'wlOpt'+act:''); }
+  const add=$('wlAdd'), tours=u=>TOURS.filter(t=>D[t].users[u]).join(' · ');
   function addUser(u){
     if(!u||!has(u)){ add.setCustomValidity('找不到这个用户名'); add.reportValidity(); return; }
     let l=cur(); if(!l){ l=S.lists[0]; if(!l){ l={id:newId(),name:'关注',users:[]}; S.lists.push(l); } }
     if(!l.users.includes(u)) l.users.push(u);
-    save(); add.value=''; suggest(); render(); live('已把 '+u+' 加入「'+l.name+'」');
+    save(); add.value=''; addSug.close(); render(); live('已把 '+u+' 加入「'+l.name+'」');
   }
-  add.addEventListener('input',()=>{ add.setCustomValidity(''); suggest(); });
-  add.addEventListener('focus',()=>{ if(add.value.trim()) suggest(); });
-  add.addEventListener('keydown',e=>{
-    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ if(!opts.length) return; e.preventDefault(); act=(act+(e.key==='ArrowDown'?1:-1)+opts.length)%opts.length; paintAct(); }
-    else if(e.key==='Enter'){ e.preventDefault(); addUser(act>=0?opts[act]:add.value.trim()); }
-    else if(e.key==='Escape'){ sug.hidden=true; add.setAttribute('aria-expanded','false'); } });
-  $('wlAddBtn').addEventListener('click',()=>addUser(act>=0&&opts.length?opts[act]:add.value.trim()));
-  sug.addEventListener('mousedown',e=>e.preventDefault());  // keep focus in the input
-  sug.addEventListener('click',e=>{ const o=e.target.closest('.rk-opt'); if(o) addUser(o.dataset.u); });
-  document.addEventListener('click',e=>{ if(!e.target.closest('.wl-add')){ sug.hidden=true; add.setAttribute('aria-expanded','false'); } });
+  const addSug=tsSuggest(add,$('wlSug'),{eye:'ATP + WTA USERS', meta:tours, pick:u=>addUser(u), host:$('wlBar'),
+    match:q=>{ const l=cur(), inList=new Set(l?l.users:listed());
+      const m=tsMatch(ALL,q,u=>inList.has(u)||u===S.me);
+      return {opts:m.opts, note:m.hit.length?'匹配的用户都已在这个列表里':'找不到包含「'+add.value.trim()+'」的用户'}; }});
+  $('wlAddBtn').addEventListener('click',()=>addUser(addSug.current()||add.value.trim()));
 
   // ── first visit: set "me" / create a list ──
-  const dl=$('wlUsers'); if(ALL.length<=3000) dl.innerHTML=ALL.map(u=>'<option value="'+esc(u)+'">').join('');
-  $('wlMeForm').addEventListener('submit',e=>{ e.preventDefault(); const i=$('wlMeInput'), v=i.value.trim();
-    if(!has(v)){ i.setCustomValidity('找不到这个用户名'); i.reportValidity(); return; } S.me=v; save(); render(); });
-  $('wlMeInput').addEventListener('input',e=>e.target.setCustomValidity(''));
+  const meIn=$('wlMeInput');
+  function setMe(v){ if(!has(v)){ meIn.setCustomValidity('找不到这个用户名'); meIn.reportValidity(); return; } S.me=v; meIn.value=''; save(); render(); }
+  const meSug=tsSuggest(meIn,$('wlMeSug'),{eye:'ATP + WTA USERS', meta:tours, pick:u=>setMe(u), host:$('wlStart'),
+    match:q=>{ const m=tsMatch(ALL,q); return {opts:m.opts, note:'找不到包含「'+meIn.value.trim()+'」的用户'}; }});
+  $('wlMeForm').addEventListener('submit',e=>{ e.preventDefault(); setMe(meSug.current()||meIn.value.trim()); });
   $('wlStartNew').addEventListener('click',()=>{ creating=true; S.lists.length||S.me||($('wlStart').hidden=true); $('wlBar').hidden=false; renderTabs(); });
 
   // ── cards ──
