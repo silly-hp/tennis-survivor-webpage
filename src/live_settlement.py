@@ -14,7 +14,6 @@ import pandas as pd
 from draw_status import (
     DrawPlayer,
     DrawStatus,
-    beijing_now,
     opening_round_name,
     opening_round_rank,
     retirement_backup_allowed,
@@ -430,12 +429,61 @@ def _next_day_open(
     )
 
 
+def official_settled_day(score_df: pd.DataFrame | None) -> int:
+    """Highest day the official score page has settled (0 when none)."""
+    if score_df is None or score_df.empty or "day" not in score_df.columns:
+        return 0
+    days = pd.to_numeric(score_df["day"], errors="coerce").dropna()
+    return int(days.max()) if not days.empty else 0
+
+
+def _day_matches_finished(
+    draw: DrawStatus | None,
+    detail_rows: list[dict[str, Any]],
+    day: int,
+) -> bool:
+    """Whether every match this pick day depends on has been decided."""
+    if draw is None or not draw.by_id:
+        return False
+    picks = [
+        item
+        for item in detail_rows
+        if int(item.get("day") or 0) == day and str(item.get("player") or "").strip()
+    ]
+    round_rank = _pick_day_round_rank(draw, day)
+    seen = False
+    for item in picks:
+        player = draw.lookup(item.get("fill"), item.get("player"))
+        if player is None:
+            continue
+        seen = True
+        if player.live:
+            return False
+        if player.eliminated or _bracket_progress(draw, item, player) == "won":
+            continue
+        if round_rank and player.round_rank > round_rank:
+            continue
+        return False
+    if seen:
+        return True
+    return not _round_still_going(draw, round_rank)
+
+
 def current_play_day(
     draw: DrawStatus | None,
     detail_rows: list[dict[str, Any]] | None = None,
+    official_day: int = 0,
 ) -> int:
+    """
+    Pick day currently in play. Starting from the first day, stay on a day
+    until it is over, then roll over to the next one:
+
+    * matches not finished, score page not settled → stay;
+    * matches not finished, score page settled → roll over;
+    * matches finished, next day not open / nobody picked / not settled → stay;
+    * matches finished and next day open, picked, or settled → roll over.
+    """
     detail_rows = detail_rows or []
-    today = beijing_now().date()
     schedule = [item for item in (draw.pick_days if draw else []) if item.get("day")]
     if not schedule:
         days = sorted(
@@ -446,39 +494,16 @@ def current_play_day(
             }
         )
         return days[0] if days else 1
-    play = int(schedule[0]["day"])
-    for item in schedule:
-        date = item.get("date")
-        if date is None or date <= today:
-            play = int(item["day"])
-        if date == today:
+    days = sorted(int(item["day"]) for item in schedule)
+    play = days[0]
+    while play + 1 in days:
+        settled = official_day >= play
+        if not settled and not (
+            _day_matches_finished(draw, detail_rows, play)
+            and _next_day_open(draw, detail_rows, play)
+        ):
             break
-        if date is not None and date > today:
-            break
-    field_n = len(draw.by_id) if draw else 0
-    while True:
-        nxt = play + 1
-        if not _next_day_open(draw, detail_rows, play):
-            break
-        current = next(
-            (item for item in schedule if int(item.get("day") or 0) == play), None
-        )
-        nxt_item = next(
-            (item for item in schedule if int(item.get("day") or 0) == nxt), None
-        )
-        # A round spread over two days (e.g. R1 on day 1 and day 2): the round is
-        # still going by design, so an open next day of the same round takes over.
-        cur_round = str((current or {}).get("round") or "").strip()
-        same_round = bool(cur_round) and cur_round == str((nxt_item or {}).get("round") or "").strip()
-        round_rank = _survivor_round_rank(cur_round, field_n)
-        if not round_rank:
-            round_rank = opening_round_rank(field_n) + play - 1
-        if not same_round and _round_still_going(draw, round_rank):
-            break
-        nxt_date = (nxt_item or {}).get("date")
-        play = nxt
-        if nxt_date is not None and nxt_date > today:
-            break
+        play += 1
     return play
 
 
@@ -777,7 +802,7 @@ def apply_live_settlement(
 
     grouped = _details_by_user(detail_rows)
     bye_users = first_day_bye_users(detail_rows, draw, rank_by_id)
-    play_day = current_play_day(draw, detail_rows)
+    play_day = current_play_day(draw, detail_rows, official_settled_day(score_df))
     fills_by_match: dict[Any, set[str]] = defaultdict(set)
     pick_players = []
     if draw is not None and draw.by_id:
@@ -1045,7 +1070,7 @@ def settle_tour_scores(
     settled, counts, bye_users, pending_users, backup_events = apply_live_settlement(
         ensured, detail_rows, draw, ranks, base_score=base_score
     )
-    play_day = current_play_day(draw, detail_rows)
+    play_day = current_play_day(draw, detail_rows, official_settled_day(ensured))
     if any(counts.values()):
         logger.info(
             "Live settlement: "
