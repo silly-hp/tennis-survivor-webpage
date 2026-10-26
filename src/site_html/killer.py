@@ -92,6 +92,7 @@ def render_killer_page(
         updated=updated,
         extra_tags=extra_tags,
         body_content=body,
+        page=str(output_path),
     )
 
     Path(output_path).write_text(html_str, encoding="utf-8")

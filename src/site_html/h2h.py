@@ -9,6 +9,7 @@ import pandas as pd
 
 from site_html import state
 from site_html.common import _topbar, _title_tags
+from site_html.header import CSS_HEADER, JS_HEADER
 from site_html.css import _CSS_BASE, _CSS_INNER, _FONTS
 from site_html.js import _JS_THEME
 
@@ -973,13 +974,14 @@ def render_h2h_page(
 {state.css_vars}
 {_CSS_BASE}
 {_CSS_INNER}
+{CSS_HEADER}
 {_CSS_H2H}
 </style>
 </head>
 <body>
 <div class="page">
 
-{_topbar(updated)}
+{_topbar(updated, page=str(output_path))}
 
 <div class="page-eye">{html.escape(eyebrow)}</div>
 <div class="page-title">
@@ -1133,6 +1135,9 @@ def render_h2h_page(
 <script>
 {_JS_THEME}
 {js}
+</script>
+<script>
+{JS_HEADER}
 </script>
 </body>
 </html>"""

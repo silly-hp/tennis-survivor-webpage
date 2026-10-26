@@ -1,4 +1,5 @@
 """Shared HTML helpers: tables, summary bar, route query, page shell."""
+
 from __future__ import annotations
 
 import ast
@@ -11,8 +12,10 @@ import pandas as pd
 
 from site_html import state
 from site_html.css import _CSS_BASE, _CSS_INNER, _CSS_ROUTE_QUERY, _FONTS
+from site_html.header import CSS_HEADER, JS_HEADER, site_header
 from site_html.js import _JS_TABLE, _JS_THEME
 from site_html.logos import _logo_pair
+
 
 def _rank_change_cell(value) -> str:
     """Convert a numeric rank-change value to a styled <span>."""
@@ -136,13 +139,9 @@ def _df_to_html_table(
     if hide_uid_col and uid_col and uid_col in df.columns:
         skip.add(uid_col)
     render_cols = [c for c in df.columns if c not in skip]
-    status_cols = {
-        c
-        for c in render_cols
-        if c == "当前状态" or str(c).endswith("状态")
-    }
-    status_col = "当前状态" if "当前状态" in status_cols else (
-        next(iter(status_cols), None)
+    status_cols = {c for c in render_cols if c == "当前状态" or str(c).endswith("状态")}
+    status_col = (
+        "当前状态" if "当前状态" in status_cols else (next(iter(status_cols), None))
     )
     lines = ['<table class="dataframe filterable-table">']
 
@@ -188,9 +187,7 @@ def _df_to_html_table(
                         details = (
                             [str(x) for x in parsed]
                             if isinstance(parsed, list)
-                            else (
-                                parsed if isinstance(parsed, dict) else [s]
-                            )
+                            else (parsed if isinstance(parsed, dict) else [s])
                         )
                     except Exception:
                         details = [s]
@@ -203,9 +200,7 @@ def _df_to_html_table(
             detail_json = html.escape(
                 json.dumps(details, ensure_ascii=False), quote=True
             )
-            lines.append(
-                f'  <tr{cls_attr}{extra_attrs} data-detail="{detail_json}">'
-            )
+            lines.append(f'  <tr{cls_attr}{extra_attrs} data-detail="{detail_json}">')
         else:
             lines.append(f"  <tr{cls_attr}{extra_attrs}>")
         for col in render_cols:
@@ -230,6 +225,7 @@ def _df_to_html_table(
     lines.append("  </tbody>")
     lines.append("</table>")
     return "\n".join(lines)
+
 
 def _summary_bar_html(
     df: pd.DataFrame,
@@ -284,20 +280,10 @@ def _summary_bar_html(
     invalid_col = "自杀（主备冲突）" if "自杀（主备冲突）" in cols else None
     miss_col = "自杀（退赛）" if "自杀（退赛）" in cols else None
     nosel_col = "未选" if "未选" in cols else None
-    alive_set = {
-        str(p).strip()
-        for p in (available_players or [])
-        if str(p).strip()
-    }
-    live_set = {
-        str(p).strip()
-        for p in (live_players or [])
-        if str(p).strip()
-    }
+    alive_set = {str(p).strip() for p in (available_players or []) if str(p).strip()}
+    live_set = {str(p).strip() for p in (live_players or []) if str(p).strip()}
     eliminated_set = {
-        str(p).strip()
-        for p in (eliminated_players or [])
-        if str(p).strip()
+        str(p).strip() for p in (eliminated_players or []) if str(p).strip()
     }
     status_known = bool(alive_set) or bool(eliminated_set)
 
@@ -758,7 +744,9 @@ def _summary_bar_html(
     </script>"""
 
 
-def _killer_panel_html(stats_df: Optional[pd.DataFrame], panel_id: str = "dayKiller") -> str:
+def _killer_panel_html(
+    stats_df: Optional[pd.DataFrame], panel_id: str = "dayKiller"
+) -> str:
     """
     Collapsible「每日杀手统计」panel (chen F7).
 
@@ -899,19 +887,12 @@ def _route_query_block(available_players: Optional[list[str]] = None) -> str:
 
 
 def _topbar(
-    updated: str, back_label: str = "← 首页", back_href: str = "index.html"
+    updated: str,
+    back_label: str = "← 首页",
+    back_href: str = "index.html",
+    page: str = "",
 ) -> str:
-    return f"""\
-<div class="topbar">
-  <a class="back-link" href="{back_href}">
-    {_logo_pair(28)}
-    {html.escape(back_label)}
-  </a>
-  <div class="topbar-right">
-    <span class="updated">⏱ {html.escape(updated)}</span>
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 暗色</button>
-  </div>
-</div>"""
+    return site_header(updated, page, back_label=back_label, back_href=back_href)
 
 
 def _title_tags(tour: str, extra_tags: list[str] | None = None) -> str:
@@ -936,9 +917,12 @@ def _inner_page_shell(
     back_href: str = "index.html",
     extra_css: str = "",
     after_page: str = "",
-    subtitle: str = "",
+    page: str = "",
 ) -> str:
-    """Wrap body_content in the full inner-page HTML shell."""
+    """Wrap body_content in the full inner-page HTML shell.
+
+    ``page`` is the output path; the shared header reads its section and tour from it.
+    """
     tags_html = _title_tags(tour, extra_tags)
     subtitle_html = (
         f'<div class="page-sub">{html.escape(subtitle)}</div>' if subtitle else ""
@@ -955,13 +939,14 @@ def _inner_page_shell(
 {_CSS_BASE}
 {_CSS_INNER}
 {_CSS_ROUTE_QUERY}
+{CSS_HEADER}
 {extra_css}
 </style>
 </head>
 <body>
 <div class="page">
 
-{_topbar(updated, back_label=back_label, back_href=back_href)}
+{_topbar(updated, back_label=back_label, back_href=back_href, page=page)}
 
 <div class="page-header">
   <div class="page-eye">{html.escape(eyebrow)}</div>
@@ -981,6 +966,8 @@ def _inner_page_shell(
 {_JS_THEME}
 {_JS_TABLE}
 </script>
+<script>
+{JS_HEADER}
+</script>
 </body>
 </html>"""
-

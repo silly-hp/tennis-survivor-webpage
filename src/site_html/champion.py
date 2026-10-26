@@ -10,6 +10,7 @@ import pandas as pd
 
 from site_html import state
 from site_html.common import _topbar, _title_tags
+from site_html.header import CSS_HEADER, JS_HEADER
 from site_html.css import _CSS_BASE, _CSS_INNER, _FONTS
 from site_html.js import _JS_THEME
 from site_html.types_meta import _type_cls, _type_order
@@ -448,13 +449,14 @@ def render_champion_page(
 {state.css_vars}
 {_CSS_BASE}
 {_CSS_INNER}
+{CSS_HEADER}
 {_CSS_CHAMPION}
 </style>
 </head>
 <body>
 <div class="page">
  
-{_topbar(updated)}
+{_topbar(updated, page=str(output_path))}
  
 <div class="page-header">
   <div class="page-eye">{html.escape(eyebrow)}</div>
@@ -471,6 +473,9 @@ def render_champion_page(
 window.CHAMPION_USER_STATS = {json.dumps(winner_stats, ensure_ascii=False)};
 {_JS_THEME}
 {_JS_CHAMPION}
+</script>
+<script>
+{JS_HEADER}
 </script>
 </body>
 </html>"""

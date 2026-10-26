@@ -2,21 +2,28 @@
 from __future__ import annotations
 
 _JS_THEME = """\
+function _themeLabel(dark){
+    const btn=document.getElementById('themeBtn');
+    if(!btn)return;
+    const lbl=btn.querySelector('.theme-label');  // shared header: keep the SVG icons
+    if(lbl)lbl.textContent=dark?'亮色':'暗色';
+    else btn.textContent=dark?'☀ 亮色':'🌙 暗色';
+}
 function toggleTheme(){
     const going=!document.body.classList.contains('dark');
     document.body.classList.toggle('dark',going);
-    document.getElementById('themeBtn').textContent=going?'☀ 亮色':'🌙 暗色';
+    _themeLabel(going);
     document.querySelectorAll('.logo-light').forEach(e=>e.style.display=going?'none':'block');
     document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=going?'block':'none');
-    localStorage.setItem('theme',going?'dark':'light');
+    try{localStorage.setItem('theme',going?'dark':'light');}catch(e){}
 }
 (function(){
-    const dark=localStorage.getItem('theme')==='dark';
+    let dark=false;
+    try{dark=localStorage.getItem('theme')==='dark';}catch(e){}  // throws on data: URLs
     document.body.classList.toggle('dark',dark);
     document.querySelectorAll('.logo-light').forEach(e=>e.style.display=dark?'none':'block');
     document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=dark?'block':'none');
-    const btn=document.getElementById('themeBtn');
-    if(btn)btn.textContent=dark?'☀ 亮色':'🌙 暗色';
+    _themeLabel(dark);
 })();"""
 
 # Full interactive filter+sort JS (identical logic to original pages)

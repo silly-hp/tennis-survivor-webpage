@@ -1,4 +1,5 @@
 """Ranking page renderer."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -25,6 +26,7 @@ from site_html.js import (
     _JS_RANKING_DETAIL,
     _JS_ROUTE_QUERY,
 )
+
 
 def render_ranking_page(
     df: pd.DataFrame,
@@ -173,9 +175,7 @@ def render_ranking_page(
       </div>
     </div>"""
     elif not enable_breakdown:
-        no_detail_style = (
-            "<style>.filterable-table tbody tr{{cursor:default;}}</style>"
-        )
+        no_detail_style = "<style>.filterable-table tbody tr{{cursor:default;}}</style>"
 
     bd_modal = breakdown_modal_html() if enable_breakdown else ""
     bd_boot = (
@@ -226,9 +226,9 @@ def render_ranking_page(
         extra_css="\n".join(extra_css_parts),
         # Modal must sit outside .page stacking context or it can be covered
         after_page=bd_modal,
+        page=str(output_path),
         subtitle=f"失效分数：{expired_label}" if expired_label else "",
     )
 
     Path(output_path).write_text(html_str, encoding="utf-8")
     return html_str
-

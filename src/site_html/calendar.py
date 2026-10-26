@@ -396,6 +396,7 @@ def render_calendar_page(
         body_content=body,
         extra_js=_JS_CALENDAR,
         extra_css=_CSS_CALENDAR,
+        page=str(output_path),
     )
     Path(output_path).write_text(html_str, encoding="utf-8")
     return html_str
@@ -430,6 +431,7 @@ def render_calendar_hub_page(
         extra_tags=["ATP", "WTA"],
         body_content=body,
         extra_css=_CSS_CALENDAR,
+        page=str(output_path),
     )
     Path(output_path).write_text(html_str, encoding="utf-8")
     return html_str
@@ -624,6 +626,7 @@ def render_event_score_page(
         back_label=f"← {tour_lbl}赛历",
         back_href=back_href,
         extra_css=_CSS_CALENDAR,
+        page=str(output_path),
     )
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
