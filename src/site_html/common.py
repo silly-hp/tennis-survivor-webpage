@@ -470,7 +470,7 @@ def _summary_bar_html(
 
     # ── meta summary text for clipboard (header line) ────────────────────────
     if has_bye:
-        entrants = valid_total + bye_total
+        entrants = valid_total + bye_total + suicide_total
         header_lines = [f"参赛{entrants}", f"🟢轮空{bye_total}"]
     else:
         header_lines = [f"已选{valid_total}", f"未选{nosel_total}"]
