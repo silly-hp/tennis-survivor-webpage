@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幸存者克星榜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    /* surfaces — icy pale blue, AO arena daylight */
+    --bg:#f0f7fb; --bg2:#e0eef6; --surface:#ffffff; --surface2:#f4fafd;
+ 
+    /* primary: AO cyan #0088bb */
+    --primary:#0088bb; --primary-dark:#005f85;
+    --primary-dim:rgba(0,136,187,.10); --primary-rim:rgba(0,136,187,.28);
+ 
+    /* secondary: US Open gold #c49800 */
+    --secondary:#c49800;
+    --secondary-dim:rgba(196,152,0,.10); --secondary-rim:rgba(196,152,0,.26);
+ 
+    /* typography */
+    --ink:#051420; --ink2:#0e2a3c; --muted:#4a6878; --faint:#90aabf;
+ 
+    /* borders */
+    --border:rgba(5,20,32,.10); --border2:rgba(5,20,32,.06);
+ 
+    /* table chrome — deep navy header, bright AO cyan accent */
+    --th-bg:#002d44; --th-text:#00aaee;
+    --row-hover:rgba(0,136,187,.05); --row-even:rgba(5,20,32,.02);
+    --filter-bg:#e6f3fa; --drop-bg:#ffffff; --track-bg:#cce6f4;
+ 
+    /* podium medals */
+    --rank1:#005f85; --rank2:#5a6e80; --rank3:#a07800;
+}
+body.dark {
+    /* surfaces — US Open night: deep navy stadium */
+    --bg:#030c14; --bg2:#071422; --surface:#0a1d30; --surface2:#102840;
+ 
+    /* primary: bright AO cyan for night */
+    --primary:#00b8f0; --primary-dark:#40d0ff;
+    --primary-dim:rgba(0,184,240,.13); --primary-rim:rgba(0,184,240,.30);
+ 
+    /* secondary: US Open gold at full brightness */
+    --secondary:#f0c000;
+    --secondary-dim:rgba(240,192,0,.12); --secondary-rim:rgba(240,192,0,.28);
+ 
+    /* typography */
+    --ink:#ddeef8; --ink2:#a8c8de; --muted:#5a84a0; --faint:#1e3850;
+ 
+    /* borders */
+    --border:rgba(221,238,248,.10); --border2:rgba(221,238,248,.06);
+ 
+    /* table chrome */
+    --th-bg:#010810; --th-text:#00b8f0;
+    --row-hover:rgba(0,184,240,.07); --row-even:rgba(255,255,255,.025);
+    --filter-bg:#071422; --drop-bg:#102840; --track-bg:#102840;
+ 
+    /* podium medals */
+    --rank1:#40d0ff; --rank2:#6a88a8; --rank3:#f0c000;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:'Noto Sans SC',sans-serif;
+    background:var(--bg);color:var(--ink);min-height:100vh;
+    transition:background .3s,color .3s;
+}
+body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+        radial-gradient(ellipse 80% 50% at 10% 0%,rgba(224,96,64,.05) 0%,transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 100%,rgba(26,58,112,.04) 0%,transparent 55%);
+}
+body{padding:24px 20px 60px;}
+.page{position:relative;z-index:1;max-width:1280px;margin:0 auto;}
+
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--border2);
+    flex-wrap:wrap;gap:12px;}
+.back-link{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;transition:color .2s;}
+.back-link:hover{color:var(--primary);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.updated{font-family:'Space Mono',monospace;font-size:10px;color:var(--faint);
+    letter-spacing:.08em;padding:5px 10px;border:1px solid var(--border2);border-radius:3px;}
+.theme-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);
+    padding:7px 16px;border-radius:20px;cursor:pointer;font-size:12px;
+    font-family:'Noto Sans SC',sans-serif;transition:all .2s;}
+.theme-btn:hover{border-color:var(--primary);color:var(--primary);}
+
+/* page header */
+.page-header{margin-bottom:24px;}
+.page-eye{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.28em;
+    color:var(--primary);text-transform:uppercase;margin-bottom:10px;}
+.page-sub{margin-top:6px;font-size:12px;font-weight:700;color:var(--primary);}
+.page-title{font-family:'Noto Serif SC',serif;font-size:clamp(22px,3vw,32px);
+    font-weight:700;color:var(--ink);line-height:1.2;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.ttag{font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;
+    border-radius:3px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;}
+.ttag-atp{background:var(--secondary-dim);color:var(--secondary);border:1px solid rgba(26,58,112,.2);}
+.ttag-wta{background:var(--primary-dim);color:var(--primary-dark);border:1px solid rgba(224,96,64,.2);}
+.ttag-all{background:rgba(26,26,26,.05);color:var(--muted);border:1px solid var(--border);}
+body.dark .ttag-atp{border-color:rgba(111,160,224,.25);}
+body.dark .ttag-wta{border-color:rgba(232,96,60,.25);}
+
+/* ── summary bar panel ── */
+.sum-box{margin-bottom:18px;background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;overflow:hidden;max-width:700px;margin-left:auto;margin-right:auto;}
+.sum-header{padding:10px 14px 9px;border-bottom:1px solid var(--border2);}
+.sum-title{font-family:'Space Mono',monospace;font-size:10px;font-weight:500;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.sum-meta{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+.meta-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;
+    border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;}
+.chip-valid  {background:var(--primary-dim);color:var(--primary-dark);border:0.5px solid rgba(224,96,64,.25);}
+.chip-bye    {background:rgba(46,125,92,.10);color:#2a6b4f;border:0.5px solid rgba(46,125,92,.22);}
+.chip-nosel  {background:var(--surface2);color:var(--muted);border:0.5px solid var(--border);}
+.chip-suicide{background:rgba(192,72,48,.10);color:var(--primary-dark);border:0.5px solid rgba(192,72,48,.22);}
+.chip-live   {background:rgba(184,122,42,.10);color:#8a5a18;border:0.5px solid rgba(184,122,42,.24);}
+.chip-alive  {background:rgba(46,125,92,.10);color:#2a6b4f;border:0.5px solid rgba(46,125,92,.22);}
+.chip-out    {background:rgba(120,124,132,.10);color:#6a7078;border:0.5px solid rgba(120,124,132,.22);}
+.chip-live .sdot,.chip-alive .sdot,.chip-out .sdot{
+    width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.chip-live .sdot{background:#c4892e;}
+.chip-alive .sdot{background:#2f8a62;}
+.chip-out .sdot{background:#8a9098;}
+body.dark .chip-valid  {border-color:rgba(232,96,60,.32);}
+body.dark .chip-bye    {background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+body.dark .chip-suicide{color:var(--primary-dark);}
+body.dark .chip-live   {background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .chip-alive  {background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+body.dark .chip-out    {background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .chip-live .sdot{background:#e0b56a;}
+body.dark .chip-alive .sdot{background:#7dcea0;}
+body.dark .chip-out .sdot{background:#a8adb4;}
+.meta-sep  {font-size:11px;color:var(--faint);}
+.meta-total{font-size:12px;color:var(--ink);font-weight:500;}
+/* early-retirement backup nested under pick rows */
+.tag-bak{background:rgba(184,122,42,.10);color:#8a5a18;border:0.5px solid rgba(184,122,42,.22);}
+.sbar-row.is-bak .sbar-dot{background:#c4892e;opacity:1;box-shadow:0 0 0 2px rgba(196,137,46,.16);}
+.sbar-row.is-bak .sbar-label{color:#7a4e14;font-weight:500;}
+.seg-bak{background:#c4892e;}
+.sbar-track.solo-bak{background:rgba(184,122,42,.12);}
+.sbar-bak{display:flex;align-items:center;gap:8px;padding:2px 14px 4px;
+    font-size:12px;color:var(--muted);}
+.sbar-bak.s-hidden{display:none;}
+.sbar-bak-main{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;
+    padding-left:22px;min-width:0;}
+.bak-arrow{color:var(--faint);font-size:12px;flex-shrink:0;}
+.bak-alt{font-size:12px;color:var(--ink);min-width:3.5em;}
+.bak-chips{display:inline-flex;flex-wrap:wrap;gap:4px;}
+body.dark .tag-bak{background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .sbar-row.is-bak .sbar-dot{background:#e0b56a;box-shadow:0 0 0 2px rgba(224,181,106,.16);}
+body.dark .sbar-row.is-bak .sbar-label{color:#ead0a0;}
+body.dark .seg-bak{background:#e0b56a;}
+/* col header */
+.sum-col-hd{display:flex;align-items:center;gap:8px;padding:5px 14px 3px;}
+.sch-rank{width:16px;flex-shrink:0;}
+.sch-name{width:190px;flex-shrink:0;}
+.sch-bar{flex:1;}
+.sch-right{display:flex;align-items:center;gap:3px;flex-shrink:0;}
+.sch-tag{font-size:10px;font-weight:500;padding:1px 6px;border-radius:10px;white-space:nowrap;}
+.sch-tag-v{background:var(--primary-dim);color:var(--primary-dark);border:0.5px solid rgba(224,96,64,.25);}
+.sch-tag-b{background:rgba(46,125,92,.10);color:#2a6b4f;border:0.5px solid rgba(46,125,92,.22);}
+body.dark .sch-tag-v{border-color:rgba(232,96,60,.32);}
+body.dark .sch-tag-b{background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+.sch-sep  {font-size:11px;color:var(--faint);}
+.sch-count{font-size:11px;color:var(--faint);width:30px;text-align:right;}
+.sch-pct  {font-size:11px;color:var(--faint);width:42px;text-align:right;}
+/* bar rows */
+.sum-list{padding:4px 0;}
+.sbar-row{display:flex;align-items:center;gap:8px;padding:5px 14px;transition:background .12s;}
+.sbar-row:hover{background:var(--surface2);}
+.sbar-rank{font-size:11px;color:var(--faint);width:16px;text-align:right;
+    flex-shrink:0;font-variant-numeric:tabular-nums;}
+.sbar-name{font-size:13px;color:var(--ink);width:190px;flex-shrink:0;
+    display:inline-flex;align-items:center;gap:5px;min-width:0;}
+.sbar-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;
+    background:var(--faint);opacity:.55;}
+.sbar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.sbar-tag{font-size:9px;font-weight:500;letter-spacing:.04em;padding:1px 5px;
+    border-radius:8px;flex-shrink:0;line-height:1.35;white-space:nowrap;}
+.tag-live{background:rgba(184,122,42,.10);color:#8a5a18;border:0.5px solid rgba(184,122,42,.22);}
+.tag-alive{background:rgba(46,125,92,.10);color:#2a6b4f;border:0.5px solid rgba(46,125,92,.20);}
+.tag-out{background:rgba(120,124,132,.10);color:#6a7078;border:0.5px solid rgba(120,124,132,.20);}
+.sbar-row.is-live .sbar-dot{background:#c4892e;opacity:1;box-shadow:0 0 0 2px rgba(196,137,46,.16);}
+.sbar-row.is-live .sbar-label{color:#7a4e14;font-weight:500;}
+.sbar-row.is-alive .sbar-dot{background:#2f8a62;opacity:1;box-shadow:0 0 0 2px rgba(47,138,98,.14);}
+.sbar-row.is-alive .sbar-label{color:#1f4f3a;font-weight:500;}
+.sbar-row.is-out{opacity:.92;}
+.sbar-row.is-out .sbar-dot{background:#9aa0a8;opacity:1;}
+.sbar-row.is-out .sbar-label{color:var(--muted);}
+.sbar-row.is-out .sbar-count,.sbar-row.is-out .sbar-pct{color:var(--muted);}
+body.dark .tag-live{background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .tag-alive{background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+body.dark .tag-out{background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .sbar-row.is-live .sbar-dot{background:#e0b56a;box-shadow:0 0 0 2px rgba(224,181,106,.16);}
+body.dark .sbar-row.is-live .sbar-label{color:#ead0a0;}
+body.dark .sbar-row.is-alive .sbar-dot{background:#7dcea0;box-shadow:0 0 0 2px rgba(125,206,160,.16);}
+body.dark .sbar-row.is-alive .sbar-label{color:#b7e0c8;}
+body.dark .sbar-row.is-out .sbar-dot{background:#8a9098;}
+.sbar-track{flex:1;background:var(--surface2);border-radius:20px;height:8px;
+    display:flex;overflow:hidden;}
+body.dark .sbar-track{background:var(--bg2);}
+.sbar-seg{height:100%;transition:width .38s cubic-bezier(.4,0,.2,1);}
+.seg-v{background:var(--primary);}
+.seg-b{background:#2f8a62;}
+.seg-live{background:linear-gradient(90deg,#d4a04a,#c4892e);}
+.seg-alive{background:linear-gradient(90deg,#3fa873,#2f8a62);}
+.seg-out{background:linear-gradient(90deg,rgba(140,146,154,.55),rgba(140,146,154,.38));}
+body.dark .seg-b{background:#7dcea0;}
+body.dark .seg-live{background:linear-gradient(90deg,#e0b56a,#c4892e);}
+body.dark .seg-alive{background:linear-gradient(90deg,#5fbf8a,#3fa873);}
+body.dark .seg-out{background:linear-gradient(90deg,rgba(130,136,144,.45),rgba(130,136,144,.28));}
+/* One bar shape for every status: the track clips the ends, segments are flat.
+   Bye part is always alive-coloured; once settled alive the whole bar is one
+   solid colour and the bye part is only marked with a stripe overlay. */
+.sbar-track.solo-alive .sbar-seg{background:#35a06f;}
+body.dark .sbar-track.solo-alive .sbar-seg{background:#4fb582;}
+.sbar-track.solo-alive .seg-bye{background:repeating-linear-gradient(135deg,rgba(255,255,255,.42) 0 2px,transparent 2px 5px),#35a06f;}
+body.dark .sbar-track.solo-alive .seg-bye{background:repeating-linear-gradient(135deg,rgba(255,255,255,.32) 0 2px,transparent 2px 5px),#4fb582;}
+.sbar-inline{display:flex;align-items:center;gap:2px;flex-shrink:0;
+    font-size:12px;font-variant-numeric:tabular-nums;width:60px;justify-content:flex-end;}
+.sbar-iv{color:var(--primary-dark);font-weight:500;}
+.sbar-ib{color:var(--secondary);font-weight:500;}
+body.dark .sbar-iv{color:var(--primary-dark);}
+body.dark .sbar-ib{color:var(--secondary);}
+.sbar-isep{font-size:11px;color:var(--faint);}
+.sbar-right{display:flex;align-items:center;flex-shrink:0;}
+.sbar-count{font-size:13px;font-weight:500;color:var(--ink);
+    width:28px;text-align:right;font-variant-numeric:tabular-nums;}
+.sbar-pct{font-size:12px;color:var(--faint);width:42px;text-align:right;
+    font-variant-numeric:tabular-nums;}
+/* totals row */
+.sbar-row.stotal{border-top:1px solid var(--border2);margin-top:2px;
+    padding-top:8px;padding-bottom:8px;}
+.sbar-row.stotal .sbar-name{font-size:12px;color:var(--muted);}
+.sbar-row.stotal .sbar-dot,.sbar-row.stotal .sbar-tag{display:none;}
+.sbar-row.stotal .sbar-count{color:var(--primary);}
+/* hidden / expanded rows */
+.sbar-row.s-hidden{display:none;}
+.sbar-row.s-hidden.s-exp{display:flex;}
+/* toggle */
+.sum-toggle{width:100%;padding:9px 14px;border:none;
+    border-top:1px solid var(--border2);background:var(--surface2);
+    color:var(--muted);font-size:12px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    transition:background .15s,color .15s;font-family:'Noto Sans SC',sans-serif;}
+.sum-toggle:hover{color:var(--primary);}
+.sum-ticon{font-size:10px;display:inline-block;transition:transform .25s;}
+.sum-toggle.open .sum-ticon{transform:rotate(180deg);}
+/* copy button */
+.sum-copy-btn{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:3px 10px;border-radius:20px;cursor:pointer;
+    border:1px solid var(--border);background:var(--surface2);
+    color:var(--muted);font-size:11px;font-family:'Space Mono',monospace;
+    letter-spacing:.04em;transition:all .18s;flex-shrink:0;
+    white-space:nowrap;
+}
+.sum-copy-btn:hover{border-color:var(--primary-rim);color:var(--primary-dark);}
+.sum-copy-btn.copied{border-color:var(--primary-rim);color:var(--primary-dark);
+    background:var(--primary-dim);}
+body.dark .sum-copy-btn.copied{color:var(--primary);}
+.sum-title-row{display:flex;align-items:center;justify-content:space-between;
+    gap:8px;margin-bottom:7px;}
+
+/* daily killer panel (F7) */
+.dk-box{margin:0 auto 18px;max-width:700px;background:var(--surface);
+    border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.dk-toggle{width:100%;padding:10px 14px;border:none;background:var(--surface2);
+    color:var(--muted);font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:color .15s,background .15s;}
+.dk-toggle:hover{color:var(--primary);}
+.dk-arrow{font-size:10px;display:inline-block;transition:transform .25s;}
+.dk-box.open .dk-arrow{transform:rotate(180deg);}
+.dk-body{display:none;border-top:1px solid var(--border2);padding:8px 0 10px;}
+.dk-box.open .dk-body{display:block;}
+.dk-hd{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;padding:4px 14px 6px;
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--faint);}
+.dk-row{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;padding:7px 14px;
+    align-items:center;border-top:1px solid var(--border2);}
+.dk-row:hover{background:var(--surface2);}
+.dk-day{font-family:'Space Mono',monospace;font-size:11px;color:var(--faint);}
+.dk-killers{display:contents;}
+.dk-k{font-size:13px;color:var(--ink);display:flex;align-items:baseline;gap:6px;min-width:0;}
+.dk-k b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dk-k em{font-style:normal;font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--primary-dark);font-weight:700;flex-shrink:0;}
+.dk-k.alt em{color:var(--secondary);}
+body.dark .dk-k em{color:var(--primary);}
+body.dark .dk-k.alt em{color:var(--secondary);}
+@media(max-width:640px){
+    .dk-hd,.dk-row{grid-template-columns:44px 1fr; }
+    .dk-hd-k:last-child,.dk-row .dk-k.alt{display:none;}
+}
+
+/* stats row */
+.stats-row{display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.row-count{font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--faint);letter-spacing:.08em;}
+.row-count b{color:var(--primary);font-weight:700;}
+
+/* table wrapper */
+.table-wrapper{max-height:72vh;overflow-y:auto;overflow-x:auto;
+    border:1px solid var(--border2);border-radius:6px;}
+.table-wrapper::-webkit-scrollbar{width:5px;height:5px;}
+.table-wrapper::-webkit-scrollbar-track{background:transparent;}
+.table-wrapper::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* filterable table */
+.filterable-table{width:100%;border-collapse:collapse;font-size:12px;}
+.filterable-table thead tr:first-child th{
+    background:var(--th-bg);color:var(--th-text);
+    padding:11px 10px;text-align:left;font-weight:500;
+    position:sticky;top:0;z-index:20;cursor:pointer;
+    user-select:none;white-space:nowrap;
+    font-family:'Space Mono',monospace;font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase;
+    border-bottom:1px solid rgba(232,84,26,.3);transition:color .15s;}
+.filterable-table thead tr:first-child th:hover{color:#E8541A;}
+.filterable-table td{padding:8px 10px;border-bottom:1px solid var(--border2);
+    vertical-align:middle;color:var(--ink);font-size:12px;}
+.filterable-table tr:hover td{background:var(--row-hover);}
+.filterable-table tr:nth-child(even) td{background:var(--row-even);}
+.filterable-table tr:nth-child(even):hover td{background:var(--row-hover);}
+
+/* filter row */
+.filter-row{background:var(--filter-bg) !important;position:sticky;z-index:19;}
+.filter-row th{padding:3px 4px;background:var(--filter-bg) !important;
+    cursor:default;border-bottom:1px solid var(--border);}
+.filter-dropdown{position:relative;width:100%;}
+.filter-trigger{width:100%;padding:3px 5px;border:1px solid var(--border);
+    border-radius:3px;background:var(--drop-bg);color:var(--muted);font-size:10px;
+    cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+    font-family:'Space Mono',monospace;letter-spacing:.04em;transition:border-color .15s;}
+.filter-trigger:hover{border-color:var(--primary);color:var(--ink2);}
+.dropdown-content{display:none;position:fixed;background:var(--drop-bg);
+    min-width:160px;max-height:240px;overflow-y:auto;
+    border:1px solid var(--border);border-radius:4px;
+    box-shadow:0 8px 24px rgba(26,26,26,.12);z-index:9999;}
+body.dark .dropdown-content{box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.dropdown-content.show{display:block;}
+.option-item{padding:7px 10px;cursor:pointer;display:flex;align-items:center;
+    gap:8px;font-size:12px;border-bottom:1px solid var(--border2);
+    color:var(--ink2);transition:background .12s;}
+.option-item:last-child{border-bottom:none;}
+.option-item:hover{background:var(--row-hover);}
+.option-item input[type=checkbox]{margin:0;accent-color:var(--primary);}
+.dropdown-search{width:100%;padding:8px 10px;border:none;
+    border-bottom:1px solid var(--border2);background:var(--drop-bg);
+    color:var(--ink);font-size:12px;outline:none;}
+.dropdown-search::placeholder{color:var(--faint);}
+.dropdown-search:focus{border-bottom-color:var(--primary);}
+th.sort-asc::after{content:" ▲";font-size:9px;}
+th.sort-desc::after{content:" ▼";font-size:9px;}
+
+/* rank change badges */
+.rank{font-weight:600;display:inline-flex;align-items:center;gap:3px;font-size:11px;}
+.rank.up{color:#2a7a4a;}
+.rank.down{color:#c04830;}
+.rank.same{color:var(--muted);}
+
+/* user status: 存活 / 未完赛·未选 / 淘汰(含自杀·球员输球) */
+.st-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;
+    border-radius:10px;font-size:11px;font-weight:500;line-height:1.35;
+    white-space:nowrap;border:0.5px solid transparent;}
+.st-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.st-alive{background:rgba(46,125,92,.10);color:#2a6b4f;border-color:rgba(46,125,92,.22);}
+.st-alive::before{background:#2f8a62;}
+.st-live{background:rgba(184,122,42,.10);color:#8a5a18;border-color:rgba(184,122,42,.22);}
+.st-live::before{background:#c4892e;}
+.st-out{background:rgba(120,124,132,.10);color:#6a7078;border-color:rgba(120,124,132,.22);}
+.st-out::before{background:#9aa0a8;}
+.st-other{background:rgba(120,124,132,.10);color:#6a7078;border-color:rgba(120,124,132,.22);}
+.st-other::before{background:#9aa0a8;}
+body.dark .st-alive{background:rgba(72,168,120,.14);color:#7dcea0;border-color:rgba(72,168,120,.28);}
+body.dark .st-alive::before{background:#7dcea0;}
+body.dark .st-live{background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
+body.dark .st-live::before{background:#e0b56a;}
+body.dark .st-out{background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .st-out::before{background:#a8adb4;}
+body.dark .st-other{background:rgba(150,156,164,.12);color:#a8adb4;border-color:rgba(150,156,164,.24);}
+body.dark .st-other::before{background:#a8adb4;}
+.filterable-table tr.row-alive td:first-child{box-shadow:inset 3px 0 0 #2f8a62;}
+.filterable-table tr.row-live td:first-child{box-shadow:inset 3px 0 0 #c4892e;}
+.filterable-table tr.row-out td{color:var(--muted);}
+.filterable-table tr.row-out td:first-child{box-shadow:inset 3px 0 0 rgba(154,160,168,.55);}
+body.dark .filterable-table tr.row-alive td:first-child{box-shadow:inset 3px 0 0 #7dcea0;}
+body.dark .filterable-table tr.row-live td:first-child{box-shadow:inset 3px 0 0 #e0b56a;}
+
+/* podium (killer page) */
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.pod-card{background:var(--surface);border:1px solid var(--border2);border-radius:8px;
+    padding:18px 14px;text-align:center;transition:border-color .2s;}
+.pod-card:hover{border-color:var(--border);}
+.pod-card.p1{border-top:3px solid var(--rank1);}
+.pod-card.p2{border-top:3px solid var(--rank2);}
+.pod-card.p3{border-top:3px solid var(--rank3);}
+.pod-medal{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;
+    line-height:1;margin-bottom:8px;}
+.p1 .pod-medal{color:var(--rank1);}
+.p2 .pod-medal{color:var(--rank2);}
+.p3 .pod-medal{color:var(--rank3);}
+.pod-name{font-family:'Noto Serif SC',serif;font-size:14px;font-weight:600;
+    color:var(--ink);margin-bottom:10px;}
+.pod-kills{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;
+    color:var(--primary);line-height:1;margin-bottom:3px;}
+.pod-kills-lbl{font-size:10px;color:var(--faint);letter-spacing:.08em;}
+.pod-rate{margin-top:8px;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
+
+/* kill-count & rank cols */
+.filterable-table td:nth-child(3){font-family:'Space Mono',monospace;font-weight:600;color:var(--primary);}
+.filterable-table td:nth-child(4){font-family:'Space Mono',monospace;font-size:11px;}
+.filterable-table td:first-child{font-family:'Space Mono',monospace;color:var(--faint);font-size:11px;}
+
+/* ── numeric range-slider filter ── */
+.filter-slider{padding:10px 12px 12px;min-width:190px;}
+.filter-slider-readout{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    margin-bottom:10px;font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--ink2);
+}
+.filter-slider-readout input[type=number]{
+    width:58px;padding:3px 5px;border:1px solid var(--border);border-radius:3px;
+    background:var(--drop-bg);color:var(--ink);font-size:11px;text-align:center;
+    font-family:'Space Mono',monospace;
+}
+.filter-slider-readout input[type=number]:focus{outline:none;border-color:var(--primary);}
+.filter-slider-sep{color:var(--faint);}
+.filter-slider-range{position:relative;height:28px;}
+.filter-slider-track{
+    position:absolute;top:12px;left:0;right:0;height:4px;
+    background:var(--border2);border-radius:2px;
+}
+.filter-slider-fill{
+    position:absolute;top:12px;height:4px;background:var(--primary);border-radius:2px;
+}
+.filter-slider-range input[type=range]{
+    position:absolute;top:0;left:0;width:100%;height:28px;margin:0;
+    background:transparent;-webkit-appearance:none;appearance:none;pointer-events:none;
+}
+.filter-slider-range input[type=range]::-webkit-slider-thumb{
+    pointer-events:auto;-webkit-appearance:none;width:14px;height:14px;
+    border-radius:50%;background:var(--primary);border:2px solid var(--surface);
+    cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.35);margin-top:8px;
+}
+.filter-slider-range input[type=range]::-moz-range-thumb{
+    pointer-events:auto;width:14px;height:14px;border-radius:50%;
+    background:var(--primary);border:2px solid var(--surface);cursor:pointer;
+}
+.filter-slider-reset{
+    width:100%;margin-top:4px;padding:5px 0;border:1px solid var(--border);
+    border-radius:3px;background:var(--surface2);color:var(--muted);
+    font-size:10px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    transition:all .15s;
+}
+.filter-slider-reset:hover{border-color:var(--primary);color:var(--primary);}
+
+/* detail modal */
+.detail-modal{
+    position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,0);
+    display:none;align-items:center;justify-content:center;padding:18px;
+    transition:background .22s;
+}
+.detail-modal.show{display:flex;background:rgba(0,0,0,.52);}
+.detail-card{
+    width:min(560px,96vw);max-height:85vh;
+    background:var(--surface);
+    border:1px solid var(--border);border-radius:14px;
+    box-shadow:0 20px 60px rgba(0,0,0,.28),0 4px 12px rgba(0,0,0,.12);
+    display:flex;flex-direction:column;overflow:hidden;
+    transform:translateY(14px) scale(.97);opacity:0;
+    transition:transform .26s cubic-bezier(.22,.68,0,1.2),opacity .22s;
+}
+body.dark .detail-card{box-shadow:0 20px 60px rgba(0,0,0,.55),0 4px 12px rgba(0,0,0,.3);}
+.detail-modal.show .detail-card{transform:translateY(0) scale(1);opacity:1;}
+.detail-hd{
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:16px 18px 14px;
+    background:var(--th-bg);
+}
+.detail-title-wrap{display:flex;align-items:center;gap:10px;}
+.detail-icon{
+    width:30px;height:30px;border-radius:8px;
+    background:var(--primary-dim);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;flex-shrink:0;
+}
+.detail-title{
+    font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;
+    color:var(--th-text);letter-spacing:.02em;
+}
+.detail-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--faint);margin-top:2px;}
+.detail-close{
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);
+    color:rgba(255,255,255,.5);
+    border-radius:8px;padding:5px 11px;cursor:pointer;font-size:12px;
+    transition:all .18s;line-height:1.4;flex-shrink:0;
+}
+.detail-close:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim);}
+.detail-scroll{overflow-y:auto;padding:10px 10px 14px;}
+.detail-scroll::-webkit-scrollbar{width:4px;}
+.detail-scroll::-webkit-scrollbar-track{background:transparent;}
+.detail-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.detail-list{display:grid;gap:5px;padding:4px 2px;}
+.detail-empty{
+    padding:28px 0;text-align:center;
+    font-size:13px;color:var(--faint);font-family:'Space Mono',monospace;
+    letter-spacing:.06em;
+}
+.detail-item{
+    display:flex;align-items:center;gap:10px;
+    padding:8px 12px;border-radius:8px;
+    border:1px solid var(--border2);background:var(--surface2);
+    transition:background .12s,border-color .12s;
+}
+.detail-item:hover{background:var(--row-hover);border-color:var(--border);}
+.detail-day{
+    font-family:'Space Mono',monospace;font-size:10px;font-weight:700;
+    color:var(--primary);letter-spacing:.06em;
+    min-width:44px;flex-shrink:0;
+    padding:3px 7px;border-radius:5px;
+    background:var(--primary-dim);border:0.5px solid rgba(224,96,64,.22);
+    text-align:center;
+}
+body.dark .detail-day{border-color:rgba(232,96,60,.28);}
+.detail-val{font-size:13px;color:var(--ink);line-height:1.4;flex:1;}
+.detail-footer{
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    padding:10px 18px 12px;
+    border-top:1px solid var(--border2);
+    font-family:'Space Mono',monospace;font-size:10px;color:var(--faint);
+    letter-spacing:.06em;
+}
+.filterable-table tbody tr{cursor:pointer;}
+.filterable-table tbody tr:hover td{background:var(--row-hover);}
+
+@media(max-width:640px){
+    body{padding:14px 12px 40px;}
+    .topbar{margin-bottom:18px;}
+    .page-title{font-size:20px;}
+    .filterable-table{font-size:11px;}
+    .filterable-table thead tr:first-child th,
+    .filterable-table td{padding:5px 6px;white-space:nowrap;}
+    .table-wrapper{max-height:62vh;}
+    .podium{grid-template-columns:1fr;}
+    .sch-name,.sbar-name{width:112px;}
+    .sbar-tag{display:none;}
+}
+.route-entry{display:flex;align-items:center;gap:14px;background:var(--surface);
+    border:1px solid var(--border);border-radius:8px;padding:14px 18px;
+    cursor:pointer;margin-bottom:18px;transition:border-color .15s,transform .15s;}
+.route-entry:hover{border-color:var(--primary-rim);transform:translateY(-1px);}
+.route-entry-icon{width:34px;height:34px;border-radius:8px;background:var(--primary-dim);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+.route-entry-text{flex:1;}
+.route-entry-title{font-family:'Noto Serif SC',serif;font-size:14px;font-weight:600;color:var(--ink);}
+.route-entry-desc{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.route-entry-arrow{font-size:15px;color:var(--faint);transition:transform .15s;}
+.route-entry:hover .route-entry-arrow{transform:translateX(3px);color:var(--primary);}
+
+.rq-select-box{border:1px solid var(--border);border-radius:6px;background:var(--surface2);
+    margin-bottom:10px;overflow:hidden;}
+.rq-search{width:100%;border:none;background:transparent;padding:8px 10px;font-size:12px;
+    border-bottom:1px solid var(--border2);box-sizing:border-box;color:var(--ink);outline:none;
+    font-family:'Noto Sans SC',sans-serif;}
+.rq-search::placeholder{color:var(--faint);}
+.rq-opt-list{max-height:160px;overflow-y:auto;}
+.rq-opt{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;cursor:pointer;
+    border-bottom:1px solid var(--border2);color:var(--ink2);transition:background .12s;}
+.rq-opt:last-child{border-bottom:none;}
+.rq-opt:hover{background:var(--row-hover);}
+.rq-opt.sel{background:var(--primary-dim);}
+.rq-opt input[type=checkbox]{margin:0;accent-color:var(--primary);pointer-events:none;}
+.rq-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;min-height:24px;}
+.rq-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;
+    font-size:11px;background:var(--primary-dim);color:var(--primary-dark);
+    border:0.5px solid var(--primary-rim);}
+.rq-tag-rm{cursor:pointer;opacity:.65;font-size:11px;}
+.rq-tag-rm:hover{opacity:1;}
+.rq-run-btn{width:100%;background:var(--primary);color:#fff;border:none;padding:9px;
+    border-radius:6px;font-size:13px;cursor:pointer;margin-bottom:16px;
+    font-family:'Noto Sans SC',sans-serif;transition:background .15s;}
+.rq-run-btn:hover{background:var(--primary-dark);}
+.rq-result-count{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;
+    color:var(--faint);margin-bottom:8px;}
+.rq-result-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;}
+.rq-result-row{display:flex;align-items:center;gap:10px;padding:8px 12px;
+    border:1px solid var(--border2);background:var(--surface2);border-radius:8px;}
+.rq-badge{font-size:9px;font-weight:700;color:var(--primary-dark);background:var(--primary-dim);
+    padding:2px 7px;border-radius:5px;flex-shrink:0;white-space:nowrap;}
+.rq-result-name{flex:1;font-size:12.5px;color:var(--ink);overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
+.rq-result-pick{font-size:11px;color:var(--faint);flex-shrink:0;white-space:nowrap;}
+.rq-result-pick b{color:var(--ink);font-weight:500;}
+.rq-empty{padding:28px 0;text-align:center;font-size:12.5px;color:var(--faint);
+    font-family:'Space Mono',monospace;letter-spacing:.04em;}
+
+@media(max-width:640px){
+    .rq-result-pick{white-space:normal;}
+}
+.site-hd{display:flex;align-items:center;gap:20px;margin-bottom:28px;padding-bottom:14px;
+    border-bottom:1px solid var(--border2);}
+.site-hd .back-link{min-height:44px;flex-shrink:0;}
+.hd-tabs{display:flex;gap:2px;font-size:14px;min-width:0;}
+.hd-tab{display:flex;align-items:center;min-height:44px;padding:0 12px;color:var(--muted);text-decoration:none;
+    white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.hd-tab:hover{color:var(--primary);}
+.hd-tab[aria-current="page"]{color:var(--ink);font-weight:700;border-bottom-color:var(--primary);}
+.hd-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.hd-seg{display:flex;gap:3px;padding:3px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;}
+.hd-seg-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;
+    border-radius:999px;font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;transition:background .18s,color .18s;}
+a.hd-seg-btn:hover{color:var(--primary);}
+.hd-seg-btn[aria-current="page"],.hd-seg-btn[aria-current="page"]:hover{background:#1c3f94;color:#ffffff;}
+.hd-seg-btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;}
+.hd-seg-btn[data-tip]:hover::after,.hd-seg-btn[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;
+    top:calc(100% + 8px);right:0;white-space:nowrap;background:var(--th-bg);color:#ddeef8;font-size:12px;font-weight:400;
+    padding:6px 10px;border-radius:8px;z-index:30;opacity:1;}
+.hd-live{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;font-size:12px;color:var(--ink2);
+    border:1px solid var(--border);border-radius:999px;background:var(--surface);white-space:nowrap;}
+.hd-time{font-family:'Space Mono',monospace;}
+.hd-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0;animation:hdPulse 1.8s ease-out infinite;}
+@keyframes hdPulse{0%{box-shadow:0 0 0 0 var(--primary-rim)}100%{box-shadow:0 0 0 9px transparent}}
+.site-hd .theme-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;font-size:13px;
+    color:var(--ink2);border-radius:999px;}
+.theme-btn .ic-sun,body.dark .theme-btn .ic-moon{display:none;}
+body.dark .theme-btn .ic-sun{display:block;}
+.to-top{position:fixed;right:24px;bottom:24px;z-index:40;width:48px;height:48px;border-radius:50%;
+    border:1px solid var(--border);background:var(--surface);color:var(--ink);cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.14);display:flex;align-items:center;justify-content:center;
+    animation:hdRise .22s ease-out both;}
+.to-top[hidden]{display:none;}
+.to-top:hover{border-color:var(--primary);color:var(--primary);}
+@keyframes hdRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.site-hd a:focus-visible,.site-hd button:focus-visible,.hd-seg-btn:focus-visible,.to-top:focus-visible{
+    outline:2px solid var(--primary);outline-offset:2px;}
+
+@media(max-width:1100px){
+    .site-hd{flex-wrap:wrap;row-gap:6px;}
+    .hd-tabs{order:3;flex:1 0 100%;overflow-x:auto;scrollbar-width:none;}
+    .hd-tabs::-webkit-scrollbar{display:none;}
+}
+@media(max-width:720px){
+    .site-hd{gap:8px;margin-bottom:18px;padding-bottom:0;}
+    .hd-right{display:contents;}
+    .hd-live{margin-left:auto;padding:0 10px;min-height:36px;}
+    .hd-suffix{display:none;}
+    .site-hd .theme-btn{width:44px;height:44px;padding:0;justify-content:center;}
+    .site-hd .theme-label{display:none;}
+    .hd-seg{order:2;flex:1 0 100%;}
+    .hd-seg-btn{flex:1;min-height:40px;font-size:14px;}
+    .hd-tabs{margin:0 -12px;padding:0 12px;
+        -webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);}
+    .hd-seg-btn[data-tip]:hover::after,.hd-seg-btn[data-tip]:focus-visible::after{right:auto;left:50%;transform:translateX(-50%);}
+    .to-top{right:16px;bottom:20px;}
+}
+@media(prefers-reduced-motion:reduce){
+    .hd-dot,.to-top{animation:none;}
+    .hd-tab,.hd-seg-btn{transition:none;}
+}
+.pod-card[data-detail],.filterable-table tr.killer-clickable{cursor:pointer;}
+.pod-card[data-detail]:hover{border-color:var(--primary);}
+.pod-hint{margin-top:6px;font-size:10px;color:var(--faint);}
+.dz-list{display:grid;gap:8px;padding:6px 4px;}
+.dz-item{display:flex;align-items:center;gap:12px;padding:12px 14px;
+    background:var(--surface2);border:1px solid var(--border2);border-radius:10px;}
+.dz-item.top{border-color:var(--primary);background:var(--primary-dim);}
+.dz-rank{flex-shrink:0;width:22px;height:22px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+    background:var(--border2);color:var(--muted);}
+.dz-item.top .dz-rank{background:var(--primary);color:#fff;}
+.dz-main{flex:1;min-width:0;}
+.dz-where{font-size:11px;color:var(--muted);letter-spacing:.02em;}
+.dz-who{margin-top:3px;font-size:14px;color:var(--ink);font-weight:600;
+    font-family:'Noto Serif SC',serif;}
+.dz-who i{font-style:normal;font-size:11px;font-weight:400;color:var(--faint);margin-right:6px;}
+.dz-kills{flex-shrink:0;text-align:right;font-family:'Space Mono',monospace;
+    font-size:22px;font-weight:700;color:var(--primary);line-height:1;}
+.dz-kills small{display:block;margin-top:4px;font-size:10px;font-weight:400;color:var(--faint);}
+.dz-empty{display:flex;align-items:center;gap:12px;padding:12px 14px;
+    border:1px dashed var(--border);border-radius:10px;color:var(--faint);font-size:13px;}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="site-hd">
+  <a class="back-link" href="index.html">
+    <svg class="logo-light" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true" style="width:28px;height:28px;flex-shrink:0;">
+  <g style="stroke:var(--ink,#1a2035)" stroke-linecap="round" opacity=".8">
+    <ellipse cx="50" cy="43" rx="33" ry="37" fill="none" stroke-width="2.5"/>
+    <line x1="43" y1="79" x2="57" y2="79" stroke-width="3"/>
+    <line x1="50" y1="80" x2="50" y2="96" stroke-width="4"/>
+  </g>
+  <g style="stroke:var(--primary,#E8541A)" stroke-width="1.8" stroke-linecap="round" fill="none">
+    <line x1="23" y1="28" x2="40" y2="28"/>
+    <line x1="23" y1="37" x2="40" y2="37"/>
+    <line x1="23" y1="51" x2="40" y2="51"/>
+    <line x1="23" y1="60" x2="40" y2="60"/>
+    <line x1="40" y1="28" x2="40" y2="37"/>
+    <line x1="40" y1="51" x2="40" y2="60"/>
+    <line x1="40" y1="32.5" x2="57" y2="32.5"/>
+    <line x1="40" y1="55.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="32.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="44" x2="67" y2="44" stroke-width="2.2"/>
+  </g>
+  <circle cx="72" cy="44" r="5.5" style="fill:var(--secondary,#E8541A)"/>
+  <circle cx="72" cy="44" r="2.5" style="fill:var(--surface,#ffffff)"/>
+</svg>
+<svg class="logo-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true" style="width:28px;height:28px;flex-shrink:0;display:none;">
+  <g style="stroke:var(--ink,#1a2035)" stroke-linecap="round" opacity=".8">
+    <ellipse cx="50" cy="43" rx="33" ry="37" fill="none" stroke-width="2.5"/>
+    <line x1="43" y1="79" x2="57" y2="79" stroke-width="3"/>
+    <line x1="50" y1="80" x2="50" y2="96" stroke-width="4"/>
+  </g>
+  <g style="stroke:var(--primary,#E8541A)" stroke-width="1.8" stroke-linecap="round" fill="none">
+    <line x1="23" y1="28" x2="40" y2="28"/>
+    <line x1="23" y1="37" x2="40" y2="37"/>
+    <line x1="23" y1="51" x2="40" y2="51"/>
+    <line x1="23" y1="60" x2="40" y2="60"/>
+    <line x1="40" y1="28" x2="40" y2="37"/>
+    <line x1="40" y1="51" x2="40" y2="60"/>
+    <line x1="40" y1="32.5" x2="57" y2="32.5"/>
+    <line x1="40" y1="55.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="32.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="44" x2="67" y2="44" stroke-width="2.2"/>
+  </g>
+  <circle cx="72" cy="44" r="5.5" style="fill:var(--secondary,#E8541A)"/>
+  <circle cx="72" cy="44" r="2.5" style="fill:var(--surface,#ffffff)"/>
+</svg>
+    ← 首页
+  </a>
+  <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="atp_ranking.html">即时排名</a><a class="hd-tab" href="atp_race_ranking.html">冠军排名</a><a class="hd-tab" href="atp_champion.html">冠军榜</a><a class="hd-tab" href="atpkiller.html">杀手榜</a><a class="hd-tab" href="2026atpnemesis.html" aria-current="page">克星榜</a><a class="hd-tab" href="survivor_calendar_atp.html">赛历</a><a class="hd-tab" href="atp_show.html">生涯统计</a><a class="hd-tab" href="h2h_atp.html">H2H</a></nav>
+  <div class="hd-right">
+    <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="2026atpnemesis.html" aria-current="page">ATP</a><a class="hd-seg-btn" href="2026wtanemesis.html">WTA</a><span class="hd-seg-btn" aria-disabled="true" tabindex="0" data-tip="克星榜暂无联合页">联合</span></div>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月28日 00:20:02</span><span class="hd-suffix"> 更新</span></span>
+    <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
+  </div>
+</header>
+<button type="button" class="to-top" id="toTop" aria-label="回到顶部" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<div class="page-header">
+  <div class="page-eye">ATP · 2026 Season</div>
+  <div class="page-title">
+    幸存者克星榜
+    <span class="ttag ttag-atp">ATP</span>
+      <span class="ttag ttag-all">2026</span>
+    
+  </div>
+  <div class="page-sub">不含年终总决赛 · 克星 = 赢下比赛、送走选了对手的人</div>
+</div>
+
+<div class="podium">
+<div class="pod-card p1" data-detail="[&quot;2026华盛顿|R1|蒂亚福|163|胜&quot;, &quot;2026阿卡普尔科|R1|迪米特洛夫|33|胜&quot;, &quot;2026迈阿密|R3|阿利亚西姆|10|胜&quot;]" data-name="阿特马纳">
+  <div class="pod-medal">#1</div>
+  <div class="pod-name">阿特马纳</div>
+  <div class="pod-kills">224</div>
+  <div class="pod-kills-lbl">带走人数</div>
+  <div class="pod-rate">场均带走 16.00</div>
+  <div class="pod-hint">点击查看克星记录</div>
+</div>
+<div class="pod-card p2" data-detail="[&quot;2026印第安维尔斯|R3|布勃利克|65|胜&quot;, &quot;2026伦敦|R2|莱赫奇卡|40|胜&quot;, &quot;2026印第安维尔斯|R2|达尔德里|33|胜&quot;]" data-name="土方凛辉">
+  <div class="pod-medal">#2</div>
+  <div class="pod-name">土方凛辉</div>
+  <div class="pod-kills">192</div>
+  <div class="pod-kills-lbl">带走人数</div>
+  <div class="pod-rate">场均带走 14.77</div>
+  <div class="pod-hint">点击查看克星记录</div>
+</div>
+<div class="pod-card p3" data-detail="[&quot;2026多哈|1/4决赛|莱赫奇卡|99|胜&quot;, &quot;2026多哈|半决赛|门希克|55|胜&quot;, &quot;2026辛辛那提|半决赛|科博利|11|胜&quot;]" data-name="菲斯">
+  <div class="pod-medal">#3</div>
+  <div class="pod-name">菲斯</div>
+  <div class="pod-kills">185</div>
+  <div class="pod-kills-lbl">带走人数</div>
+  <div class="pod-rate">场均带走 6.61</div>
+  <div class="pod-hint">点击查看克星记录</div>
+</div>
+</div>
+
+<div class="stats-row">
+  <div class="row-count">显示 <b id="visible-count">0</b> / <b id="total-count">0</b> 行</div>
+</div>
+
+<div class="table-wrapper">
+  <div id="table-container">
+    <table class="dataframe filterable-table">
+  <thead><tr>
+    <th>排名</th>
+    <th>球员</th>
+    <th>带走人数</th>
+    <th>场均带走</th>
+    <th>最高单次带走人数</th>
+    <th>获胜场次</th>
+  </tr></thead>
+  <tbody>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|蒂亚福|163|胜&quot;, &quot;2026阿卡普尔科|R1|迪米特洛夫|33|胜&quot;, &quot;2026迈阿密|R3|阿利亚西姆|10|胜&quot;]">
+    <td>1</td>
+    <td>阿特马纳</td>
+    <td>224</td>
+    <td>16.00</td>
+    <td>163</td>
+    <td>14</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|布勃利克|65|胜&quot;, &quot;2026伦敦|R2|莱赫奇卡|40|胜&quot;, &quot;2026印第安维尔斯|R2|达尔德里|33|胜&quot;]">
+    <td>2</td>
+    <td>土方凛辉</td>
+    <td>192</td>
+    <td>14.77</td>
+    <td>65</td>
+    <td>13</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026多哈|1/4决赛|莱赫奇卡|99|胜&quot;, &quot;2026多哈|半决赛|门希克|55|胜&quot;, &quot;2026辛辛那提|半决赛|科博利|11|胜&quot;]">
+    <td>3</td>
+    <td>菲斯</td>
+    <td>185</td>
+    <td>6.61</td>
+    <td>99</td>
+    <td>28</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R2|阿利亚西姆|58|胜&quot;, &quot;2026汉堡|1/4决赛|乌戈-卡拉贝利|41|胜&quot;, &quot;2026温斯顿塞勒姆|R3|西西帕斯|37|胜&quot;]">
+    <td>4</td>
+    <td>科瓦切维奇</td>
+    <td>179</td>
+    <td>16.27</td>
+    <td>58</td>
+    <td>11</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿德莱德|R1|科达|137|胜&quot;, &quot;2026法网|R1|阿特马纳|38|胜&quot;, &quot;-&quot;]">
+    <td>5</td>
+    <td>科基纳基斯</td>
+    <td>175</td>
+    <td>87.50</td>
+    <td>137</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R3|梅德韦杰夫|61|胜&quot;, &quot;2026北京|R1|蒂兰特|49|胜&quot;, &quot;2026温网|R4|胡尔卡奇|39|胜&quot;]">
+    <td>6</td>
+    <td>施特鲁夫</td>
+    <td>165</td>
+    <td>12.69</td>
+    <td>61</td>
+    <td>13</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|科利尼翁|95|胜&quot;, &quot;2026格施塔德|1/4决赛|鲁德|36|胜&quot;, &quot;2026印第安维尔斯|R1|范德尚舒尔普|15|胜&quot;]">
+    <td>7</td>
+    <td>胡-塞伦多洛</td>
+    <td>165</td>
+    <td>10.31</td>
+    <td>95</td>
+    <td>16</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R2|曼纳里诺|71|胜&quot;, &quot;2026澳网|R1|科博利|50|胜&quot;, &quot;2026温网|R4|迪米特洛夫|27|胜&quot;]">
+    <td>8</td>
+    <td>费里</td>
+    <td>162</td>
+    <td>10.80</td>
+    <td>71</td>
+    <td>15</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|武基奇|139|胜&quot;, &quot;2026杭州|R2|埃切韦里|16|胜&quot;, &quot;2026杭州|1/4决赛|毛罗然|2|胜&quot;]">
+    <td>9</td>
+    <td>雅凯</td>
+    <td>157</td>
+    <td>39.25</td>
+    <td>139</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|马-贝鲁奇|93|胜&quot;, &quot;2026上海|R2|穆塞蒂|56|胜&quot;, &quot;-&quot;]">
+    <td>10</td>
+    <td>周意</td>
+    <td>149</td>
+    <td>74.50</td>
+    <td>93</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|吉隆|63|胜&quot;, &quot;2026汉堡|半决赛|科瓦切维奇|20|胜&quot;, &quot;2026汉堡|R2|门希克|19|胜&quot;]">
+    <td>11</td>
+    <td>布塞</td>
+    <td>142</td>
+    <td>8.35</td>
+    <td>63</td>
+    <td>17</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|波佩林|83|胜&quot;, &quot;2026印第安维尔斯|R1|西里奇|20|胜&quot;, &quot;2026法网|R3|弗-塞伦多洛|16|胜&quot;]">
+    <td>12</td>
+    <td>什瓦伊达</td>
+    <td>137</td>
+    <td>13.70</td>
+    <td>83</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R2|达尔德里|111|胜&quot;, &quot;2026马德里|R2|卢布列夫|5|胜&quot;, &quot;2026法网|R1|穆泰|4|胜&quot;]">
+    <td>13</td>
+    <td>科普里瓦</td>
+    <td>135</td>
+    <td>13.50</td>
+    <td>111</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R3|哈恰诺夫|47|胜&quot;, &quot;2026迈阿密|R1|吉隆|43|胜&quot;, &quot;2026辛辛那提|R1|德雷珀|22|胜&quot;]">
+    <td>14</td>
+    <td>兰达卢塞</td>
+    <td>133</td>
+    <td>12.09</td>
+    <td>47</td>
+    <td>11</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|富乔维奇|127|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>15</td>
+    <td>登奥登</td>
+    <td>127</td>
+    <td>127.00</td>
+    <td>127</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|巴埃斯|123|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>16</td>
+    <td>高巴斯</td>
+    <td>123</td>
+    <td>123.00</td>
+    <td>123</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026多哈|R2|梅德韦杰夫|38|胜&quot;, &quot;2026美网|R3|莱赫奇卡|26|胜&quot;, &quot;2026格施塔德|1/4决赛|林德克内希|24|胜&quot;]">
+    <td>17</td>
+    <td>西西帕斯</td>
+    <td>121</td>
+    <td>4.84</td>
+    <td>38</td>
+    <td>25</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|诺里|54|胜&quot;, &quot;2026辛辛那提|R2|鲁德|49|胜&quot;, &quot;2026鹿特丹|R1|鲁瓦耶|15|胜&quot;]">
+    <td>18</td>
+    <td>奥康尼尔</td>
+    <td>120</td>
+    <td>24.00</td>
+    <td>54</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|1/4决赛|阿利亚西姆|47|胜&quot;, &quot;2026迈阿密|R2|勒纳-钱|25|胜&quot;, &quot;2026迈阿密|R1|凯茨曼诺维奇|18|胜&quot;]">
+    <td>19</td>
+    <td>迈赫扎克</td>
+    <td>118</td>
+    <td>9.08</td>
+    <td>47</td>
+    <td>13</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|兰达卢塞|74|胜&quot;, &quot;2026法网|R1|梅德韦杰夫|32|胜&quot;, &quot;2026印第安维尔斯|R1|阿里斯|9|胜&quot;]">
+    <td>20</td>
+    <td>沃尔顿</td>
+    <td>116</td>
+    <td>16.57</td>
+    <td>74</td>
+    <td>7</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R3|米克尔森|70|胜&quot;, &quot;2026蒙特利尔|R2|安贝尔|28|胜&quot;, &quot;2026蒙特利尔|R4|格里科斯普|9|胜&quot;]">
+    <td>21</td>
+    <td>梅里达</td>
+    <td>116</td>
+    <td>10.55</td>
+    <td>70</td>
+    <td>11</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|门希克|84|胜&quot;, &quot;2026休斯顿|R2|米克尔森|15|胜&quot;, &quot;2026罗马|R1|贝雷蒂尼|12|胜&quot;]">
+    <td>22</td>
+    <td>波佩林</td>
+    <td>115</td>
+    <td>14.38</td>
+    <td>84</td>
+    <td>8</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|埃切韦里|34|胜&quot;, &quot;2026辛辛那提|R1|什瓦伊达|29|胜&quot;, &quot;2026罗马|R1|布鲁查加|17|胜&quot;]">
+    <td>23</td>
+    <td>马-贝鲁奇</td>
+    <td>111</td>
+    <td>15.86</td>
+    <td>34</td>
+    <td>7</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R1|迈赫扎克|82|胜&quot;, &quot;2026蒙特卡洛|R1|格里科斯普|21|胜&quot;, &quot;2026美网|R1|巴列霍|5|胜&quot;]">
+    <td>24</td>
+    <td>孟菲尔斯</td>
+    <td>109</td>
+    <td>21.80</td>
+    <td>82</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026北京|半决赛|胡尔卡奇|34|胜&quot;, &quot;2026鹿特丹|决赛|阿利亚西姆|29|胜&quot;, &quot;2026北京|1/4决赛|卢布列夫|20|胜&quot;]">
+    <td>25</td>
+    <td>德米纳尔</td>
+    <td>108</td>
+    <td>2.84</td>
+    <td>34</td>
+    <td>38</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026北京|1/4决赛|哈恰诺夫|49|胜&quot;, &quot;2026蒙特卡洛|R1|达尔德里|32|胜&quot;, &quot;2026北京|R1|勒纳-钱|18|胜&quot;]">
+    <td>26</td>
+    <td>胡尔卡奇</td>
+    <td>105</td>
+    <td>5.83</td>
+    <td>49</td>
+    <td>18</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R2|穆塞蒂|92|胜&quot;, &quot;2026美网|R1|穆泰|10|胜&quot;, &quot;2026澳网|R1|孟菲尔斯|1|胜&quot;]">
+    <td>27</td>
+    <td>斯威尼</td>
+    <td>103</td>
+    <td>34.33</td>
+    <td>92</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R3|霍达尔|77|胜&quot;, &quot;2026温网|R2|奎因|24|胜&quot;, &quot;2026温网|R1|贝辛|1|胜&quot;]">
+    <td>28</td>
+    <td>望月慎太郎</td>
+    <td>102</td>
+    <td>34.00</td>
+    <td>77</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|胡-塞伦多洛|83|胜&quot;, &quot;2026辛辛那提|R1|梅杰多维奇|16|胜&quot;, &quot;2026美网|R1|商竣程|3|胜&quot;]">
+    <td>29</td>
+    <td>特兰杰里迪</td>
+    <td>102</td>
+    <td>25.50</td>
+    <td>83</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|胡尔卡奇|73|胜&quot;, &quot;2026马德里|R1|波佩林|12|胜&quot;, &quot;2026蒙彼利埃|1/4决赛|纳尔迪|5|胜&quot;]">
+    <td>30</td>
+    <td>达姆</td>
+    <td>96</td>
+    <td>10.67</td>
+    <td>73</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|R2|哈恰诺夫|65|胜&quot;, &quot;2026香港|R1|塔比洛|30|胜&quot;, &quot;-&quot;]">
+    <td>31</td>
+    <td>迈克尔-莫</td>
+    <td>95</td>
+    <td>47.50</td>
+    <td>65</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R2|贝尔赫斯|92|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>32</td>
+    <td>麦凯布</td>
+    <td>92</td>
+    <td>92.00</td>
+    <td>92</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R3|丰塞卡|56|胜&quot;, &quot;2026温网|R1|卢布列夫|11|胜&quot;, &quot;2026北京|R1|科博利|11|胜&quot;]">
+    <td>33</td>
+    <td>萨菲乌林</td>
+    <td>92</td>
+    <td>11.50</td>
+    <td>56</td>
+    <td>8</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|布勃利克|32|胜&quot;, &quot;2026慕尼黑|1/4决赛|沙波瓦洛夫|30|胜&quot;, &quot;2026慕尼黑|R2|阿尔特迈尔|21|胜&quot;]">
+    <td>34</td>
+    <td>莫尔坎</td>
+    <td>90</td>
+    <td>11.25</td>
+    <td>32</td>
+    <td>8</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|莱赫奇卡|34|胜&quot;, &quot;2026上海|R4|门希克|20|胜&quot;, &quot;2026蒙彼利埃|R2|马哈奇|16|胜&quot;]">
+    <td>35</td>
+    <td>热亚</td>
+    <td>90</td>
+    <td>8.18</td>
+    <td>34</td>
+    <td>11</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|半决赛|中岛布兰登|20|胜&quot;, &quot;2026阿卡普尔科|半决赛|中岛布兰登|19|胜&quot;, &quot;2026美网|R4|梅德韦杰夫|12|胜&quot;]">
+    <td>36</td>
+    <td>蒂亚福</td>
+    <td>90</td>
+    <td>2.81</td>
+    <td>20</td>
+    <td>32</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026北京|R2|门希克|48|胜&quot;, &quot;2026美网|R3|弗里茨|21|胜&quot;, &quot;2026伦敦|半决赛|中岛布兰登|9|胜&quot;]">
+    <td>37</td>
+    <td>弗-塞伦多洛</td>
+    <td>88</td>
+    <td>3.38</td>
+    <td>48</td>
+    <td>26</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|半决赛|凯茨曼诺维奇|38|胜&quot;, &quot;2026辛辛那提|R4|霍达尔|20|胜&quot;, &quot;2026辛辛那提|1/4决赛|保罗|7|胜&quot;]">
+    <td>38</td>
+    <td>科博利</td>
+    <td>88</td>
+    <td>2.84</td>
+    <td>38</td>
+    <td>31</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|R2|迪亚洛|84|胜&quot;, &quot;2026杭州|R2|巴列霍|3|胜&quot;, &quot;-&quot;]">
+    <td>39</td>
+    <td>黄泽林</td>
+    <td>87</td>
+    <td>21.75</td>
+    <td>84</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R1|什瓦伊达|34|胜&quot;, &quot;2026法网|R1|西里奇|26|胜&quot;, &quot;2026法网|R2|巴列霍|25|胜&quot;]">
+    <td>40</td>
+    <td>夸梅</td>
+    <td>85</td>
+    <td>28.33</td>
+    <td>34</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|1/4决赛|谢尔顿|19|胜&quot;, &quot;2026澳网|R1|武基奇|14|胜&quot;, &quot;2026马德里|R2|保罗|13|胜&quot;]">
+    <td>41</td>
+    <td>蒂兰特</td>
+    <td>85</td>
+    <td>4.05</td>
+    <td>19</td>
+    <td>21</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|穆纳尔|84|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>42</td>
+    <td>斯特里克</td>
+    <td>84</td>
+    <td>84.00</td>
+    <td>84</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|佩-马丁内斯|30|胜&quot;, &quot;2026伦敦|R1|门希克|16|胜&quot;, &quot;2026蒙彼利埃|R2|安贝尔|16|胜&quot;]">
+    <td>43</td>
+    <td>曼纳里诺</td>
+    <td>84</td>
+    <td>6.00</td>
+    <td>30</td>
+    <td>14</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R3|德米纳尔|52|胜&quot;, &quot;2026多哈|1/4决赛|辛纳|15|胜&quot;, &quot;2026法网|1/4决赛|丰塞卡|14|胜&quot;]">
+    <td>44</td>
+    <td>门希克</td>
+    <td>84</td>
+    <td>3.00</td>
+    <td>52</td>
+    <td>28</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R1|吴易昺|81|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>45</td>
+    <td>博尔特</td>
+    <td>81</td>
+    <td>81.00</td>
+    <td>81</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R2|谢尔顿|37|胜&quot;, &quot;2026格施塔德|1/4决赛|阿里斯|22|胜&quot;, &quot;2026罗马|R1|乌戈-卡拉贝利|10|胜&quot;]">
+    <td>46</td>
+    <td>舍夫琴科</td>
+    <td>81</td>
+    <td>8.10</td>
+    <td>37</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|科达|63|胜&quot;, &quot;2026温网|R1|诺里|11|胜&quot;, &quot;2026辛辛那提|R1|毛罗然|1|胜&quot;]">
+    <td>47</td>
+    <td>郑瑞</td>
+    <td>78</td>
+    <td>11.14</td>
+    <td>63</td>
+    <td>7</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R1|布鲁克斯比|76|胜&quot;, &quot;2026印第安维尔斯|R1|阿纳尔迪|1|胜&quot;, &quot;-&quot;]">
+    <td>48</td>
+    <td>麦克唐纳</td>
+    <td>77</td>
+    <td>38.50</td>
+    <td>76</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R2|西西帕斯|17|胜&quot;, &quot;2026上海|R3|菲斯|15|胜&quot;, &quot;2026澳网|R1|中岛布兰登|10|胜&quot;]">
+    <td>49</td>
+    <td>范德尚舒尔普</td>
+    <td>77</td>
+    <td>3.21</td>
+    <td>17</td>
+    <td>24</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|半决赛|塞缪尔|28|胜&quot;, &quot;2026伊斯特本|R1|穆纳尔|24|胜&quot;, &quot;2026蒙特卡洛|R2|卢布列夫|8|胜&quot;]">
+    <td>50</td>
+    <td>贝尔赫斯</td>
+    <td>76</td>
+    <td>4.00</td>
+    <td>28</td>
+    <td>19</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|吉隆|75|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>51</td>
+    <td>苏雷什</td>
+    <td>75</td>
+    <td>75.00</td>
+    <td>75</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|什瓦伊达|38|胜&quot;, &quot;2026阿德莱德|R1|西西帕斯|29|胜&quot;, &quot;2026罗马|R1|基普森|8|胜&quot;]">
+    <td>52</td>
+    <td>武基奇</td>
+    <td>75</td>
+    <td>18.75</td>
+    <td>38</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R2|哈恰诺夫|27|胜&quot;, &quot;2026鹿特丹|R1|梅德韦杰夫|11|胜&quot;, &quot;2026伦敦|1/4决赛|土方凛辉|9|胜&quot;]">
+    <td>53</td>
+    <td>安贝尔</td>
+    <td>75</td>
+    <td>3.12</td>
+    <td>27</td>
+    <td>24</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|科利尼翁|32|胜&quot;, &quot;2026慕尼黑|R1|西里奇|15|胜&quot;, &quot;2026汉堡|R2|谢尔顿|10|胜&quot;]">
+    <td>54</td>
+    <td>阿尔特迈尔</td>
+    <td>73</td>
+    <td>7.30</td>
+    <td>32</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R1|诺里|45|胜&quot;, &quot;2026上海|1/4决赛|鲁德|15|胜&quot;, &quot;2026华盛顿|半决赛|塔比洛|5|胜&quot;]">
+    <td>55</td>
+    <td>霍达尔</td>
+    <td>72</td>
+    <td>2.25</td>
+    <td>45</td>
+    <td>32</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|巴列霍|71|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>56</td>
+    <td>费尔德鲍施</td>
+    <td>71</td>
+    <td>71.00</td>
+    <td>71</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|1/4决赛|瓦舍罗|43|胜&quot;, &quot;2026格施塔德|半决赛|胡-塞伦多洛|12|胜&quot;, &quot;2026迈阿密|R1|迪米特洛夫|6|胜&quot;]">
+    <td>57</td>
+    <td>科利尼翁</td>
+    <td>71</td>
+    <td>8.88</td>
+    <td>43</td>
+    <td>8</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026北京|1/4决赛|亚-兹韦列夫|51|胜&quot;, &quot;2026澳网|半决赛|辛纳|12|胜&quot;, &quot;2026澳网|1/4决赛|穆塞蒂|5|胜&quot;]">
+    <td>58</td>
+    <td>德约科维奇</td>
+    <td>71</td>
+    <td>3.55</td>
+    <td>51</td>
+    <td>20</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|半决赛|德米纳尔|31|胜&quot;, &quot;2026伦敦|半决赛|安贝尔|18|胜&quot;, &quot;2026汉堡|R1|奎因|13|胜&quot;]">
+    <td>59</td>
+    <td>保罗</td>
+    <td>70</td>
+    <td>1.94</td>
+    <td>31</td>
+    <td>36</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|1/4决赛|鲁德|18|胜&quot;, &quot;2026马德里|R4|弗-塞伦多洛|11|胜&quot;, &quot;2026慕尼黑|R1|汉夫曼|10|胜&quot;]">
+    <td>60</td>
+    <td>布洛克斯</td>
+    <td>69</td>
+    <td>4.06</td>
+    <td>18</td>
+    <td>17</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|1/4决赛|纳沃内|19|胜&quot;, &quot;2026格施塔德|1/4决赛|布勃利克|12|胜&quot;, &quot;2026基茨比厄尔|R1|杰雷|7|胜&quot;]">
+    <td>61</td>
+    <td>阿里斯</td>
+    <td>67</td>
+    <td>2.91</td>
+    <td>19</td>
+    <td>23</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R1|德约科维奇|23|胜&quot;, &quot;2026蒙特利尔|R1|贝雷蒂尼|16|胜&quot;, &quot;2026辛辛那提|R1|科利尼翁|9|胜&quot;]">
+    <td>62</td>
+    <td>纳沃内</td>
+    <td>65</td>
+    <td>5.42</td>
+    <td>23</td>
+    <td>12</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|1/4决赛|阿尔卡拉斯|31|胜&quot;, &quot;2026慕尼黑|R2|布洛克斯|6|胜&quot;, &quot;2026慕尼黑|半决赛|莫尔坎|6|胜&quot;]">
+    <td>63</td>
+    <td>谢尔顿</td>
+    <td>63</td>
+    <td>2.25</td>
+    <td>31</td>
+    <td>28</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|R3|卢布列夫|40|胜&quot;, &quot;2026斯海尔托亨博斯|R1|阿特马纳|6|胜&quot;, &quot;2026法网|R1|埃切韦里|5|胜&quot;]">
+    <td>64</td>
+    <td>博尔热斯</td>
+    <td>61</td>
+    <td>3.59</td>
+    <td>40</td>
+    <td>17</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R2|格里科斯普|31|胜&quot;, &quot;2026斯海尔托亨博斯|R1|布鲁克斯比|26|胜&quot;, &quot;2026休斯顿|R1|平宁顿|2|胜&quot;]">
+    <td>65</td>
+    <td>张之臻</td>
+    <td>59</td>
+    <td>14.75</td>
+    <td>31</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|1/4决赛|勒纳-钱|26|胜&quot;, &quot;2026蒙特卡洛|1/4决赛|丰塞卡|7|胜&quot;, &quot;2026印第安维尔斯|1/4决赛|菲斯|7|胜&quot;]">
+    <td>66</td>
+    <td>亚-兹韦列夫</td>
+    <td>59</td>
+    <td>1.07</td>
+    <td>26</td>
+    <td>55</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|凯茨曼诺维奇|47|胜&quot;, &quot;2026印第安维尔斯|R2|莱赫奇卡|7|胜&quot;, &quot;2026辛辛那提|R1|迪米特洛夫|2|胜&quot;]">
+    <td>67</td>
+    <td>巴埃斯</td>
+    <td>58</td>
+    <td>5.27</td>
+    <td>47</td>
+    <td>11</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R3|哈恰诺夫|31|胜&quot;, &quot;2026蒙特利尔|R4|博尔热斯|14|胜&quot;, &quot;2026罗马|R3|保罗|7|胜&quot;]">
+    <td>68</td>
+    <td>达尔德里</td>
+    <td>58</td>
+    <td>3.05</td>
+    <td>31</td>
+    <td>19</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R2|卢布列夫|50|胜&quot;, &quot;2026迈阿密|R2|科瓦切维奇|7|胜&quot;, &quot;-&quot;]">
+    <td>69</td>
+    <td>坂本怜</td>
+    <td>57</td>
+    <td>14.25</td>
+    <td>50</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R2|吴易昺|56|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>70</td>
+    <td>博高</td>
+    <td>56</td>
+    <td>56.00</td>
+    <td>56</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R2|胡尔卡奇|45|胜&quot;, &quot;2026温网|R1|达尔德里|3|胜&quot;, &quot;2026迈阿密|R1|胡尔卡奇|3|胜&quot;]">
+    <td>71</td>
+    <td>奎因</td>
+    <td>56</td>
+    <td>11.20</td>
+    <td>45</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R2|卢布列夫|41|胜&quot;, &quot;2026蒙特利尔|R1|巴列霍|10|胜&quot;, &quot;2026北京|R1|巴埃斯|5|胜&quot;]">
+    <td>72</td>
+    <td>商竣程</td>
+    <td>56</td>
+    <td>9.33</td>
+    <td>41</td>
+    <td>6</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|R2|弗-塞伦多洛|46|胜&quot;, &quot;2026阿德莱德|半决赛|保罗|5|胜&quot;, &quot;2026罗马|R1|西西帕斯|1|胜&quot;]">
+    <td>73</td>
+    <td>马哈奇</td>
+    <td>55</td>
+    <td>3.93</td>
+    <td>46</td>
+    <td>14</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|1/4决赛|谢尔顿|29|胜&quot;, &quot;2026华盛顿|R1|格里科斯普|13|胜&quot;, &quot;2026华盛顿|R2|阿特马纳|5|胜&quot;]">
+    <td>74</td>
+    <td>塔比洛</td>
+    <td>55</td>
+    <td>3.67</td>
+    <td>29</td>
+    <td>15</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿德莱德|R1|迪亚洛|53|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>75</td>
+    <td>瓦瓦索里</td>
+    <td>53</td>
+    <td>53.00</td>
+    <td>53</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|波佩林|51|胜&quot;, &quot;2026温网|R1|科普里瓦|2|胜&quot;, &quot;-&quot;]">
+    <td>76</td>
+    <td>霍因斯基</td>
+    <td>53</td>
+    <td>17.67</td>
+    <td>51</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R2|霍达尔|29|胜&quot;, &quot;2026北京|R1|胡-塞伦多洛|11|胜&quot;, &quot;2026杭州|R2|迈赫扎克|11|胜&quot;]">
+    <td>77</td>
+    <td>布云朝克特</td>
+    <td>53</td>
+    <td>10.60</td>
+    <td>29</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|沃尔顿|46|胜&quot;, &quot;2026多哈|R1|埃贝尔|3|胜&quot;, &quot;2026蒙特利尔|R2|卡雷尼奥-布斯塔|2|胜&quot;]">
+    <td>78</td>
+    <td>鲁瓦耶</td>
+    <td>51</td>
+    <td>10.20</td>
+    <td>46</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R1|曼纳里诺|50|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>79</td>
+    <td>岛袋将</td>
+    <td>50</td>
+    <td>50.00</td>
+    <td>50</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|半决赛|阿尔卡拉斯|17|胜&quot;, &quot;2026印第安维尔斯|1/4决赛|德雷珀|13|胜&quot;, &quot;2026北京|1/4决赛|弗-塞伦多洛|5|胜&quot;]">
+    <td>80</td>
+    <td>梅德韦杰夫</td>
+    <td>47</td>
+    <td>1.34</td>
+    <td>17</td>
+    <td>35</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|决赛|阿尔卡拉斯|37|胜&quot;, &quot;2026蒙特卡洛|半决赛|亚-兹韦列夫|3|胜&quot;, &quot;2026印第安维尔斯|半决赛|亚-兹韦列夫|2|胜&quot;]">
+    <td>81</td>
+    <td>辛纳</td>
+    <td>46</td>
+    <td>1.05</td>
+    <td>37</td>
+    <td>44</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|商竣程|45|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>82</td>
+    <td>锦织圭</td>
+    <td>45</td>
+    <td>45.00</td>
+    <td>45</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|R2|瓦舍罗|23|胜&quot;, &quot;2026休斯顿|R1|什瓦伊达|6|胜&quot;, &quot;2026法网|R1|诺里|4|胜&quot;]">
+    <td>83</td>
+    <td>巴列霍</td>
+    <td>42</td>
+    <td>4.67</td>
+    <td>23</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|凯茨曼诺维奇|13|胜&quot;, &quot;2026法网|R3|蒂兰特|11|胜&quot;, &quot;2026法网|R1|莱赫奇卡|7|胜&quot;]">
+    <td>84</td>
+    <td>卡雷尼奥-布斯塔</td>
+    <td>42</td>
+    <td>4.67</td>
+    <td>13</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R2|中岛布兰登|24|胜&quot;, &quot;2026休斯顿|1/4决赛|勒纳-钱|7|胜&quot;, &quot;2026休斯顿|半决赛|蒂兰特|7|胜&quot;]">
+    <td>85</td>
+    <td>布鲁查加</td>
+    <td>41</td>
+    <td>8.20</td>
+    <td>24</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|奥康尼尔|28|胜&quot;, &quot;2026印第安维尔斯|R1|毛罗然|12|胜&quot;, &quot;-&quot;]">
+    <td>86</td>
+    <td>包蒂斯塔-阿古特</td>
+    <td>40</td>
+    <td>10.00</td>
+    <td>28</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|1/4决赛|格里科斯普|32|胜&quot;, &quot;2026蒙特利尔|R1|范阿舍|8|胜&quot;, &quot;-&quot;]">
+    <td>87</td>
+    <td>德罗盖</td>
+    <td>40</td>
+    <td>8.00</td>
+    <td>32</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|谢尔顿|36|胜&quot;, &quot;2026罗马|R1|梅里达|2|胜&quot;, &quot;-&quot;]">
+    <td>88</td>
+    <td>巴斯拉什维利</td>
+    <td>38</td>
+    <td>12.67</td>
+    <td>36</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|吴易昺|28|胜&quot;, &quot;2026法网|R2|达尔德里|10|胜&quot;, &quot;-&quot;]">
+    <td>89</td>
+    <td>科梅萨纳</td>
+    <td>38</td>
+    <td>9.50</td>
+    <td>28</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|1/4决赛|范德尚舒尔普|29|胜&quot;, &quot;2026温斯顿塞勒姆|R2|阿里斯|3|胜&quot;, &quot;2026斯海尔托亨博斯|R2|安贝尔|3|胜&quot;]">
+    <td>90</td>
+    <td>邦齐</td>
+    <td>38</td>
+    <td>3.80</td>
+    <td>29</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|弗-塞伦多洛|22|胜&quot;, &quot;2026阿德莱德|R1|阿尔特迈尔|5|胜&quot;, &quot;2026美网|R1|阿特马纳|4|胜&quot;]">
+    <td>91</td>
+    <td>穆纳尔</td>
+    <td>38</td>
+    <td>3.80</td>
+    <td>22</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|1/4决赛|瓦舍罗|12|胜&quot;, &quot;2026伦敦|1/4决赛|德米纳尔|11|胜&quot;, &quot;2026华盛顿|R2|门希克|9|胜&quot;]">
+    <td>92</td>
+    <td>中岛布兰登</td>
+    <td>38</td>
+    <td>1.46</td>
+    <td>12</td>
+    <td>26</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|阿纳尔迪|34|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>93</td>
+    <td>赫西</td>
+    <td>34</td>
+    <td>34.00</td>
+    <td>34</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|吉隆|33|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>94</td>
+    <td>克-休伊特</td>
+    <td>33</td>
+    <td>16.50</td>
+    <td>33</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|达姆|21|胜&quot;, &quot;2026印第安维尔斯|R1|波佩林|4|胜&quot;, &quot;2026上海|R1|穆纳尔|4|胜&quot;]">
+    <td>95</td>
+    <td>布鲁克斯比</td>
+    <td>33</td>
+    <td>4.12</td>
+    <td>21</td>
+    <td>8</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R2|法里亚|32|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>96</td>
+    <td>加斯东</td>
+    <td>32</td>
+    <td>10.67</td>
+    <td>32</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|胡尔卡奇|14|胜&quot;, &quot;2026蒙特利尔|R2|科博利|7|胜&quot;, &quot;2026上海|R1|迈赫扎克|4|胜&quot;]">
+    <td>97</td>
+    <td>汉夫曼</td>
+    <td>32</td>
+    <td>2.46</td>
+    <td>14</td>
+    <td>13</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|R1|毛罗然|15|胜&quot;, &quot;2026阿卡普尔科|R1|鲁德|11|胜&quot;, &quot;2026上海|R1|郑瑞|2|胜&quot;]">
+    <td>98</td>
+    <td>吴易昺</td>
+    <td>31</td>
+    <td>3.88</td>
+    <td>15</td>
+    <td>8</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|德米纳尔|13|胜&quot;, &quot;2026法网|1/4决赛|贝雷蒂尼|6|胜&quot;, &quot;2026罗马|R1|穆纳尔|5|胜&quot;]">
+    <td>99</td>
+    <td>阿纳尔迪</td>
+    <td>31</td>
+    <td>3.44</td>
+    <td>13</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|R2|梅德韦杰夫|24|胜&quot;, &quot;2026温网|R2|菲斯|3|胜&quot;, &quot;2026印第安维尔斯|R1|曼纳里诺|1|胜&quot;]">
+    <td>100</td>
+    <td>贝雷蒂尼</td>
+    <td>31</td>
+    <td>2.21</td>
+    <td>24</td>
+    <td>14</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|保罗|29|胜&quot;, &quot;2026法网|R4|鲁德|2|胜&quot;, &quot;-&quot;]">
+    <td>101</td>
+    <td>丰塞卡</td>
+    <td>31</td>
+    <td>1.63</td>
+    <td>29</td>
+    <td>19</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R3|哈恰诺夫|28|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>102</td>
+    <td>德容</td>
+    <td>28</td>
+    <td>5.60</td>
+    <td>28</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|平宁顿|10|胜&quot;, &quot;2026慕尼黑|R2|毛罗然|10|胜&quot;, &quot;2026印第安维尔斯|R1|西西帕斯|5|胜&quot;]">
+    <td>103</td>
+    <td>沙波瓦洛夫</td>
+    <td>28</td>
+    <td>3.11</td>
+    <td>10</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|格里科斯普|10|胜&quot;, &quot;2026温斯顿塞勒姆|1/4决赛|毛罗然|8|胜&quot;, &quot;2026温斯顿塞勒姆|R3|索内戈|7|胜&quot;]">
+    <td>104</td>
+    <td>达克沃斯</td>
+    <td>28</td>
+    <td>2.80</td>
+    <td>10</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|1/4决赛|德米纳尔|24|胜&quot;, &quot;2026蒙特卡洛|R2|穆塞蒂|2|胜&quot;, &quot;2026美网|R1|科瓦切维奇|1|胜&quot;]">
+    <td>105</td>
+    <td>瓦舍罗</td>
+    <td>28</td>
+    <td>1.56</td>
+    <td>24</td>
+    <td>18</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|1/4决赛|胡-塞伦多洛|16|胜&quot;, &quot;2026伊斯特本|R2|蒂兰特|7|胜&quot;, &quot;2026美网|R1|马哈奇|4|胜&quot;]">
+    <td>106</td>
+    <td>塞缪尔</td>
+    <td>27</td>
+    <td>9.00</td>
+    <td>16</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026多哈|1/4决赛|西西帕斯|9|胜&quot;, &quot;2026杭州|半决赛|雅凯|8|胜&quot;, &quot;2026北京|R2|萨菲乌林|7|胜&quot;]">
+    <td>107</td>
+    <td>卢布列夫</td>
+    <td>27</td>
+    <td>1.29</td>
+    <td>9</td>
+    <td>21</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R4|勒纳-钱|14|胜&quot;, &quot;2026北京|R1|阿利亚西姆|7|胜&quot;, &quot;2026美网|1/4决赛|布洛克斯|5|胜&quot;]">
+    <td>108</td>
+    <td>哈恰诺夫</td>
+    <td>27</td>
+    <td>1.12</td>
+    <td>14</td>
+    <td>24</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|贝尔赫斯|12|胜&quot;, &quot;2026伦敦|R1|林德克内希|8|胜&quot;, &quot;2026罗马|R2|丰塞卡|6|胜&quot;]">
+    <td>109</td>
+    <td>梅杰多维奇</td>
+    <td>26</td>
+    <td>3.71</td>
+    <td>12</td>
+    <td>7</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R2|蒂亚福|12|胜&quot;, &quot;2026迈阿密|R1|姆佩奇-佩里卡尔|5|胜&quot;, &quot;2026印第安维尔斯|R1|达姆|4|胜&quot;]">
+    <td>110</td>
+    <td>乌戈-卡拉贝利</td>
+    <td>25</td>
+    <td>3.57</td>
+    <td>12</td>
+    <td>7</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R1|兰达卢塞|20|胜&quot;, &quot;2026温网|R1|巴列霍|4|胜&quot;, &quot;-&quot;]">
+    <td>111</td>
+    <td>梅希亚</td>
+    <td>24</td>
+    <td>12.00</td>
+    <td>20</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R2|瓦舍罗|24|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>112</td>
+    <td>纳瓦</td>
+    <td>24</td>
+    <td>8.00</td>
+    <td>24</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R3|蒂亚福|22|胜&quot;, &quot;2026罗马|R1|纳尔迪|2|胜&quot;, &quot;-&quot;]">
+    <td>113</td>
+    <td>佩莱格里诺</td>
+    <td>24</td>
+    <td>8.00</td>
+    <td>22</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R1|沙波瓦洛夫|11|胜&quot;, &quot;2026香港|R1|曼纳里诺|7|胜&quot;, &quot;2026斯海尔托亨博斯|1/4决赛|博尔热斯|2|胜&quot;]">
+    <td>114</td>
+    <td>西里奇</td>
+    <td>24</td>
+    <td>2.18</td>
+    <td>11</td>
+    <td>11</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|弗里茨|20|胜&quot;, &quot;2026休斯顿|R1|德拉克斯尔|1|胜&quot;, &quot;2026澳网|R1|奥康尼尔|1|胜&quot;]">
+    <td>115</td>
+    <td>巴萨瓦雷迪</td>
+    <td>22</td>
+    <td>7.33</td>
+    <td>20</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|迈赫扎克|11|胜&quot;, &quot;2026迈阿密|半决赛|菲斯|6|胜&quot;, &quot;2026美网|R1|卡雷尼奥-布斯塔|1|胜&quot;]">
+    <td>116</td>
+    <td>莱赫奇卡</td>
+    <td>22</td>
+    <td>0.96</td>
+    <td>11</td>
+    <td>23</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026多哈|决赛|菲斯|16|胜&quot;, &quot;2026蒙特卡洛|半决赛|瓦舍罗|4|胜&quot;, &quot;2026多哈|半决赛|卢布列夫|2|胜&quot;]">
+    <td>117</td>
+    <td>阿尔卡拉斯</td>
+    <td>22</td>
+    <td>0.85</td>
+    <td>16</td>
+    <td>26</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|R2|谢尔顿|11|胜&quot;, &quot;2026美网|R1|布鲁克斯比|3|胜&quot;, &quot;2026格施塔德|R1|瓦林卡|3|胜&quot;]">
+    <td>118</td>
+    <td>法里亚</td>
+    <td>21</td>
+    <td>2.10</td>
+    <td>11</td>
+    <td>10</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R3|布勃利克|7|胜&quot;, &quot;2026澳网|R4|梅德韦杰夫|5|胜&quot;, &quot;2026蒙特利尔|R3|保罗|3|胜&quot;]">
+    <td>119</td>
+    <td>勒纳-钱</td>
+    <td>20</td>
+    <td>0.91</td>
+    <td>7</td>
+    <td>22</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿德莱德|R1|波佩林|10|胜&quot;, &quot;2026迈阿密|R2|德雷珀|9|胜&quot;, &quot;-&quot;]">
+    <td>120</td>
+    <td>奥佩尔卡</td>
+    <td>19</td>
+    <td>3.80</td>
+    <td>10</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R2|勒纳-钱|10|胜&quot;, &quot;2026印第安维尔斯|R2|穆塞蒂|8|胜&quot;, &quot;2026阿德莱德|R1|奎因|1|胜&quot;]">
+    <td>121</td>
+    <td>富乔维奇</td>
+    <td>19</td>
+    <td>2.11</td>
+    <td>10</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R1|德米纳尔|11|胜&quot;, &quot;2026温网|R1|麦克唐纳|6|胜&quot;, &quot;-&quot;]">
+    <td>122</td>
+    <td>基普森</td>
+    <td>17</td>
+    <td>8.50</td>
+    <td>11</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|R2|米勒|7|胜&quot;, &quot;2026香港|1/4决赛|迈克尔-莫|7|胜&quot;, &quot;2026印第安维尔斯|R1|纳沃内|1|胜&quot;]">
+    <td>123</td>
+    <td>吉隆</td>
+    <td>16</td>
+    <td>2.67</td>
+    <td>7</td>
+    <td>6</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|贝雷蒂尼|14|胜&quot;, &quot;2026法网|R1|郑瑞|1|胜&quot;, &quot;2026马德里|R2|谢尔顿|1|胜&quot;]">
+    <td>124</td>
+    <td>普里兹米奇</td>
+    <td>16</td>
+    <td>1.78</td>
+    <td>14</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|诺里|13|胜&quot;, &quot;2026印第安维尔斯|R1|达克沃斯|1|胜&quot;, &quot;2026美网|R1|鲁瓦耶|1|胜&quot;]">
+    <td>125</td>
+    <td>斯夫尔奇纳</td>
+    <td>15</td>
+    <td>3.00</td>
+    <td>13</td>
+    <td>5</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|德米纳尔|12|胜&quot;, &quot;2026蒙特卡洛|R1|凯茨曼诺维奇|2|胜&quot;, &quot;2026蒙特利尔|R3|德米纳尔|1|胜&quot;]">
+    <td>126</td>
+    <td>诺里</td>
+    <td>15</td>
+    <td>1.15</td>
+    <td>12</td>
+    <td>13</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|弗里茨|8|胜&quot;, &quot;2026美网|R3|梅里达|2|胜&quot;, &quot;2026美网|R4|埃切韦里|2|胜&quot;]">
+    <td>127</td>
+    <td>米克尔森</td>
+    <td>15</td>
+    <td>0.79</td>
+    <td>8</td>
+    <td>19</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|兰达卢塞|14|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>128</td>
+    <td>权纯雨</td>
+    <td>14</td>
+    <td>14.00</td>
+    <td>14</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R1|施特鲁夫|12|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>129</td>
+    <td>达尔文-布兰奇</td>
+    <td>12</td>
+    <td>12.00</td>
+    <td>12</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R1|诺里|12|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>130</td>
+    <td>范阿舍</td>
+    <td>12</td>
+    <td>6.00</td>
+    <td>12</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|半决赛|布勃利克|7|胜&quot;, &quot;2026蒙特卡洛|R3|鲁德|4|胜&quot;, &quot;2026蒙彼利埃|决赛|曼纳里诺|1|胜&quot;]">
+    <td>131</td>
+    <td>阿利亚西姆</td>
+    <td>12</td>
+    <td>0.41</td>
+    <td>7</td>
+    <td>29</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|诺里|5|胜&quot;, &quot;2026上海|R3|蒂亚福|3|胜&quot;, &quot;2026上海|半决赛|亚-兹韦列夫|2|胜&quot;]">
+    <td>132</td>
+    <td>达维多维奇</td>
+    <td>11</td>
+    <td>0.50</td>
+    <td>5</td>
+    <td>22</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|瓦瓦索里|10|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>133</td>
+    <td>布朗谢</td>
+    <td>10</td>
+    <td>10.00</td>
+    <td>10</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|萨菲乌林|9|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>134</td>
+    <td>格勒尼耶</td>
+    <td>9</td>
+    <td>9.00</td>
+    <td>9</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R2|马哈奇|8|胜&quot;, &quot;2026温斯顿塞勒姆|R1|霍因斯基|1|胜&quot;, &quot;-&quot;]">
+    <td>135</td>
+    <td>勒特格林</td>
+    <td>9</td>
+    <td>4.50</td>
+    <td>8</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R2|梅杰多维奇|5|胜&quot;, &quot;2026澳网|R1|杰雷|3|胜&quot;, &quot;2026澳网|R2|热亚|1|胜&quot;]">
+    <td>136</td>
+    <td>瓦林卡</td>
+    <td>9</td>
+    <td>2.25</td>
+    <td>5</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|R1|商竣程|6|胜&quot;, &quot;2026格施塔德|R1|施韦尔茨勒|1|胜&quot;, &quot;2026温网|R1|埃切韦里|1|胜&quot;]">
+    <td>137</td>
+    <td>索内戈</td>
+    <td>9</td>
+    <td>1.00</td>
+    <td>6</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|阿特马纳|4|胜&quot;, &quot;2026印第安维尔斯|R2|卢布列夫|3|胜&quot;, &quot;2026慕尼黑|R1|萨奇科|2|胜&quot;]">
+    <td>138</td>
+    <td>迪亚洛</td>
+    <td>9</td>
+    <td>1.00</td>
+    <td>4</td>
+    <td>9</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|半决赛|吉隆|4|胜&quot;, &quot;2026基茨比厄尔|1/4决赛|莫尔坎|1|胜&quot;, &quot;2026香港|R2|范德尚舒尔普|1|胜&quot;]">
+    <td>139</td>
+    <td>布勃利克</td>
+    <td>9</td>
+    <td>0.38</td>
+    <td>4</td>
+    <td>24</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|R1|鲁瓦耶|2|胜&quot;, &quot;2026美网|R3|纳沃内|2|胜&quot;, &quot;2026澳网|R1|凯茨曼诺维奇|1|胜&quot;]">
+    <td>140</td>
+    <td>埃切韦里</td>
+    <td>8</td>
+    <td>0.47</td>
+    <td>2</td>
+    <td>17</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|波佩林|7|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>141</td>
+    <td>米勒</td>
+    <td>7</td>
+    <td>3.50</td>
+    <td>7</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|谢尔顿|6|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>142</td>
+    <td>维尔塔宁</td>
+    <td>6</td>
+    <td>6.00</td>
+    <td>6</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|丰塞卡|5|胜&quot;, &quot;2026澳网|R2|吴易昺|1|胜&quot;, &quot;-&quot;]">
+    <td>143</td>
+    <td>斯皮齐里</td>
+    <td>6</td>
+    <td>3.00</td>
+    <td>5</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|穆泰|4|胜&quot;, &quot;2026罗马|R1|奎因|2|胜&quot;, &quot;-&quot;]">
+    <td>144</td>
+    <td>利亚马斯</td>
+    <td>6</td>
+    <td>3.00</td>
+    <td>4</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|1/4决赛|阿特马纳|4|胜&quot;, &quot;2026温斯顿塞勒姆|R1|岛袋将|1|胜&quot;, &quot;2026阿卡普尔科|R2|亚-兹韦列夫|1|胜&quot;]">
+    <td>145</td>
+    <td>凯茨曼诺维奇</td>
+    <td>6</td>
+    <td>0.55</td>
+    <td>4</td>
+    <td>11</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026多哈|R1|安贝尔|3|胜&quot;, &quot;2026温网|R1|蒂兰特|1|胜&quot;, &quot;2026澳网|R1|林德克内希|1|胜&quot;]">
+    <td>146</td>
+    <td>毛罗然</td>
+    <td>6</td>
+    <td>0.50</td>
+    <td>3</td>
+    <td>12</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R4|弗里茨|4|胜&quot;, &quot;2026华盛顿|R1|阿纳尔迪|1|胜&quot;, &quot;2026香港|半决赛|卢布列夫|1|胜&quot;]">
+    <td>147</td>
+    <td>穆塞蒂</td>
+    <td>6</td>
+    <td>0.33</td>
+    <td>4</td>
+    <td>18</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R3|勒纳-钱|2|胜&quot;, &quot;2026罗马|半决赛|达尔德里|2|胜&quot;, &quot;2026蒙特卡洛|R1|波佩林|1|胜&quot;]">
+    <td>148</td>
+    <td>鲁德</td>
+    <td>6</td>
+    <td>0.26</td>
+    <td>2</td>
+    <td>23</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|索内戈|5|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>149</td>
+    <td>拉约维奇</td>
+    <td>5</td>
+    <td>5.00</td>
+    <td>5</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|阿特马纳|5|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>150</td>
+    <td>马埃斯特雷利</td>
+    <td>5</td>
+    <td>5.00</td>
+    <td>5</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|梅杰多维奇|3|胜&quot;, &quot;2026罗马|R1|米克尔森|2|胜&quot;, &quot;-&quot;]">
+    <td>151</td>
+    <td>奥夫纳</td>
+    <td>5</td>
+    <td>1.67</td>
+    <td>3</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|曼纳里诺|4|胜&quot;, &quot;2026迈阿密|R1|布塞|1|胜&quot;, &quot;-&quot;]">
+    <td>152</td>
+    <td>朱姆胡尔</td>
+    <td>5</td>
+    <td>1.25</td>
+    <td>4</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R4|德约科维奇|3|胜&quot;, &quot;2026伊斯特本|R1|吉隆|2|胜&quot;, &quot;-&quot;]">
+    <td>153</td>
+    <td>德雷珀</td>
+    <td>5</td>
+    <td>0.83</td>
+    <td>3</td>
+    <td>6</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R2|迪亚洛|4|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>154</td>
+    <td>莫勒</td>
+    <td>4</td>
+    <td>2.00</td>
+    <td>4</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R3|阿尔卡拉斯|4|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>155</td>
+    <td>科达</td>
+    <td>4</td>
+    <td>1.33</td>
+    <td>4</td>
+    <td>3</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R1|阿特马纳|2|胜&quot;, &quot;2026温网|R3|贝雷蒂尼|2|胜&quot;, &quot;-&quot;]">
+    <td>156</td>
+    <td>迪米特洛夫</td>
+    <td>4</td>
+    <td>1.00</td>
+    <td>2</td>
+    <td>4</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|半决赛|中岛布兰登|4|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>157</td>
+    <td>弗里茨</td>
+    <td>4</td>
+    <td>0.19</td>
+    <td>4</td>
+    <td>21</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|格里科斯普|3|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>158</td>
+    <td>科托夫</td>
+    <td>3</td>
+    <td>3.00</td>
+    <td>3</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R2|科博利|3|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>159</td>
+    <td>纳尔迪</td>
+    <td>3</td>
+    <td>1.50</td>
+    <td>3</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|奇纳|3|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>160</td>
+    <td>迪亚斯-阿科斯塔</td>
+    <td>3</td>
+    <td>1.50</td>
+    <td>3</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|米克尔森|2|胜&quot;, &quot;2026蒙特利尔|R3|蒂亚福|1|胜&quot;, &quot;-&quot;]">
+    <td>161</td>
+    <td>林德克内希</td>
+    <td>3</td>
+    <td>0.25</td>
+    <td>2</td>
+    <td>12</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|胡-塞伦多洛|2|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>162</td>
+    <td>加林</td>
+    <td>2</td>
+    <td>1.00</td>
+    <td>2</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|施韦尔茨勒|1|胜&quot;, &quot;2026美网|R1|姆佩奇-佩里卡尔|1|胜&quot;, &quot;-&quot;]">
+    <td>163</td>
+    <td>罗迪奥诺夫</td>
+    <td>2</td>
+    <td>1.00</td>
+    <td>1</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|R1|米勒|1|胜&quot;, &quot;2026迈阿密|R2|马哈奇|1|胜&quot;, &quot;-&quot;]">
+    <td>164</td>
+    <td>穆泰</td>
+    <td>2</td>
+    <td>0.33</td>
+    <td>1</td>
+    <td>6</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R2|亚-兹韦列夫|2|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>165</td>
+    <td>格里科斯普</td>
+    <td>2</td>
+    <td>0.25</td>
+    <td>2</td>
+    <td>8</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|斯威尼|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>166</td>
+    <td>丹尼尔太郎</td>
+    <td>1</td>
+    <td>1.00</td>
+    <td>1</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|迪特里希|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>167</td>
+    <td>基姆</td>
+    <td>1</td>
+    <td>1.00</td>
+    <td>1</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|罗迪奥诺夫|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>168</td>
+    <td>塔比尔</td>
+    <td>1</td>
+    <td>1.00</td>
+    <td>1</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|奥佩尔卡|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>169</td>
+    <td>奇纳</td>
+    <td>1</td>
+    <td>1.00</td>
+    <td>1</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R1|巴萨瓦雷迪|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>170</td>
+    <td>斯库尔凯特</td>
+    <td>1</td>
+    <td>1.00</td>
+    <td>1</td>
+    <td>1</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R2|沙波瓦洛夫|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>171</td>
+    <td>布德科夫-谢尔</td>
+    <td>1</td>
+    <td>0.50</td>
+    <td>1</td>
+    <td>2</td>
+  </tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R2|曼纳里诺|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
+    <td>172</td>
+    <td>费恩利</td>
+    <td>1</td>
+    <td>0.25</td>
+    <td>1</td>
+    <td>4</td>
+  </tr>
+  </tbody>
+</table>
+  </div>
+</div>
+<div id="detail-modal" class="detail-modal">
+  <div class="detail-card">
+    <div class="detail-hd">
+      <div class="detail-title-wrap">
+        <div class="detail-icon">☠</div>
+        <div>
+          <div class="detail-title">克星记录</div>
+          <div class="detail-meta" id="detail-meta-line"></div>
+        </div>
+      </div>
+      <button id="detail-close" class="detail-close" type="button">✕ 关闭</button>
+    </div>
+    <div class="detail-scroll">
+      <div id="detail-body" class="detail-list"></div>
+    </div>
+    <div class="detail-footer" id="detail-footer"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+    const modal=document.getElementById('detail-modal');
+    const closeBtn=document.getElementById('detail-close');
+    const body=document.getElementById('detail-body');
+    const metaLine=document.getElementById('detail-meta-line');
+    const footer=document.getElementById('detail-footer');
+    if(!modal||!closeBtn||!body)return;
+    const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    function closeModal(){
+        const card=modal.querySelector('.detail-card');
+        if(card){ card.style.transform='translateY(10px) scale(.97)'; card.style.opacity='0'; }
+        setTimeout(()=>{ modal.classList.remove('show'); if(card){ card.style.transform=''; card.style.opacity=''; } },220);
+    }
+    closeBtn.addEventListener('click',closeModal);
+    modal.addEventListener('click',e=>{ if(e.target===modal)closeModal(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&modal.classList.contains('show'))closeModal(); });
+
+    const nameIdx=[...document.querySelectorAll('.filterable-table thead tr:first-child th')]
+        .findIndex(th=>th.textContent.trim()==='球员');
+    function open(name,details){
+        if(metaLine) metaLine.textContent=name;
+        body.className='dz-list';
+        body.innerHTML=details.map((v,i)=>{
+            const f=String(v).split('|');
+            if(f.length<4) return '<div class="dz-empty"><span class="dz-rank">'+(i+1)+'</span>暂无记录</div>';
+            return '<div class="dz-item'+(i===0?' top':'')+'"><span class="dz-rank">'+(i+1)+'</span>'
+                +'<div class="dz-main"><div class="dz-where">'+esc(f[0])+' · '+esc(f[1])+'</div>'
+                +'<div class="dz-who">'+(f[2]?'<i>'+esc(f[4]||'负')+'</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
+                +'<div class="dz-kills">'+esc(f[3])+'<small>人被带走</small></div></div>';
+        }).join('');
+        if(footer) footer.textContent='带走人数最多的 3 次';
+        modal.classList.add('show');
+    }
+    function parse(el){
+        let d=[]; try{ d=JSON.parse(el.dataset.detail||'[]'); }catch(_e){ d=[]; }
+        return Array.isArray(d)?d:[];
+    }
+    document.querySelectorAll('.filterable-table tbody tr[data-detail]').forEach(row=>{
+        row.addEventListener('click',()=>{
+            const cell=row.querySelectorAll('td')[nameIdx>=0?nameIdx:1];
+            open(cell?cell.textContent.trim():'',parse(row));
+        });
+    });
+    document.querySelectorAll('.pod-card[data-detail]').forEach(card=>{
+        card.addEventListener('click',()=>open(card.dataset.name||'',parse(card)));
+    });
+});
+
+function _themeLabel(dark){
+    const btn=document.getElementById('themeBtn');
+    if(!btn)return;
+    const lbl=btn.querySelector('.theme-label');  // shared header: keep the SVG icons
+    if(lbl)lbl.textContent=dark?'亮色':'暗色';
+    else btn.textContent=dark?'☀ 亮色':'🌙 暗色';
+}
+function toggleTheme(){
+    const going=!document.body.classList.contains('dark');
+    document.body.classList.toggle('dark',going);
+    _themeLabel(going);
+    document.querySelectorAll('.logo-light').forEach(e=>e.style.display=going?'none':'block');
+    document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=going?'block':'none');
+    try{localStorage.setItem('theme',going?'dark':'light');}catch(e){}
+}
+(function(){
+    let dark=false;
+    try{dark=localStorage.getItem('theme')==='dark';}catch(e){}  // throws on data: URLs
+    document.body.classList.toggle('dark',dark);
+    document.querySelectorAll('.logo-light').forEach(e=>e.style.display=dark?'none':'block');
+    document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=dark?'block':'none');
+    _themeLabel(dark);
+})();
+document.addEventListener('DOMContentLoaded',function(){
+    const table=document.querySelector('.filterable-table');
+    if(!table)return;
+    const thead=table.querySelector('thead');
+    const tbody=table.querySelector('tbody');
+    const rows=tbody.querySelectorAll('tr');
+    const totalCount=rows.length;
+    const totalEl=document.getElementById('total-count');
+    const visibleEl=document.getElementById('visible-count');
+    if(totalEl)totalEl.textContent=totalCount;
+    if(visibleEl)visibleEl.textContent=totalCount;
+    // page scripts add row predicates to TS.extra and call TS.refresh(); 'ts:filtered' fires after each pass
+    window.TS=window.TS||{extra:[]};
+    window.TS.refresh=()=>filterTable();
+    const headerRow=thead.querySelector('tr');
+    const headers=headerRow.querySelectorAll('th');
+    const filterRow=document.createElement('tr');
+    filterRow.className='filter-row';
+    const allOptionContainers=[];
+    const columnMeta=[]; // {type:'numeric'|'category', ...}
+
+    // strip % , currency chars etc. before parsing
+    function parseCellNumber(text){
+        const cleaned=String(text).trim().replace(/[%,\s]/g,'');
+        if(cleaned===''||cleaned==='-'||cleaned.toLowerCase()==='nan')return NaN;
+        const n=parseFloat(cleaned);
+        return n;
+    }
+
+    headers.forEach((header,index)=>{
+        let sortDirection='none';
+        const thCell=document.createElement('th');
+
+        // collect all non-empty values for this column
+        const rawValues=[];
+        rows.forEach(row=>{
+            const cell=row.children[index];
+            if(cell)rawValues.push(cell.textContent.trim());
+        });
+        const nonEmpty=rawValues.filter(v=>v!==''&&v.toLowerCase()!=='nan'&&v!=='-');
+        const parsedNums=nonEmpty.map(parseCellNumber);
+        const isNumericCol = nonEmpty.length>0 && parsedNums.every(n=>!isNaN(n));
+        const headerText=header.textContent.trim();
+
+        if(isNumericCol){
+            // ── build slider filter ──────────────────────────────
+            const forceInt=/天数|排名|周数|参赛|冠军数|亚军|连胜|连败|得分|积分/.test(headerText)
+                && !/率/.test(headerText);
+            const isIntCol=forceInt || parsedNums.every(n=>Number.isInteger(n));
+            let minVal=Math.min(...parsedNums);
+            let maxVal=Math.max(...parsedNums);
+            if(isIntCol){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
+            const step=isIntCol ? 1 : ((maxVal-minVal)>20 ? 1 : (maxVal-minVal)/100 || 1);
+
+            columnMeta[index]={type:'numeric', min:minVal, max:maxVal,
+                                curMin:minVal, curMax:maxVal, intCol:isIntCol,
+                                header:headerText};
+
+            const dropdownWrapper=document.createElement('div');
+            dropdownWrapper.className='filter-dropdown';
+            const trigger=document.createElement('div');
+            trigger.className='filter-trigger';
+            trigger.innerHTML='<span>全部</span><span style="font-size:10px">▼</span>';
+
+            const panel=document.createElement('div');
+            panel.className='dropdown-content filter-slider';
+
+            const readout=document.createElement('div');
+            readout.className='filter-slider-readout';
+            const inMin=document.createElement('input');
+            inMin.type='number'; inMin.value=minVal; inMin.step=step;
+            if(isIntCol){ inMin.step='1'; inMin.setAttribute('inputmode','numeric'); }
+            const sep=document.createElement('span');
+            sep.className='filter-slider-sep'; sep.textContent='~';
+            const inMax=document.createElement('input');
+            inMax.type='number'; inMax.value=maxVal; inMax.step=step;
+            if(isIntCol){ inMax.step='1'; inMax.setAttribute('inputmode','numeric'); }
+            readout.append(inMin,sep,inMax);
+
+            const rangeWrap=document.createElement('div');
+            rangeWrap.className='filter-slider-range';
+            const track=document.createElement('div');
+            track.className='filter-slider-track';
+            const fill=document.createElement('div');
+            fill.className='filter-slider-fill';
+            const rMin=document.createElement('input');
+            rMin.type='range'; rMin.min=minVal; rMin.max=maxVal; rMin.step=step; rMin.value=minVal;
+            const rMax=document.createElement('input');
+            rMax.type='range'; rMax.min=minVal; rMax.max=maxVal; rMax.step=step; rMax.value=maxVal;
+            rangeWrap.append(track,fill,rMin,rMax);
+
+            const resetBtn=document.createElement('button');
+            resetBtn.type='button'; resetBtn.className='filter-slider-reset';
+            resetBtn.textContent='重置范围';
+
+            panel.append(readout,rangeWrap,resetBtn);
+
+            function syncUI(){
+                let lo=parseFloat(rMin.value), hi=parseFloat(rMax.value);
+                if(isIntCol){ lo=Math.round(lo); hi=Math.round(hi); }
+                if(lo>hi){ const t=lo; lo=hi; hi=t; }
+                columnMeta[index].curMin=lo;
+                columnMeta[index].curMax=hi;
+                inMin.value=isIntCol?String(lo):lo; inMax.value=isIntCol?String(hi):hi;
+                rMin.value=lo; rMax.value=hi;
+                const pct=v=>((v-minVal)/(maxVal-minVal||1))*100;
+                fill.style.left=pct(lo)+'%';
+                fill.style.width=(pct(hi)-pct(lo))+'%';
+                const trigSpan=trigger.querySelector('span:first-child');
+                trigSpan.textContent=(lo===minVal&&hi===maxVal)?'全部':(lo+' ~ '+hi);
+                filterTable();
+            }
+            rMin.addEventListener('input',()=>{ if(+rMin.value>+rMax.value)rMin.value=rMax.value; syncUI(); });
+            rMax.addEventListener('input',()=>{ if(+rMax.value<+rMin.value)rMax.value=rMin.value; syncUI(); });
+            inMin.addEventListener('change',()=>{
+                let v=parseFloat(inMin.value); if(isNaN(v))v=minVal;
+                if(isIntCol) v=Math.round(v);
+                rMin.value=v; syncUI();
+            });
+            inMax.addEventListener('change',()=>{
+                let v=parseFloat(inMax.value); if(isNaN(v))v=maxVal;
+                if(isIntCol) v=Math.round(v);
+                rMax.value=v; syncUI();
+            });
+            resetBtn.addEventListener('click',()=>{ rMin.value=minVal; rMax.value=maxVal; syncUI(); });
+            syncUI();
+
+            dropdownWrapper.appendChild(trigger);
+            document.body.appendChild(panel);
+            allOptionContainers.push(panel);
+
+            trigger.addEventListener('click',(e)=>{
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-content').forEach(d=>{
+                    if(d!==panel)d.classList.remove('show');
+                });
+                const isOpen=panel.classList.contains('show');
+                panel.classList.toggle('show');
+                if(!isOpen){
+                    const rect=trigger.getBoundingClientRect();
+                    const w=Math.max(rect.width,190);
+                    panel.style.width=w+'px';
+                    // keep right-hand columns' panels inside the viewport
+                    panel.style.left=Math.max(8,Math.min(rect.left,document.documentElement.clientWidth-w-8))+'px';
+                    const dropH=panel.scrollHeight;
+                    const spaceBelow=window.innerHeight-rect.bottom;
+                    panel.style.top=(spaceBelow>=dropH||spaceBelow>=140?rect.bottom:(rect.top-dropH))+'px';
+                }
+            });
+            panel.addEventListener('click',(e)=>e.stopPropagation());
+            thCell.appendChild(dropdownWrapper);
+
+        } else {
+            // ── original categorical checkbox dropdown ───────────
+            columnMeta[index]={type:'category', header:headerText};
+            const dropdownWrapper=document.createElement('div');
+            dropdownWrapper.className='filter-dropdown';
+            const trigger=document.createElement('div');
+            trigger.className='filter-trigger';
+            trigger.innerHTML='<span>筛选...</span><span style="font-size:10px">▼</span>';
+            const optionsContainer=document.createElement('div');
+            optionsContainer.className='dropdown-content';
+            const searchInput=document.createElement('input');
+            searchInput.type='text';
+            searchInput.className='dropdown-search';
+            searchInput.placeholder='搜索...';
+            optionsContainer.prepend(searchInput);
+            searchInput.addEventListener('input',(e)=>{
+                // comma/space separated terms match any of them (e.g. "zoe, eric")
+                const terms=e.target.value.toLowerCase().split(/[,，\s]+/).filter(Boolean);
+                optionsContainer.querySelectorAll('.option-item').forEach(item=>{
+                    if(item.dataset.selectAll)return;
+                    const label=item.querySelector('span').textContent.toLowerCase();
+                    item.style.display=!terms.length||terms.some(q=>label.includes(q))?'flex':'none';
+                });
+                const visibleCbs=Array.from(
+                    optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
+                ).filter(i=>i.style.display!=='none')
+                 .map(i=>i.querySelector('input[type="checkbox"]'));
+                selectAllCb.checked=visibleCbs.length>0&&visibleCbs.every(cb=>cb.checked);
+            });
+            const selectAllItem=document.createElement('div');
+            selectAllItem.className='option-item select-all-item';
+            selectAllItem.dataset.selectAll='1';
+            selectAllItem.style.borderBottom='2px solid var(--border)';
+            const selectAllCb=document.createElement('input');
+            selectAllCb.type='checkbox';
+            selectAllCb.checked=true;
+            const selectAllLabel=document.createElement('span');
+            selectAllLabel.textContent='全选';
+            selectAllLabel.style.fontWeight='600';
+            selectAllItem.appendChild(selectAllCb);
+            selectAllItem.appendChild(selectAllLabel);
+            optionsContainer.appendChild(selectAllItem);
+            selectAllCb.addEventListener('change',()=>{
+                const checked=selectAllCb.checked;
+                optionsContainer.querySelectorAll('.option-item:not([data-select-all])').forEach(item=>{
+                    if(item.style.display!=='none')
+                        item.querySelector('input[type="checkbox"]').checked=checked;
+                });
+                filterTable();
+            });
+            Array.from(new Set(rawValues)).sort((a,b)=>a.localeCompare(b,'zh')).forEach(val=>{
+                const item=document.createElement('div');
+                item.className='option-item';
+                const cb=document.createElement('input');
+                cb.type='checkbox';cb.value=val;cb.checked=true;
+                const label=document.createElement('span');
+                label.textContent=val;
+                item.appendChild(cb);item.appendChild(label);
+                optionsContainer.appendChild(item);
+            });
+            dropdownWrapper.appendChild(trigger);
+            document.body.appendChild(optionsContainer);
+            allOptionContainers.push(optionsContainer);
+            thCell.appendChild(dropdownWrapper);
+
+            trigger.addEventListener('click',(e)=>{
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-content').forEach(d=>{
+                    if(d!==optionsContainer)d.classList.remove('show');
+                });
+                const isOpen=optionsContainer.classList.contains('show');
+                optionsContainer.classList.toggle('show');
+                if(!isOpen){
+                    const rect=trigger.getBoundingClientRect();
+                    const dropH=Math.min(250,optionsContainer.scrollHeight);
+                    const spaceBelow=window.innerHeight-rect.bottom;
+                    const w=Math.max(rect.width,200);
+                    optionsContainer.style.width=w+'px';
+                    optionsContainer.style.top=(spaceBelow>=dropH||spaceBelow>=120?rect.bottom:(rect.top-dropH))+'px';
+                    optionsContainer.style.left=Math.max(8,Math.min(rect.left,document.documentElement.clientWidth-w-8))+'px';
+                }
+            });
+            optionsContainer.addEventListener('change',(e)=>{
+                if(!e.target.closest('[data-select-all]')){
+                    const visibleCbs=Array.from(
+                        optionsContainer.querySelectorAll('.option-item:not([data-select-all])')
+                    ).filter(i=>i.style.display!=='none')
+                     .map(i=>i.querySelector('input[type="checkbox"]'));
+                    selectAllCb.checked=visibleCbs.length>0&&visibleCbs.every(cb=>cb.checked);
+                }
+                filterTable();
+            });
+            optionsContainer.addEventListener('click',(e)=>e.stopPropagation());
+        }
+
+        filterRow.appendChild(thCell);
+        header.addEventListener('click',()=>{
+            headers.forEach(h=>h.classList.remove('sort-asc','sort-desc'));
+            if(sortDirection==='none')sortDirection='asc';
+            else if(sortDirection==='asc')sortDirection='desc';
+            else sortDirection='none';
+            if(sortDirection!=='none'){
+                header.classList.add('sort-'+sortDirection);
+                const rowsArray=Array.from(tbody.querySelectorAll('tr'));
+                rowsArray.sort((a,b)=>{
+                    const A=a.children[index].textContent.trim();
+                    const B=b.children[index].textContent.trim();
+                    const emA=A===''||A.toLowerCase()==='nan'||A==='-';
+                    const emB=B===''||B.toLowerCase()==='nan'||B==='-';
+                    if(emA&&!emB)return 1;
+                    if(!emA&&emB)return -1;
+                    if(emA&&emB)return 0;
+                    const nA=parseFloat(A),nB=parseFloat(B);
+                    if(!isNaN(nA)&&!isNaN(nB))return(nA-nB)*(sortDirection==='asc'?1:-1);
+                    return A.localeCompare(B,'zh')*(sortDirection==='asc'?1:-1);
+                });
+                rowsArray.forEach(row=>tbody.appendChild(row));
+                document.dispatchEvent(new Event('ts:filtered'));
+            }
+        });
+    });
+
+    thead.appendChild(filterRow);
+    document.querySelector('.table-wrapper').addEventListener('scroll',()=>{
+        allOptionContainers.forEach(oc=>oc.classList.remove('show'));
+    });
+    function updateFilterRowTop(){
+        filterRow.style.top=headerRow.getBoundingClientRect().height+'px';
+    }
+    updateFilterRowTop();
+    new ResizeObserver(updateFilterRowTop).observe(headerRow);
+
+    function filterTable(){
+        let visibleCount=0;
+        const statusIndex=columnMeta.findIndex(meta=>meta&&meta.type==='category'&&meta.header==='当前状态');
+        rows.forEach(row=>{
+            let showRow=true;
+            const cells=row.querySelectorAll('td');
+            columnMeta.forEach((meta,index)=>{
+                if(!showRow||!cells[index])return;
+                const cellText=cells[index].textContent.trim();
+                if(meta.type==='numeric'){
+                    const n=parseCellNumber(cellText);
+                    const narrowed=meta.curMin!==meta.min||meta.curMax!==meta.max;
+                    if(meta.header==='存活天数' && narrowed){
+                        const statusText=statusIndex>=0&&cells[statusIndex]?cells[statusIndex].textContent.trim():'';
+                        if(statusText==='未参赛'||isNaN(n)) showRow=false;
+                    }
+                    if(!isNaN(n) && (n<meta.curMin || n>meta.curMax)) showRow=false;
+                } else {
+                    const oc=allOptionContainers[index];
+                    const checkboxes=Array.from(oc.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]'));
+                    const selected=checkboxes.filter(cb=>cb.checked).map(cb=>cb.value);
+                    if(selected.length>0 && !selected.includes(cellText)) showRow=false;
+                }
+            });
+            if(showRow)showRow=window.TS.extra.every(f=>f(row));
+            row.style.display=showRow?'':'none';
+            if(showRow)visibleCount++;
+        });
+        if(visibleEl)visibleEl.textContent=visibleCount;
+        document.dispatchEvent(new Event('ts:filtered'));
+    }
+
+    document.addEventListener('click',()=>{
+        allOptionContainers.forEach(oc=>oc.classList.remove('show'));
+    });
+});
+</script>
+<script>
+(function(){
+  const top=document.getElementById('toTop');
+  if(top){
+    const sync=()=>{top.hidden=window.scrollY<window.innerHeight;};
+    window.addEventListener('scroll',sync,{passive:true});sync();
+    top.addEventListener('click',()=>{
+      const still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({top:0,behavior:still?'auto':'smooth'});
+    });
+  }
+  const cur=document.querySelector('.hd-tab[aria-current="page"]');
+  if(cur&&cur.scrollIntoView)cur.parentNode.scrollLeft=cur.offsetLeft-24;
+})();
+</script>
+
+</body>
+</html>

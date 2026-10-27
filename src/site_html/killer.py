@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded',()=>{
             if(f.length<4) return '<div class="dz-empty"><span class="dz-rank">'+(i+1)+'</span>暂无记录</div>';
             return '<div class="dz-item'+(i===0?' top':'')+'"><span class="dz-rank">'+(i+1)+'</span>'
                 +'<div class="dz-main"><div class="dz-where">'+esc(f[0])+' · '+esc(f[1])+'</div>'
-                +'<div class="dz-who">'+(f[2]?'<i>负</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
+                +'<div class="dz-who">'+(f[2]?'<i>'+esc(f[4]||'负')+'</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
                 +'<div class="dz-kills">'+esc(f[3])+'<small>人被带走</small></div></div>';
         }).join('');
         if(footer) footer.textContent='带走人数最多的 3 次';
@@ -92,7 +92,7 @@ _DETAIL_MODAL = """\
       <div class="detail-title-wrap">
         <div class="detail-icon">☠</div>
         <div>
-          <div class="detail-title">惨案记录</div>
+          <div class="detail-title">__TITLE__</div>
           <div class="detail-meta" id="detail-meta-line"></div>
         </div>
       </div>
@@ -119,6 +119,9 @@ def render_killer_page(
     output_path: str | Path = "killer.html",
     detail_col: str = "_惨案",
     subtitle: str = "不含年终总决赛(循环赛制、仅 8 人参赛)",
+    rate_label: str = "杀人率",
+    modal_title: str = "惨案记录",
+    hint: str = "点击查看惨案",
 ) -> str:
     """
     Build and write a killer-board page with a top-3 podium.
@@ -144,6 +147,9 @@ def render_killer_page(
         Column name for kill rate.
     name_col : str
         Column name for player name.
+    rate_label, modal_title, hint : str
+        Podium rate caption, detail-modal title and podium click hint (the
+        nemesis board reuses this page with its own wording).
     output_path : str or Path
 
     Returns
@@ -170,8 +176,8 @@ def render_killer_page(
   <div class="pod-name">{name}</div>
   <div class="pod-kills">{kills}</div>
   <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">杀人率 {rate}</div>
-  {'<div class="pod-hint">点击查看惨案</div>' if detail_attr else ''}
+  <div class="pod-rate">{html.escape(rate_label)} {rate}</div>
+  {f'<div class="pod-hint">{html.escape(hint)}</div>' if detail_attr else ''}
 </div>""")
 
     podium_html = '<div class="podium">\n' + "\n".join(podium_cards) + "\n</div>"
@@ -195,7 +201,7 @@ def render_killer_page(
     {main_table_html}
   </div>
 </div>
-{_DETAIL_MODAL if has_detail else ""}"""
+{_DETAIL_MODAL.replace("__TITLE__", html.escape(modal_title)) if has_detail else ""}"""
 
     html_str = _inner_page_shell(
         page_title=title,

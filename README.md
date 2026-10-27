@@ -14,7 +14,8 @@ ATP / WTA 签表幸存者游戏的数据处理与静态网页生成工具。参�
 | 幸存者赛历 | 分 ATP / WTA；按年份、级别筛选；点进各站得分页 |
 | 各站得分页 | 冠军、单日/累计克星、最大爆冷；本站得分与选人明细 |
 | 生涯统计 | 周期参赛、夺冠夺亚、连胜连败、存活率等 |
-| 杀手榜 | 赛季 / 历年 |
+| 杀手榜 | 赛季 / 历年；点击球员看带走人数最多的三次惨案；不含年终总决赛 |
+| 克星榜 | 赢球并送走选了对手的人最多的球员；点击看明细；不含年终总决赛 |
 | H2H | 用户对战与汇总 |
 | 实时结算 | 签表比分提前判定胜负；**第一盘内退赛 / W/O 可启用备选** |
 
@@ -35,6 +36,7 @@ frog_chen_web/
 ├── events/{year}/{MS|WS}_{event_id}.html   # 各站得分
 ├── atp_show.html / wta_show.html       # 生涯统计
 ├── atpkiller.html / wtakiller.html / 2026*killer.html
+├── atpnemesis.html / wtanemesis.html / 2026*nemesis.html   # 克星榜
 ├── h2h_atp.html / h2h_wta.html
 │
 ├── data/                               # 运行时缓存（通常不提交）

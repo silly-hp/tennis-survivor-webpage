@@ -753,20 +753,33 @@ def exclude_finals(
     return h2h_df.loc[[key not in finals for key in keys]]
 
 
-def format_disaster(row) -> str:
-    """Pipe-joined fields for the page: ``2025九江|第一轮|对手|162``."""
-    return f"{int(row.season)}{row.tournament}|{row.round}|{row.opponent}|{int(row.kills)}"
+def format_disaster(row, other: str = "opponent", verb: str = "负") -> str:
+    """Pipe-joined fields for the page: ``2025九江|R1|对手|162|负``."""
+    return (
+        f"{int(row.season)}{row.tournament}|{row.round}|{getattr(row, other)}"
+        f"|{int(row.kills)}|{verb}"
+    )
 
 
-def top_disasters(disasters: pd.DataFrame, n: int = DISASTER_TOP_N) -> dict[str, list[str]]:
-    """player -> the ``n`` costliest disasters as text, padded with ``-``."""
+def top_disasters(
+    disasters: pd.DataFrame,
+    n: int = DISASTER_TOP_N,
+    by: str = "player",
+    other: str = "opponent",
+    verb: str = "负",
+) -> dict[str, list[str]]:
+    """``by`` -> its ``n`` costliest disasters as text, padded with ``-``.
+
+    Killer board: ``by=player`` (the pick who lost), shown against ``opponent``.
+    Nemesis board: ``by=opponent`` (the winner), shown against ``player``.
+    """
     out: dict[str, list[str]] = {}
     ordered = disasters.sort_values(
         ["kills", "season", "day"], ascending=[False, False, True]
     )
-    for player, group in ordered.groupby("player", sort=False):
-        lines = [format_disaster(row) for row in group.head(n).itertuples()]
-        out[player] = lines + ["-"] * (n - len(lines))
+    for who, group in ordered.groupby(by, sort=False):
+        lines = [format_disaster(row, other, verb) for row in group.head(n).itertuples()]
+        out[who] = lines + ["-"] * (n - len(lines))
     return out
 
 
@@ -831,6 +844,68 @@ def build_disaster_table(
     disasters["opponent"] = opponents
     disasters["round"] = rounds
     return disasters.loc[keep].reset_index(drop=True)
+
+
+def build_win_counts(
+    calendar_dir: str = "../data", seasons: tuple[int, ...] = tuple(SEASONS)
+) -> pd.DataFrame:
+    """Matches won per (season, tour, player) in the draw cache, finals excluded."""
+    rows = []
+    for (season, tour, _city), (event_id, kind) in _load_event_index(
+        calendar_dir, seasons
+    ).items():
+        if kind == FINALS_TYPE:
+            continue
+        for match in load_draw_matches(tour, event_id, season):
+            rows.append((season, tour, match["winner"]))
+    wins = pd.DataFrame(rows, columns=["season", "tour", "player"])
+    return wins.groupby(["season", "tour", "player"]).size().rename("wins").reset_index()
+
+
+def compute_nemesis_stats(disasters: pd.DataFrame, wins: pd.DataFrame) -> pd.DataFrame:
+    """
+    克星榜: the match winner is credited with the pickers his opponent took home.
+
+    ``场均带走`` = 带走人数 / 获胜场次 (plain kill rate does not work here: every
+    pick on the beaten opponent is a kill).
+    """
+    known = disasters.loc[disasters["opponent"] != ""]
+    agg = (
+        known.groupby("opponent")
+        .agg(带走人数=("kills", "sum"), 最高单次带走人数=("kills", "max"))
+        .reset_index()
+        .rename(columns={"opponent": "球员"})
+    )
+    win_total = wins.groupby("player")["wins"].sum()
+    agg["获胜场次"] = agg["球员"].map(win_total).fillna(0).astype(int)
+    agg["_rate"] = agg["带走人数"] / agg["获胜场次"].where(agg["获胜场次"] > 0)
+    agg = agg.sort_values(
+        by=["带走人数", "_rate", "最高单次带走人数"], ascending=False
+    ).reset_index(drop=True)
+    agg["排名"] = agg.index + 1
+    agg["场均带走"] = agg["_rate"].map(lambda x: "-" if pd.isna(x) else f"{x:.2f}")
+    tops = top_disasters(known, by="opponent", other="player", verb="胜")
+    agg["_惨案"] = agg["球员"].map(tops)
+    return agg.loc[
+        :, ["排名", "球员", "带走人数", "场均带走", "最高单次带走人数", "获胜场次", "_惨案"]
+    ]
+
+
+def prepare_nemesis_stats(
+    csv_path: str = "../data/h2h_records.csv", current_season: int = 2026
+):
+    disasters = build_disaster_table(csv_path)
+    wins = build_win_counts()
+
+    def stats(tour: str, season: int | None = None):
+        d_mask = disasters["tour"] == tour
+        w_mask = wins["tour"] == tour
+        if season is not None:
+            d_mask &= disasters["season"] == season
+            w_mask &= wins["season"] == season
+        return compute_nemesis_stats(disasters.loc[d_mask, :], wins.loc[w_mask, :])
+
+    return stats("MS", current_season), stats("MS"), stats("WS", current_season), stats("WS")
 
 
 def prepare_killer_stats(csv_path: str = "../data/h2h_records.csv", current_season: int = 2026):

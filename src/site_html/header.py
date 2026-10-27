@@ -21,6 +21,7 @@ _SECTIONS: dict[str, tuple[str, dict[str, str]]] = {
     "hof": ("冠军榜", {"ATP": "atp_champion.html", "WTA": "wta_champion.html",
                        "ALL": "combined_champion.html"}),
     "killer": ("杀手榜", {"ATP": "atpkiller.html", "WTA": "wtakiller.html"}),
+    "nemesis": ("克星榜", {"ATP": "atpnemesis.html", "WTA": "wtanemesis.html"}),
     "cal": ("赛历", {"ATP": "survivor_calendar_atp.html", "WTA": "survivor_calendar_wta.html"}),
     "career": ("生涯统计", {"ATP": "atp_show.html", "WTA": "wta_show.html"}),
     "h2h": ("H2H", {"ATP": "h2h_atp.html", "WTA": "h2h_wta.html"}),
@@ -36,10 +37,10 @@ def _resolve(page: str) -> tuple[str, str, dict[str, str], str]:
     if prefix:  # events/{year}/{MS|WS}_{id}.html
         tour = "WTA" if name.startswith("WS") else "ATP"
         return "cal", tour, dict(_SECTIONS["cal"][1]), prefix
-    if m := re.fullmatch(r"(\d{4})?(atp|wta)killer\.html", name):
+    if m := re.fullmatch(r"(\d{4})?(atp|wta)(killer|nemesis)\.html", name):
         year = m.group(1) or ""
-        links = {t: f"{year}{t.lower()}killer.html" for t in ("ATP", "WTA")}
-        return "killer", m.group(2).upper(), links, prefix
+        links = {t: f"{year}{t.lower()}{m.group(3)}.html" for t in ("ATP", "WTA")}
+        return m.group(3), m.group(2).upper(), links, prefix
     if name == "survivor_calendar.html":  # legacy hub: no tour selected
         return "cal", "", dict(_SECTIONS["cal"][1]), prefix
     for key, (_, links) in _SECTIONS.items():

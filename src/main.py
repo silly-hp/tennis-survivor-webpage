@@ -10,6 +10,7 @@ from h2h import (
     backfill_recent_h2h_partitions,
     build_season_h2h,
     prepare_killer_stats,
+    prepare_nemesis_stats,
     prepare_h2h_for_render,
     update_h2h_csv_for_new_day,
 )
@@ -481,6 +482,34 @@ def update_killer_pages():
         output_path="../atpkiller.html",
     )
     logger.info("History ATP killers updated")
+
+    atp_nemesis, atp_nemesis_all, wta_nemesis, wta_nemesis_all = prepare_nemesis_stats(
+        current_season=YEAR
+    )
+    nemesis_kwargs = dict(
+        title="幸存者克星榜",
+        subtitle="不含年终总决赛 · 克星 = 赢下比赛、送走选了对手的人",
+        rate_label="场均带走",
+        modal_title="克星记录",
+        hint="点击查看克星记录",
+        rate_col="场均带走",
+    )
+    for df, tour, eyebrow, tag, path in (
+        (wta_nemesis, "WTA", "WTA · 2026 Season", "2026", "../2026wtanemesis.html"),
+        (atp_nemesis, "ATP", "ATP · 2026 Season", "2026", "../2026atpnemesis.html"),
+        (wta_nemesis_all, "WTA", "WTA · All Time", "历年总榜", "../wtanemesis.html"),
+        (atp_nemesis_all, "ATP", "ATP · All Time", "历年总榜", "../atpnemesis.html"),
+    ):
+        render_killer_page(
+            df,
+            tour,
+            eyebrow,
+            updated=datetime.now().strftime(datetime_format),
+            extra_tags=[tag],
+            output_path=path,
+            **nemesis_kwargs,
+        )
+    logger.info("Nemesis boards updated")
 
 
 def update_rank_pages(
