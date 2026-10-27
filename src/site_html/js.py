@@ -80,6 +80,8 @@ document.addEventListener('DOMContentLoaded',function(){
             let minVal=Math.min(...parsedNums);
             let maxVal=Math.max(...parsedNums);
             if(isIntCol){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
+            // step is 1 for wide ranges: snap the ends so the slider can reach the true max
+            else if((maxVal-minVal)>20){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
             const step=isIntCol ? 1 : ((maxVal-minVal)>20 ? 1 : (maxVal-minVal)/100 || 1);
 
             columnMeta[index]={type:'numeric', min:minVal, max:maxVal,

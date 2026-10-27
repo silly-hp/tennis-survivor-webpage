@@ -319,8 +319,6 @@ def _nav_cards(season) -> dict[str, list[dict[str, Any]]]:
              "href": f"{t}_champion.html"},
             {"eye": "Survivor Killer Stats", "title": "杀手榜", "desc": "带走幸存者最多的球员",
              "links": [(f"{season} 赛季", f"{season}{t}killer.html"), ("历年总榜", f"{t}killer.html")]},
-            {"eye": "Survivor Nemesis Stats", "title": "克星榜", "desc": "赢球并送走幸存者最多的球员",
-             "links": [(f"{season} 赛季", f"{season}{t}nemesis.html"), ("历年总榜", f"{t}nemesis.html")]},
             {"eye": "Tour Calendar", "title": "幸存者赛历", "desc": "按年份与级别浏览本站得分",
              "href": f"survivor_calendar_{t}.html"},
             {"eye": "Survivor Career", "title": "幸存者生涯统计", "desc": "生涯数据与对战记录",

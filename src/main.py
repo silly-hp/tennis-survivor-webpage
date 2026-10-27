@@ -447,6 +447,7 @@ def update_killer_pages():
         updated=datetime.now().strftime(datetime_format),
         extra_tags=["2026"],
         output_path="../2026wtakiller.html",
+        season=YEAR,
     )
 
     logger.info("2026 WTA killers updated")
@@ -458,6 +459,7 @@ def update_killer_pages():
         updated=datetime.now().strftime(datetime_format),
         extra_tags=["2026"],
         output_path="../2026atpkiller.html",
+        season=YEAR,
     )
 
     logger.info("2026 ATP killers updated")
@@ -469,6 +471,7 @@ def update_killer_pages():
         updated=datetime.now().strftime(datetime_format),
         extra_tags=["历年总榜"],
         output_path="../wtakiller.html",
+        season=YEAR,
     )
 
     logger.info("History WTA killers updated")
@@ -480,6 +483,7 @@ def update_killer_pages():
         updated=datetime.now().strftime(datetime_format),
         extra_tags=["历年总榜"],
         output_path="../atpkiller.html",
+        season=YEAR,
     )
     logger.info("History ATP killers updated")
 
@@ -489,10 +493,13 @@ def update_killer_pages():
     nemesis_kwargs = dict(
         title="幸存者克星榜",
         subtitle="不含年终总决赛 · 克星 = 赢下比赛、送走选了对手的人",
-        rate_label="场均带走",
+        kills_col="送走人数",
+        rate_col="场均送走",
+        rate_label="场均送走",
         modal_title="克星记录",
         hint="点击查看克星记录",
-        rate_col="场均带走",
+        unit_label="人被送走",
+        footer_label="送走人数最多的 3 次",
     )
     for df, tour, eyebrow, tag, path in (
         (wta_nemesis, "WTA", "WTA · 2026 Season", "2026", "../2026wtanemesis.html"),
@@ -507,6 +514,7 @@ def update_killer_pages():
             updated=datetime.now().strftime(datetime_format),
             extra_tags=[tag],
             output_path=path,
+            season=YEAR,
             **nemesis_kwargs,
         )
     logger.info("Nemesis boards updated")

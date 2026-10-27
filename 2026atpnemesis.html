@@ -689,6 +689,13 @@ body.dark .theme-btn .ic-sun{display:block;}
 .dz-kills{flex-shrink:0;text-align:right;font-family:'Space Mono',monospace;
     font-size:22px;font-weight:700;color:var(--primary);line-height:1;}
 .dz-kills small{display:block;margin-top:4px;font-size:10px;font-weight:400;color:var(--faint);}
+.kn-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px;}
+.kn-seg{display:inline-flex;border:1px solid var(--border);border-radius:999px;
+    overflow:hidden;background:var(--surface);}
+.kn-seg a{padding:7px 16px;font-size:12px;color:var(--muted);text-decoration:none;
+    letter-spacing:.04em;transition:background .15s,color .15s;}
+.kn-seg a:hover{color:var(--primary);}
+.kn-seg a[aria-current="page"]{background:var(--primary);color:#fff;font-weight:700;}
 .dz-empty{display:flex;align-items:center;gap:12px;padding:12px 14px;
     border:1px dashed var(--border);border-radius:10px;color:var(--faint);font-size:13px;}
 
@@ -743,10 +750,10 @@ body.dark .theme-btn .ic-sun{display:block;}
 </svg>
     ← 首页
   </a>
-  <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="atp_ranking.html">即时排名</a><a class="hd-tab" href="atp_race_ranking.html">冠军排名</a><a class="hd-tab" href="atp_champion.html">冠军榜</a><a class="hd-tab" href="atpkiller.html">杀手榜</a><a class="hd-tab" href="2026atpnemesis.html" aria-current="page">克星榜</a><a class="hd-tab" href="survivor_calendar_atp.html">赛历</a><a class="hd-tab" href="atp_show.html">生涯统计</a><a class="hd-tab" href="h2h_atp.html">H2H</a></nav>
+  <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="atp_ranking.html">即时排名</a><a class="hd-tab" href="atp_race_ranking.html">冠军排名</a><a class="hd-tab" href="atp_champion.html">冠军榜</a><a class="hd-tab" href="2026atpnemesis.html" aria-current="page">杀手榜</a><a class="hd-tab" href="survivor_calendar_atp.html">赛历</a><a class="hd-tab" href="atp_show.html">生涯统计</a><a class="hd-tab" href="h2h_atp.html">H2H</a></nav>
   <div class="hd-right">
-    <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="2026atpnemesis.html" aria-current="page">ATP</a><a class="hd-seg-btn" href="2026wtanemesis.html">WTA</a><span class="hd-seg-btn" aria-disabled="true" tabindex="0" data-tip="克星榜暂无联合页">联合</span></div>
-    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月28日 00:20:02</span><span class="hd-suffix"> 更新</span></span>
+    <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="2026atpnemesis.html" aria-current="page">ATP</a><a class="hd-seg-btn" href="2026wtanemesis.html">WTA</a><span class="hd-seg-btn" aria-disabled="true" tabindex="0" data-tip="杀手榜暂无联合页">联合</span></div>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月28日 00:51:33</span><span class="hd-suffix"> 更新</span></span>
     <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
   </div>
 </header>
@@ -763,29 +770,31 @@ body.dark .theme-btn .ic-sun{display:block;}
   <div class="page-sub">不含年终总决赛 · 克星 = 赢下比赛、送走选了对手的人</div>
 </div>
 
+<div class="kn-bar"><div class="kn-seg" role="group" aria-label="榜单"><a href="2026atpkiller.html">杀手榜</a><a href="2026atpnemesis.html" aria-current="page">克星榜</a></div><div class="kn-seg" role="group" aria-label="范围"><a href="2026atpnemesis.html" aria-current="page">2026 赛季</a><a href="atpnemesis.html">历年总榜</a></div></div>
+
 <div class="podium">
 <div class="pod-card p1" data-detail="[&quot;2026华盛顿|R1|蒂亚福|163|胜&quot;, &quot;2026阿卡普尔科|R1|迪米特洛夫|33|胜&quot;, &quot;2026迈阿密|R3|阿利亚西姆|10|胜&quot;]" data-name="阿特马纳">
   <div class="pod-medal">#1</div>
   <div class="pod-name">阿特马纳</div>
   <div class="pod-kills">224</div>
-  <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">场均带走 16.00</div>
+  <div class="pod-kills-lbl">送走人数</div>
+  <div class="pod-rate">场均送走 16.00</div>
   <div class="pod-hint">点击查看克星记录</div>
 </div>
 <div class="pod-card p2" data-detail="[&quot;2026印第安维尔斯|R3|布勃利克|65|胜&quot;, &quot;2026伦敦|R2|莱赫奇卡|40|胜&quot;, &quot;2026印第安维尔斯|R2|达尔德里|33|胜&quot;]" data-name="土方凛辉">
   <div class="pod-medal">#2</div>
   <div class="pod-name">土方凛辉</div>
   <div class="pod-kills">192</div>
-  <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">场均带走 14.77</div>
+  <div class="pod-kills-lbl">送走人数</div>
+  <div class="pod-rate">场均送走 14.77</div>
   <div class="pod-hint">点击查看克星记录</div>
 </div>
 <div class="pod-card p3" data-detail="[&quot;2026多哈|1/4决赛|莱赫奇卡|99|胜&quot;, &quot;2026多哈|半决赛|门希克|55|胜&quot;, &quot;2026辛辛那提|半决赛|科博利|11|胜&quot;]" data-name="菲斯">
   <div class="pod-medal">#3</div>
   <div class="pod-name">菲斯</div>
   <div class="pod-kills">185</div>
-  <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">场均带走 6.61</div>
+  <div class="pod-kills-lbl">送走人数</div>
+  <div class="pod-rate">场均送走 6.61</div>
   <div class="pod-hint">点击查看克星记录</div>
 </div>
 </div>
@@ -800,10 +809,10 @@ body.dark .theme-btn .ic-sun{display:block;}
   <thead><tr>
     <th>排名</th>
     <th>球员</th>
-    <th>带走人数</th>
-    <th>场均带走</th>
-    <th>最高单次带走人数</th>
-    <th>获胜场次</th>
+    <th>送走人数</th>
+    <th>场均送走</th>
+    <th>最高单次送走人数</th>
+    <th>害人场次</th>
   </tr></thead>
   <tbody>
   <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|蒂亚福|163|胜&quot;, &quot;2026阿卡普尔科|R1|迪米特洛夫|33|胜&quot;, &quot;2026迈阿密|R3|阿利亚西姆|10|胜&quot;]">
@@ -812,7 +821,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>224</td>
     <td>16.00</td>
     <td>163</td>
-    <td>14</td>
+    <td>10</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|布勃利克|65|胜&quot;, &quot;2026伦敦|R2|莱赫奇卡|40|胜&quot;, &quot;2026印第安维尔斯|R2|达尔德里|33|胜&quot;]">
     <td>2</td>
@@ -820,7 +829,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>192</td>
     <td>14.77</td>
     <td>65</td>
-    <td>13</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026多哈|1/4决赛|莱赫奇卡|99|胜&quot;, &quot;2026多哈|半决赛|门希克|55|胜&quot;, &quot;2026辛辛那提|半决赛|科博利|11|胜&quot;]">
     <td>3</td>
@@ -828,7 +837,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>185</td>
     <td>6.61</td>
     <td>99</td>
-    <td>28</td>
+    <td>10</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R2|阿利亚西姆|58|胜&quot;, &quot;2026汉堡|1/4决赛|乌戈-卡拉贝利|41|胜&quot;, &quot;2026温斯顿塞勒姆|R3|西西帕斯|37|胜&quot;]">
     <td>4</td>
@@ -836,7 +845,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>179</td>
     <td>16.27</td>
     <td>58</td>
-    <td>11</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿德莱德|R1|科达|137|胜&quot;, &quot;2026法网|R1|阿特马纳|38|胜&quot;, &quot;-&quot;]">
     <td>5</td>
@@ -852,7 +861,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>165</td>
     <td>12.69</td>
     <td>61</td>
-    <td>13</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|科利尼翁|95|胜&quot;, &quot;2026格施塔德|1/4决赛|鲁德|36|胜&quot;, &quot;2026印第安维尔斯|R1|范德尚舒尔普|15|胜&quot;]">
     <td>7</td>
@@ -860,7 +869,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>165</td>
     <td>10.31</td>
     <td>95</td>
-    <td>16</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R2|曼纳里诺|71|胜&quot;, &quot;2026澳网|R1|科博利|50|胜&quot;, &quot;2026温网|R4|迪米特洛夫|27|胜&quot;]">
     <td>8</td>
@@ -868,7 +877,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>162</td>
     <td>10.80</td>
     <td>71</td>
-    <td>15</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|武基奇|139|胜&quot;, &quot;2026杭州|R2|埃切韦里|16|胜&quot;, &quot;2026杭州|1/4决赛|毛罗然|2|胜&quot;]">
     <td>9</td>
@@ -876,7 +885,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>157</td>
     <td>39.25</td>
     <td>139</td>
-    <td>4</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|马-贝鲁奇|93|胜&quot;, &quot;2026上海|R2|穆塞蒂|56|胜&quot;, &quot;-&quot;]">
     <td>10</td>
@@ -892,7 +901,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>142</td>
     <td>8.35</td>
     <td>63</td>
-    <td>17</td>
+    <td>12</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|波佩林|83|胜&quot;, &quot;2026印第安维尔斯|R1|西里奇|20|胜&quot;, &quot;2026法网|R3|弗-塞伦多洛|16|胜&quot;]">
     <td>12</td>
@@ -900,7 +909,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>137</td>
     <td>13.70</td>
     <td>83</td>
-    <td>10</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R2|达尔德里|111|胜&quot;, &quot;2026马德里|R2|卢布列夫|5|胜&quot;, &quot;2026法网|R1|穆泰|4|胜&quot;]">
     <td>13</td>
@@ -908,7 +917,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>135</td>
     <td>13.50</td>
     <td>111</td>
-    <td>10</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R3|哈恰诺夫|47|胜&quot;, &quot;2026迈阿密|R1|吉隆|43|胜&quot;, &quot;2026辛辛那提|R1|德雷珀|22|胜&quot;]">
     <td>14</td>
@@ -916,7 +925,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>133</td>
     <td>12.09</td>
     <td>47</td>
-    <td>11</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|富乔维奇|127|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>15</td>
@@ -940,7 +949,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>121</td>
     <td>4.84</td>
     <td>38</td>
-    <td>25</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|诺里|54|胜&quot;, &quot;2026辛辛那提|R2|鲁德|49|胜&quot;, &quot;2026鹿特丹|R1|鲁瓦耶|15|胜&quot;]">
     <td>18</td>
@@ -948,7 +957,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>120</td>
     <td>24.00</td>
     <td>54</td>
-    <td>5</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|1/4决赛|阿利亚西姆|47|胜&quot;, &quot;2026迈阿密|R2|勒纳-钱|25|胜&quot;, &quot;2026迈阿密|R1|凯茨曼诺维奇|18|胜&quot;]">
     <td>19</td>
@@ -956,7 +965,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>118</td>
     <td>9.08</td>
     <td>47</td>
-    <td>13</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|兰达卢塞|74|胜&quot;, &quot;2026法网|R1|梅德韦杰夫|32|胜&quot;, &quot;2026印第安维尔斯|R1|阿里斯|9|胜&quot;]">
     <td>20</td>
@@ -964,7 +973,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>116</td>
     <td>16.57</td>
     <td>74</td>
-    <td>7</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R3|米克尔森|70|胜&quot;, &quot;2026蒙特利尔|R2|安贝尔|28|胜&quot;, &quot;2026蒙特利尔|R4|格里科斯普|9|胜&quot;]">
     <td>21</td>
@@ -972,7 +981,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>116</td>
     <td>10.55</td>
     <td>70</td>
-    <td>11</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|门希克|84|胜&quot;, &quot;2026休斯顿|R2|米克尔森|15|胜&quot;, &quot;2026罗马|R1|贝雷蒂尼|12|胜&quot;]">
     <td>22</td>
@@ -980,7 +989,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>115</td>
     <td>14.38</td>
     <td>84</td>
-    <td>8</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|埃切韦里|34|胜&quot;, &quot;2026辛辛那提|R1|什瓦伊达|29|胜&quot;, &quot;2026罗马|R1|布鲁查加|17|胜&quot;]">
     <td>23</td>
@@ -988,7 +997,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>111</td>
     <td>15.86</td>
     <td>34</td>
-    <td>7</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R1|迈赫扎克|82|胜&quot;, &quot;2026蒙特卡洛|R1|格里科斯普|21|胜&quot;, &quot;2026美网|R1|巴列霍|5|胜&quot;]">
     <td>24</td>
@@ -996,7 +1005,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>109</td>
     <td>21.80</td>
     <td>82</td>
-    <td>5</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026北京|半决赛|胡尔卡奇|34|胜&quot;, &quot;2026鹿特丹|决赛|阿利亚西姆|29|胜&quot;, &quot;2026北京|1/4决赛|卢布列夫|20|胜&quot;]">
     <td>25</td>
@@ -1004,7 +1013,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>108</td>
     <td>2.84</td>
     <td>34</td>
-    <td>38</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026北京|1/4决赛|哈恰诺夫|49|胜&quot;, &quot;2026蒙特卡洛|R1|达尔德里|32|胜&quot;, &quot;2026北京|R1|勒纳-钱|18|胜&quot;]">
     <td>26</td>
@@ -1012,7 +1021,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>105</td>
     <td>5.83</td>
     <td>49</td>
-    <td>18</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026美网|R2|穆塞蒂|92|胜&quot;, &quot;2026美网|R1|穆泰|10|胜&quot;, &quot;2026澳网|R1|孟菲尔斯|1|胜&quot;]">
     <td>27</td>
@@ -1036,7 +1045,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>102</td>
     <td>25.50</td>
     <td>83</td>
-    <td>4</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|胡尔卡奇|73|胜&quot;, &quot;2026马德里|R1|波佩林|12|胜&quot;, &quot;2026蒙彼利埃|1/4决赛|纳尔迪|5|胜&quot;]">
     <td>30</td>
@@ -1044,7 +1053,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>96</td>
     <td>10.67</td>
     <td>73</td>
-    <td>9</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026香港|R2|哈恰诺夫|65|胜&quot;, &quot;2026香港|R1|塔比洛|30|胜&quot;, &quot;-&quot;]">
     <td>31</td>
@@ -1068,7 +1077,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>92</td>
     <td>11.50</td>
     <td>56</td>
-    <td>8</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|布勃利克|32|胜&quot;, &quot;2026慕尼黑|1/4决赛|沙波瓦洛夫|30|胜&quot;, &quot;2026慕尼黑|R2|阿尔特迈尔|21|胜&quot;]">
     <td>34</td>
@@ -1076,7 +1085,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>90</td>
     <td>11.25</td>
     <td>32</td>
-    <td>8</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|莱赫奇卡|34|胜&quot;, &quot;2026上海|R4|门希克|20|胜&quot;, &quot;2026蒙彼利埃|R2|马哈奇|16|胜&quot;]">
     <td>35</td>
@@ -1084,7 +1093,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>90</td>
     <td>8.18</td>
     <td>34</td>
-    <td>11</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|半决赛|中岛布兰登|20|胜&quot;, &quot;2026阿卡普尔科|半决赛|中岛布兰登|19|胜&quot;, &quot;2026美网|R4|梅德韦杰夫|12|胜&quot;]">
     <td>36</td>
@@ -1092,7 +1101,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>90</td>
     <td>2.81</td>
     <td>20</td>
-    <td>32</td>
+    <td>14</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026北京|R2|门希克|48|胜&quot;, &quot;2026美网|R3|弗里茨|21|胜&quot;, &quot;2026伦敦|半决赛|中岛布兰登|9|胜&quot;]">
     <td>37</td>
@@ -1100,7 +1109,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>88</td>
     <td>3.38</td>
     <td>48</td>
-    <td>26</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|半决赛|凯茨曼诺维奇|38|胜&quot;, &quot;2026辛辛那提|R4|霍达尔|20|胜&quot;, &quot;2026辛辛那提|1/4决赛|保罗|7|胜&quot;]">
     <td>38</td>
@@ -1108,7 +1117,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>88</td>
     <td>2.84</td>
     <td>38</td>
-    <td>31</td>
+    <td>12</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026香港|R2|迪亚洛|84|胜&quot;, &quot;2026杭州|R2|巴列霍|3|胜&quot;, &quot;-&quot;]">
     <td>39</td>
@@ -1116,7 +1125,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>87</td>
     <td>21.75</td>
     <td>84</td>
-    <td>4</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R1|什瓦伊达|34|胜&quot;, &quot;2026法网|R1|西里奇|26|胜&quot;, &quot;2026法网|R2|巴列霍|25|胜&quot;]">
     <td>40</td>
@@ -1132,7 +1141,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>85</td>
     <td>4.05</td>
     <td>19</td>
-    <td>21</td>
+    <td>12</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|穆纳尔|84|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>42</td>
@@ -1148,7 +1157,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>84</td>
     <td>6.00</td>
     <td>30</td>
-    <td>14</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026法网|R3|德米纳尔|52|胜&quot;, &quot;2026多哈|1/4决赛|辛纳|15|胜&quot;, &quot;2026法网|1/4决赛|丰塞卡|14|胜&quot;]">
     <td>44</td>
@@ -1156,7 +1165,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>84</td>
     <td>3.00</td>
     <td>52</td>
-    <td>28</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R1|吴易昺|81|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>45</td>
@@ -1172,7 +1181,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>81</td>
     <td>8.10</td>
     <td>37</td>
-    <td>10</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|科达|63|胜&quot;, &quot;2026温网|R1|诺里|11|胜&quot;, &quot;2026辛辛那提|R1|毛罗然|1|胜&quot;]">
     <td>47</td>
@@ -1180,7 +1189,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>78</td>
     <td>11.14</td>
     <td>63</td>
-    <td>7</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R1|布鲁克斯比|76|胜&quot;, &quot;2026印第安维尔斯|R1|阿纳尔迪|1|胜&quot;, &quot;-&quot;]">
     <td>48</td>
@@ -1196,7 +1205,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>77</td>
     <td>3.21</td>
     <td>17</td>
-    <td>24</td>
+    <td>14</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|半决赛|塞缪尔|28|胜&quot;, &quot;2026伊斯特本|R1|穆纳尔|24|胜&quot;, &quot;2026蒙特卡洛|R2|卢布列夫|8|胜&quot;]">
     <td>50</td>
@@ -1204,7 +1213,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>76</td>
     <td>4.00</td>
     <td>28</td>
-    <td>19</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|吉隆|75|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>51</td>
@@ -1220,7 +1229,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>75</td>
     <td>18.75</td>
     <td>38</td>
-    <td>4</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R2|哈恰诺夫|27|胜&quot;, &quot;2026鹿特丹|R1|梅德韦杰夫|11|胜&quot;, &quot;2026伦敦|1/4决赛|土方凛辉|9|胜&quot;]">
     <td>53</td>
@@ -1228,7 +1237,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>75</td>
     <td>3.12</td>
     <td>27</td>
-    <td>24</td>
+    <td>13</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|科利尼翁|32|胜&quot;, &quot;2026慕尼黑|R1|西里奇|15|胜&quot;, &quot;2026汉堡|R2|谢尔顿|10|胜&quot;]">
     <td>54</td>
@@ -1236,7 +1245,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>73</td>
     <td>7.30</td>
     <td>32</td>
-    <td>10</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R1|诺里|45|胜&quot;, &quot;2026上海|1/4决赛|鲁德|15|胜&quot;, &quot;2026华盛顿|半决赛|塔比洛|5|胜&quot;]">
     <td>55</td>
@@ -1244,7 +1253,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>72</td>
     <td>2.25</td>
     <td>45</td>
-    <td>32</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|巴列霍|71|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>56</td>
@@ -1260,7 +1269,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>71</td>
     <td>8.88</td>
     <td>43</td>
-    <td>8</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026北京|1/4决赛|亚-兹韦列夫|51|胜&quot;, &quot;2026澳网|半决赛|辛纳|12|胜&quot;, &quot;2026澳网|1/4决赛|穆塞蒂|5|胜&quot;]">
     <td>58</td>
@@ -1268,7 +1277,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>71</td>
     <td>3.55</td>
     <td>51</td>
-    <td>20</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026汉堡|半决赛|德米纳尔|31|胜&quot;, &quot;2026伦敦|半决赛|安贝尔|18|胜&quot;, &quot;2026汉堡|R1|奎因|13|胜&quot;]">
     <td>59</td>
@@ -1276,7 +1285,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>70</td>
     <td>1.94</td>
     <td>31</td>
-    <td>36</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026马德里|1/4决赛|鲁德|18|胜&quot;, &quot;2026马德里|R4|弗-塞伦多洛|11|胜&quot;, &quot;2026慕尼黑|R1|汉夫曼|10|胜&quot;]">
     <td>60</td>
@@ -1284,7 +1293,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>69</td>
     <td>4.06</td>
     <td>18</td>
-    <td>17</td>
+    <td>10</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|1/4决赛|纳沃内|19|胜&quot;, &quot;2026格施塔德|1/4决赛|布勃利克|12|胜&quot;, &quot;2026基茨比厄尔|R1|杰雷|7|胜&quot;]">
     <td>61</td>
@@ -1292,7 +1301,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>67</td>
     <td>2.91</td>
     <td>19</td>
-    <td>23</td>
+    <td>13</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026美网|R1|德约科维奇|23|胜&quot;, &quot;2026蒙特利尔|R1|贝雷蒂尼|16|胜&quot;, &quot;2026辛辛那提|R1|科利尼翁|9|胜&quot;]">
     <td>62</td>
@@ -1300,7 +1309,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>65</td>
     <td>5.42</td>
     <td>23</td>
-    <td>12</td>
+    <td>9</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026美网|1/4决赛|阿尔卡拉斯|31|胜&quot;, &quot;2026慕尼黑|R2|布洛克斯|6|胜&quot;, &quot;2026慕尼黑|半决赛|莫尔坎|6|胜&quot;]">
     <td>63</td>
@@ -1308,7 +1317,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>63</td>
     <td>2.25</td>
     <td>31</td>
-    <td>28</td>
+    <td>11</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|R3|卢布列夫|40|胜&quot;, &quot;2026斯海尔托亨博斯|R1|阿特马纳|6|胜&quot;, &quot;2026法网|R1|埃切韦里|5|胜&quot;]">
     <td>64</td>
@@ -1316,7 +1325,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>61</td>
     <td>3.59</td>
     <td>40</td>
-    <td>17</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R2|格里科斯普|31|胜&quot;, &quot;2026斯海尔托亨博斯|R1|布鲁克斯比|26|胜&quot;, &quot;2026休斯顿|R1|平宁顿|2|胜&quot;]">
     <td>65</td>
@@ -1324,7 +1333,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>59</td>
     <td>14.75</td>
     <td>31</td>
-    <td>4</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026澳网|1/4决赛|勒纳-钱|26|胜&quot;, &quot;2026蒙特卡洛|1/4决赛|丰塞卡|7|胜&quot;, &quot;2026印第安维尔斯|1/4决赛|菲斯|7|胜&quot;]">
     <td>66</td>
@@ -1332,7 +1341,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>59</td>
     <td>1.07</td>
     <td>26</td>
-    <td>55</td>
+    <td>11</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|凯茨曼诺维奇|47|胜&quot;, &quot;2026印第安维尔斯|R2|莱赫奇卡|7|胜&quot;, &quot;2026辛辛那提|R1|迪米特洛夫|2|胜&quot;]">
     <td>67</td>
@@ -1340,7 +1349,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>58</td>
     <td>5.27</td>
     <td>47</td>
-    <td>11</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026澳网|R3|哈恰诺夫|31|胜&quot;, &quot;2026蒙特利尔|R4|博尔热斯|14|胜&quot;, &quot;2026罗马|R3|保罗|7|胜&quot;]">
     <td>68</td>
@@ -1348,7 +1357,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>58</td>
     <td>3.05</td>
     <td>31</td>
-    <td>19</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026上海|R2|卢布列夫|50|胜&quot;, &quot;2026迈阿密|R2|科瓦切维奇|7|胜&quot;, &quot;-&quot;]">
     <td>69</td>
@@ -1356,7 +1365,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>57</td>
     <td>14.25</td>
     <td>50</td>
-    <td>4</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R2|吴易昺|56|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>70</td>
@@ -1380,7 +1389,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>56</td>
     <td>9.33</td>
     <td>41</td>
-    <td>6</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|R2|弗-塞伦多洛|46|胜&quot;, &quot;2026阿德莱德|半决赛|保罗|5|胜&quot;, &quot;2026罗马|R1|西西帕斯|1|胜&quot;]">
     <td>73</td>
@@ -1388,7 +1397,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>55</td>
     <td>3.93</td>
     <td>46</td>
-    <td>14</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|1/4决赛|谢尔顿|29|胜&quot;, &quot;2026华盛顿|R1|格里科斯普|13|胜&quot;, &quot;2026华盛顿|R2|阿特马纳|5|胜&quot;]">
     <td>74</td>
@@ -1396,7 +1405,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>55</td>
     <td>3.67</td>
     <td>29</td>
-    <td>15</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿德莱德|R1|迪亚洛|53|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>75</td>
@@ -1412,7 +1421,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>53</td>
     <td>17.67</td>
     <td>51</td>
-    <td>3</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026美网|R2|霍达尔|29|胜&quot;, &quot;2026北京|R1|胡-塞伦多洛|11|胜&quot;, &quot;2026杭州|R2|迈赫扎克|11|胜&quot;]">
     <td>77</td>
@@ -1420,7 +1429,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>53</td>
     <td>10.60</td>
     <td>29</td>
-    <td>5</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|沃尔顿|46|胜&quot;, &quot;2026多哈|R1|埃贝尔|3|胜&quot;, &quot;2026蒙特利尔|R2|卡雷尼奥-布斯塔|2|胜&quot;]">
     <td>78</td>
@@ -1428,7 +1437,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>51</td>
     <td>10.20</td>
     <td>46</td>
-    <td>5</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R1|曼纳里诺|50|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>79</td>
@@ -1444,7 +1453,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>47</td>
     <td>1.34</td>
     <td>17</td>
-    <td>35</td>
+    <td>10</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|决赛|阿尔卡拉斯|37|胜&quot;, &quot;2026蒙特卡洛|半决赛|亚-兹韦列夫|3|胜&quot;, &quot;2026印第安维尔斯|半决赛|亚-兹韦列夫|2|胜&quot;]">
     <td>81</td>
@@ -1452,7 +1461,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>46</td>
     <td>1.05</td>
     <td>37</td>
-    <td>44</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|商竣程|45|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>82</td>
@@ -1468,7 +1477,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>42</td>
     <td>4.67</td>
     <td>23</td>
-    <td>9</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|凯茨曼诺维奇|13|胜&quot;, &quot;2026法网|R3|蒂兰特|11|胜&quot;, &quot;2026法网|R1|莱赫奇卡|7|胜&quot;]">
     <td>84</td>
@@ -1476,7 +1485,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>42</td>
     <td>4.67</td>
     <td>13</td>
-    <td>9</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R2|中岛布兰登|24|胜&quot;, &quot;2026休斯顿|1/4决赛|勒纳-钱|7|胜&quot;, &quot;2026休斯顿|半决赛|蒂兰特|7|胜&quot;]">
     <td>85</td>
@@ -1492,7 +1501,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>40</td>
     <td>10.00</td>
     <td>28</td>
-    <td>4</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|1/4决赛|格里科斯普|32|胜&quot;, &quot;2026蒙特利尔|R1|范阿舍|8|胜&quot;, &quot;-&quot;]">
     <td>87</td>
@@ -1500,7 +1509,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>40</td>
     <td>8.00</td>
     <td>32</td>
-    <td>5</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|谢尔顿|36|胜&quot;, &quot;2026罗马|R1|梅里达|2|胜&quot;, &quot;-&quot;]">
     <td>88</td>
@@ -1508,7 +1517,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>12.67</td>
     <td>36</td>
-    <td>3</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|吴易昺|28|胜&quot;, &quot;2026法网|R2|达尔德里|10|胜&quot;, &quot;-&quot;]">
     <td>89</td>
@@ -1516,7 +1525,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>9.50</td>
     <td>28</td>
-    <td>4</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|1/4决赛|范德尚舒尔普|29|胜&quot;, &quot;2026温斯顿塞勒姆|R2|阿里斯|3|胜&quot;, &quot;2026斯海尔托亨博斯|R2|安贝尔|3|胜&quot;]">
     <td>90</td>
@@ -1524,7 +1533,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>3.80</td>
     <td>29</td>
-    <td>10</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|弗-塞伦多洛|22|胜&quot;, &quot;2026阿德莱德|R1|阿尔特迈尔|5|胜&quot;, &quot;2026美网|R1|阿特马纳|4|胜&quot;]">
     <td>91</td>
@@ -1532,7 +1541,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>3.80</td>
     <td>22</td>
-    <td>10</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|1/4决赛|瓦舍罗|12|胜&quot;, &quot;2026伦敦|1/4决赛|德米纳尔|11|胜&quot;, &quot;2026华盛顿|R2|门希克|9|胜&quot;]">
     <td>92</td>
@@ -1540,7 +1549,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>1.46</td>
     <td>12</td>
-    <td>26</td>
+    <td>8</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|阿纳尔迪|34|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>93</td>
@@ -1556,7 +1565,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>33</td>
     <td>16.50</td>
     <td>33</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|达姆|21|胜&quot;, &quot;2026印第安维尔斯|R1|波佩林|4|胜&quot;, &quot;2026上海|R1|穆纳尔|4|胜&quot;]">
     <td>95</td>
@@ -1564,7 +1573,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>33</td>
     <td>4.12</td>
     <td>21</td>
-    <td>8</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026杭州|R2|法里亚|32|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>96</td>
@@ -1572,7 +1581,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>32</td>
     <td>10.67</td>
     <td>32</td>
-    <td>3</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|胡尔卡奇|14|胜&quot;, &quot;2026蒙特利尔|R2|科博利|7|胜&quot;, &quot;2026上海|R1|迈赫扎克|4|胜&quot;]">
     <td>97</td>
@@ -1580,7 +1589,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>32</td>
     <td>2.46</td>
     <td>14</td>
-    <td>13</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026香港|R1|毛罗然|15|胜&quot;, &quot;2026阿卡普尔科|R1|鲁德|11|胜&quot;, &quot;2026上海|R1|郑瑞|2|胜&quot;]">
     <td>98</td>
@@ -1588,7 +1597,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>31</td>
     <td>3.88</td>
     <td>15</td>
-    <td>8</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|德米纳尔|13|胜&quot;, &quot;2026法网|1/4决赛|贝雷蒂尼|6|胜&quot;, &quot;2026罗马|R1|穆纳尔|5|胜&quot;]">
     <td>99</td>
@@ -1596,7 +1605,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>31</td>
     <td>3.44</td>
     <td>13</td>
-    <td>9</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|R2|梅德韦杰夫|24|胜&quot;, &quot;2026温网|R2|菲斯|3|胜&quot;, &quot;2026印第安维尔斯|R1|曼纳里诺|1|胜&quot;]">
     <td>100</td>
@@ -1604,7 +1613,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>31</td>
     <td>2.21</td>
     <td>24</td>
-    <td>14</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|保罗|29|胜&quot;, &quot;2026法网|R4|鲁德|2|胜&quot;, &quot;-&quot;]">
     <td>101</td>
@@ -1612,7 +1621,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>31</td>
     <td>1.63</td>
     <td>29</td>
-    <td>19</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026法网|R3|哈恰诺夫|28|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>102</td>
@@ -1620,7 +1629,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>5.60</td>
     <td>28</td>
-    <td>5</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|平宁顿|10|胜&quot;, &quot;2026慕尼黑|R2|毛罗然|10|胜&quot;, &quot;2026印第安维尔斯|R1|西西帕斯|5|胜&quot;]">
     <td>103</td>
@@ -1628,7 +1637,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>3.11</td>
     <td>10</td>
-    <td>9</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|格里科斯普|10|胜&quot;, &quot;2026温斯顿塞勒姆|1/4决赛|毛罗然|8|胜&quot;, &quot;2026温斯顿塞勒姆|R3|索内戈|7|胜&quot;]">
     <td>104</td>
@@ -1636,7 +1645,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>2.80</td>
     <td>10</td>
-    <td>10</td>
+    <td>5</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|1/4决赛|德米纳尔|24|胜&quot;, &quot;2026蒙特卡洛|R2|穆塞蒂|2|胜&quot;, &quot;2026美网|R1|科瓦切维奇|1|胜&quot;]">
     <td>105</td>
@@ -1644,7 +1653,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>1.56</td>
     <td>24</td>
-    <td>18</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|1/4决赛|胡-塞伦多洛|16|胜&quot;, &quot;2026伊斯特本|R2|蒂兰特|7|胜&quot;, &quot;2026美网|R1|马哈奇|4|胜&quot;]">
     <td>106</td>
@@ -1660,7 +1669,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>27</td>
     <td>1.29</td>
     <td>9</td>
-    <td>21</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026美网|R4|勒纳-钱|14|胜&quot;, &quot;2026北京|R1|阿利亚西姆|7|胜&quot;, &quot;2026美网|1/4决赛|布洛克斯|5|胜&quot;]">
     <td>108</td>
@@ -1668,7 +1677,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>27</td>
     <td>1.12</td>
     <td>14</td>
-    <td>24</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|贝尔赫斯|12|胜&quot;, &quot;2026伦敦|R1|林德克内希|8|胜&quot;, &quot;2026罗马|R2|丰塞卡|6|胜&quot;]">
     <td>109</td>
@@ -1676,7 +1685,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>26</td>
     <td>3.71</td>
     <td>12</td>
-    <td>7</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R2|蒂亚福|12|胜&quot;, &quot;2026迈阿密|R1|姆佩奇-佩里卡尔|5|胜&quot;, &quot;2026印第安维尔斯|R1|达姆|4|胜&quot;]">
     <td>110</td>
@@ -1684,7 +1693,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>25</td>
     <td>3.57</td>
     <td>12</td>
-    <td>7</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R1|兰达卢塞|20|胜&quot;, &quot;2026温网|R1|巴列霍|4|胜&quot;, &quot;-&quot;]">
     <td>111</td>
@@ -1700,7 +1709,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>24</td>
     <td>8.00</td>
     <td>24</td>
-    <td>3</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R3|蒂亚福|22|胜&quot;, &quot;2026罗马|R1|纳尔迪|2|胜&quot;, &quot;-&quot;]">
     <td>113</td>
@@ -1708,7 +1717,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>24</td>
     <td>8.00</td>
     <td>22</td>
-    <td>3</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R1|沙波瓦洛夫|11|胜&quot;, &quot;2026香港|R1|曼纳里诺|7|胜&quot;, &quot;2026斯海尔托亨博斯|1/4决赛|博尔热斯|2|胜&quot;]">
     <td>114</td>
@@ -1716,7 +1725,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>24</td>
     <td>2.18</td>
     <td>11</td>
-    <td>11</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|弗里茨|20|胜&quot;, &quot;2026休斯顿|R1|德拉克斯尔|1|胜&quot;, &quot;2026澳网|R1|奥康尼尔|1|胜&quot;]">
     <td>115</td>
@@ -1732,7 +1741,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>22</td>
     <td>0.96</td>
     <td>11</td>
-    <td>23</td>
+    <td>7</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026多哈|决赛|菲斯|16|胜&quot;, &quot;2026蒙特卡洛|半决赛|瓦舍罗|4|胜&quot;, &quot;2026多哈|半决赛|卢布列夫|2|胜&quot;]">
     <td>117</td>
@@ -1740,7 +1749,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>22</td>
     <td>0.85</td>
     <td>16</td>
-    <td>26</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|R2|谢尔顿|11|胜&quot;, &quot;2026美网|R1|布鲁克斯比|3|胜&quot;, &quot;2026格施塔德|R1|瓦林卡|3|胜&quot;]">
     <td>118</td>
@@ -1748,7 +1757,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>21</td>
     <td>2.10</td>
     <td>11</td>
-    <td>10</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R3|布勃利克|7|胜&quot;, &quot;2026澳网|R4|梅德韦杰夫|5|胜&quot;, &quot;2026蒙特利尔|R3|保罗|3|胜&quot;]">
     <td>119</td>
@@ -1756,7 +1765,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>20</td>
     <td>0.91</td>
     <td>7</td>
-    <td>22</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿德莱德|R1|波佩林|10|胜&quot;, &quot;2026迈阿密|R2|德雷珀|9|胜&quot;, &quot;-&quot;]">
     <td>120</td>
@@ -1764,7 +1773,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>19</td>
     <td>3.80</td>
     <td>10</td>
-    <td>5</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温网|R2|勒纳-钱|10|胜&quot;, &quot;2026印第安维尔斯|R2|穆塞蒂|8|胜&quot;, &quot;2026阿德莱德|R1|奎因|1|胜&quot;]">
     <td>121</td>
@@ -1772,7 +1781,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>19</td>
     <td>2.11</td>
     <td>10</td>
-    <td>9</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R1|德米纳尔|11|胜&quot;, &quot;2026温网|R1|麦克唐纳|6|胜&quot;, &quot;-&quot;]">
     <td>122</td>
@@ -1788,7 +1797,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>16</td>
     <td>2.67</td>
     <td>7</td>
-    <td>6</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|贝雷蒂尼|14|胜&quot;, &quot;2026法网|R1|郑瑞|1|胜&quot;, &quot;2026马德里|R2|谢尔顿|1|胜&quot;]">
     <td>124</td>
@@ -1796,7 +1805,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>16</td>
     <td>1.78</td>
     <td>14</td>
-    <td>9</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|诺里|13|胜&quot;, &quot;2026印第安维尔斯|R1|达克沃斯|1|胜&quot;, &quot;2026美网|R1|鲁瓦耶|1|胜&quot;]">
     <td>125</td>
@@ -1804,7 +1813,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>15</td>
     <td>3.00</td>
     <td>13</td>
-    <td>5</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|德米纳尔|12|胜&quot;, &quot;2026蒙特卡洛|R1|凯茨曼诺维奇|2|胜&quot;, &quot;2026蒙特利尔|R3|德米纳尔|1|胜&quot;]">
     <td>126</td>
@@ -1812,7 +1821,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>15</td>
     <td>1.15</td>
     <td>12</td>
-    <td>13</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|弗里茨|8|胜&quot;, &quot;2026美网|R3|梅里达|2|胜&quot;, &quot;2026美网|R4|埃切韦里|2|胜&quot;]">
     <td>127</td>
@@ -1820,7 +1829,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>15</td>
     <td>0.79</td>
     <td>8</td>
-    <td>19</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|兰达卢塞|14|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>128</td>
@@ -1844,7 +1853,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>12</td>
     <td>6.00</td>
     <td>12</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|半决赛|布勃利克|7|胜&quot;, &quot;2026蒙特卡洛|R3|鲁德|4|胜&quot;, &quot;2026蒙彼利埃|决赛|曼纳里诺|1|胜&quot;]">
     <td>131</td>
@@ -1852,7 +1861,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>12</td>
     <td>0.41</td>
     <td>7</td>
-    <td>29</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|诺里|5|胜&quot;, &quot;2026上海|R3|蒂亚福|3|胜&quot;, &quot;2026上海|半决赛|亚-兹韦列夫|2|胜&quot;]">
     <td>132</td>
@@ -1860,7 +1869,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>11</td>
     <td>0.50</td>
     <td>5</td>
-    <td>22</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|瓦瓦索里|10|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>133</td>
@@ -1892,7 +1901,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>2.25</td>
     <td>5</td>
-    <td>4</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026辛辛那提|R1|商竣程|6|胜&quot;, &quot;2026格施塔德|R1|施韦尔茨勒|1|胜&quot;, &quot;2026温网|R1|埃切韦里|1|胜&quot;]">
     <td>137</td>
@@ -1900,7 +1909,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>1.00</td>
     <td>6</td>
-    <td>9</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|阿特马纳|4|胜&quot;, &quot;2026印第安维尔斯|R2|卢布列夫|3|胜&quot;, &quot;2026慕尼黑|R1|萨奇科|2|胜&quot;]">
     <td>138</td>
@@ -1908,7 +1917,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>1.00</td>
     <td>4</td>
-    <td>9</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026香港|半决赛|吉隆|4|胜&quot;, &quot;2026基茨比厄尔|1/4决赛|莫尔坎|1|胜&quot;, &quot;2026香港|R2|范德尚舒尔普|1|胜&quot;]">
     <td>139</td>
@@ -1916,7 +1925,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>0.38</td>
     <td>4</td>
-    <td>24</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026香港|R1|鲁瓦耶|2|胜&quot;, &quot;2026美网|R3|纳沃内|2|胜&quot;, &quot;2026澳网|R1|凯茨曼诺维奇|1|胜&quot;]">
     <td>140</td>
@@ -1924,7 +1933,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>8</td>
     <td>0.47</td>
     <td>2</td>
-    <td>17</td>
+    <td>6</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026澳网|R1|波佩林|7|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>141</td>
@@ -1932,7 +1941,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>7</td>
     <td>3.50</td>
     <td>7</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|谢尔顿|6|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>142</td>
@@ -1964,7 +1973,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>0.55</td>
     <td>4</td>
-    <td>11</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026多哈|R1|安贝尔|3|胜&quot;, &quot;2026温网|R1|蒂兰特|1|胜&quot;, &quot;2026澳网|R1|林德克内希|1|胜&quot;]">
     <td>146</td>
@@ -1972,7 +1981,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>0.50</td>
     <td>3</td>
-    <td>12</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026澳网|R4|弗里茨|4|胜&quot;, &quot;2026华盛顿|R1|阿纳尔迪|1|胜&quot;, &quot;2026香港|半决赛|卢布列夫|1|胜&quot;]">
     <td>147</td>
@@ -1980,7 +1989,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>0.33</td>
     <td>4</td>
-    <td>18</td>
+    <td>3</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026上海|R3|勒纳-钱|2|胜&quot;, &quot;2026罗马|半决赛|达尔德里|2|胜&quot;, &quot;2026蒙特卡洛|R1|波佩林|1|胜&quot;]">
     <td>148</td>
@@ -1988,7 +1997,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>0.26</td>
     <td>2</td>
-    <td>23</td>
+    <td>4</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|索内戈|5|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>149</td>
@@ -2012,7 +2021,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>1.67</td>
     <td>3</td>
-    <td>3</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|曼纳里诺|4|胜&quot;, &quot;2026迈阿密|R1|布塞|1|胜&quot;, &quot;-&quot;]">
     <td>152</td>
@@ -2020,7 +2029,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>1.25</td>
     <td>4</td>
-    <td>4</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R4|德约科维奇|3|胜&quot;, &quot;2026伊斯特本|R1|吉隆|2|胜&quot;, &quot;-&quot;]">
     <td>153</td>
@@ -2028,7 +2037,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>0.83</td>
     <td>3</td>
-    <td>6</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026马德里|R2|迪亚洛|4|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>154</td>
@@ -2036,7 +2045,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>2.00</td>
     <td>4</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R3|阿尔卡拉斯|4|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>155</td>
@@ -2044,7 +2053,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>1.33</td>
     <td>4</td>
-    <td>3</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R1|阿特马纳|2|胜&quot;, &quot;2026温网|R3|贝雷蒂尼|2|胜&quot;, &quot;-&quot;]">
     <td>156</td>
@@ -2052,7 +2061,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>1.00</td>
     <td>2</td>
-    <td>4</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|半决赛|中岛布兰登|4|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>157</td>
@@ -2060,7 +2069,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>0.19</td>
     <td>4</td>
-    <td>21</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|格里科斯普|3|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>158</td>
@@ -2076,7 +2085,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>1.50</td>
     <td>3</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|奇纳|3|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>160</td>
@@ -2084,7 +2093,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>1.50</td>
     <td>3</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|米克尔森|2|胜&quot;, &quot;2026蒙特利尔|R3|蒂亚福|1|胜&quot;, &quot;-&quot;]">
     <td>161</td>
@@ -2092,7 +2101,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>0.25</td>
     <td>2</td>
-    <td>12</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|胡-塞伦多洛|2|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>162</td>
@@ -2100,7 +2109,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>1.00</td>
     <td>2</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|施韦尔茨勒|1|胜&quot;, &quot;2026美网|R1|姆佩奇-佩里卡尔|1|胜&quot;, &quot;-&quot;]">
     <td>163</td>
@@ -2116,7 +2125,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>0.33</td>
     <td>1</td>
-    <td>6</td>
+    <td>2</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R2|亚-兹韦列夫|2|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>165</td>
@@ -2124,7 +2133,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>0.25</td>
     <td>2</td>
-    <td>8</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|斯威尼|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>166</td>
@@ -2172,7 +2181,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>0.50</td>
     <td>1</td>
-    <td>2</td>
+    <td>1</td>
   </tr>
   <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R2|曼纳里诺|1|胜&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>172</td>
@@ -2180,7 +2189,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>0.25</td>
     <td>1</td>
-    <td>4</td>
+    <td>1</td>
   </tr>
   </tbody>
 </table>
@@ -2236,9 +2245,9 @@ document.addEventListener('DOMContentLoaded',()=>{
             return '<div class="dz-item'+(i===0?' top':'')+'"><span class="dz-rank">'+(i+1)+'</span>'
                 +'<div class="dz-main"><div class="dz-where">'+esc(f[0])+' · '+esc(f[1])+'</div>'
                 +'<div class="dz-who">'+(f[2]?'<i>'+esc(f[4]||'负')+'</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
-                +'<div class="dz-kills">'+esc(f[3])+'<small>人被带走</small></div></div>';
+                +'<div class="dz-kills">'+esc(f[3])+'<small>人被送走</small></div></div>';
         }).join('');
-        if(footer) footer.textContent='带走人数最多的 3 次';
+        if(footer) footer.textContent='送走人数最多的 3 次';
         modal.classList.add('show');
     }
     function parse(el){
@@ -2331,6 +2340,8 @@ document.addEventListener('DOMContentLoaded',function(){
             let minVal=Math.min(...parsedNums);
             let maxVal=Math.max(...parsedNums);
             if(isIntCol){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
+            // step is 1 for wide ranges: snap the ends so the slider can reach the true max
+            else if((maxVal-minVal)>20){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
             const step=isIntCol ? 1 : ((maxVal-minVal)>20 ? 1 : (maxVal-minVal)/100 || 1);
 
             columnMeta[index]={type:'numeric', min:minVal, max:maxVal,

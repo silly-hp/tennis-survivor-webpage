@@ -864,30 +864,35 @@ def build_win_counts(
 
 def compute_nemesis_stats(disasters: pd.DataFrame, wins: pd.DataFrame) -> pd.DataFrame:
     """
-    克星榜: the match winner is credited with the pickers his opponent took home.
+    克星榜: the match winner is credited with the pickers his opponent lost.
 
-    ``场均带走`` = 带走人数 / 获胜场次 (plain kill rate does not work here: every
-    pick on the beaten opponent is a kill).
+    ``场均送走`` = 送走人数 / 获胜场次 (plain kill rate does not work here: every
+    pick on the beaten opponent is sent home). ``害人场次`` = matches he won in
+    which at least one user had picked his opponent.
     """
     known = disasters.loc[disasters["opponent"] != ""]
     agg = (
         known.groupby("opponent")
-        .agg(带走人数=("kills", "sum"), 最高单次带走人数=("kills", "max"))
+        .agg(
+            送走人数=("kills", "sum"),
+            最高单次送走人数=("kills", "max"),
+            害人场次=("kills", "size"),
+        )
         .reset_index()
         .rename(columns={"opponent": "球员"})
     )
     win_total = wins.groupby("player")["wins"].sum()
-    agg["获胜场次"] = agg["球员"].map(win_total).fillna(0).astype(int)
-    agg["_rate"] = agg["带走人数"] / agg["获胜场次"].where(agg["获胜场次"] > 0)
+    won = agg["球员"].map(win_total).fillna(0)
+    agg["_rate"] = agg["送走人数"] / won.where(won > 0)
     agg = agg.sort_values(
-        by=["带走人数", "_rate", "最高单次带走人数"], ascending=False
+        by=["送走人数", "_rate", "最高单次送走人数"], ascending=False
     ).reset_index(drop=True)
     agg["排名"] = agg.index + 1
-    agg["场均带走"] = agg["_rate"].map(lambda x: "-" if pd.isna(x) else f"{x:.2f}")
+    agg["场均送走"] = agg["_rate"].map(lambda x: "-" if pd.isna(x) else f"{x:.2f}")
     tops = top_disasters(known, by="opponent", other="player", verb="胜")
     agg["_惨案"] = agg["球员"].map(tops)
     return agg.loc[
-        :, ["排名", "球员", "带走人数", "场均带走", "最高单次带走人数", "获胜场次", "_惨案"]
+        :, ["排名", "球员", "送走人数", "场均送走", "最高单次送走人数", "害人场次", "_惨案"]
     ]
 
 
