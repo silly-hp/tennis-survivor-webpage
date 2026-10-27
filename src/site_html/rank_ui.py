@@ -832,7 +832,15 @@ function tsHist(o){
   if(!isNaN(survived)){
     if(items.length>survived){ items.length=survived+1; const it=items[survived]; it.res=o.stHtml;
       if(o.main&&it.val===o.main) it.alt=o.alt||''; }
-    else if(g!=='absent'&&o.hasSt) items.push(today);
+    else if(g!=='absent'&&o.hasSt){
+      // live settlement can credit today's pick into picks (存活天数 advanced) while 今日主选
+      // still shows it: that entry is today, not a new day. Players never repeat, and an
+      // early-retirement backup lands in picks under the backup's name.
+      const lastIt=items[items.length-1];
+      const same=lastIt&&!lastIt.bye&&lastIt.val&&(lastIt.val===o.main||(o.alt&&lastIt.val===o.alt));
+      if(items.length===survived&&same){ lastIt.res=o.stHtml; lastIt.alt=o.alt||''; }
+      else items.push(today);
+    }
   } else {
     // no 存活天数 (e.g. combined pages): players never repeat, so a last entry equal to
     // 今日主选 — or a bye while the status is 轮空 — is today, not a settled day
