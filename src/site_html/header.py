@@ -36,9 +36,9 @@ def _resolve(page: str) -> tuple[str, str, dict[str, str], str]:
     if prefix:  # events/{year}/{MS|WS}_{id}.html
         tour = "WTA" if name.startswith("WS") else "ATP"
         return "cal", tour, dict(_SECTIONS["cal"][1]), prefix
-    if m := re.fullmatch(r"(\d{4})?(atp|wta)killer\.html", name):
+    if m := re.fullmatch(r"(\d{4})?(atp|wta)(killer|nemesis)\.html", name):
         year = m.group(1) or ""
-        links = {t: f"{year}{t.lower()}killer.html" for t in ("ATP", "WTA")}
+        links = {t: f"{year}{t.lower()}{m.group(3)}.html" for t in ("ATP", "WTA")}
         return "killer", m.group(2).upper(), links, prefix
     if name == "survivor_calendar.html":  # legacy hub: no tour selected
         return "cal", "", dict(_SECTIONS["cal"][1]), prefix

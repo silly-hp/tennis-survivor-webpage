@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -31,6 +32,13 @@ _CSS_KILLER = """\
 .dz-kills{flex-shrink:0;text-align:right;font-family:'Space Mono',monospace;
     font-size:22px;font-weight:700;color:var(--primary);line-height:1;}
 .dz-kills small{display:block;margin-top:4px;font-size:10px;font-weight:400;color:var(--faint);}
+.kn-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px;}
+.kn-seg{display:inline-flex;border:1px solid var(--border);border-radius:999px;
+    overflow:hidden;background:var(--surface);}
+.kn-seg a{padding:7px 16px;font-size:12px;color:var(--muted);text-decoration:none;
+    letter-spacing:.04em;transition:background .15s,color .15s;}
+.kn-seg a:hover{color:var(--primary);}
+.kn-seg a[aria-current="page"]{background:var(--primary);color:#fff;font-weight:700;}
 .dz-empty{display:flex;align-items:center;gap:12px;padding:12px 14px;
     border:1px dashed var(--border);border-radius:10px;color:var(--faint);font-size:13px;}
 """
@@ -63,10 +71,10 @@ document.addEventListener('DOMContentLoaded',()=>{
             if(f.length<4) return '<div class="dz-empty"><span class="dz-rank">'+(i+1)+'</span>暂无记录</div>';
             return '<div class="dz-item'+(i===0?' top':'')+'"><span class="dz-rank">'+(i+1)+'</span>'
                 +'<div class="dz-main"><div class="dz-where">'+esc(f[0])+' · '+esc(f[1])+'</div>'
-                +'<div class="dz-who">'+(f[2]?'<i>负</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
-                +'<div class="dz-kills">'+esc(f[3])+'<small>人被带走</small></div></div>';
+                +'<div class="dz-who">'+(f[2]?'<i>'+esc(f[4]||'负')+'</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
+                +'<div class="dz-kills">'+esc(f[3])+'<small>__UNIT__</small></div></div>';
         }).join('');
-        if(footer) footer.textContent='带走人数最多的 3 次';
+        if(footer) footer.textContent='__FOOT__';
         modal.classList.add('show');
     }
     function parse(el){
@@ -92,7 +100,7 @@ _DETAIL_MODAL = """\
       <div class="detail-title-wrap">
         <div class="detail-icon">☠</div>
         <div>
-          <div class="detail-title">惨案记录</div>
+          <div class="detail-title">__TITLE__</div>
           <div class="detail-meta" id="detail-meta-line"></div>
         </div>
       </div>
@@ -104,6 +112,43 @@ _DETAIL_MODAL = """\
     <div class="detail-footer" id="detail-footer"></div>
   </div>
 </div>"""
+
+
+_BOARDS = (("killer", "杀手榜"), ("nemesis", "克星榜"))
+_FILE_RE = re.compile(r"(\d{4})?(atp|wta)(killer|nemesis)\.html")
+
+
+def _switch_html(output_path: str | Path, season: int | None) -> str:
+    """Board (杀手榜 / 克星榜) and range (赛季 / 历年总榜) switches for this page."""
+    m = _FILE_RE.fullmatch(Path(output_path).name)
+    if not m:
+        return ""
+    year, tour, board = m.group(1) or "", m.group(2), m.group(3)
+
+    def seg(items: list[tuple[str, str, bool]], label: str) -> str:
+        links = "".join(
+            f'<a href="{href}"{" aria-current=\"page\"" if cur else ""}>{html.escape(text)}</a>'
+            for text, href, cur in items
+        )
+        return f'<div class="kn-seg" role="group" aria-label="{label}">{links}</div>'
+
+    groups = [
+        seg(
+            [(text, f"{year}{tour}{key}.html", key == board) for key, text in _BOARDS],
+            "榜单",
+        )
+    ]
+    if season:
+        groups.append(
+            seg(
+                [
+                    (f"{season} 赛季", f"{season}{tour}{board}.html", bool(year)),
+                    ("历年总榜", f"{tour}{board}.html", not year),
+                ],
+                "范围",
+            )
+        )
+    return f'<div class="kn-bar">{"".join(groups)}</div>'
 
 
 def render_killer_page(
@@ -119,6 +164,12 @@ def render_killer_page(
     output_path: str | Path = "killer.html",
     detail_col: str = "_惨案",
     subtitle: str = "不含年终总决赛(循环赛制、仅 8 人参赛)",
+    rate_label: str = "杀人率",
+    modal_title: str = "惨案记录",
+    hint: str = "点击查看惨案",
+    unit_label: str = "人被带走",
+    footer_label: str = "带走人数最多的 3 次",
+    season: int | None = None,
 ) -> str:
     """
     Build and write a killer-board page with a top-3 podium.
@@ -144,6 +195,13 @@ def render_killer_page(
         Column name for kill rate.
     name_col : str
         Column name for player name.
+    rate_label, modal_title, hint, unit_label, footer_label : str
+        Podium rate caption, detail-modal title, podium click hint and the
+        modal's unit/footer wording (the nemesis board reuses this page with
+        its own wording).
+    season : int or None
+        Current season; enables the 赛季 / 历年总榜 switch (the board switch
+        needs only the output file name).
     output_path : str or Path
 
     Returns
@@ -169,9 +227,9 @@ def render_killer_page(
   <div class="pod-medal">{medals[i]}</div>
   <div class="pod-name">{name}</div>
   <div class="pod-kills">{kills}</div>
-  <div class="pod-kills-lbl">带走人数</div>
-  <div class="pod-rate">杀人率 {rate}</div>
-  {'<div class="pod-hint">点击查看惨案</div>' if detail_attr else ''}
+  <div class="pod-kills-lbl">{html.escape(kills_col)}</div>
+  <div class="pod-rate">{html.escape(rate_label)} {rate}</div>
+  {f'<div class="pod-hint">{html.escape(hint)}</div>' if detail_attr else ''}
 </div>""")
 
     podium_html = '<div class="podium">\n' + "\n".join(podium_cards) + "\n</div>"
@@ -184,6 +242,8 @@ def render_killer_page(
     )
 
     body = f"""\
+{_switch_html(output_path, season)}
+
 {podium_html}
 
 <div class="stats-row">
@@ -195,7 +255,7 @@ def render_killer_page(
     {main_table_html}
   </div>
 </div>
-{_DETAIL_MODAL if has_detail else ""}"""
+{_DETAIL_MODAL.replace("__TITLE__", html.escape(modal_title)) if has_detail else ""}"""
 
     html_str = _inner_page_shell(
         page_title=title,
@@ -205,7 +265,9 @@ def render_killer_page(
         updated=updated,
         extra_tags=extra_tags,
         body_content=body,
-        extra_js=_JS_KILLER_DETAIL if has_detail else "",
+        extra_js=_JS_KILLER_DETAIL.replace("__UNIT__", unit_label).replace("__FOOT__", footer_label)
+        if has_detail
+        else "",
         extra_css=_CSS_KILLER,
         subtitle=subtitle,
         page=str(output_path),
