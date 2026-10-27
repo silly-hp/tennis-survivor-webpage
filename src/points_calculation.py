@@ -33,6 +33,8 @@ ATP_MANDATORY = {
     "巴黎",
 }
 ATP_YEAR_END_FINALS = {"都灵"}
+# Olympics score on top of the 18, same as the year-end final.
+OLYMPICS = {"奥运会"}
 
 WTA_SPECIALS = (
     GRAND_SLAMS | WTA1000_COMBINED | WTA1000_NON_COMBINED | WTA_YEAR_END_FINAL
@@ -151,6 +153,10 @@ def _calculate_points_wta(tournament_scores: dict):
         k: v for k, v in tournament_scores.items() if k in WTA_YEAR_END_FINAL
     }
     year_end_points = sum(year_end_results.values())
+    olympic_results = {
+        k: v for k, v in tournament_scores.items() if k in OLYMPICS
+    }
+    olympic_points = sum(olympic_results.values())
 
     # Step 2: Grand Slams (only count attended ones; absent = no slot used)
     grand_slam_results = {
@@ -194,7 +200,7 @@ def _calculate_points_wta(tournament_scores: dict):
         opt_nc_named.items()
     )
     for name, pts in tournament_scores.items():
-        if name not in WTA_SPECIALS:
+        if name not in WTA_SPECIALS and name not in OLYMPICS:
             optional_pool.append((name, pts))
     optional_pool.sort(key=lambda x: (-x[1], x[0]))
     best_others_named = dict(optional_pool[:remaining_slots])
@@ -202,6 +208,7 @@ def _calculate_points_wta(tournament_scores: dict):
     # Step 6: Total
     total = (
         year_end_points
+        + olympic_points
         + grand_slam_points
         + sum(mandatory_combined_named.values())
         + sum(mandatory_non_combined_named.values())
@@ -210,6 +217,7 @@ def _calculate_points_wta(tournament_scores: dict):
 
     counted_tournaments = {
         **year_end_results,
+        **olympic_results,
         **grand_slam_results,
         **mandatory_combined_named,
         **mandatory_non_combined_named,
@@ -273,6 +281,10 @@ def _calculate_points_atp(tournament_scores: dict):
         k: v for k, v in tournament_scores.items() if k in ATP_YEAR_END_FINALS
     }
     year_end_points = sum(year_end_results.values())
+    olympic_results = {
+        k: v for k, v in tournament_scores.items() if k in OLYMPICS
+    }
+    olympic_points = sum(olympic_results.values())
 
     # Step 2: Grand Slams
     grand_slam_results = {
@@ -296,7 +308,7 @@ def _calculate_points_atp(tournament_scores: dict):
 
     optional_pool: list[tuple[str, int]] = list(opt_mandatory_named.items())
     for name, pts in tournament_scores.items():
-        if name not in ATP_SPECIALS:
+        if name not in ATP_SPECIALS and name not in OLYMPICS:
             optional_pool.append((name, pts))
     optional_pool.sort(key=lambda x: (-x[1], x[0]))
     best_others_named = dict(optional_pool[:remaining_slots])
@@ -304,12 +316,14 @@ def _calculate_points_atp(tournament_scores: dict):
     # Step 5: Total
     total = (
         year_end_points
+        + olympic_points
         + grand_slam_points
         + sum(mandatory_atp_named.values())
         + sum(best_others_named.values())
     )
     counted_tournaments = {
         **year_end_results,
+        **olympic_results,
         **grand_slam_results,
         **mandatory_atp_named,
         **best_others_named,
