@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import json
 import numpy as np
 import os
 import pandas as pd
 from datetime import datetime, timedelta
+from event_calendar import load_draw_matches
+from home_weeks import load_calendar_json
 from logger import get_logger
 from parser import fetch_survivor_calendar_event_df, fetch_table
 from pathlib import Path
@@ -627,7 +630,7 @@ def prepare_h2h_for_render(
     return out[ordered_cols]
 
 
-def compute_killer_stats(df: pd.DataFrame):
+def compute_killer_stats(df: pd.DataFrame, disasters: pd.DataFrame | None = None):
     killer_df = (
         df.groupby(["player", "tournament", "season"])
         .agg(
@@ -650,25 +653,202 @@ def compute_killer_stats(df: pd.DataFrame):
     agg_df["排名"] = agg_df.index + 1
     agg_df = agg_df.rename({"player": "球员"}, axis=1)
 
-    return agg_df.loc[
-        :, ["排名", "球员", "带走人数", "杀人率", "最高单次带走人数", "选择人数"]
-    ]
+    cols = ["排名", "球员", "带走人数", "杀人率", "最高单次带走人数", "选择人数"]
+    if disasters is not None:
+        tops = top_disasters(disasters)
+        agg_df["_惨案"] = agg_df["球员"].map(lambda p: tops.get(p, ["-"] * DISASTER_TOP_N))
+        cols.append("_惨案")
+    return agg_df.loc[:, cols]
+
+
+FINALS_TYPE = "年终总决赛"
+DISASTER_TOP_N = 3
+
+
+def _load_event_index(
+    calendar_dir: str, seasons: tuple[int, ...]
+) -> dict[tuple, tuple[str, str]]:
+    """(season, tour, tournament) -> (event_id, event type) from the calendar cache."""
+    events: dict[tuple, tuple[str, str]] = {}
+    for year in seasons:
+        path = Path(calendar_dir) / f"calendar_{year}.json"
+        if not path.exists():
+            continue
+        for row in load_calendar_json(path).itertuples():
+            events[(int(row.year), row.tour, row.city)] = (
+                str(row.event_id),
+                str(row.type),
+            )
+    return events
+
+
+ROUND_NAMES = {
+    "R1": "R1",
+    "R2": "R2",
+    "R3": "R3",
+    "R4": "R4",
+    "QF": "1/4决赛",
+    "SF": "半决赛",
+    "F": "决赛",
+}
+
+
+def _load_pick_rounds(
+    tour: str, event_id: str, season: int, cache_dir: str = "../data/event_day_rounds"
+) -> dict[int, str]:
+    """
+    Pick day -> label of the round that day's matches belong to (``R1/2``, ``QF``).
+
+    Older caches hold the pick-page labels as is. Newer ones hold the *result*
+    labels (last day ``W``, see ``pick_rounds_to_result_rounds``), which sit one
+    day ahead of the pick labels once the first round is over; undo that shift.
+    """
+    path = Path(cache_dir) / f"{tour}_{event_id}_{int(season)}.json"
+    if not path.exists():
+        return {}
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        days = {int(k): str(v).strip() for k, v in raw.items() if str(v).strip()}
+    except (OSError, ValueError):
+        return {}
+    if not days or days[max(days)] != "W":
+        return days
+
+    def base(label: str) -> str:
+        return label.split("/", 1)[0].upper()
+
+    last = max(days)
+    picks: dict[int, str] = {last: "F"}
+    first_late = next((d for d in sorted(days) if base(days[d]) != "R1"), None)
+    for day in sorted(days):
+        if day == last or (first_late is not None and day >= first_late):
+            continue
+        picks[day] = days[day]
+    if first_late is not None:
+        for day in range(first_late + 1, last):
+            picks[day] = days[day - 1]
+        # the first non-R1 pick day is the "/1" half of the next result label
+        if days[first_late].endswith("/2"):
+            picks[first_late] = days[first_late][:-1] + "1"
+    return picks
+
+
+def round_name(label: str, day: int) -> str:
+    """Display name for a pick-round label; falls back to ``Day N``."""
+    name = ROUND_NAMES.get(str(label or "").split("/", 1)[0].upper())
+    return name or f"Day {int(day)}"
+
+
+def exclude_finals(
+    h2h_df: pd.DataFrame,
+    calendar_dir: str = "../data",
+    seasons: tuple[int, ...] = tuple(SEASONS),
+) -> pd.DataFrame:
+    """Drop year-end finals rows (round-robin, 8 players, 2 matches a day)."""
+    events = _load_event_index(calendar_dir, seasons)
+    finals = {key for key, (_, kind) in events.items() if kind == FINALS_TYPE}
+    if not finals:
+        return h2h_df
+    keys = list(zip(h2h_df["season"].astype(int), h2h_df["tour"], h2h_df["tournament"]))
+    return h2h_df.loc[[key not in finals for key in keys]]
+
+
+def format_disaster(row) -> str:
+    """Pipe-joined fields for the page: ``2025九江|第一轮|对手|162``."""
+    return f"{int(row.season)}{row.tournament}|{row.round}|{row.opponent}|{int(row.kills)}"
+
+
+def top_disasters(disasters: pd.DataFrame, n: int = DISASTER_TOP_N) -> dict[str, list[str]]:
+    """player -> the ``n`` costliest disasters as text, padded with ``-``."""
+    out: dict[str, list[str]] = {}
+    ordered = disasters.sort_values(
+        ["kills", "season", "day"], ascending=[False, False, True]
+    )
+    for player, group in ordered.groupby("player", sort=False):
+        lines = [format_disaster(row) for row in group.head(n).itertuples()]
+        out[player] = lines + ["-"] * (n - len(lines))
+    return out
+
+
+def build_disaster_table(
+    csv_path: str = "../data/h2h_records.csv",
+    calendar_dir: str = "../data",
+    seasons: tuple[int, ...] = tuple(SEASONS),
+) -> pd.DataFrame:
+    """
+    One row per (season, tour, tournament, player) 惨案: the player lost on a
+    pick day and took ``kills`` pickers with them.
+
+    ``opponent`` is the winner of the match the player lost, read from the draw
+    cache (empty when no loss is found). Year-end finals are excluded: they are
+    round-robin and the draw cache only holds the knockout matches.
+    A player normally loses once per event; if the draw shows several losses
+    (Olympic bronze match) the earliest one is the pick-day loss.
+    """
+    h2h_all = pd.read_csv(csv_path)
+    lost = h2h_all.loc[h2h_all["result"] == "L"]
+    disasters = (
+        lost.groupby(["season", "tour", "tournament", "player"])
+        .agg(day=("day", "first"), kills=("user_id", "size"))
+        .reset_index()
+    )
+
+    events = _load_event_index(calendar_dir, seasons)
+
+    draw_cache: dict[tuple, list[dict]] = {}
+    keep, opponents, rounds = [], [], []
+    for row in disasters.itertuples():
+        event = events.get((int(row.season), row.tour, row.tournament))
+        if event is not None and event[1] == FINALS_TYPE:
+            keep.append(False)
+            opponents.append("")
+            rounds.append("")
+            continue
+        keep.append(True)
+        opponent = ""
+        label = ""
+        if event is not None:
+            label = _load_pick_rounds(row.tour, event[0], int(row.season)).get(
+                int(row.day), ""
+            )
+            key = (row.tour, event[0], int(row.season))
+            if key not in draw_cache:
+                draw_cache[key] = load_draw_matches(*key)
+            wins = [m["winner"] for m in draw_cache[key] if m["loser"] == row.player]
+            if len(wins) > 1:
+                logger.warning(
+                    "[Disaster] %s %s %s %s lost %s times in draw; using the first",
+                    row.season,
+                    row.tour,
+                    row.tournament,
+                    row.player,
+                    len(wins),
+                )
+            opponent = wins[0] if wins else ""
+        opponents.append(opponent)
+        rounds.append(round_name(label, row.day))
+
+    disasters["opponent"] = opponents
+    disasters["round"] = rounds
+    return disasters.loc[keep].reset_index(drop=True)
 
 
 def prepare_killer_stats(csv_path: str = "../data/h2h_records.csv", current_season: int = 2026):
-    h2h_all = pd.read_csv(csv_path)
-    atp_season = compute_killer_stats(
-        h2h_all.loc[
-            (h2h_all["tour"] == "MS") & (h2h_all["season"] == current_season), :
-        ]
-    )
-    atp_all = compute_killer_stats(h2h_all.loc[h2h_all["tour"] == "MS", :])
-    wta_season = compute_killer_stats(
-        h2h_all.loc[
-            (h2h_all["tour"] == "WS") & (h2h_all["season"] == current_season), :
-        ]
-    )
-    wta_all = compute_killer_stats(h2h_all.loc[h2h_all["tour"] == "WS", :])
+    h2h_all = exclude_finals(pd.read_csv(csv_path))
+    disasters = build_disaster_table(csv_path)
+
+    def stats(tour: str, season: int | None = None):
+        mask = h2h_all["tour"] == tour
+        d_mask = disasters["tour"] == tour
+        if season is not None:
+            mask &= h2h_all["season"] == season
+            d_mask &= disasters["season"] == season
+        return compute_killer_stats(h2h_all.loc[mask, :], disasters.loc[d_mask, :])
+
+    atp_season = stats("MS", current_season)
+    atp_all = stats("MS")
+    wta_season = stats("WS", current_season)
+    wta_all = stats("WS")
 
     return atp_season, atp_all, wta_season, wta_all
 
