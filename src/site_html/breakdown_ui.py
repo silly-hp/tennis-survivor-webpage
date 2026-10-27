@@ -56,6 +56,19 @@ body.dark .bd-modal{--bd-hard:#00b8f0;--bd-clay:#ff7a54;--bd-grass:#4ca86a;}
 @keyframes bdFade{from{opacity:0}to{opacity:1}}
 @keyframes bdRise{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes bdIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+/* mobile-only parts (hidden on desktop) */
+.bd-grab{display:none;justify-content:center;padding:8px 0 4px;touch-action:none;cursor:grab;}
+.bd-grab i{width:40px;height:4px;border-radius:2px;background:var(--border);}
+.bd-sum{display:none;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;}
+.bd-kpi{font-family:inherit;text-align:left;border:1px solid var(--border);background:var(--surface2);border-radius:10px;padding:8px 12px;
+    color:var(--ink);cursor:pointer;}
+.bd-kpi.active{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);}
+.bd-kpi .l{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+.bd-kpi .v{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;}
+.bd-top{grid-column:1/-1;font-size:12px;color:var(--muted);min-height:18px;}
+.bd-top b{color:var(--ink);font-weight:600;}
+.bd-fold{display:none;width:100%;font-family:inherit;font-size:12px;padding:10px;border:0;border-top:1px solid var(--border2);
+    background:transparent;color:var(--primary);cursor:pointer;}
 @media(max-width:860px){
   .bd-split{grid-template-columns:minmax(0,1fr);}
   .bd-chart{height:340px;}
@@ -63,8 +76,29 @@ body.dark .bd-modal{--bd-hard:#00b8f0;--bd-clay:#ff7a54;--bd-grass:#4ca86a;}
 @media(max-width:720px){
   .bd-modal{padding:0;align-items:flex-end;}
   .bd-card{width:100%;max-height:94vh;border-radius:16px 16px 0 0;}
-  .bd-hd,.bd-body{padding-left:16px;padding-right:16px;}
+  .bd-card{height:88vh;max-height:88vh;border-top:0;animation:bdSheet .26s ease-out both;touch-action:pan-y;}
+  .bd-grab{display:flex;}
+  .bd-hd{padding:2px 16px 8px;}
+  .bd-title{font-size:19px;}
+  .bd-close{width:38px;height:38px;}
+  .bd-body{padding:0 16px 24px;}
+  .bd-sum{display:grid;}
+  .bd-filters{position:sticky;top:0;z-index:3;background:var(--surface);margin:0 -16px 12px;padding:8px 16px;
+      border-bottom:1px solid var(--border2);flex-direction:column;gap:6px;}
+  .bd-filter-row:first-child{display:none;}  /* the ATP/WTA cards above switch the tour */
+  .bd-filter-row{overflow-x:auto;scrollbar-width:none;border-radius:10px;}
+  .bd-filter-row::-webkit-scrollbar{display:none;}
+  .bd-filter-row .bd-chip{flex:1 0 auto;border-radius:8px;}
+  .bd-split{display:flex;flex-direction:column-reverse;gap:12px;}
+  .bd-chart{height:250px;}
+  .bd-chart.tall{height:320px;}
+  .bd-list{max-height:none;overflow:visible;}
+  .bd-group-hd{position:static;}
+  .bd-row{grid-template-columns:minmax(0,1.6fr) minmax(0,.7fr) minmax(0,.8fr) minmax(0,.8fr);font-size:12px;padding:8px 12px;}
+  .bd-list.folded .bd-row.bd-more{display:none;}
+  .bd-fold{display:block;}
 }
+@keyframes bdSheet{from{transform:translateY(100%)}to{transform:none}}
 @media(prefers-reduced-motion:reduce){.bd-modal.open,.bd-card,.bd-view.active{animation:none;}.bd-chip{transition:none;}}
 """
 
@@ -73,7 +107,9 @@ _JS_BREAKDOWN = r"""
   if (!window.__BREAKDOWN__) return;
   var CFG = window.__BREAKDOWN__;
   var cache = {atp:null, wta:null};
-  var state = {uid:null, name:'', gender:'atp', view:'level', loading:false};
+  var state = {uid:null, name:'', gender:'atp', view:'level', loading:false, totals:{atp:0, wta:0}};
+  var mq = window.matchMedia ? window.matchMedia('(max-width:720px)') : null;
+  function isSheet(){ return !!(mq && mq.matches); }
   var charts = {level:null, surface:null, month:null};
   // chart colours come from the page theme (and the modal's surface tokens)
   function cv(name, el){ return getComputedStyle(el || document.body).getPropertyValue(name).trim(); }
@@ -176,14 +212,15 @@ _JS_BREAKDOWN = r"""
       if (!groups[g]) groups[g]=[];
       groups[g].push(e);
     });
-    var html = '';
+    var html = '', hidden = 0;
     order.forEach(function(g){
       var rows = groups[g] || [];
       if (!rows.length) return;
       var surfCls = g==='硬地'?' surf-hard':(g==='红土'?' surf-clay':(g==='草地'?' surf-grass':''));
       html += '<div class="bd-group-hd'+surfCls+'">'+esc(g)+'</div>';
-      rows.forEach(function(e){
-        html += '<div class="bd-row">'
+      rows.forEach(function(e, i){
+        if (i >= 3) hidden++;
+        html += '<div class="bd-row'+(i>=3?' bd-more':'')+'">'
           + '<div>'+esc(e.name||'')+'</div>'
           + '<div class="pts">'+(e.points||0)+'</div>'
           + '<div>'+esc(e.round||'—')+'</div>'
@@ -191,7 +228,9 @@ _JS_BREAKDOWN = r"""
           + '</div>';
       });
     });
+    if (hidden) html += '<button type="button" class="bd-fold">展开其余 '+hidden+' 项</button>';
     box.innerHTML = html || '<div class="bd-empty">暂无赛事</div>';
+    box.classList.toggle('folded', hidden > 0);
   }
   function renderCategoryDonut(chartKey, elId, payload, groupKey, order, titleTip){
     if (!ensureCharts()) return;
@@ -308,6 +347,7 @@ _JS_BREAKDOWN = r"""
     $('bd-title').textContent = state.name || '用户';
     $('bd-sub').innerHTML = (state.gender==='atp'?'ATP 男单':'WTA 女单') + ' · 总分 <b>' + total + '</b>';
     applyView();
+    renderSummary(payload);
     if (!payload){
       ['bd-list-level','bd-list-surface'].forEach(function(id){
         $(id).innerHTML = '<div class="bd-empty">暂无该侧积分明细</div>';
@@ -325,6 +365,18 @@ _JS_BREAKDOWN = r"""
     setTimeout(function(){
       Object.keys(charts).forEach(function(k){ if (charts[k]) charts[k].resize(); });
     }, 50);
+  }
+  function renderSummary(payload){
+    if (!$('bd-sum')) return;
+    $('bd-kpi-atp').textContent = state.totals.atp;
+    $('bd-kpi-wta').textContent = state.totals.wta;
+    document.querySelectorAll('.bd-kpi').forEach(function(k){
+      k.classList.toggle('active', k.getAttribute('data-gender')===state.gender);
+    });
+    var top = ((payload && payload.events) || []).filter(function(e){ return (e.points||0)>0; })
+      .sort(function(a,b){ return b.points-a.points; }).slice(0,3);
+    $('bd-top').innerHTML = top.length ? '主要来源：' + top.map(function(e){
+      return '<b>'+esc(e.name||'')+'</b> '+e.points; }).join(' · ') : '';
   }
   function setGender(g){
     state.gender = g;
@@ -349,13 +401,19 @@ _JS_BREAKDOWN = r"""
       Object.keys(charts).forEach(function(k){ if (charts[k]) charts[k].resize(); });
     }, 30);
   }
-  function openModal(uid, name, prefer){
+  function openModal(uid, name, prefer, totals){
+    state.totals = totals || {atp:0, wta:0};
     state.uid = String(uid||'');
     state.name = name||'';
     var modal = $('bd-modal');
     if (!modal) return;
+    var wasOpen = modal.classList.contains('open');
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+    $('bd-card').style.transform = '';
+    $('bd-body').scrollTop = 0;
+    // phone back button / gesture closes the sheet instead of leaving the page
+    if (isSheet() && !wasOpen){ history.pushState({bdSheet:1}, ''); state.pushed = true; }
     $('bd-title').textContent = state.name || '用户';
     $('bd-sub').textContent = '加载中…';
     ['bd-list-level','bd-list-surface'].forEach(function(id){
@@ -373,9 +431,11 @@ _JS_BREAKDOWN = r"""
         .catch(function(){ loadE(i+1); });
     })(0);
   }
-  function closeModal(){
+  function closeModal(fromPop){
     var modal = $('bd-modal');
-    if (modal) modal.classList.remove('open');
+    if (!modal || !modal.classList.contains('open')) return;
+    modal.classList.remove('open');
+    if (state.pushed){ state.pushed = false; if (!fromPop) history.back(); }
     document.body.style.overflow = '';
     disposeCharts();
   }
@@ -390,9 +450,19 @@ _JS_BREAKDOWN = r"""
     if (!el) return;
     if (el.closest && el.closest('.bd-card')) {
       if (el.id === 'bd-close' || (el.closest && el.closest('#bd-close'))) closeModal();
+      var kpi = el.closest('.bd-kpi');
+      if (kpi){ setGender(kpi.getAttribute('data-gender')); return; }
+      var fold = el.closest('.bd-fold');
+      if (fold){ fold.parentNode.classList.remove('folded'); fold.remove(); }
       return;
     }
     var tr = el.closest ? el.closest('table.filterable-table tbody tr[data-uid]') : null;
+    // mobile ranking cards (rank_ui) mirror the hidden table; their 积分构成 button carries the row's uid
+    var cardBtn = el.closest ? el.closest('[data-bd-uid]') : null;
+    if (!tr && cardBtn){
+      var uidSel = String(cardBtn.getAttribute('data-bd-uid')).replace(/"/g, '');
+      tr = document.querySelector('table.filterable-table tbody tr[data-uid="'+uidSel+'"]');
+    }
     if (tr){
       var uid = tr.getAttribute('data-uid');
       var table = tr.closest('table');
@@ -403,7 +473,7 @@ _JS_BREAKDOWN = r"""
       var wtaIdx = heads.indexOf('WTA总分');
       var atp = atpIdx>=0 ? parseInt((tr.children[atpIdx].textContent||'0').replace(/\D/g,''),10)||0 : 0;
       var wta = wtaIdx>=0 ? parseInt((tr.children[wtaIdx].textContent||'0').replace(/\D/g,''),10)||0 : 0;
-      openModal(uid, name, (wta>atp) ? 'wta' : 'atp');
+      openModal(uid, name, (wta>atp) ? 'wta' : 'atp', {atp:atp, wta:wta});
       return;
     }
     if (el.id==='bd-close' || el=== $('bd-modal') || (el.classList && el.classList.contains('bd-modal'))) closeModal();
@@ -423,6 +493,28 @@ _JS_BREAKDOWN = r"""
       setView(btn.getAttribute('data-view'));
     });
   });
+  window.addEventListener('popstate', function(){ closeModal(true); });
+  // drag the grab handle down to dismiss the sheet
+  (function(){
+    var grab = $('bd-grab'), card = $('bd-card'), y0 = null, dy = 0;
+    if (!grab || !card) return;
+    grab.addEventListener('pointerdown', function(ev){
+      y0 = ev.clientY; dy = 0; card.style.transition = 'none';
+      if (grab.setPointerCapture) grab.setPointerCapture(ev.pointerId);
+    });
+    grab.addEventListener('pointermove', function(ev){
+      if (y0 === null) return;
+      dy = Math.max(0, ev.clientY - y0);
+      card.style.transform = 'translateY('+dy+'px)';
+    });
+    function end(){
+      if (y0 === null) return;
+      y0 = null; card.style.transition = '';
+      if (dy > 100) closeModal(); else card.style.transform = '';
+    }
+    grab.addEventListener('pointerup', end);
+    grab.addEventListener('pointercancel', end);
+  })();
   window.addEventListener('resize', function(){
     Object.keys(charts).forEach(function(k){ if (charts[k]) charts[k].resize(); });
   });
@@ -433,7 +525,8 @@ _JS_BREAKDOWN = r"""
 def breakdown_modal_html() -> str:
     return """\
 <div id="bd-modal" class="bd-modal" aria-hidden="true">
-  <div class="bd-card" role="dialog" aria-modal="true" aria-labelledby="bd-title">
+  <div class="bd-card" id="bd-card" role="dialog" aria-modal="true" aria-labelledby="bd-title">
+    <div class="bd-grab" id="bd-grab" aria-hidden="true"><i></i></div>
     <div class="bd-hd">
       <div>
         <div class="bd-eye">POINTS BREAKDOWN · 积分构成</div>
@@ -442,7 +535,12 @@ def breakdown_modal_html() -> str:
       </div>
       <button type="button" class="bd-close" id="bd-close" aria-label="关闭">关闭</button>
     </div>
-    <div class="bd-body">
+    <div class="bd-body" id="bd-body">
+      <div class="bd-sum" id="bd-sum">
+        <button type="button" class="bd-kpi" data-gender="atp"><div class="l">ATP</div><div class="v" id="bd-kpi-atp">0</div></button>
+        <button type="button" class="bd-kpi" data-gender="wta"><div class="l">WTA</div><div class="v" id="bd-kpi-wta">0</div></button>
+        <div class="bd-top" id="bd-top"></div>
+      </div>
       <div class="bd-filters">
         <div class="bd-filter-row">
           <span class="bd-gender-lbl">巡回赛</span>

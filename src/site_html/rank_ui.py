@@ -1154,7 +1154,8 @@ ready(function(){
         +'<span class="rk-c-sub">'+st+(sub?'<span class="p">'+sub+'</span>':'')+'</span></span>'
         +'<span class="rk-c-right"><span class="rk-c-pts">'+esc(C.pts>=0?txt(r,C.pts):'')+'</span>'+(C.cur>=0?'<span class="rk-c-cur">当前 <b>'+esc(txt(r,C.cur))+'</b></span>':'')+'</span>'
         +'</button><button type="button" class="rk-star'+(t.length?' on':'')+'" aria-label="关注 '+esc(u)+'" aria-haspopup="dialog" aria-expanded="false" data-u="'+esc(u)+'">'+STAR+'</button></div>'
-        +'<div class="rk-c-more"'+(open?'':' hidden')+'>'+extra+(r.dataset.detail!==undefined?'<button type="button" class="rk-btn" data-hist="1">选人历史</button>':'')+'</div></div>';
+        +'<div class="rk-c-more"'+(open?'':' hidden')+'>'+extra+(r.dataset.detail!==undefined?'<button type="button" class="rk-btn" data-hist="1">选人历史</button>':'')
+        +(r.dataset.uid!==undefined?'<button type="button" class="rk-btn" data-bd-uid="'+esc(r.dataset.uid)+'">积分构成</button>':'')+'</div></div>';
     }).join('');
   }
   cardsBox.addEventListener('click',e=>{
