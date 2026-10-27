@@ -22,6 +22,9 @@ USER_AGENT = (
 )
 
 DRAW_NAME_PREFIX_RE = re.compile(r"^(?:[WQL]|\d+)\s*")
+# Entry tags (P protected, S special exempt, A alternate, NG, ...) and the "/W"
+# left behind after a seed ("3/W 名字"); the tag must be a separate token.
+DRAW_ENTRY_TAG_RE = re.compile(r"^/?(?:WC|LL|SE|PR|NG|W|Q|L|A|P|S)\s+")
 SEED_PREFIX_RE = re.compile(r"^(\d+)\s*")
 DAY_SCORE_RE = re.compile(r"当前分数：(\d+)")
 FIRST_DAY_BYE_RE = re.compile(r"本站有(\d+)个首日轮空")
@@ -263,8 +266,10 @@ def _parse_seed_and_name(text: str) -> tuple[int | None, str]:
     text = " ".join(str(text or "").split())
     match = SEED_PREFIX_RE.match(text)
     if match:
-        return int(match.group(1)), text[match.end() :].strip()
-    return None, DRAW_NAME_PREFIX_RE.sub("", text).strip()
+        rest = DRAW_ENTRY_TAG_RE.sub("", text[match.end() :].strip())
+        return int(match.group(1)), rest.strip()
+    name = DRAW_NAME_PREFIX_RE.sub("", text).strip()
+    return None, DRAW_ENTRY_TAG_RE.sub("", name).strip()
 
 
 def _clean_draw_name(tag) -> str:

@@ -669,6 +669,28 @@ body.dark .theme-btn .ic-sun{display:block;}
     .hd-dot,.to-top{animation:none;}
     .hd-tab,.hd-seg-btn{transition:none;}
 }
+.pod-card[data-detail],.filterable-table tr.killer-clickable{cursor:pointer;}
+.pod-card[data-detail]:hover{border-color:var(--primary);}
+.pod-hint{margin-top:6px;font-size:10px;color:var(--faint);}
+.dz-list{display:grid;gap:8px;padding:6px 4px;}
+.dz-item{display:flex;align-items:center;gap:12px;padding:12px 14px;
+    background:var(--surface2);border:1px solid var(--border2);border-radius:10px;}
+.dz-item.top{border-color:var(--primary);background:var(--primary-dim);}
+.dz-rank{flex-shrink:0;width:22px;height:22px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+    background:var(--border2);color:var(--muted);}
+.dz-item.top .dz-rank{background:var(--primary);color:#fff;}
+.dz-main{flex:1;min-width:0;}
+.dz-where{font-size:11px;color:var(--muted);letter-spacing:.02em;}
+.dz-who{margin-top:3px;font-size:14px;color:var(--ink);font-weight:600;
+    font-family:'Noto Serif SC',serif;}
+.dz-who i{font-style:normal;font-size:11px;font-weight:400;color:var(--faint);margin-right:6px;}
+.dz-kills{flex-shrink:0;text-align:right;font-family:'Space Mono',monospace;
+    font-size:22px;font-weight:700;color:var(--primary);line-height:1;}
+.dz-kills small{display:block;margin-top:4px;font-size:10px;font-weight:400;color:var(--faint);}
+.dz-empty{display:flex;align-items:center;gap:12px;padding:12px 14px;
+    border:1px dashed var(--border);border-radius:10px;color:var(--faint);font-size:13px;}
 
 </style>
 </head>
@@ -724,7 +746,7 @@ body.dark .theme-btn .ic-sun{display:block;}
   <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="atp_ranking.html">即时排名</a><a class="hd-tab" href="atp_race_ranking.html">冠军排名</a><a class="hd-tab" href="atp_champion.html">冠军榜</a><a class="hd-tab" href="atpkiller.html" aria-current="page">杀手榜</a><a class="hd-tab" href="survivor_calendar_atp.html">赛历</a><a class="hd-tab" href="atp_show.html">生涯统计</a><a class="hd-tab" href="h2h_atp.html">H2H</a></nav>
   <div class="hd-right">
     <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="atpkiller.html" aria-current="page">ATP</a><a class="hd-seg-btn" href="wtakiller.html">WTA</a><span class="hd-seg-btn" aria-disabled="true" tabindex="0" data-tip="杀手榜暂无联合页">联合</span></div>
-    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月27日 04:26:53</span><span class="hd-suffix"> 更新</span></span>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月28日 00:15:59</span><span class="hd-suffix"> 更新</span></span>
     <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
   </div>
 </header>
@@ -738,30 +760,33 @@ body.dark .theme-btn .ic-sun{display:block;}
       <span class="ttag ttag-all">历年总榜</span>
     
   </div>
-  
+  <div class="page-sub">不含年终总决赛(循环赛制、仅 8 人参赛)</div>
 </div>
 
 <div class="podium">
-<div class="pod-card p1">
+<div class="pod-card p1" data-detail="[&quot;2025北京|R1|米勒|76&quot;, &quot;2026香港|R2|迈克尔-莫|65&quot;, &quot;2026北京|1/4决赛|胡尔卡奇|49&quot;]" data-name="哈恰诺夫">
   <div class="pod-medal">#1</div>
   <div class="pod-name">哈恰诺夫</div>
   <div class="pod-kills">466</div>
   <div class="pod-kills-lbl">带走人数</div>
   <div class="pod-rate">杀人率 25.23%</div>
+  <div class="pod-hint">点击查看惨案</div>
 </div>
-<div class="pod-card p2">
+<div class="pod-card p2" data-detail="[&quot;2026温网|R3|施特鲁夫|61&quot;, &quot;2026多哈|R2|西西帕斯|38&quot;, &quot;2026法网|R1|沃尔顿|32&quot;]" data-name="梅德韦杰夫">
   <div class="pod-medal">#2</div>
   <div class="pod-name">梅德韦杰夫</div>
   <div class="pod-kills">433</div>
   <div class="pod-kills-lbl">带走人数</div>
   <div class="pod-rate">杀人率 24.67%</div>
+  <div class="pod-hint">点击查看惨案</div>
 </div>
-<div class="pod-card p3">
+<div class="pod-card p3" data-detail="[&quot;2026印第安维尔斯|R3|土方凛辉|65&quot;, &quot;2025北京|R1|曼纳里诺|50&quot;, &quot;2024蒙特卡洛|R1|丘里奇|42&quot;]" data-name="布勃利克">
   <div class="pod-medal">#3</div>
   <div class="pod-name">布勃利克</div>
   <div class="pod-kills">391</div>
   <div class="pod-kills-lbl">带走人数</div>
   <div class="pod-rate">杀人率 38.22%</div>
+  <div class="pod-hint">点击查看惨案</div>
 </div>
 </div>
 
@@ -781,7 +806,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <th>选择人数</th>
   </tr></thead>
   <tbody>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025北京|R1|米勒|76&quot;, &quot;2026香港|R2|迈克尔-莫|65&quot;, &quot;2026北京|1/4决赛|胡尔卡奇|49&quot;]">
     <td>1</td>
     <td>哈恰诺夫</td>
     <td>466</td>
@@ -789,7 +814,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>76</td>
     <td>1847</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R3|施特鲁夫|61&quot;, &quot;2026多哈|R2|西西帕斯|38&quot;, &quot;2026法网|R1|沃尔顿|32&quot;]">
     <td>2</td>
     <td>梅德韦杰夫</td>
     <td>433</td>
@@ -797,7 +822,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>61</td>
     <td>1755</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R3|土方凛辉|65&quot;, &quot;2025北京|R1|曼纳里诺|50&quot;, &quot;2024蒙特卡洛|R1|丘里奇|42&quot;]">
     <td>3</td>
     <td>布勃利克</td>
     <td>391</td>
@@ -805,7 +830,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>65</td>
     <td>1023</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R2|波佩林|84&quot;, &quot;2026多哈|半决赛|菲斯|55&quot;, &quot;2026北京|R2|弗-塞伦多洛|48&quot;]">
     <td>4</td>
     <td>门希克</td>
     <td>391</td>
@@ -813,7 +838,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>84</td>
     <td>1315</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿德莱德|R1|科基纳基斯|137&quot;, &quot;2025马赛|R1|维尔塔宁|95&quot;, &quot;2026澳网|R1|郑瑞|63&quot;]">
     <td>5</td>
     <td>科达</td>
     <td>390</td>
@@ -821,7 +846,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>137</td>
     <td>908</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026多哈|1/4决赛|菲斯|99&quot;, &quot;2025温网|R2|马-贝鲁奇|45&quot;, &quot;2026伦敦|R2|土方凛辉|40&quot;]">
     <td>6</td>
     <td>莱赫奇卡</td>
     <td>370</td>
@@ -829,7 +854,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>99</td>
     <td>1457</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R2|斯威尼|92&quot;, &quot;2026上海|R2|周意|56&quot;, &quot;2025巴黎|R2|索内戈|34&quot;]">
     <td>7</td>
     <td>穆塞蒂</td>
     <td>362</td>
@@ -837,23 +862,23 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>92</td>
     <td>1107</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025美网|R2|科利尼翁|56&quot;, &quot;2026辛辛那提|R2|奥康尼尔|49&quot;, &quot;2024奥运会|1/4决赛|阿利亚西姆|47&quot;]">
     <td>8</td>
     <td>鲁德</td>
     <td>360</td>
-    <td>32.79%</td>
+    <td>32.97%</td>
     <td>56</td>
-    <td>1098</td>
+    <td>1092</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R3|门希克|52&quot;, &quot;2025多哈|1/4决赛|卢布列夫|35&quot;, &quot;2025印第安维尔斯|R4|弗-塞伦多洛|32&quot;]">
     <td>9</td>
     <td>德米纳尔</td>
-    <td>340</td>
-    <td>15.79%</td>
+    <td>339</td>
+    <td>15.75%</td>
     <td>52</td>
-    <td>2153</td>
+    <td>2152</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025达拉斯|R1|诺里|84&quot;, &quot;2026蒙特利尔|R3|梅里达|70&quot;, &quot;2025马洛卡|半决赛|穆泰|34&quot;]">
     <td>10</td>
     <td>米克尔森</td>
     <td>335</td>
@@ -861,7 +886,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>84</td>
     <td>971</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R2|坂本怜|50&quot;, &quot;2026蒙特利尔|R2|商竣程|41&quot;, &quot;2026辛辛那提|R3|博尔热斯|40&quot;]">
     <td>11</td>
     <td>卢布列夫</td>
     <td>331</td>
@@ -869,7 +894,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>50</td>
     <td>1482</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024伊斯特本|R1|武基奇|63&quot;, &quot;2025美网|R1|布朗谢|44&quot;, &quot;2024罗马|R1|舍夫琴科|41&quot;]">
     <td>12</td>
     <td>毛罗然</td>
     <td>325</td>
@@ -877,7 +902,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>63</td>
     <td>962</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|阿特马纳|163&quot;, &quot;2025印第安维尔斯|R3|绵贯阳介|46&quot;, &quot;2026罗马|R3|佩莱格里诺|22&quot;]">
     <td>13</td>
     <td>蒂亚福</td>
     <td>320</td>
@@ -885,7 +910,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>163</td>
     <td>1785</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R2|科瓦切维奇|58&quot;, &quot;2024哈雷|R1|克普费尔|54&quot;, &quot;2026斯海尔托亨博斯|1/4决赛|迈赫扎克|47&quot;]">
     <td>14</td>
     <td>阿利亚西姆</td>
     <td>317</td>
@@ -893,7 +918,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>58</td>
     <td>1414</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025法网|R2|吉甘特|102&quot;, &quot;2026温斯顿塞勒姆|R3|科瓦切维奇|37&quot;, &quot;2026阿德莱德|R1|武基奇|29&quot;]">
     <td>15</td>
     <td>西西帕斯</td>
     <td>317</td>
@@ -901,7 +926,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>102</td>
     <td>1522</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|什瓦伊达|83&quot;, &quot;2024汉堡|R1|布朗谢|52&quot;, &quot;2026伊斯特本|R1|霍因斯基|51&quot;]">
     <td>16</td>
     <td>波佩林</td>
     <td>309</td>
@@ -909,7 +934,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>83</td>
     <td>896</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025北京|R2|勒纳-钱|66&quot;, &quot;2026澳网|R1|费里|50&quot;, &quot;2025印第安维尔斯|R1|科-史密斯|43&quot;]">
     <td>17</td>
     <td>科博利</td>
     <td>307</td>
@@ -917,7 +942,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>66</td>
     <td>1039</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R2|科普里瓦|111&quot;, &quot;2024杭州|R1|库库什金|78&quot;, &quot;2026印第安维尔斯|R2|土方凛辉|33&quot;]">
     <td>18</td>
     <td>达尔德里</td>
     <td>305</td>
@@ -925,7 +950,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>111</td>
     <td>832</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024辛辛那提|R1|科博利|93&quot;, &quot;2025温网|R2|奥夫纳|48&quot;, &quot;2026印第安维尔斯|R3|丰塞卡|29&quot;]">
     <td>19</td>
     <td>保罗</td>
     <td>297</td>
@@ -933,7 +958,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>93</td>
     <td>2360</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|高巴斯|123&quot;, &quot;2025马德里|R2|朱姆胡尔|62&quot;, &quot;2024蒙特卡洛|R1|施特鲁夫|38&quot;]">
     <td>20</td>
     <td>巴埃斯</td>
     <td>281</td>
@@ -941,7 +966,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>123</td>
     <td>593</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026迈阿密|R2|舍夫琴科|37&quot;, &quot;2026罗马|R2|巴斯拉什维利|36&quot;, &quot;2026华盛顿|1/4决赛|塔比洛|29&quot;]">
     <td>21</td>
     <td>谢尔顿</td>
     <td>279</td>
@@ -949,7 +974,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>37</td>
     <td>1355</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025蒙特卡洛|R1|加斯奎特|99&quot;, &quot;2026伊斯特本|R1|赫西|34&quot;, &quot;2024汉堡|R1|佩-马丁内斯|26&quot;]">
     <td>22</td>
     <td>阿纳尔迪</td>
     <td>273</td>
@@ -957,7 +982,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>99</td>
     <td>436</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024贝尔格莱德|R1|梅杰多维奇|63&quot;, &quot;2025香港|R1|索内戈|36&quot;, &quot;2025巴黎|R1|米勒|32&quot;]">
     <td>23</td>
     <td>中岛布兰登</td>
     <td>273</td>
@@ -965,7 +990,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>63</td>
     <td>1124</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|雅凯|139&quot;, &quot;2025温斯顿塞勒姆|R1|多斯塔尼奇|64&quot;, &quot;2025洛斯卡沃斯|R1|纳瓦|29&quot;]">
     <td>24</td>
     <td>武基奇</td>
     <td>270</td>
@@ -973,7 +998,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>139</td>
     <td>354</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|达姆|73&quot;, &quot;2026澳网|R2|奎因|45&quot;, &quot;2026温网|R4|施特鲁夫|39&quot;]">
     <td>25</td>
     <td>胡尔卡奇</td>
     <td>266</td>
@@ -981,7 +1006,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>73</td>
     <td>912</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025华盛顿|R1|什瓦伊达|50&quot;, &quot;2026基茨比厄尔|R1|巴埃斯|47&quot;, &quot;2026阿拉木图|Day 1||42&quot;]">
     <td>26</td>
     <td>凯茨曼诺维奇</td>
     <td>263</td>
@@ -989,7 +1014,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>50</td>
     <td>903</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|苏雷什|75&quot;, &quot;2026伦敦|R1|布塞|63&quot;, &quot;2026迈阿密|R1|兰达卢塞|43&quot;]">
     <td>27</td>
     <td>吉隆</td>
     <td>259</td>
@@ -997,7 +1022,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>75</td>
     <td>514</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024美网|R2|科梅萨纳|76&quot;, &quot;2025迪拜|R2|格里科斯普|36&quot;, &quot;2026蒙特利尔|R2|梅里达|28&quot;]">
     <td>28</td>
     <td>安贝尔</td>
     <td>232</td>
@@ -1005,7 +1030,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>76</td>
     <td>1488</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|R2|马哈奇|46&quot;, &quot;2026温网|R1|穆纳尔|22&quot;, &quot;2025迈阿密|1/4决赛|迪米特洛夫|20&quot;]">
     <td>29</td>
     <td>弗-塞伦多洛</td>
     <td>229</td>
@@ -1013,7 +1038,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>46</td>
     <td>1166</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025法网|R1|阿里斯|44&quot;, &quot;2025温网|R2|霍姆格伦|41&quot;, &quot;2025印第安维尔斯|R2|绵贯阳介|36&quot;]">
     <td>30</td>
     <td>马哈奇</td>
     <td>228</td>
@@ -1021,15 +1046,15 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>44</td>
     <td>616</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024蒙特卡洛|R1|穆塞蒂|44&quot;, &quot;2024温网|1/4决赛|穆塞蒂|40&quot;, &quot;2026美网|R3|弗-塞伦多洛|21&quot;]">
     <td>31</td>
     <td>弗里茨</td>
-    <td>228</td>
-    <td>18.61%</td>
+    <td>220</td>
+    <td>18.20%</td>
     <td>44</td>
-    <td>1225</td>
+    <td>1209</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024巴塞尔|R1|斯特里克|49&quot;, &quot;2026蒙彼利埃|1/4决赛|德罗盖|32&quot;, &quot;2026斯海尔托亨博斯|R2|张之臻|31&quot;]">
     <td>32</td>
     <td>格里科斯普</td>
     <td>219</td>
@@ -1037,7 +1062,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>49</td>
     <td>725</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025巴黎|R1|乌戈-卡拉贝利|84&quot;, &quot;2026罗马|R2|马-贝鲁奇|34&quot;, &quot;2025汉堡|半决赛|科博利|23&quot;]">
     <td>33</td>
     <td>埃切韦里</td>
     <td>217</td>
@@ -1045,7 +1070,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>84</td>
     <td>536</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|奥康尼尔|54&quot;, &quot;2026阿卡普尔科|R1|霍达尔|45&quot;, &quot;2024伊斯特本|R1|鲁苏武奥里|27&quot;]">
     <td>34</td>
     <td>诺里</td>
     <td>210</td>
@@ -1053,7 +1078,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>54</td>
     <td>904</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R2|费里|71&quot;, &quot;2026阿卡普尔科|R1|岛袋将|50&quot;, &quot;2025杭州|R1|吴易昺|31&quot;]">
     <td>35</td>
     <td>曼纳里诺</td>
     <td>205</td>
@@ -1061,15 +1086,15 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>71</td>
     <td>381</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026北京|1/4决赛|德约科维奇|51&quot;, &quot;2024奥运会|1/4决赛|穆塞蒂|42&quot;, &quot;2025汉堡|R2|米勒|20&quot;]">
     <td>36</td>
     <td>亚-兹韦列夫</td>
-    <td>205</td>
-    <td>14.08%</td>
+    <td>201</td>
+    <td>13.92%</td>
     <td>51</td>
-    <td>1456</td>
+    <td>1444</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025布加勒斯特|R1|加斯奎特|127&quot;, &quot;2026温斯顿塞勒姆|1/4决赛|邦齐|29&quot;, &quot;2026印第安维尔斯|R1|胡-塞伦多洛|15&quot;]">
     <td>37</td>
     <td>范德尚舒尔普</td>
     <td>197</td>
@@ -1077,7 +1102,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>127</td>
     <td>857</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R1|阿特马纳|33&quot;, &quot;2026温网|R4|费里|27&quot;, &quot;2024美网|1/4决赛|蒂亚福|25&quot;]">
     <td>38</td>
     <td>迪米特洛夫</td>
     <td>195</td>
@@ -1085,7 +1110,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>33</td>
     <td>660</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025蒙特卡洛|R1|瓦舍罗|76&quot;, &quot;2025汉堡|R1|恩格尔|70&quot;, &quot;2024美网|R1|杰雷|20&quot;]">
     <td>39</td>
     <td>施特鲁夫</td>
     <td>189</td>
@@ -1093,15 +1118,15 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>76</td>
     <td>526</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|决赛|辛纳|37&quot;, &quot;2025多哈|1/4决赛|莱赫奇卡|34&quot;, &quot;2026美网|1/4决赛|谢尔顿|31&quot;]">
     <td>40</td>
     <td>阿尔卡拉斯</td>
-    <td>186</td>
-    <td>17.99%</td>
+    <td>184</td>
+    <td>17.93%</td>
     <td>37</td>
-    <td>1034</td>
+    <td>1026</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025罗马|R1|布鲁查加|76&quot;, &quot;2025上海|R1|汉夫曼|64&quot;, &quot;2025澳网|1/4决赛|谢尔顿|8&quot;]">
     <td>41</td>
     <td>索内戈</td>
     <td>182</td>
@@ -1109,7 +1134,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>76</td>
     <td>577</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R1|博尔特|81&quot;, &quot;2026斯海尔托亨博斯|R2|博高|56&quot;, &quot;2026温斯顿塞勒姆|R1|科梅萨纳|28&quot;]">
     <td>42</td>
     <td>吴易昺</td>
     <td>180</td>
@@ -1117,7 +1142,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>81</td>
     <td>504</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R2|麦凯布|92&quot;, &quot;2025马德里|R1|迪亚洛|24&quot;, &quot;2026鹿特丹|R1|梅杰多维奇|12&quot;]">
     <td>43</td>
     <td>贝尔赫斯</td>
     <td>175</td>
@@ -1125,7 +1150,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>92</td>
     <td>901</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025辛辛那提|R1|黄泽林|63&quot;, &quot;2025华盛顿|R1|武基奇|22&quot;, &quot;2025巴黎|R1|迪米特洛夫|18&quot;]">
     <td>44</td>
     <td>姆佩奇-佩里卡尔</td>
     <td>173</td>
@@ -1133,7 +1158,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>63</td>
     <td>276</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿拉木图|Day 1||93&quot;, &quot;2026北京|R1|施特鲁夫|49&quot;, &quot;2026法网|R3|卡雷尼奥-布斯塔|11&quot;]">
     <td>45</td>
     <td>蒂兰特</td>
     <td>171</td>
@@ -1141,7 +1166,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>93</td>
     <td>445</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024贝尔格莱德|R1|毛罗然|56&quot;, &quot;2026华盛顿|R1|锦织圭|45&quot;, &quot;2024北京|R1|布云朝克特|21&quot;]">
     <td>46</td>
     <td>商竣程</td>
     <td>170</td>
@@ -1149,7 +1174,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>56</td>
     <td>489</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|R2|黄泽林|84&quot;, &quot;2026阿德莱德|R1|瓦瓦索里|53&quot;, &quot;2025马洛卡|1/4决赛|格里科斯普|9&quot;]">
     <td>47</td>
     <td>迪亚洛</td>
     <td>168</td>
@@ -1157,7 +1182,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>84</td>
     <td>431</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|斯特里克|84&quot;, &quot;2026伊斯特本|R1|贝尔赫斯|24&quot;, &quot;2025温斯顿塞勒姆|1/4决赛|富乔维奇|16&quot;]">
     <td>48</td>
     <td>穆纳尔</td>
     <td>166</td>
@@ -1165,7 +1190,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>84</td>
     <td>508</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|周意|93&quot;, &quot;2025迈阿密|R1|曾俊欣|66&quot;, &quot;2026阿卡普尔科|1/4决赛|蒂亚福|3&quot;]">
     <td>49</td>
     <td>马-贝鲁奇</td>
     <td>165</td>
@@ -1173,7 +1198,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>93</td>
     <td>182</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025杭州|R1|斯夫尔奇纳|54&quot;, &quot;2025温网|R1|迈赫扎克|20&quot;, &quot;2025多哈|1/4决赛|德雷珀|17&quot;]">
     <td>50</td>
     <td>贝雷蒂尼</td>
     <td>165</td>
@@ -1181,7 +1206,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>54</td>
     <td>913</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|登奥登|127&quot;, &quot;2025上海|R1|穆纳尔|14&quot;, &quot;2025迪拜|R1|纳尔迪|4&quot;]">
     <td>51</td>
     <td>富乔维奇</td>
     <td>159</td>
@@ -1189,7 +1214,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>127</td>
     <td>370</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿拉木图|Day 2||34&quot;, &quot;2025阿德莱德|R1|吉纳尔|21&quot;, &quot;2024哈雷|R1|毛罗然|21&quot;]">
     <td>52</td>
     <td>萨菲乌林</td>
     <td>153</td>
@@ -1197,7 +1222,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>34</td>
     <td>445</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R3|萨菲乌林|56&quot;, &quot;2025多伦多|R1|斯库尔凯特|21&quot;, &quot;2026法网|1/4决赛|门希克|14&quot;]">
     <td>53</td>
     <td>丰塞卡</td>
     <td>153</td>
@@ -1205,7 +1230,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>56</td>
     <td>873</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026澳网|1/4决赛|亚-兹韦列夫|26&quot;, &quot;2026迈阿密|R2|迈赫扎克|25&quot;, &quot;2025马洛卡|1/4决赛|穆泰|20&quot;]">
     <td>54</td>
     <td>勒纳-钱</td>
     <td>153</td>
@@ -1213,7 +1238,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>26</td>
     <td>907</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|1/4决赛|莫尔坎|30&quot;, &quot;2025温网|R1|纳沃内|28&quot;, &quot;2026斯海尔托亨博斯|R1|西里奇|11&quot;]">
     <td>55</td>
     <td>沙波瓦洛夫</td>
     <td>152</td>
@@ -1221,7 +1246,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>30</td>
     <td>511</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025阿德莱德|R1|沙波瓦洛夫|38&quot;, &quot;2025杭州|R2|斯夫尔奇纳|19&quot;, &quot;2024斯图加特|R1|克普费尔|18&quot;]">
     <td>56</td>
     <td>张之臻</td>
     <td>151</td>
@@ -1229,7 +1254,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>467</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024上海|R1|卡尔巴耶斯|27&quot;, &quot;2025迪拜|R1|博尔热斯|22&quot;, &quot;2026多哈|决赛|阿尔卡拉斯|16&quot;]">
     <td>57</td>
     <td>菲斯</td>
     <td>148</td>
@@ -1237,7 +1262,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>27</td>
     <td>1003</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R1|胡-塞伦多洛|95&quot;, &quot;2026基茨比厄尔|R1|阿尔特迈尔|32&quot;, &quot;2026辛辛那提|R1|纳沃内|9&quot;]">
     <td>58</td>
     <td>科利尼翁</td>
     <td>143</td>
@@ -1245,7 +1270,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>95</td>
     <td>415</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024阿拉木图|R1|恩格尔|129&quot;, &quot;2026辛辛那提|R1|阿尔特迈尔|5&quot;, &quot;2026上海|R1|阿里斯|2&quot;]">
     <td>59</td>
     <td>黄泽林</td>
     <td>140</td>
@@ -1253,7 +1278,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>129</td>
     <td>190</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|夸梅|26&quot;, &quot;2025马德里|R1|邦齐|25&quot;, &quot;2026阿拉木图|Day 1||22&quot;]">
     <td>60</td>
     <td>西里奇</td>
     <td>140</td>
@@ -1261,7 +1286,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>26</td>
     <td>270</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R1|麦克唐纳|76&quot;, &quot;2026斯海尔托亨博斯|R1|张之臻|26&quot;, &quot;2025华盛顿|R1|西冈良仁|18&quot;]">
     <td>61</td>
     <td>布鲁克斯比</td>
     <td>137</td>
@@ -1269,7 +1294,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>76</td>
     <td>221</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R3|望月慎太郎|77&quot;, &quot;2026美网|R2|布云朝克特|29&quot;, &quot;2026辛辛那提|R4|科博利|20&quot;]">
     <td>62</td>
     <td>霍达尔</td>
     <td>137</td>
@@ -1277,7 +1302,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>77</td>
     <td>553</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|特兰杰里迪|83&quot;, &quot;2026伊斯特本|1/4决赛|塞缪尔|16&quot;, &quot;2026格施塔德|半决赛|科利尼翁|12&quot;]">
     <td>63</td>
     <td>胡-塞伦多洛</td>
     <td>134</td>
@@ -1285,7 +1310,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>83</td>
     <td>328</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025罗马|R2|德容|24&quot;, &quot;2025印第安维尔斯|R1|麦克唐纳|22&quot;, &quot;2025香港|R1|穆纳尔|20&quot;]">
     <td>64</td>
     <td>达维多维奇</td>
     <td>132</td>
@@ -1293,7 +1318,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>24</td>
     <td>1156</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026马德里|R1|沃尔顿|74&quot;, &quot;2026蒙特利尔|R1|梅希亚|20&quot;, &quot;2026温网|R1|权纯雨|14&quot;]">
     <td>65</td>
     <td>兰达卢塞</td>
     <td>131</td>
@@ -1301,7 +1326,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>74</td>
     <td>212</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025多伦多|R4|波佩林|61&quot;, &quot;2024杭州|R2|内山靖崇|12&quot;, &quot;2025蒙特卡洛|R1|博尔热斯|10&quot;]">
     <td>66</td>
     <td>鲁内</td>
     <td>129</td>
@@ -1309,7 +1334,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>61</td>
     <td>617</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025蒙彼利埃|R2|德容|49&quot;, &quot;2026格施塔德|1/4决赛|舍夫琴科|22&quot;, &quot;2025洛斯卡沃斯|R2|菲科维奇|20&quot;]">
     <td>67</td>
     <td>阿里斯</td>
     <td>127</td>
@@ -1317,7 +1342,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>49</td>
     <td>392</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025法网|R4|布勃利克|37&quot;, &quot;2024法网|R1|德容|26&quot;, &quot;2026辛辛那提|R1|兰达卢塞|22&quot;]">
     <td>68</td>
     <td>德雷珀</td>
     <td>124</td>
@@ -1325,7 +1350,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>37</td>
     <td>809</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|1/4决赛|科利尼翁|43&quot;, &quot;2026马德里|R2|纳瓦|24&quot;, &quot;2026辛辛那提|R2|巴列霍|23&quot;]">
     <td>69</td>
     <td>瓦舍罗</td>
     <td>121</td>
@@ -1333,7 +1358,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>43</td>
     <td>387</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|费尔德鲍施|71&quot;, &quot;2026法网|R2|夸梅|25&quot;, &quot;2026蒙特利尔|R1|商竣程|10&quot;]">
     <td>70</td>
     <td>巴列霍</td>
     <td>118</td>
@@ -1341,7 +1366,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>71</td>
     <td>179</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R1|孟菲尔斯|82&quot;, &quot;2026伦敦|R1|莱赫奇卡|11&quot;, &quot;2026杭州|R2|布云朝克特|11&quot;]">
     <td>71</td>
     <td>迈赫扎克</td>
     <td>118</td>
@@ -1349,7 +1374,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>82</td>
     <td>281</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026华盛顿|R1|武基奇|38&quot;, &quot;2026迈阿密|R1|夸梅|34&quot;, &quot;2026辛辛那提|R1|马-贝鲁奇|29&quot;]">
     <td>72</td>
     <td>什瓦伊达</td>
     <td>112</td>
@@ -1357,7 +1382,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>122</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025杭州|半决赛|鲁瓦耶|28&quot;, &quot;2025马德里|R1|马约|20&quot;, &quot;2026美网|R1|斯威尼|10&quot;]">
     <td>73</td>
     <td>穆泰</td>
     <td>107</td>
@@ -1365,7 +1390,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>393</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025罗马|R1|维尔塔宁|31&quot;, &quot;2025温斯顿塞勒姆|1/4决赛|姆佩奇-佩里卡尔|19&quot;, &quot;2026辛辛那提|R1|特兰杰里迪|16&quot;]">
     <td>74</td>
     <td>梅杰多维奇</td>
     <td>103</td>
@@ -1373,7 +1398,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>31</td>
     <td>310</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025洛斯卡沃斯|R1|亚-埃尔南德斯|100&quot;, &quot;2025澳网|R1|斯库尔凯特|1&quot;, &quot;2024美网|R1|斯库尔凯特|1&quot;]">
     <td>75</td>
     <td>丹尼尔太郎</td>
     <td>102</td>
@@ -1381,7 +1406,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>100</td>
     <td>111</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025澳网|R1|哈比卜|29&quot;, &quot;2025马洛卡|R1|杰雷|19&quot;, &quot;2025杭州|R1|张之臻|15&quot;]">
     <td>76</td>
     <td>布云朝克特</td>
     <td>97</td>
@@ -1389,15 +1414,15 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>29</td>
     <td>333</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024温网|1/4决赛|梅德韦杰夫|39&quot;, &quot;2026多哈|1/4决赛|门希克|15&quot;, &quot;2026澳网|半决赛|德约科维奇|12&quot;]">
     <td>77</td>
     <td>辛纳</td>
     <td>95</td>
-    <td>9.66%</td>
+    <td>9.82%</td>
     <td>39</td>
-    <td>983</td>
+    <td>967</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025阿德莱德|R1|达维多维奇|36&quot;, &quot;2025汉堡|1/4决赛|科博利|12&quot;, &quot;2025印第安维尔斯|R1|朱姆胡尔|11&quot;]">
     <td>78</td>
     <td>包蒂斯塔-阿古特</td>
     <td>88</td>
@@ -1405,7 +1430,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>36</td>
     <td>322</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|1/4决赛|西西帕斯|24&quot;, &quot;2026伦敦|R1|梅杰多维奇|8&quot;, &quot;2025阿德莱德|R1|奥康尼尔|8&quot;]">
     <td>79</td>
     <td>林德克内希</td>
     <td>86</td>
@@ -1413,7 +1438,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>24</td>
     <td>412</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R2|莫尔坎|21&quot;, &quot;2025迈阿密|R1|黄泽林|18&quot;, &quot;2025蒙彼利埃|R1|布云朝克特|9&quot;]">
     <td>80</td>
     <td>阿尔特迈尔</td>
     <td>82</td>
@@ -1421,7 +1446,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>21</td>
     <td>279</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024马德里|R1|达尔德里|33&quot;, &quot;2025多伦多|R1|巴里奥斯|17&quot;, &quot;2025华盛顿|R1|吴易昺|12&quot;]">
     <td>81</td>
     <td>孟菲尔斯</td>
     <td>81</td>
@@ -1429,7 +1454,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>33</td>
     <td>378</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|科基纳基斯|38&quot;, &quot;2026斯海尔托亨博斯|R1|博尔热斯|6&quot;, &quot;2026澳网|R1|马埃斯特雷利|5&quot;]">
     <td>82</td>
     <td>阿特马纳</td>
     <td>79</td>
@@ -1437,7 +1462,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>154</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|1/4决赛|科瓦切维奇|41&quot;, &quot;2026罗马|R1|舍夫琴科|10&quot;, &quot;2025马德里|R1|奥康尼尔|10&quot;]">
     <td>83</td>
     <td>乌戈-卡拉贝利</td>
     <td>78</td>
@@ -1445,7 +1470,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>41</td>
     <td>108</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|R1|迈克尔-莫|30&quot;, &quot;2026伦敦|R1|土方凛辉|14&quot;, &quot;2024法网|R1|贝尔赫斯|13&quot;]">
     <td>84</td>
     <td>塔比洛</td>
     <td>78</td>
@@ -1453,7 +1478,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>30</td>
     <td>234</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|半决赛|布塞|20&quot;, &quot;2026休斯顿|R1|土方凛辉|14&quot;, &quot;2025杭州|R2|鲁瓦耶|10&quot;]">
     <td>85</td>
     <td>科瓦切维奇</td>
     <td>73</td>
@@ -1461,7 +1486,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>20</td>
     <td>248</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿拉木图|Day 1||72&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>86</td>
     <td>萨克拉里迪斯</td>
     <td>72</td>
@@ -1469,7 +1494,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>72</td>
     <td>72</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|鲁瓦耶|46&quot;, &quot;2025温斯顿塞勒姆|R1|范德尚舒尔普|8&quot;, &quot;2025洛斯卡沃斯|半决赛|沙波瓦洛夫|5&quot;]">
     <td>87</td>
     <td>沃尔顿</td>
     <td>69</td>
@@ -1477,7 +1502,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>46</td>
     <td>89</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025辛辛那提|R1|佩-马丁内斯|18&quot;, &quot;2024法网|R1|穆泰|11&quot;, &quot;2025温网|R4|诺里|8&quot;]">
     <td>88</td>
     <td>贾里</td>
     <td>65</td>
@@ -1485,7 +1510,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>18</td>
     <td>89</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025香港|R2|穆纳尔|17&quot;, &quot;2026蒙特利尔|R4|达尔德里|14&quot;, &quot;2025辛辛那提|R1|林德克内希|6&quot;]">
     <td>89</td>
     <td>博尔热斯</td>
     <td>63</td>
@@ -1493,7 +1518,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>17</td>
     <td>537</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025辛辛那提|R1|巴埃斯|16&quot;, &quot;2025北京|R1|林德克内希|16&quot;, &quot;2025华盛顿|R1|布云朝克特|7&quot;]">
     <td>90</td>
     <td>戈芬</td>
     <td>61</td>
@@ -1501,7 +1526,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>16</td>
     <td>65</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R1|纳沃内|23&quot;, &quot;2026辛辛那提|R2|蒂兰特|12&quot;, &quot;2025多哈|R1|贝雷蒂尼|10&quot;]">
     <td>91</td>
     <td>德约科维奇</td>
     <td>60</td>
@@ -1509,7 +1534,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>23</td>
     <td>889</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|曼纳里诺|30&quot;, &quot;2025多伦多|R1|武基奇|6&quot;, &quot;2025汉堡|R1|弗-塞伦多洛|4&quot;]">
     <td>92</td>
     <td>佩-马丁内斯</td>
     <td>58</td>
@@ -1517,7 +1542,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>30</td>
     <td>106</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025马赛|R1|范阿舍|19&quot;, &quot;2025马洛卡|R2|霍尔特|14&quot;, &quot;2025多伦多|R1|沃尔顿|6&quot;]">
     <td>93</td>
     <td>邦齐</td>
     <td>55</td>
@@ -1525,7 +1550,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>19</td>
     <td>227</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024法网|R1|加斯奎特|18&quot;, &quot;2025蒙彼利埃|R1|莱斯蒂耶纳|14&quot;, &quot;2025温斯顿塞勒姆|R1|达尔文-布兰奇|7&quot;]">
     <td>94</td>
     <td>丘里奇</td>
     <td>49</td>
@@ -1533,7 +1558,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>18</td>
     <td>159</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025布加勒斯特|R1|日亚努|38&quot;, &quot;2025洛斯卡沃斯|R2|沃尔顿|4&quot;, &quot;2025印第安维尔斯|R1|布云朝克特|3&quot;]">
     <td>95</td>
     <td>巴萨瓦雷迪</td>
     <td>46</td>
@@ -1541,7 +1566,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>38</td>
     <td>80</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R2|望月慎太郎|24&quot;, &quot;2026汉堡|R1|保罗|13&quot;, &quot;2025迈阿密|R1|斯库尔凯特|3&quot;]">
     <td>96</td>
     <td>奎因</td>
     <td>45</td>
@@ -1549,7 +1574,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>24</td>
     <td>111</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024汉堡|R1|特兰杰里迪|19&quot;, &quot;2024罗马|R1|西冈良仁|9&quot;, &quot;2025温斯顿塞勒姆|R1|科普里瓦|7&quot;]">
     <td>97</td>
     <td>奥夫纳</td>
     <td>45</td>
@@ -1557,7 +1582,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>19</td>
     <td>150</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025马洛卡|R2|托米奇|20&quot;, &quot;2026伦敦|1/4决赛|安贝尔|9&quot;, &quot;2025澳网|R1|克鲁格|8&quot;]">
     <td>98</td>
     <td>土方凛辉</td>
     <td>44</td>
@@ -1565,7 +1590,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>20</td>
     <td>166</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024杭州|R2|库库什金|19&quot;, &quot;2026格施塔德|半决赛|西西帕斯|16&quot;, &quot;2025上海|R1|西冈良仁|2&quot;]">
     <td>99</td>
     <td>舍夫琴科</td>
     <td>43</td>
@@ -1573,7 +1598,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>19</td>
     <td>166</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025迈阿密|R1|奇纳|31&quot;, &quot;2026罗马|R1|施特鲁夫|3&quot;, &quot;2025法网|R1|卡雷尼奥-布斯塔|3&quot;]">
     <td>100</td>
     <td>科梅萨纳</td>
     <td>42</td>
@@ -1581,7 +1606,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>31</td>
     <td>62</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|1/4决赛|阿里斯|19&quot;, &quot;2025杭州|R1|勒纳-钱|6&quot;, &quot;2026美网|R3|埃切韦里|2&quot;]">
     <td>101</td>
     <td>纳沃内</td>
     <td>39</td>
@@ -1589,7 +1614,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>19</td>
     <td>292</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024法网|R1|权纯雨|39&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>102</td>
     <td>鲁苏武奥里</td>
     <td>39</td>
@@ -1597,7 +1622,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>39</td>
     <td>39</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025上海|R1|戈芬|11&quot;, &quot;2026香港|R2|吉隆|7&quot;, &quot;2026格施塔德|R1|舍夫琴科|6&quot;]">
     <td>103</td>
     <td>米勒</td>
     <td>38</td>
@@ -1605,7 +1630,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>11</td>
     <td>212</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025迈阿密|R1|基里奥斯|28&quot;, &quot;2026温网|R1|基普森|6&quot;, &quot;2025辛辛那提|R1|穆泰|1&quot;]">
     <td>104</td>
     <td>麦克唐纳</td>
     <td>36</td>
@@ -1613,7 +1638,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>83</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|包蒂斯塔-阿古特|28&quot;, &quot;2025迈阿密|R1|卡尔巴耶斯|4&quot;, &quot;2026澳网|R1|巴萨瓦雷迪|1&quot;]">
     <td>105</td>
     <td>奥康尼尔</td>
     <td>36</td>
@@ -1621,7 +1646,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>160</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R2|加斯东|32&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>106</td>
     <td>法里亚</td>
     <td>32</td>
@@ -1629,7 +1654,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>32</td>
     <td>58</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025马洛卡|R1|阿尔特迈尔|27&quot;, &quot;2024巴黎|R1|布勃利克|2&quot;, &quot;2025马德里|R1|杰雷|1&quot;]">
     <td>107</td>
     <td>弗尼尼</td>
     <td>31</td>
@@ -1637,7 +1662,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>27</td>
     <td>38</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|阿里斯|7&quot;, &quot;2025布加勒斯特|R1|纳沃内|6&quot;, &quot;2024伊斯特本|R1|马-普塞尔|6&quot;]">
     <td>108</td>
     <td>杰雷</td>
     <td>29</td>
@@ -1645,7 +1670,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>7</td>
     <td>132</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|半决赛|贝尔赫斯|28&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>109</td>
     <td>塞缪尔</td>
     <td>28</td>
@@ -1653,7 +1678,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>28</td>
     <td>37</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025迪拜|1/4决赛|阿里斯|9&quot;, &quot;2026蒙彼利埃|1/4决赛|达姆|5&quot;, &quot;2025印第安维尔斯|R1|诺里|3&quot;]">
     <td>110</td>
     <td>纳尔迪</td>
     <td>27</td>
@@ -1661,7 +1686,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>37</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|布鲁克斯比|21&quot;, &quot;2026印第安维尔斯|R1|乌戈-卡拉贝利|4&quot;, &quot;2026蒙彼利埃|半决赛|曼纳里诺|1&quot;]">
     <td>111</td>
     <td>达姆</td>
     <td>26</td>
@@ -1669,7 +1694,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>21</td>
     <td>80</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|奥康尼尔|15&quot;, &quot;2025多伦多|R1|尼-阿瑟诺|5&quot;, &quot;2026香港|R1|埃切韦里|2&quot;]">
     <td>112</td>
     <td>鲁瓦耶</td>
     <td>24</td>
@@ -1677,7 +1702,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>15</td>
     <td>143</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025洛斯卡沃斯|R1|菲科维奇|23&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>113</td>
     <td>卡奇马佐夫</td>
     <td>23</td>
@@ -1685,7 +1710,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>23</td>
     <td>23</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025多伦多|R1|菲科维奇|9&quot;, &quot;2024伊斯特本|R1|比-哈里斯|6&quot;, &quot;2026澳网|R1|迈赫扎克|1&quot;]">
     <td>114</td>
     <td>费恩利</td>
     <td>20</td>
@@ -1693,7 +1718,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>45</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|马-贝鲁奇|17&quot;, &quot;2026休斯顿|决赛|保罗|2&quot;, &quot;2026辛辛那提|R1|施特鲁夫|1&quot;]">
     <td>115</td>
     <td>布鲁查加</td>
     <td>20</td>
@@ -1701,7 +1726,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>17</td>
     <td>55</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025蒙彼利埃|R1|卡佐|12&quot;, &quot;2026格施塔德|R1|法里亚|3&quot;, &quot;2024美网|R1|马-贝鲁奇|2&quot;]">
     <td>116</td>
     <td>瓦林卡</td>
     <td>19</td>
@@ -1709,7 +1734,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>12</td>
     <td>55</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R2|谢尔顿|6&quot;, &quot;2026美网|1/4决赛|哈恰诺夫|5&quot;, &quot;2026马德里|半决赛|亚-兹韦列夫|4&quot;]">
     <td>117</td>
     <td>布洛克斯</td>
     <td>19</td>
@@ -1717,7 +1742,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>505</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024罗马|R1|武基奇|19&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>118</td>
     <td>施瓦茨曼</td>
     <td>19</td>
@@ -1725,7 +1750,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>19</td>
     <td>19</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024巴塞尔|R1|姆佩奇-佩里卡尔|5&quot;, &quot;2025洛斯卡沃斯|1/4决赛|沃尔顿|4&quot;, &quot;2024温斯顿塞勒姆|R1|维尔吉|4&quot;]">
     <td>119</td>
     <td>达克沃斯</td>
     <td>18</td>
@@ -1733,7 +1758,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>92</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025温斯顿塞勒姆|R2|巴埃斯|9&quot;, &quot;2026温斯顿塞勒姆|R1|巴列霍|2&quot;, &quot;2026蒙特利尔|R2|鲁瓦耶|2&quot;]">
     <td>120</td>
     <td>卡雷尼奥-布斯塔</td>
     <td>18</td>
@@ -1741,7 +1766,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>93</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|1/4决赛|曼纳里诺|10&quot;, &quot;2026美网|R4|范德尚舒尔普|3&quot;, &quot;2026汉堡|R2|科瓦切维奇|2&quot;]">
     <td>121</td>
     <td>热亚</td>
     <td>17</td>
@@ -1749,7 +1774,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>10</td>
     <td>214</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|布洛克斯|10&quot;, &quot;2026基茨比厄尔|半决赛|阿里斯|5&quot;, &quot;2026格施塔德|R2|瓦舍罗|1&quot;]">
     <td>122</td>
     <td>汉夫曼</td>
     <td>17</td>
@@ -1757,7 +1782,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>10</td>
     <td>403</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024奥运会|R1|马特勒|5&quot;, &quot;2025法网|R1|舍夫琴科|4&quot;, &quot;2024马德里|R1|蒙泰罗|4&quot;]">
     <td>123</td>
     <td>拉约维奇</td>
     <td>17</td>
@@ -1765,7 +1790,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>60</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|西西帕斯|6&quot;, &quot;2026罗马|R2|蒂亚福|3&quot;, &quot;2026北京|R1|阿里斯|2&quot;]">
     <td>124</td>
     <td>布塞</td>
     <td>15</td>
@@ -1773,7 +1798,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>232</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|布塞|6&quot;, &quot;2026罗马|R2|安贝尔|3&quot;, &quot;2026慕尼黑|1/4决赛|科博利|3&quot;]">
     <td>125</td>
     <td>科普里瓦</td>
     <td>15</td>
@@ -1781,7 +1806,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>65</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R2|迈赫扎克|6&quot;, &quot;2025马赛|R2|阿尔特迈尔|6&quot;, &quot;2026温网|R2|费里|1&quot;]">
     <td>126</td>
     <td>维尔塔宁</td>
     <td>14</td>
@@ -1789,7 +1814,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>16</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025达拉斯|R1|迈克尔-莫|12&quot;, &quot;2025印第安维尔斯|R1|奥康尼尔|1&quot;, &quot;2024马德里|R2|布勃利克|1&quot;]">
     <td>127</td>
     <td>卡尔巴耶斯</td>
     <td>14</td>
@@ -1797,7 +1822,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>12</td>
     <td>29</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025辛辛那提|R1|阿特马纳|5&quot;, &quot;2025阿德莱德|R1|科基纳基斯|3&quot;, &quot;2024杭州|R2|西里奇|3&quot;]">
     <td>128</td>
     <td>西冈良仁</td>
     <td>14</td>
@@ -1805,7 +1830,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>122</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024汉堡|R1|加斯东|9&quot;, &quot;2024马德里|R1|沙波瓦洛夫|4&quot;, &quot;-&quot;]">
     <td>129</td>
     <td>迪亚斯-阿科斯塔</td>
     <td>13</td>
@@ -1813,7 +1838,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>40</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024温斯顿塞勒姆|R1|贝尔赫斯|5&quot;, &quot;2026法网|R1|奇纳|1&quot;, &quot;2025上海|R1|邦齐|1&quot;]">
     <td>130</td>
     <td>奥佩尔卡</td>
     <td>12</td>
@@ -1821,7 +1846,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>233</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024阿拉木图|R1|马特勒|5&quot;, &quot;2026阿德莱德|R1|舍夫琴科|2&quot;, &quot;2025罗马|R1|高巴斯|2&quot;]">
     <td>131</td>
     <td>朱姆胡尔</td>
     <td>12</td>
@@ -1829,7 +1854,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>68</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|沙波瓦洛夫|10&quot;, &quot;2026休斯顿|R1|张之臻|2&quot;, &quot;-&quot;]">
     <td>132</td>
     <td>平宁顿</td>
     <td>12</td>
@@ -1837,7 +1862,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>10</td>
     <td>73</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025辛辛那提|R1|曼纳里诺|3&quot;, &quot;2025澳网|R2|博尔热斯|2&quot;, &quot;2025印第安维尔斯|R1|穆泰|1&quot;]">
     <td>133</td>
     <td>汤普森</td>
     <td>11</td>
@@ -1845,7 +1870,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>141</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024法网|R1|孟菲尔斯|4&quot;, &quot;2024温斯顿塞勒姆|R3|勒纳-钱|4&quot;, &quot;2025迈阿密|R1|阿里斯|3&quot;]">
     <td>134</td>
     <td>维尔吉</td>
     <td>11</td>
@@ -1853,7 +1878,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>30</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|半决赛|卢布列夫|8&quot;, &quot;2026辛辛那提|R1|巴列霍|3&quot;, &quot;-&quot;]">
     <td>135</td>
     <td>雅凯</td>
     <td>11</td>
@@ -1861,7 +1886,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>8</td>
     <td>35</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024哈雷|1/4决赛|张之臻|4&quot;, &quot;2024奥运会|R1|哈桑|2&quot;, &quot;2024斯图加特|R1|中岛布兰登|2&quot;]">
     <td>136</td>
     <td>尤班克斯</td>
     <td>11</td>
@@ -1869,7 +1894,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>89</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025洛斯卡沃斯|R1|阿尔瓦雷斯|9&quot;, &quot;2024伊斯特本|R1|维尔吉|1&quot;, &quot;-&quot;]">
     <td>137</td>
     <td>麦凯布</td>
     <td>10</td>
@@ -1877,7 +1902,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>9</td>
     <td>11</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|什瓦伊达|8&quot;, &quot;2026马德里|R1|梅里达|1&quot;, &quot;2026基茨比厄尔|R2|汉夫曼|1&quot;]">
     <td>138</td>
     <td>特兰杰里迪</td>
     <td>10</td>
@@ -1885,7 +1910,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>8</td>
     <td>12</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿拉木图|Day 7||8&quot;, &quot;2025上海|R1|西里奇|1&quot;, &quot;2025印第安维尔斯|R1|吉隆|1&quot;]">
     <td>139</td>
     <td>巴斯拉什维利</td>
     <td>10</td>
@@ -1893,7 +1918,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>8</td>
     <td>35</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026印第安维尔斯|R1|科普里瓦|3&quot;, &quot;2026上海|R1|吴易昺|2&quot;, &quot;2026杭州|R1|布云朝克特|2&quot;]">
     <td>140</td>
     <td>郑瑞</td>
     <td>10</td>
@@ -1901,7 +1926,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>41</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025蒙彼利埃|R1|克普费尔|10&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>141</td>
     <td>巴雷尔</td>
     <td>10</td>
@@ -1909,7 +1934,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>10</td>
     <td>10</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙彼利埃|R1|布朗谢|10&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>142</td>
     <td>瓦瓦索里</td>
     <td>10</td>
@@ -1917,7 +1942,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>10</td>
     <td>10</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|R1|德罗盖|8&quot;, &quot;2024温网|R1|弗尼尼|1&quot;, &quot;-&quot;]">
     <td>143</td>
     <td>范阿舍</td>
     <td>9</td>
@@ -1925,7 +1950,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>8</td>
     <td>36</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024上海|R1|维尔吉|4&quot;, &quot;2024温斯顿塞勒姆|R1|武基奇|2&quot;, &quot;2025迪拜|R1|哈恰诺夫|1&quot;]">
     <td>144</td>
     <td>埃文斯</td>
     <td>8</td>
@@ -1933,7 +1958,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>90</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025马德里|R1|奥夫纳|4&quot;, &quot;2024杭州|R1|布云朝克特|4&quot;, &quot;-&quot;]">
     <td>145</td>
     <td>加斯东</td>
     <td>8</td>
@@ -1941,7 +1966,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>14</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024温斯顿塞勒姆|1/4决赛|索内戈|6&quot;, &quot;2024上海|R1|绵贯阳介|2&quot;, &quot;-&quot;]">
     <td>146</td>
     <td>科托夫</td>
     <td>8</td>
@@ -1949,7 +1974,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>142</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R1|武基奇|8&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>147</td>
     <td>基普森</td>
     <td>8</td>
@@ -1957,7 +1982,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>8</td>
     <td>8</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025洛斯卡沃斯|R1|南达|5&quot;, &quot;2026休斯顿|R1|蒂兰特|2&quot;, &quot;2025华盛顿|R1|麦克唐纳|1&quot;]">
     <td>148</td>
     <td>科-史密斯</td>
     <td>8</td>
@@ -1965,7 +1990,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>8</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|1/4决赛|弗-塞伦多洛|4&quot;, &quot;2026伊斯特本|R2|胡-塞伦多洛|3&quot;, &quot;-&quot;]">
     <td>149</td>
     <td>费里</td>
     <td>7</td>
@@ -1973,7 +1998,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>201</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|半决赛|谢尔顿|6&quot;, &quot;2026基茨比厄尔|1/4决赛|布勃利克|1&quot;, &quot;-&quot;]">
     <td>150</td>
     <td>莫尔坎</td>
     <td>7</td>
@@ -1981,7 +2006,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>50</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特利尔|1/4决赛|勒纳-钱|3&quot;, &quot;2026罗马|R1|巴斯拉什维利|2&quot;, &quot;2026美网|R3|米克尔森|2&quot;]">
     <td>151</td>
     <td>梅里达</td>
     <td>7</td>
@@ -1989,7 +2014,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>55</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026汉堡|R1|蒂亚福|7&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>152</td>
     <td>德杜拉</td>
     <td>7</td>
@@ -1997,7 +2022,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>7</td>
     <td>7</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025蒙彼利埃|R1|马-贝鲁奇|7&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>153</td>
     <td>普伊</td>
     <td>7</td>
@@ -2005,7 +2030,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>7</td>
     <td>7</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026香港|1/4决赛|吉隆|7&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>154</td>
     <td>迈克尔-莫</td>
     <td>7</td>
@@ -2013,7 +2038,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>7</td>
     <td>7</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024马德里|R1|毛罗然|4&quot;, &quot;2024杭州|R1|马-贝鲁奇|2&quot;, &quot;-&quot;]">
     <td>155</td>
     <td>卡拉采夫</td>
     <td>6</td>
@@ -2021,7 +2046,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>11</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伦敦|R1|范德尚舒尔普|6&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>156</td>
     <td>温德尔肯</td>
     <td>6</td>
@@ -2029,7 +2054,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>6</td>
     <td>6</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025迈阿密|R1|乌戈-卡拉贝利|4&quot;, &quot;2025温斯顿塞勒姆|R1|麦克唐纳|2&quot;, &quot;-&quot;]">
     <td>157</td>
     <td>霍尔特</td>
     <td>6</td>
@@ -2037,7 +2062,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>6</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026伊斯特本|R2|阿里斯|5&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>158</td>
     <td>赫西</td>
     <td>5</td>
@@ -2045,7 +2070,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>5</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025马洛卡|R1|勒纳-钱|4&quot;, &quot;2026慕尼黑|R1|科普里瓦|1&quot;, &quot;-&quot;]">
     <td>159</td>
     <td>恩格尔</td>
     <td>5</td>
@@ -2053,7 +2078,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>4</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|科利尼翁|3&quot;, &quot;2025布加勒斯特|R1|瓦林卡|2&quot;, &quot;-&quot;]">
     <td>160</td>
     <td>斯卡托夫</td>
     <td>5</td>
@@ -2061,7 +2086,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024斯图加特|R1|吉隆|3&quot;, &quot;2024法网|R1|瓦林卡|2&quot;, &quot;-&quot;]">
     <td>161</td>
     <td>穆雷</td>
     <td>5</td>
@@ -2069,7 +2094,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025罗马|R1|帕萨罗|2&quot;, &quot;2025温斯顿塞勒姆|R1|布云朝克特|1&quot;, &quot;2025布加勒斯特|R1|迪亚洛|1&quot;]">
     <td>162</td>
     <td>曾俊欣</td>
     <td>4</td>
@@ -2077,7 +2102,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>6</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|迪亚斯-阿科斯塔|3&quot;, &quot;2026格施塔德|R1|阿里斯|1&quot;, &quot;-&quot;]">
     <td>163</td>
     <td>奇纳</td>
     <td>4</td>
@@ -2085,7 +2110,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>11</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025迈阿密|R1|斯皮齐里|3&quot;, &quot;2024伊斯特本|半决赛|马-普塞尔|1&quot;, &quot;-&quot;]">
     <td>164</td>
     <td>比-哈里斯</td>
     <td>4</td>
@@ -2093,7 +2118,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>24</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024上海|R1|吴易昺|3&quot;, &quot;2024温斯顿塞勒姆|R1|丘里奇|1&quot;, &quot;-&quot;]">
     <td>165</td>
     <td>纳加尔</td>
     <td>4</td>
@@ -2101,7 +2126,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>4</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024温网|R2|普伊|3&quot;, &quot;2024马德里|R1|德雷珀|1&quot;, &quot;-&quot;]">
     <td>166</td>
     <td>科基纳基斯</td>
     <td>4</td>
@@ -2109,7 +2134,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>38</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024蒙特卡洛|R1|格里科斯普|2&quot;, &quot;2024哈雷|R2|菲斯|1&quot;, &quot;-&quot;]">
     <td>167</td>
     <td>克普费尔</td>
     <td>3</td>
@@ -2117,7 +2142,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>42</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026多哈|R1|鲁瓦耶|3&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>168</td>
     <td>埃贝尔</td>
     <td>3</td>
@@ -2125,7 +2150,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|凯茨曼诺维奇|1&quot;, &quot;2026印第安维尔斯|R1|舍夫琴科|1&quot;, &quot;2026阿卡普尔科|R2|吴易昺|1&quot;]">
     <td>169</td>
     <td>岛袋将</td>
     <td>3</td>
@@ -2133,7 +2158,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024美网|R1|科梅萨纳|3&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>170</td>
     <td>斯特里克</td>
     <td>3</td>
@@ -2141,7 +2166,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>44</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025辛辛那提|R1|乌戈-卡拉贝利|2&quot;, &quot;2025马德里|R2|沙波瓦洛夫|1&quot;, &quot;-&quot;]">
     <td>171</td>
     <td>锦织圭</td>
     <td>3</td>
@@ -2149,7 +2174,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>44</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024法网|R1|凯茨曼诺维奇|2&quot;, &quot;2025法网|R1|科普里瓦|1&quot;, &quot;-&quot;]">
     <td>172</td>
     <td>蒙泰罗</td>
     <td>3</td>
@@ -2157,7 +2182,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>7</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|谢尔顿|2&quot;, &quot;2026法网|R1|乌戈-卡拉贝利|1&quot;, &quot;-&quot;]">
     <td>173</td>
     <td>纳瓦</td>
     <td>3</td>
@@ -2165,7 +2190,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>10</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025布加勒斯特|R2|科博利|1&quot;, &quot;2024马德里|R1|索内戈|1&quot;, &quot;2024斯图加特|R2|中岛布兰登|1&quot;]">
     <td>174</td>
     <td>加斯奎特</td>
     <td>3</td>
@@ -2173,7 +2198,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>12</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025北京|R2|门希克|2&quot;, &quot;2024温斯顿塞勒姆|R1|土方凛辉|1&quot;, &quot;-&quot;]">
     <td>175</td>
     <td>卡佐</td>
     <td>3</td>
@@ -2181,7 +2206,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>104</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温斯顿塞勒姆|R1|勒特格林|1&quot;, &quot;2026伊斯特本|1/4决赛|贝尔赫斯|1&quot;, &quot;2024美网|R1|卡尔巴耶斯|1&quot;]">
     <td>176</td>
     <td>霍因斯基</td>
     <td>3</td>
@@ -2189,7 +2214,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>16</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025法网|R1|沃尔顿|3&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>177</td>
     <td>马特勒</td>
     <td>3</td>
@@ -2197,7 +2222,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>24</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026蒙特卡洛|R1|安贝尔|3&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>178</td>
     <td>夸梅</td>
     <td>3</td>
@@ -2205,7 +2230,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>3</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|范德尚舒尔普|3&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>179</td>
     <td>许斯勒</td>
     <td>3</td>
@@ -2213,7 +2238,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>3</td>
     <td>3</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026美网|R1|弗-塞伦多洛|1&quot;, &quot;2025温网|R1|施特鲁夫|1&quot;, &quot;-&quot;]">
     <td>180</td>
     <td>米索利奇</td>
     <td>2</td>
@@ -2221,7 +2246,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025澳网|R1|费恩利|2&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>181</td>
     <td>基里奥斯</td>
     <td>2</td>
@@ -2229,7 +2254,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025温网|R1|佩-马丁内斯|2&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>182</td>
     <td>洛夫哈根</td>
     <td>2</td>
@@ -2237,7 +2262,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026慕尼黑|R1|迪亚洛|2&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>183</td>
     <td>萨奇科</td>
     <td>2</td>
@@ -2245,7 +2270,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026上海|R1|乌戈-卡拉贝利|2&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>184</td>
     <td>西马金</td>
     <td>2</td>
@@ -2253,7 +2278,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>2</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025多哈|R1|奥康尼尔|1&quot;, &quot;2025洛斯卡沃斯|R1|科瓦切维奇|1&quot;, &quot;-&quot;]">
     <td>185</td>
     <td>哈比卜</td>
     <td>2</td>
@@ -2261,7 +2286,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026基茨比厄尔|R1|罗迪奥诺夫|1&quot;, &quot;2026格施塔德|R1|索内戈|1&quot;, &quot;-&quot;]">
     <td>186</td>
     <td>施韦尔茨勒</td>
     <td>2</td>
@@ -2269,7 +2294,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026阿卡普尔科|R2|科博利|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>187</td>
     <td>斯夫尔奇纳</td>
     <td>1</td>
@@ -2277,7 +2302,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>15</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R1|邦齐|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>188</td>
     <td>勒特格林</td>
     <td>1</td>
@@ -2285,7 +2310,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026休斯顿|R1|巴萨瓦雷迪|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>189</td>
     <td>德拉克斯尔</td>
     <td>1</td>
@@ -2293,7 +2318,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024斯图加特|R1|汉夫曼|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>190</td>
     <td>斯夸尔</td>
     <td>1</td>
@@ -2301,7 +2326,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025蒙彼利埃|R2|布云朝克特|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>191</td>
     <td>莱斯蒂耶纳</td>
     <td>1</td>
@@ -2309,7 +2334,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024温网|R1|维尔塔宁|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>192</td>
     <td>马-普塞尔</td>
     <td>1</td>
@@ -2317,7 +2342,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>22</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|塔比尔|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>193</td>
     <td>罗迪奥诺夫</td>
     <td>1</td>
@@ -2325,7 +2350,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>24</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024罗马|R1|张之臻|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>194</td>
     <td>格兰</td>
     <td>1</td>
@@ -2333,7 +2358,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>3</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025上海|R1|科梅萨纳|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>195</td>
     <td>布朗谢</td>
     <td>1</td>
@@ -2341,7 +2366,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>4</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|施特鲁夫|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>196</td>
     <td>格勒尼耶</td>
     <td>1</td>
@@ -2349,7 +2374,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>4</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025洛斯卡沃斯|1/4决赛|科瓦切维奇|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>197</td>
     <td>菲科维奇</td>
     <td>1</td>
@@ -2357,7 +2382,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|门希克|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>198</td>
     <td>德罗盖</td>
     <td>1</td>
@@ -2365,7 +2390,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>43</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024杭州|1/4决赛|布云朝克特|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>199</td>
     <td>库库什金</td>
     <td>1</td>
@@ -2373,7 +2398,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>9</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026斯海尔托亨博斯|R1|安贝尔|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>200</td>
     <td>伊梅尔</td>
     <td>1</td>
@@ -2381,7 +2406,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025温网|R1|塔弗特|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>201</td>
     <td>列迪</td>
     <td>1</td>
@@ -2389,7 +2414,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026法网|R1|蒂兰特|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>202</td>
     <td>利亚马斯</td>
     <td>1</td>
@@ -2397,7 +2422,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024北京|R1|科托夫|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>203</td>
     <td>周意</td>
     <td>1</td>
@@ -2405,7 +2430,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024奥运会|R1|弗-塞伦多洛|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>204</td>
     <td>巴里奥斯</td>
     <td>1</td>
@@ -2413,7 +2438,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026鹿特丹|R1|穆纳尔|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>205</td>
     <td>布德科夫-谢尔</td>
     <td>1</td>
@@ -2421,7 +2446,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025马德里|R1|孟菲尔斯|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>206</td>
     <td>戈约</td>
     <td>1</td>
@@ -2429,7 +2454,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026杭州|R1|丹尼尔太郎|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>207</td>
     <td>斯威尼</td>
     <td>1</td>
@@ -2437,7 +2462,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025上海|R1|阿尔特迈尔|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>208</td>
     <td>斯库尔凯特</td>
     <td>1</td>
@@ -2445,7 +2470,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025多哈|R1|毛罗然|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>209</td>
     <td>杜格斯</td>
     <td>1</td>
@@ -2453,7 +2478,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025温网|R1|奎因|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>210</td>
     <td>瑟尔</td>
     <td>1</td>
@@ -2461,7 +2486,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025华盛顿|R1|米勒|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>211</td>
     <td>茹卡耶夫</td>
     <td>1</td>
@@ -2469,7 +2494,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024温网|R1|张之臻|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>212</td>
     <td>让维耶</td>
     <td>1</td>
@@ -2477,7 +2502,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026温网|R1|望月慎太郎|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>213</td>
     <td>贝辛</td>
     <td>1</td>
@@ -2485,7 +2510,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026格施塔德|R1|基姆|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>214</td>
     <td>迪特里希</td>
     <td>1</td>
@@ -2493,7 +2518,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2025马赛|R2|埃贝尔|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>215</td>
     <td>马约</td>
     <td>1</td>
@@ -2501,7 +2526,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2026罗马|R4|哈恰诺夫|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>216</td>
     <td>普里兹米奇</td>
     <td>1</td>
@@ -2509,7 +2534,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>54</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;2024法网|R1|亚-兹韦列夫|1&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>217</td>
     <td>纳达尔</td>
     <td>1</td>
@@ -2517,7 +2542,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>1</td>
     <td>103</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>218</td>
     <td>亚-埃尔南德斯</td>
     <td>0</td>
@@ -2525,7 +2550,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>219</td>
     <td>佩莱格里诺</td>
     <td>0</td>
@@ -2533,7 +2558,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>220</td>
     <td>克-休伊特</td>
     <td>0</td>
@@ -2541,7 +2566,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>221</td>
     <td>克鲁格</td>
     <td>0</td>
@@ -2549,7 +2574,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>222</td>
     <td>内山靖崇</td>
     <td>0</td>
@@ -2557,7 +2582,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>3</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>223</td>
     <td>加拉尔诺</td>
     <td>0</td>
@@ -2565,7 +2590,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>5</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>224</td>
     <td>加林</td>
     <td>0</td>
@@ -2573,7 +2598,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>225</td>
     <td>劳-哈里斯</td>
     <td>0</td>
@@ -2581,7 +2606,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>33</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>226</td>
     <td>博耶</td>
     <td>0</td>
@@ -2589,7 +2614,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>9</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>227</td>
     <td>博高</td>
     <td>0</td>
@@ -2597,7 +2622,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>228</td>
     <td>吉甘特</td>
     <td>0</td>
@@ -2605,7 +2630,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>229</td>
     <td>坂本怜</td>
     <td>0</td>
@@ -2613,7 +2638,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>230</td>
     <td>基姆</td>
     <td>0</td>
@@ -2621,7 +2646,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>51</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>231</td>
     <td>塔弗特</td>
     <td>0</td>
@@ -2629,7 +2654,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>232</td>
     <td>塔比尔</td>
     <td>0</td>
@@ -2637,7 +2662,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>233</td>
     <td>塔韦内</td>
     <td>0</td>
@@ -2645,7 +2670,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>234</td>
     <td>尼-阿瑟诺</td>
     <td>0</td>
@@ -2653,7 +2678,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>235</td>
     <td>巴戈尼斯</td>
     <td>0</td>
@@ -2661,7 +2686,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>7</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>236</td>
     <td>帕萨罗</td>
     <td>0</td>
@@ -2669,7 +2694,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>3</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>237</td>
     <td>德容</td>
     <td>0</td>
@@ -2677,7 +2702,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>45</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>238</td>
     <td>斯皮齐里</td>
     <td>0</td>
@@ -2685,7 +2710,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>239</td>
     <td>日亚努</td>
     <td>0</td>
@@ -2693,7 +2718,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>7</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>240</td>
     <td>望月慎太郎</td>
     <td>0</td>
@@ -2701,7 +2726,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>3</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>241</td>
     <td>梅希亚</td>
     <td>0</td>
@@ -2709,7 +2734,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>242</td>
     <td>泽皮耶里</td>
     <td>0</td>
@@ -2717,7 +2742,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>86</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>243</td>
     <td>绵贯阳介</td>
     <td>0</td>
@@ -2725,7 +2750,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>244</td>
     <td>莫勒</td>
     <td>0</td>
@@ -2733,7 +2758,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>1</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>245</td>
     <td>费尔德鲍施</td>
     <td>0</td>
@@ -2741,7 +2766,7 @@ body.dark .theme-btn .ic-sun{display:block;}
     <td>0</td>
     <td>2</td>
   </tr>
-  <tr>
+  <tr class="killer-clickable" data-detail="[&quot;-&quot;, &quot;-&quot;, &quot;-&quot;]">
     <td>246</td>
     <td>达尔文-布兰奇</td>
     <td>0</td>
@@ -2753,10 +2778,75 @@ body.dark .theme-btn .ic-sun{display:block;}
 </table>
   </div>
 </div>
+<div id="detail-modal" class="detail-modal">
+  <div class="detail-card">
+    <div class="detail-hd">
+      <div class="detail-title-wrap">
+        <div class="detail-icon">☠</div>
+        <div>
+          <div class="detail-title">惨案记录</div>
+          <div class="detail-meta" id="detail-meta-line"></div>
+        </div>
+      </div>
+      <button id="detail-close" class="detail-close" type="button">✕ 关闭</button>
+    </div>
+    <div class="detail-scroll">
+      <div id="detail-body" class="detail-list"></div>
+    </div>
+    <div class="detail-footer" id="detail-footer"></div>
+  </div>
+</div>
 
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded',()=>{
+    const modal=document.getElementById('detail-modal');
+    const closeBtn=document.getElementById('detail-close');
+    const body=document.getElementById('detail-body');
+    const metaLine=document.getElementById('detail-meta-line');
+    const footer=document.getElementById('detail-footer');
+    if(!modal||!closeBtn||!body)return;
+    const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    function closeModal(){
+        const card=modal.querySelector('.detail-card');
+        if(card){ card.style.transform='translateY(10px) scale(.97)'; card.style.opacity='0'; }
+        setTimeout(()=>{ modal.classList.remove('show'); if(card){ card.style.transform=''; card.style.opacity=''; } },220);
+    }
+    closeBtn.addEventListener('click',closeModal);
+    modal.addEventListener('click',e=>{ if(e.target===modal)closeModal(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&modal.classList.contains('show'))closeModal(); });
+
+    const nameIdx=[...document.querySelectorAll('.filterable-table thead tr:first-child th')]
+        .findIndex(th=>th.textContent.trim()==='球员');
+    function open(name,details){
+        if(metaLine) metaLine.textContent=name;
+        body.className='dz-list';
+        body.innerHTML=details.map((v,i)=>{
+            const f=String(v).split('|');
+            if(f.length<4) return '<div class="dz-empty"><span class="dz-rank">'+(i+1)+'</span>暂无记录</div>';
+            return '<div class="dz-item'+(i===0?' top':'')+'"><span class="dz-rank">'+(i+1)+'</span>'
+                +'<div class="dz-main"><div class="dz-where">'+esc(f[0])+' · '+esc(f[1])+'</div>'
+                +'<div class="dz-who">'+(f[2]?'<i>负</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
+                +'<div class="dz-kills">'+esc(f[3])+'<small>人被带走</small></div></div>';
+        }).join('');
+        if(footer) footer.textContent='带走人数最多的 3 次';
+        modal.classList.add('show');
+    }
+    function parse(el){
+        let d=[]; try{ d=JSON.parse(el.dataset.detail||'[]'); }catch(_e){ d=[]; }
+        return Array.isArray(d)?d:[];
+    }
+    document.querySelectorAll('.filterable-table tbody tr[data-detail]').forEach(row=>{
+        row.addEventListener('click',()=>{
+            const cell=row.querySelectorAll('td')[nameIdx>=0?nameIdx:1];
+            open(cell?cell.textContent.trim():'',parse(row));
+        });
+    });
+    document.querySelectorAll('.pod-card[data-detail]').forEach(card=>{
+        card.addEventListener('click',()=>open(card.dataset.name||'',parse(card)));
+    });
+});
 
 function _themeLabel(dark){
     const btn=document.getElementById('themeBtn');
