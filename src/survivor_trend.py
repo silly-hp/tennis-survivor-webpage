@@ -68,6 +68,7 @@ def summary_checkin(
     live_players: Optional[list] = None,
     pending_uids: Optional[set] = None,
     eliminated_players: Optional[list] = None,
+    picks_open: bool = True,
 ) -> Optional[dict[str, int]]:
     """Today's check-in counts, computed exactly like the ranking page's 今日选人统计.
 
@@ -111,6 +112,9 @@ def summary_checkin(
     for col in ("轮空", "自杀（重复）", "自杀（主备冲突）", "自杀（退赛）", "未选"):
         if total is not None and col in summary.columns:
             counts[col] = int(total.get(col, 0) or 0)
+    # 未选 with today's list closed = missed the pick → 自杀（退赛）
+    if not picks_open and counts.get("未选"):
+        counts["自杀（退赛）"] = counts.get("自杀（退赛）", 0) + counts.pop("未选")
     return {k: v for k, v in counts.items() if v}
 
 

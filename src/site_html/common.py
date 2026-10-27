@@ -257,9 +257,13 @@ def _summary_bar_html(
     live_players: Optional[list[str]] = None,
     eliminated_players: Optional[list[str]] = None,
     backup_events: Optional[list] = None,
+    picks_open: bool = True,
 ) -> str:
     """
     Convert a generate_summary() DataFrame into the bar-chart summary panel.
+
+    ``picks_open``: today's pick list still open. Then 未选 users count as 🟡待定 in
+    the copied outcome line; once it closes they are 自杀（退赛）.
 
     Detects mode automatically from column names:
         - Normal day : columns include "已选"   (no "轮空" column)
@@ -352,6 +356,18 @@ def _summary_bar_html(
         suicide_total = repeat_total + invalid_total + miss_total
         grand_total = valid_total + bye_total + suicide_total
 
+    # 已选 = everyone who submitted a pick, valid or not (重复 / 主备冲突 picked too).
+    selected_total = valid_total + repeat_total + invalid_total
+    # 未选 keeps its count. While today's list is open they can still pick (→ 🟡待定);
+    # once it closes they are 自杀（退赛）and 出局 as well.
+    nosel_pending = nosel_total if picks_open else 0
+    # 参赛 / 总计 are fixed by who entered: a closed list's 未选 turning 自杀 changes nothing
+    entrants = valid_total + bye_total + suicide_total
+    chip_suicide = suicide_total  # the on-page chips keep the plain counts; only the copy text changes
+    if not picks_open and nosel_total:
+        miss_total += nosel_total
+        suicide_total += nosel_total  # grand_total already counts them
+
     # denominator for % column = all valid selections (non-suicide)
     valid_denom = valid_total + bye_total or 1
 
@@ -386,10 +402,10 @@ def _summary_bar_html(
             f'<span class="meta-chip chip-nosel">{nosel_total} 人未选</span>',
         ]
 
-    if suicide_total > 0:
+    if chip_suicide > 0:
         meta_parts += [
             '<span class="meta-sep">｜</span>',
-            f'<span class="meta-chip chip-suicide">⚠ {suicide_total} 人自杀</span>',
+            f'<span class="meta-chip chip-suicide">⚠ {chip_suicide} 人自杀</span>',
         ]
 
     meta_parts += [
@@ -473,16 +489,16 @@ def _summary_bar_html(
             "bye": bye_total,
             "grand": valid_denom,
             "suicide": suicide_total,
+            "nosel": nosel_pending,
         },
         ensure_ascii=False,
     )
 
     # ── meta summary text for clipboard (header line) ────────────────────────
     if has_bye:
-        entrants = valid_total + bye_total + suicide_total
         header_lines = [f"参赛{entrants}", f"🟢轮空{bye_total}"]
     else:
-        header_lines = [f"已选{valid_total}", f"未选{nosel_total}"]
+        header_lines = [f"已选{selected_total}", f"未选{nosel_total}"]
     if suicide_total > 0:
         header_lines.append(f"🔴自杀{suicide_total}")
     clipboard_header = json.dumps("\n".join(header_lines), ensure_ascii=False)
@@ -691,9 +707,10 @@ def _summary_bar_html(
             }}
         }};
 
-        /* 🔴出局 🟡待定 🟢存活. 存活 includes non-bye advancers plus 轮空. */
+        /* 🔴出局 🟡待定 🟢存活. 存活 includes non-bye advancers plus 轮空; 待定 includes 未选. */
         function outcomeLine(){{
-            var live = 0, alive = TOTALS.bye || 0, out = TOTALS.suicide || 0;
+            // 未选 can still pick while today's list is open → 待定
+            var live = TOTALS.nosel || 0, alive = TOTALS.bye || 0, out = TOTALS.suicide || 0;
             for (var i = 0; i < ROWS.length; i++) {{
                 var r = ROWS[i];
                 if (r.backs && r.backs.length) {{

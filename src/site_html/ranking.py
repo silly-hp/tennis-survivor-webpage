@@ -62,6 +62,7 @@ def render_ranking_page(
     extra_tags: Optional[list[str]] = None,
     available_players: Union[list[str], str, Path, None] = None,
     finals_top: int = 0,
+    picks_open: bool = True,
     live_players: Optional[list[str]] = None,
     eliminated_players: Optional[list[str]] = None,
     backup_events: Optional[list] = None,
@@ -146,6 +147,7 @@ def render_ranking_page(
             live_players=live_players,
             eliminated_players=eliminated_players,
             backup_events=backup_events,
+            picks_open=picks_open,
         )
         summary_js = ""  # JS is inlined inside _summary_bar_html
     else:

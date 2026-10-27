@@ -94,6 +94,15 @@ def _expired_label(tour_cfg) -> str:
     return "、".join(f"{year}{n}" for n in names) or "无"
 
 
+# Whether today's pick list is still open, per tour label ("ATP"/"WTA"); set by
+# build_tour_tables from the draw schedule. Unknown → treated as open.
+_PICKS_OPEN: dict[str, bool] = {}
+
+
+def picks_open(tour_label: str) -> bool:
+    return _PICKS_OPEN.get(tour_label, True)
+
+
 def _venue_key(venue_cfg):
     lat, lon = venue_cfg.get("latitude"), venue_cfg.get("longitude")
     if lat is None or lon is None:
@@ -252,6 +261,13 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             )
             if play_day > 0:
                 day = play_day
+            # 未选 users can still pick while today's list is open (→ 待定);
+            # once it closes they are 自杀（退赛）.
+            today_item = next(
+                (d for d in (draw.pick_days or []) if int(d.get("day") or 0) == int(day)),
+                None,
+            )
+            _PICKS_OPEN[tour_label] = bool(today_item.get("open")) if today_item else True
             # Day1 must keep the bye-rate table path for 轮空/非轮空 summary.
             # Settled score path is only used from Day2 onward.
             use_settled = (
@@ -531,6 +547,7 @@ def update_rank_pages(
         "ATP · Live Ranking",
         datetime.now().strftime(datetime_format),
         summary_df=atp_stats,
+        picks_open=picks_open("ATP"),
         killer_df=atp_killers,
         available_players=atp_players,
         live_players=atp_live_players,
@@ -546,6 +563,7 @@ def update_rank_pages(
         "ATP · Race to Turin",
         datetime.now().strftime(datetime_format),
         summary_df=atp_stats,
+        picks_open=picks_open("ATP"),
         killer_df=atp_killers,
         extra_tags=["2026"],
         finals_top=8,
@@ -594,6 +612,7 @@ def update_rank_pages(
         "WTA · Live Ranking",
         datetime.now().strftime(datetime_format),
         summary_df=wta_stats,
+        picks_open=picks_open("WTA"),
         killer_df=wta_killers,
         available_players=wta_players,
         live_players=wta_live_players,
@@ -609,6 +628,7 @@ def update_rank_pages(
         "WTA · Race to Indian Wells",
         datetime.now().strftime(datetime_format),
         summary_df=wta_stats,
+        picks_open=picks_open("WTA"),
         killer_df=wta_killers,
         extra_tags=["2026"],
         finals_top=8,
@@ -1080,10 +1100,12 @@ def main(*, mode: str = "default"):
             trends={
                 "ATP": survivor_series(atp_re, atp_day, summary_checkin(
                     atp_table, atp_day, atp_cfg["bye_rate"] != 0,
-                    atp_players, atp_live, atp_pending, atp_eliminated)),
+                    atp_players, atp_live, atp_pending, atp_eliminated,
+                    picks_open=picks_open("ATP"))),
                 "WTA": survivor_series(wta_re, wta_day, summary_checkin(
                     wta_table, wta_day, wta_cfg["bye_rate"] != 0,
-                    wta_players, wta_live, wta_pending, wta_eliminated)),
+                    wta_players, wta_live, wta_pending, wta_eliminated,
+                    picks_open=picks_open("WTA"))),
             },
             picks={
                 "ATP": pick_summary(atp_table) if atp_day else None,
