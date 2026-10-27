@@ -54,7 +54,9 @@ TWO_WEEK_EVENTS = set(GRAND_SLAMS) | {
     "辛辛那提",
     "上海",
 }
-PLAYED_STATUS = {"存活", "球员输球", "自杀(退赛)", "自杀(重复)", "自杀(主备冲突)"}
+PLAYED_STATUS = {"存活", "球员输球", "球员退赛", "自杀(退赛)", "自杀(重复)", "自杀(主备冲突)"}
+# Bump when PLAYED_STATUS grows so completed score snapshots are fetched again.
+PLAYED_REV = 2
 # Long free-text details live in the row-click modal (not table columns).
 DISPLAY_COLS = [
     "排名",
@@ -386,6 +388,13 @@ def _collect_history(
     records: list[dict[str, Any]] = []
     changed = False
 
+    def _snapshot_fresh(cached: dict[str, Any] | None) -> bool:
+        return bool(
+            cached
+            and cached.get("completed")
+            and int(cached.get("played_rev") or 1) >= PLAYED_REV
+        )
+
     if not refresh:
         # Cache-only mode: hydrate everything already stored
         for cached in tour_cache.values():
@@ -414,7 +423,7 @@ def _collect_history(
         if in_progress:
             logger.info(f"skip in-progress {info.get('year')}-{info.get('name')}")
             continue
-        if cached and cached.get("completed"):
+        if _snapshot_fresh(cached):
             points = list(cached.get("day_points") or [])
             if len(points) < 2:
                 points = _fetch_event_day_points(info)
@@ -446,10 +455,13 @@ def _collect_history(
             "completed": True,
             "event_days": len(points),
             "day_points": points,
+            "played_rev": PLAYED_REV,
             "records": _serialize_records(event_records),
         }
         changed = True
         records.extend(event_records)
+        if index % 8 == 0:
+            _save_cache(cache, cache_path)
 
     if changed:
         _save_cache(cache, cache_path)
@@ -829,6 +841,7 @@ def build_player_stats(
     )
 
     completed = history[history["completed"]]
+    board_events = _catalog_events(tennis_type)
     event_mondays = sorted(
         {
             value
@@ -858,11 +871,21 @@ def build_player_stats(
     for index, monday in enumerate(rank_points):
         if monday >= FORCED_ZERO_START:
             continue
-        # Before Indian Wells, keep the previous start-date window.
-        window = completed[
-            (completed["monday"] >= monday - timedelta(weeks=53))
-            & (completed["monday"] < monday)
+        # Same clock as the later board: a result stays until 52 weeks after
+        # the draw end, not 52 weeks after the opening Monday.
+        active_keys = {
+            (event["name"], event["start"].date())
+            for event in board_events
+            if _on_board(event, monday)
+        }
+        starts = completed["monday"].map(
+            lambda value: value.date() if isinstance(value, datetime) else None
+        )
+        mask = [
+            (name, start) in active_keys
+            for name, start in zip(completed["name"], starts)
         ]
+        window = completed.loc[mask]
         if window.empty:
             continue
         canada = window[window["name"].isin(CANADA_EVENTS)]
