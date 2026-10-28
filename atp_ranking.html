@@ -1226,7 +1226,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="atp_ranking.html" aria-current="page">即时排名</a><a class="hd-tab" href="atp_race_ranking.html">冠军排名</a><a class="hd-tab" href="atp_champion.html">冠军榜</a><a class="hd-tab" href="atpkiller.html">杀手榜</a><a class="hd-tab" href="survivor_calendar_atp.html">赛历</a><a class="hd-tab" href="atp_show.html">生涯统计</a><a class="hd-tab" href="h2h_atp.html">H2H</a></nav>
   <div class="hd-right">
     <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="atp_ranking.html" aria-current="page">ATP</a><a class="hd-seg-btn" href="wta_ranking.html">WTA</a><a class="hd-seg-btn" href="combined_instant_ranking.html">联合</a></div>
-    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月28日 23:01:47</span><span class="hd-suffix"> 更新</span></span>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月28日 23:15:44</span><span class="hd-suffix"> 更新</span></span>
     <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
   </div>
 </header>
@@ -1278,7 +1278,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "沙波瓦洛夫", "normal": 87, "bye": 0, "status": "confirmed"}, {"name": "弗里茨", "normal": 84, "bye": 0, "status": "live"}, {"name": "胡尔卡奇", "normal": 26, "bye": 0, "status": "live"}, {"name": "鲁德", "normal": 15, "bye": 0, "status": "live"}, {"name": "德约科维奇", "normal": 12, "bye": 0, "status": "live"}, {"name": "施特鲁夫", "normal": 4, "bye": 0, "status": "confirmed"}];
+        var ROWS    = [{"name": "沙波瓦洛夫", "normal": 87, "bye": 0, "status": "confirmed"}, {"name": "弗里茨", "normal": 84, "bye": 0, "status": "live"}, {"name": "胡尔卡奇", "normal": 26, "bye": 0, "status": "live"}, {"name": "鲁德", "normal": 15, "bye": 0, "status": "out"}, {"name": "德约科维奇", "normal": 12, "bye": 0, "status": "live"}, {"name": "施特鲁夫", "normal": 4, "bye": 0, "status": "confirmed"}];
         var TOTALS  = {"normal": 228, "bye": 0, "grand": 228, "suicide": 0, "nosel": 13};
         var MAX_VAL = 87;
         var CLIPBOARD_HEADER = "已选228\n未选13";
@@ -1557,7 +1557,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
           <span class="dk-hd-k">杀手 Top1</span>
           <span class="dk-hd-k">杀手 Top2</span>
         </div>
-        <div class="dk-row"><span class="dk-day">Day 1</span><div class="dk-killers"><span class="dk-k"><b>阿里斯</b><em>17</em></span><span class="dk-k alt"><b>胡-塞伦多洛</b><em>16</em></span></div></div><div class="dk-row"><span class="dk-day">Day 2</span><div class="dk-killers"><span class="dk-k"><b>林德克内希</b><em>22</em></span><span class="dk-k alt"><b>范德尚舒尔普</b><em>2</em></span></div></div>
+        <div class="dk-row"><span class="dk-day">Day 1</span><div class="dk-killers"><span class="dk-k"><b>阿里斯</b><em>17</em></span><span class="dk-k alt"><b>胡-塞伦多洛</b><em>16</em></span></div></div><div class="dk-row"><span class="dk-day">Day 2</span><div class="dk-killers"><span class="dk-k"><b>林德克内希</b><em>22</em></span><span class="dk-k alt"><b>鲁德</b><em>8</em></span></div></div><div class="dk-row"><span class="dk-day">Day 3</span><div class="dk-killers"><span class="dk-k"><b>鲁德</b><em>15</em></span></div></div>
       </div>
     </div>
     <script>
@@ -1594,7 +1594,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <div class="rk-pop rk-dd-pop" id="rkRoutePop" role="listbox" aria-multiselectable="true" aria-label="选择冠军球员" hidden>
       <span class="rk-eye rk-pop-eye">CHAMPION IF</span>
       <input type="text" class="rk-input rk-pop-search" id="rkRouteSearch" placeholder="搜索球员…" aria-label="搜索球员">
-      <div class="rk-opts"><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="谢尔顿"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">谢尔顿</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="基姆"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">基姆</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="阿尔特迈尔"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">阿尔特迈尔</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="莱赫奇卡"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">莱赫奇卡</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="德约科维奇"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">德约科维奇</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="安贝尔"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">安贝尔</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="汉夫曼"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">汉夫曼</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="施特鲁夫"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">施特鲁夫</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="博尔热斯"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">博尔热斯</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="鲁德"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">鲁德</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="胡尔卡奇"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">胡尔卡奇</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="鲁内"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">鲁内</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="瓦舍罗"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">瓦舍罗</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="霍达尔"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">霍达尔</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="弗里茨"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">弗里茨</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="土方凛辉"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">土方凛辉</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="贝尔托拉"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">贝尔托拉</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="沙波瓦洛夫"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">沙波瓦洛夫</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="米克尔森"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">米克尔森</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="菲斯"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">菲斯</span></button></div>
+      <div class="rk-opts"><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="谢尔顿"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">谢尔顿</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="基姆"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">基姆</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="阿尔特迈尔"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">阿尔特迈尔</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="莱赫奇卡"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">莱赫奇卡</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="德约科维奇"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">德约科维奇</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="安贝尔"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">安贝尔</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="汉夫曼"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">汉夫曼</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="施特鲁夫"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">施特鲁夫</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="胡尔卡奇"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">胡尔卡奇</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="鲁内"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">鲁内</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="瓦舍罗"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">瓦舍罗</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="霍达尔"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">霍达尔</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="弗里茨"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">弗里茨</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="土方凛辉"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">土方凛辉</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="贝尔托拉"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">贝尔托拉</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="沙波瓦洛夫"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">沙波瓦洛夫</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="米克尔森"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">米克尔森</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="菲斯"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">菲斯</span></button><button type="button" role="option" aria-selected="false" class="rk-opt" data-v="博尔热斯"><span class="rk-box" aria-hidden="true"></span><span class="rk-opt-l">博尔热斯</span></button></div>
       <div class="rk-pop-ft"><button type="button" class="rk-btn-text" id="rkRouteClr">清除</button><button type="button" class="rk-btn rk-btn-pri" id="rkRouteDone">完成</button></div>
     </div>
   </div>
@@ -2169,9 +2169,9 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>66<span class="rank down rank-a" data-d="-23" data-a="▼23"></span></td>
     <td>43</td>
     <td>交H于一点</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
@@ -2464,15 +2464,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>30</td>
     <td>2889</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;基姆&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;基姆&quot;, &quot;鲁德&quot;]">
     <td>64<span class="rank up rank-a" data-d="2" data-a="▲2"></span></td>
     <td>66</td>
     <td>吴二饼</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>弗里茨</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>30</td>
     <td>2851</td>
@@ -2841,15 +2841,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>0</td>
     <td>2646</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;, &quot;鲁德&quot;]">
     <td>84<span class="rank up rank-a" data-d="11" data-a="▲11"></span></td>
     <td>95</td>
     <td>Opalescent0</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>沙波瓦洛夫</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>0</td>
     <td>2668</td>
@@ -3196,9 +3196,9 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>113<span class="rank up rank-a" data-d="9" data-a="▲9"></span></td>
     <td>122</td>
     <td>精明姐姐的小秘</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
@@ -3335,15 +3335,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>30</td>
     <td>2308</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;霍达尔&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;霍达尔&quot;, &quot;鲁德&quot;]">
     <td>171<span class="rank down rank-a" data-d="-38" data-a="▼38"></span></td>
     <td>133</td>
     <td>Pomelo琛</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>沙波瓦洛夫</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>400</td>
     <td>1965</td>
@@ -3426,14 +3426,14 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>30</td>
     <td>2272</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;瓦舍罗&quot;, &quot;莱赫奇卡&quot;]">
+  <tr class="row-out" data-detail="[&quot;瓦舍罗&quot;, &quot;莱赫奇卡&quot;, &quot;鲁德&quot;]">
     <td>153<span class="rank down rank-a" data-d="-13" data-a="▼13"></span></td>
     <td>140</td>
     <td>大满贯的W</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
+    <td></td>
     <td></td>
     <td>50</td>
     <td>200</td>
@@ -3569,15 +3569,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>10</td>
     <td>2225</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;霍达尔&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;霍达尔&quot;, &quot;鲁德&quot;]">
     <td>140<span class="rank up rank-a" data-d="11" data-a="▲11"></span></td>
     <td>151</td>
     <td>Dylan Bai</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>沙波瓦洛夫</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>0</td>
     <td>2188</td>
@@ -3712,15 +3712,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>200</td>
     <td>1881</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;胡尔卡奇&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;胡尔卡奇&quot;, &quot;鲁德&quot;]">
     <td>154<span class="rank up rank-a" data-d="8" data-a="▲8"></span></td>
     <td>162</td>
     <td>l***5</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>弗里茨</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>50</td>
     <td>2063</td>
@@ -4401,14 +4401,14 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>100</td>
     <td>1671</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;瓦舍罗&quot;, &quot;霍达尔&quot;]">
+  <tr class="row-out" data-detail="[&quot;瓦舍罗&quot;, &quot;霍达尔&quot;, &quot;鲁德&quot;]">
     <td>206<span class="rank up rank-a" data-d="9" data-a="▲9"></span></td>
     <td>215</td>
     <td>小煜v0</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
+    <td></td>
     <td></td>
     <td>50</td>
     <td>0</td>
@@ -4808,23 +4808,23 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>245<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
     <td>246</td>
     <td>无聊-消遣</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
     <td>0</td>
     <td>1503</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;, &quot;鲁德&quot;]">
     <td>242<span class="rank up rank-a" data-d="5" data-a="▲5"></span></td>
     <td>247</td>
     <td>一***客</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
+    <td></td>
     <td></td>
     <td>50</td>
     <td>30</td>
@@ -4882,15 +4882,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>50</td>
     <td>1483</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;菲斯&quot;]">
-    <td>239<span class="rank up rank-a" data-d="13" data-a="▲13"></span></td>
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;菲斯&quot;, &quot;鲁德&quot;]">
+    <td>240<span class="rank up rank-a" data-d="12" data-a="▲12"></span></td>
     <td>252</td>
     <td>Dylan B</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>沙波瓦洛夫</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>0</td>
     <td>1535</td>
@@ -5207,15 +5207,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>0</td>
     <td>1344</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;胡尔卡奇&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;胡尔卡奇&quot;, &quot;鲁德&quot;]">
     <td>265<span class="rank up rank-a" data-d="12" data-a="▲12"></span></td>
     <td>277</td>
     <td>仿生羊会梦见电子工程毕业生</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>德约科维奇</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>10</td>
     <td>1364</td>
@@ -5298,15 +5298,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>1000</td>
     <td>329</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;谢尔顿&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;谢尔顿&quot;, &quot;鲁德&quot;]">
     <td>278<span class="rank up rank-a" data-d="6" data-a="▲6"></span></td>
     <td>284</td>
     <td>网球联赛TennisLeague</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>弗里茨</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>50</td>
     <td>1296</td>
@@ -5341,9 +5341,9 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>281<span class="rank up rank-a" data-d="6" data-a="▲6"></span></td>
     <td>287</td>
     <td>巴***机</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
@@ -5510,24 +5510,24 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>293<span class="rank up rank-a" data-d="7" data-a="▲7"></span></td>
     <td>300</td>
     <td>别花里胡哨的</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
     <td>0</td>
     <td>1229</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;, &quot;鲁德&quot;]">
     <td>288<span class="rank up rank-a" data-d="13" data-a="▲13"></span></td>
     <td>301</td>
     <td>卡萨布兰卡9920</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>弗里茨</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>0</td>
     <td>1252</td>
@@ -5688,15 +5688,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>0</td>
     <td>1199</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;莱赫奇卡&quot;, &quot;鲁德&quot;]">
     <td>310<span class="rank up rank-a" data-d="4" data-a="▲4"></span></td>
     <td>314</td>
     <td>最爱王欣瑜</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>弗里茨</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>50</td>
     <td>1149</td>
@@ -6901,9 +6901,9 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>405<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>408</td>
     <td>F-orestcold</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
@@ -6966,9 +6966,9 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>409<span class="rank up rank-a" data-d="4" data-a="▲4"></span></td>
     <td>413</td>
     <td>195******35</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
@@ -7443,15 +7443,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>0</td>
     <td>426</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;米克尔森&quot;]">
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;米克尔森&quot;, &quot;鲁德&quot;]">
     <td>437<span class="rank up rank-a" data-d="13" data-a="▲13"></span></td>
     <td>450</td>
     <td>塔姆科尔涅娃我老婆</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>德约科维奇</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>0</td>
     <td>476</td>
@@ -8110,9 +8110,9 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>482<span class="rank up rank-a" data-d="19" data-a="▲19"></span></td>
     <td>501</td>
     <td>TTMY__123</td>
-    <td><span class="st-badge st-out">自杀(退赛)</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>1</td>
-    <td></td>
+    <td>鲁德</td>
     <td></td>
     <td></td>
     <td>25</td>
@@ -9123,7 +9123,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>578<span class="rank up rank-a" data-d="2" data-a="▲2"></span></td>
     <td>580</td>
-    <td>大道至远1001</td>
+    <td>哈***噢</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9149,7 +9149,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>578<span class="rank up rank-a" data-d="2" data-a="▲2"></span></td>
     <td>580</td>
-    <td>哈***噢</td>
+    <td>大道至远1001</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9160,20 +9160,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>60</td>
   </tr>
   <tr class="row-out" data-detail="[]">
-    <td>581<span class="rank up rank-a" data-d="2" data-a="▲2"></span></td>
-    <td>583</td>
-    <td>王左</td>
-    <td><span class="st-badge st-out">未参赛</span></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>0</td>
-    <td>60</td>
-  </tr>
-  <tr class="row-out" data-detail="[]">
-    <td>581<span class="rank up rank-a" data-d="2" data-a="▲2"></span></td>
+    <td>580<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>583</td>
     <td>胡天翼</td>
     <td><span class="st-badge st-out">未参赛</span></td>
@@ -9186,9 +9173,22 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>60</td>
   </tr>
   <tr class="row-out" data-detail="[]">
+    <td>580<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
+    <td>583</td>
+    <td>王左</td>
+    <td><span class="st-badge st-out">未参赛</span></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>0</td>
+    <td>60</td>
+  </tr>
+  <tr class="row-out" data-detail="[]">
     <td>584<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
     <td>585</td>
-    <td>侯小知Moya</td>
+    <td>annezy</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9201,7 +9201,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>584<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
     <td>585</td>
-    <td>annezy</td>
+    <td>侯小知Moya</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9240,6 +9240,19 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>588<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
     <td>589</td>
+    <td>白白不嘻嘻</td>
+    <td><span class="st-badge st-out">未参赛</span></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>0</td>
+    <td>50</td>
+  </tr>
+  <tr class="row-out" data-detail="[]">
+    <td>588<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
+    <td>589</td>
     <td>George Mason</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
@@ -9254,19 +9267,6 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>588<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
     <td>589</td>
     <td>173******01</td>
-    <td><span class="st-badge st-out">未参赛</span></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>0</td>
-    <td>50</td>
-  </tr>
-  <tr class="row-out" data-detail="[]">
-    <td>588<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
-    <td>589</td>
-    <td>play_better</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9344,7 +9344,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>588<span class="rank up rank-a" data-d="1" data-a="▲1"></span></td>
     <td>589</td>
-    <td>白白不嘻嘻</td>
+    <td>play_better</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9396,7 +9396,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>604<span class="rank same rank-a" data-d="0" data-a="—"></span></td>
     <td>604</td>
-    <td>Yilue Qian</td>
+    <td>爱网球的男孩子</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9409,7 +9409,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>604<span class="rank same rank-a" data-d="0" data-a="—"></span></td>
     <td>604</td>
-    <td>爱网球的男孩子</td>
+    <td>Yilue Qian</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9797,19 +9797,6 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>33</td>
   </tr>
   <tr class="row-out" data-detail="[]">
-    <td>637<span class="rank down rank-a" data-d="-2" data-a="▼2"></span></td>
-    <td>635</td>
-    <td>杨***在</td>
-    <td><span class="st-badge st-out">未参赛</span></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>0</td>
-    <td>33</td>
-  </tr>
-  <tr class="row-out" data-detail="[]">
     <td>692<span class="rank down rank-a" data-d="-57" data-a="▼57"></span></td>
     <td>635</td>
     <td>D***s</td>
@@ -9821,6 +9808,19 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td></td>
     <td>10</td>
     <td>23</td>
+  </tr>
+  <tr class="row-out" data-detail="[]">
+    <td>637<span class="rank down rank-a" data-d="-2" data-a="▼2"></span></td>
+    <td>635</td>
+    <td>杨***在</td>
+    <td><span class="st-badge st-out">未参赛</span></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>0</td>
+    <td>33</td>
   </tr>
   <tr class="row-out" data-detail="[]">
     <td>637<span class="rank down rank-a" data-d="-2" data-a="▼2"></span></td>
@@ -9890,7 +9890,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>640<span class="rank down rank-a" data-d="-1" data-a="▼1"></span></td>
     <td>639</td>
-    <td>W0卡</td>
+    <td>Eric_Bai_Love</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9903,7 +9903,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>640<span class="rank down rank-a" data-d="-1" data-a="▼1"></span></td>
     <td>639</td>
-    <td>Thestar1008</td>
+    <td>W0卡</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9942,7 +9942,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>640<span class="rank down rank-a" data-d="-1" data-a="▼1"></span></td>
     <td>639</td>
-    <td>Qi Feng</td>
+    <td>siru lu</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9955,7 +9955,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>640<span class="rank down rank-a" data-d="-1" data-a="▼1"></span></td>
     <td>639</td>
-    <td>scallionzxy</td>
+    <td>Qi Feng</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -9994,7 +9994,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>640<span class="rank down rank-a" data-d="-1" data-a="▼1"></span></td>
     <td>639</td>
-    <td>Eric_Bai_Love</td>
+    <td>scallionzxy</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10007,7 +10007,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>640<span class="rank down rank-a" data-d="-1" data-a="▼1"></span></td>
     <td>639</td>
-    <td>siru lu</td>
+    <td>Thestar1008</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10137,7 +10137,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>661<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>664</td>
-    <td>136******87</td>
+    <td>Hans_脆鱼汗</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10150,7 +10150,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>661<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>664</td>
-    <td>用户7735572535</td>
+    <td>136******87</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10189,7 +10189,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>661<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>664</td>
-    <td>Hans_脆鱼汗</td>
+    <td>用户7735572535</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10553,7 +10553,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>695<span class="rank up rank-a" data-d="2" data-a="▲2"></span></td>
     <td>697</td>
-    <td>清青青樾</td>
+    <td>柯鏻不要再幽默了</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10579,7 +10579,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>695<span class="rank up rank-a" data-d="2" data-a="▲2"></span></td>
     <td>697</td>
-    <td>柯鏻不要再幽默了</td>
+    <td>清青青樾</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10774,7 +10774,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>709</td>
-    <td>L***e</td>
+    <td>喵***Q</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10787,7 +10787,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>709</td>
-    <td>一个傻了的用户</td>
+    <td>L***e</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10891,7 +10891,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>709</td>
-    <td>前途真是一片馄饨呀</td>
+    <td>一个傻了的用户</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10930,6 +10930,19 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>709</td>
+    <td>Eric_WWong</td>
+    <td><span class="st-badge st-out">未参赛</span></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>0</td>
+    <td>10</td>
+  </tr>
+  <tr class="row-out" data-detail="[]">
+    <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
+    <td>709</td>
     <td>153******91</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
@@ -10944,19 +10957,6 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>709</td>
     <td>祝月汝</td>
-    <td><span class="st-badge st-out">未参赛</span></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>0</td>
-    <td>10</td>
-  </tr>
-  <tr class="row-out" data-detail="[]">
-    <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
-    <td>709</td>
-    <td>喵***Q</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -10995,7 +10995,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
   <tr class="row-out" data-detail="[]">
     <td>706<span class="rank up rank-a" data-d="3" data-a="▲3"></span></td>
     <td>709</td>
-    <td>Eric_WWong</td>
+    <td>前途真是一片馄饨呀</td>
     <td><span class="st-badge st-out">未参赛</span></td>
     <td></td>
     <td></td>
@@ -11083,15 +11083,15 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>0</td>
     <td>10</td>
   </tr>
-  <tr class="row-live" data-detail="[&quot;博尔热斯&quot;, &quot;菲斯&quot;]">
-    <td>578<span class="rank up rank-a" data-d="163" data-a="▲163"></span></td>
+  <tr class="row-out" data-detail="[&quot;博尔热斯&quot;, &quot;菲斯&quot;, &quot;鲁德&quot;]">
+    <td>580<span class="rank up rank-a" data-d="161" data-a="▲161"></span></td>
     <td>741</td>
     <td>秋日游弋</td>
-    <td><span class="st-badge st-live">未完赛</span></td>
+    <td><span class="st-badge st-out">球员输球</span></td>
     <td>2</td>
-    <td></td>
     <td>鲁德</td>
-    <td>胡尔卡奇</td>
+    <td></td>
+    <td></td>
     <td>50</td>
     <td>0</td>
     <td>60</td>
@@ -11110,7 +11110,7 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
     <td>0</td>
   </tr>
   <tr class="row-live" data-detail="[&quot;瓦舍罗&quot;, &quot;莱赫奇卡&quot;]">
-    <td>581<span class="rank up rank-a" data-d="161" data-a="▲161"></span></td>
+    <td>580<span class="rank up rank-a" data-d="162" data-a="▲162"></span></td>
     <td>742</td>
     <td>XPE奥特鹏</td>
     <td><span class="st-badge st-live">未完赛</span></td>
