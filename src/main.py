@@ -47,7 +47,13 @@ from survivor_html import (
 from champion_stats import render_champion_pages
 from weather import build_weather_cards
 from draw_status import fetch_draw_status
-from live_settlement import day1_out_points, settle_tour_scores, summarize_backup_events
+from live_settlement import (
+    day1_out_points,
+    pick_day_closed,
+    settle_tour_scores,
+    submission_to_detail_rows,
+    summarize_backup_events,
+)
 from player_stats import update_player_stats_pages
 from combined_ranking import update_combined_pages
 from event_calendar import update_survivor_calendar_pages
@@ -263,12 +269,10 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             if play_day > 0:
                 day = play_day
             # 未选 users can still pick while today's list is open (→ 待定);
-            # once it closes they are 自杀（退赛）.
-            today_item = next(
-                (d for d in (draw.pick_days or []) if int(d.get("day") or 0) == int(day)),
-                None,
+            # once it closes they are 自杀（退赛）. A day never opened stays open.
+            _PICKS_OPEN[tour_label] = not pick_day_closed(
+                draw, submission_to_detail_rows(s), int(day)
             )
-            _PICKS_OPEN[tour_label] = bool(today_item.get("open")) if today_item else True
             # Day1 must keep the bye-rate table path for 轮空/非轮空 summary.
             # Settled score path is only used from Day2 onward.
             use_settled = (

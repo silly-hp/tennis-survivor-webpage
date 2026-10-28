@@ -60,6 +60,8 @@ def prepare_rank_change(df):
 
 
 _KEEP_TODAY_PICK_STATUS = frozenset({"存活", "未完赛", "未选", "轮空"})
+# Hidden flag → ``data-picked`` on the row: made a pick today (已选 chip).
+TODAY_PICKED_COL = "_今日已选"
 
 
 def hide_today_picks_for_eliminated(df: pd.DataFrame) -> pd.DataFrame:
@@ -79,6 +81,20 @@ def hide_today_picks_for_eliminated(df: pd.DataFrame) -> pd.DataFrame:
         | status.eq("")
         | status.str.startswith("自杀")
     )
+    # Before clearing: today's pick includes losers / 重复 / 主备冲突, but not
+    # 未选 or 自杀(退赛) (no pick, or primary withdrew without a backup).
+    if "今日主选" in out.columns:
+        pick = out["今日主选"].astype("string").fillna("").str.strip()
+        today = (
+            out["今日状态"].astype("string").fillna("").str.strip()
+            if "今日状态" in out.columns
+            else pd.Series("", index=out.index)
+        )
+        out[TODAY_PICKED_COL] = (
+            (pick.ne("") | status.eq("轮空"))
+            & ~today.isin(["未选", "自杀（退赛）"])
+            & ~status.isin(["未选", "自杀(退赛)"])
+        ).astype(bool)
     for col in ("今日主选", "今日备选", "今日状态"):
         if col in out.columns:
             out.loc[~keep, col] = ""

@@ -429,6 +429,33 @@ def _next_day_open(
     )
 
 
+def pick_day_closed(
+    draw: DrawStatus | None,
+    detail_rows: list[dict[str, Any]],
+    day: int,
+) -> bool:
+    """
+    Today's list was open and has closed (all matches started).
+
+    ``open: False`` alone also matches a day not opened yet; require at least
+    one submission for ``day`` as proof it was ever open.
+    """
+    item = next(
+        (
+            d
+            for d in (draw.pick_days if draw else []) or []
+            if int(d.get("day") or 0) == day
+        ),
+        None,
+    )
+    if not item or item.get("open"):
+        return False
+    return any(
+        int(d.get("day") or 0) == day and str(d.get("player") or "").strip()
+        for d in detail_rows
+    )
+
+
 def official_settled_day(score_df: pd.DataFrame | None) -> int:
     """Highest day the official score page has settled (0 when none)."""
     if score_df is None or score_df.empty or "day" not in score_df.columns:
@@ -616,6 +643,13 @@ def _repair_early_retirement_rows(
             if status == "自杀(退赛)":
                 _keep_missed_pick(index, used)
                 repaired += 1
+            continue
+        # Official 自杀(退赛) whose last pick was on a day the user survived
+        # (pick day <= settled day): the death day had no pick. That pick
+        # losing later is irrelevant — keep the official row as-is.
+        pick_day = int(detail.get("day") or 0)
+        settled_day = int(pd.to_numeric(row.get("day"), errors="coerce") or 0)
+        if status == "自杀(退赛)" and pick_day and pick_day <= settled_day:
             continue
         player = draw.lookup(detail.get("fill"), last)
         if player is None or not player.eliminated:
@@ -856,6 +890,7 @@ def apply_live_settlement(
     pending_users: set[str] = set()
     backup_events: list[dict[str, Any]] = []
     open_names = _selectable_open_names(draw)
+    play_day_closed = pick_day_closed(draw, detail_rows, play_day)
     for index, row in result.iterrows():
         if str(row.get("fill_status") or "") != "存活":
             continue
@@ -1011,7 +1046,17 @@ def apply_live_settlement(
             break
         # Legal pool empty and a new pick day is already required: any real
         # submission is 自杀(重复) (handled above); no submission → 自杀(退赛).
-        need_pick = official_day < play_day and _legal_pool_empty(used, open_names)
+        # Today's list already closed (all matches started) with no pick for
+        # play_day → missed pick, same as the summary copy text.
+        no_pick_today = not any(
+            int(item.get("day") or 0) == play_day
+            and str(item.get("player") or "").strip()
+            for item in grouped.get(uid, [])
+        )
+        need_pick = official_day < play_day and (
+            _legal_pool_empty(used, open_names)
+            or (play_day_closed and no_pick_today)
+        )
         if need_pick and str(result.at[index, "fill_status"] or "") == "存活":
             result.at[index, "fill_status"] = SUICIDE_MISS
             result.at[index, "killer"] = ""

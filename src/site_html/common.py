@@ -147,6 +147,9 @@ def _df_to_html_table(
         skip.add(detail_col)
     if hide_uid_col and uid_col and uid_col in df.columns:
         skip.add(uid_col)
+    picked_col = "_今日已选" if "_今日已选" in df.columns else None
+    if picked_col:
+        skip.add(picked_col)
     if (
         merge_change_into
         and rank_change_col in df.columns
@@ -188,6 +191,8 @@ def _df_to_html_table(
             uid_text = html.escape(str(uid_val).strip(), quote=True)
             if uid_text:
                 extra_attrs += f' data-uid="{uid_text}"'
+        if picked_col:
+            extra_attrs += f' data-picked="{1 if bool(row.get(picked_col)) else 0}"'
         if detail_col and detail_col in df.columns:
             raw_detail = row.get(detail_col, [])
             if isinstance(raw_detail, dict):

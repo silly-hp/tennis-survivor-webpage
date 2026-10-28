@@ -906,7 +906,9 @@ ready(function(){
   const ENTERED=['alive','live','bye','out','suicide','none'];
   const DAYS=rows.map(r=>parseInt(txt(r,C.days),10));
   const TODAY_D=Math.max(-1,...DAYS.filter((d,i)=>G[i]!=='absent'&&!isNaN(d)));
-  const TODAY=rows.map((r,i)=>['alive','live','bye'].includes(G[i])||(G[i]==='out'&&DAYS[i]===TODAY_D&&used(r).length>TODAY_D));
+  // data-picked (from settlement) covers today's losers/suicides; fallback for old pages.
+  const TODAY=rows.map((r,i)=>r.dataset.picked!==undefined?r.dataset.picked==='1'
+    :['alive','live','bye'].includes(G[i])||(G[i]==='out'&&DAYS[i]===TODAY_D&&used(r).length>TODAY_D));
   const inChip=(k,i)=>{ const g=G[i]; return k==='all'||(k==='entered'?ENTERED.includes(g):k==='picked'?TODAY[i]:k==='nobye'?TODAY[i]&&g!=='bye'
     :k==='outall'?(g==='out'||g==='suicide'):g===k); };
   let chip=C.st>=0?'picked':'all', list='', routes=new Set(), limit=PAGE;
