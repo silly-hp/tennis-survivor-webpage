@@ -101,6 +101,26 @@ def _expired_label(tour_cfg) -> str:
     return "、".join(f"{year}{n}" for n in names) or "无"
 
 
+def _removed_point_header(tour_cfg) -> str:
+    """Live-ranking column label, e.g. ``扣除积分（九江）``."""
+    removed = (tour_cfg or {}).get("removed_tournament_name")
+    names = [removed] if isinstance(removed, str) else list(removed or [])
+    names = [str(n).strip() for n in names if n and str(n).strip()]
+    if not names:
+        return "扣除积分"
+    return f"扣除积分（{'、'.join(names)}）"
+
+
+def _label_removed_point(df: pd.DataFrame, tour_cfg) -> pd.DataFrame:
+    """Rename ``扣除积分`` to include the expired city when present."""
+    if df is None or df.empty or "扣除积分" not in df.columns:
+        return df
+    label = _removed_point_header(tour_cfg)
+    if label == "扣除积分":
+        return df
+    return df.rename(columns={"扣除积分": label})
+
+
 # Whether today's pick list is still open, per tour label ("ATP"/"WTA"); set by
 # build_tour_tables from the draw schedule. Unknown → treated as open.
 _PICKS_OPEN: dict[str, bool] = {}
@@ -557,7 +577,9 @@ def update_rank_pages(
             atp_pending_uids,
         )
     )
-    atp = prepare_rank_change(atp_base)
+    atp = _label_removed_point(
+        prepare_rank_change(atp_base), (cfg or {}).get("atp")
+    )
     atp_stats = generate_summary(atp, atp_day1, atp_bye)
     atp_killers = daily_killer_stats(atp)
     atp_backup = summarize_backup_events(atp_backup_events)
@@ -622,7 +644,9 @@ def update_rank_pages(
             wta_pending_uids,
         )
     )
-    wta = prepare_rank_change(wta_base)
+    wta = _label_removed_point(
+        prepare_rank_change(wta_base), (cfg or {}).get("wta")
+    )
     wta_stats = generate_summary(wta, wta_day1, wta_bye)
     wta_killers = daily_killer_stats(wta)
     wta_backup = summarize_backup_events(wta_backup_events)

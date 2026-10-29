@@ -884,7 +884,8 @@ ready(function(){
   const ths=[...table.querySelectorAll('thead tr:first-child th')].map(t=>t.textContent.trim());
   const col=(...ns)=>{ for(const n of ns){ const i=ths.indexOf(n); if(i>=0) return i; } return -1; };
   const C={rank:col('即时排名','排名'), cur:col('当前排名'), user:col('用户名'), st:col('当前状态'), pts:col('即时积分','总分'),
-           d:col('排名变化'), main:col('今日主选'), alt:col('今日备选'), gain:col('本站得分'), minus:col('扣除积分'),
+           d:col('排名变化'), main:col('今日主选'), alt:col('今日备选'), gain:col('本站得分'),
+           minus:(()=>{ const i=ths.findIndex(t=>t==='扣除积分'||t.startsWith('扣除积分（')); return i; })(),
            killer:col('杀手球员'), days:col('存活天数'), d:-1};
   const rows=[...table.tBodies[0].rows];
   const txt=(r,i)=>(i<0||!r.cells[i])?'':r.cells[i].textContent.trim();
