@@ -21,7 +21,8 @@ _SECTIONS: dict[str, tuple[str, dict[str, str]]] = {
     "hof": ("冠军榜", {"ATP": "atp_champion.html", "WTA": "wta_champion.html",
                        "ALL": "combined_champion.html"}),
     "killer": ("杀手榜", {"ATP": "atpkiller.html", "WTA": "wtakiller.html"}),
-    "cal": ("赛历", {"ATP": "survivor_calendar_atp.html", "WTA": "survivor_calendar_wta.html"}),
+    "cal": ("赛历", {"ATP": "survivor_calendar_atp.html", "WTA": "survivor_calendar_wta.html",
+                     "ALL": "combined_calendar.html"}),
     "career": ("生涯统计", {"ATP": "atp_show.html", "WTA": "wta_show.html"}),
     "h2h": ("H2H", {"ATP": "h2h_atp.html", "WTA": "h2h_wta.html"}),
 }

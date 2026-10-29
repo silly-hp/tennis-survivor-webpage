@@ -967,8 +967,11 @@ def _inner_page_shell(
     late_js: str = "",
     title_extra: str = "",
     subtitle: str = "",
+    pre_header: str = "",
 ) -> str:
     """Wrap body_content in the full inner-page HTML shell.
+
+    ``pre_header`` goes between the shared header and the page title (e.g. a back link).
 
     ``page`` is the output path; the shared header reads its section and tour from it.
     ``late_js`` gets its own ``<script>`` after the shared ones (runs once the table is built).
@@ -997,7 +1000,7 @@ def _inner_page_shell(
 <div class="page">
 
 {_topbar(updated, back_label=back_label, back_href=back_href, page=page)}
-
+{pre_header}
 <div class="page-header">
   <div class="page-eye">{html.escape(eyebrow)}</div>
   <div class="page-title">

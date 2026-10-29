@@ -386,6 +386,52 @@ def event_board_stats(
     }
 
 
+def calendar_event_summary(
+    rows: list[dict],
+    *,
+    city: str,
+    tour: str,
+    completed: bool,
+    type_hint: str = "",
+    level_hint: str = "",
+) -> dict[str, Any]:
+    """
+    One event's line on the calendar list page.
+
+    - st: "live" / "done"
+    - day: match days played so far (longest pick list)
+    - alive / champs / top: survivors, max-score users, best score
+    - users: name → "C" (champion), "A" (alive) or the day they went out
+    """
+    max_pts = event_theoretical_max(
+        city, tour, type_hint=type_hint, level_hint=level_hint
+    )
+    day = alive = champs = top = 0
+    users: dict[str, Any] = {}
+    for r in rows:
+        name = str(r.get("username") or "").strip()
+        picks = r.get("players") or []
+        n_days = len(picks) if isinstance(picks, list) else int(r.get("day") or 0)
+        score = int(r.get("score") or 0)
+        day = max(day, n_days)
+        top = max(top, score)
+        survived = str(r.get("fill_status") or "").strip() == "存活"
+        if survived:
+            alive += 1
+        champ = bool(completed and max_pts is not None and score == max_pts)
+        champs += champ
+        if name:
+            users[name] = "C" if champ else ("A" if survived else n_days)
+    return {
+        "st": "done" if completed else "live",
+        "day": day,
+        "alive": alive,
+        "champs": champs,
+        "top": top,
+        "users": users,
+    }
+
+
 def normalize_score_df(df: pd.DataFrame) -> pd.DataFrame:
     """Display columns sorted by score desc (then days)."""
     if df is None or df.empty:
@@ -844,7 +890,8 @@ def update_survivor_calendar_pages(
         payload = load_score_cache(
             score_cache_path(ev["tour"], ev["event_id"], ev["year"], cache_dir)
         )
-        n = len(_rows_from_cache(payload or {}))
+        rows = _rows_from_cache(payload or {})
+        n = len(rows)
         ev["has_scores"] = n > 0
         ev["n_players"] = n
         if not ev.get("type"):
@@ -854,10 +901,21 @@ def update_survivor_calendar_pages(
                 type_hint=str(ev.get("type") or ""),
                 level_hint=str(ev.get("level") or ""),
             )
+        if rows:
+            ev["summary"] = calendar_event_summary(
+                rows,
+                city=ev.get("city") or "",
+                tour=ev.get("tour") or "",
+                completed=bool((payload or {}).get("completed"))
+                or str(ev.get("page_type") or "").lower() == "score",
+                type_hint=str(ev.get("type") or ""),
+                level_hint=str(ev.get("level") or ""),
+            )
 
     hub_path = output_dir / "survivor_calendar.html"
     atp_path = output_dir / "survivor_calendar_atp.html"
     wta_path = output_dir / "survivor_calendar_wta.html"
+    all_path = output_dir / "combined_calendar.html"
     render_calendar_hub_page(updated=updated, output_path=hub_path)
     render_calendar_page(
         events=events_all,
@@ -873,6 +931,14 @@ def update_survivor_calendar_pages(
         updated=updated,
         output_path=wta_path,
         tour="WS",
+        default_year=year_to,
+    )
+    render_calendar_page(
+        events=events_all,
+        years=all_years,
+        updated=updated,
+        output_path=all_path,
+        tour="ALL",
         default_year=year_to,
     )
 
@@ -920,7 +986,7 @@ def update_survivor_calendar_pages(
         written += 1
 
     logger.info(
-        f"wrote calendars {atp_path.name}/{wta_path.name} (+ hub) "
+        f"wrote calendars {atp_path.name}/{wta_path.name}/{all_path.name} (+ hub) "
         f"+ {written} event score pages"
     )
     return {
@@ -933,4 +999,5 @@ def update_survivor_calendar_pages(
         "calendar_path": str(hub_path),
         "atp_calendar_path": str(atp_path),
         "wta_calendar_path": str(wta_path),
+        "combined_calendar_path": str(all_path),
     }
