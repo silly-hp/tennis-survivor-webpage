@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded',function(){
     const tbody=table.querySelector('tbody');
     const rows=tbody.querySelectorAll('tr');
     const totalCount=rows.length;
+    // read every cell once; filtering and sorting work off this cache instead of the DOM
+    const cellText=new Map();
+    rows.forEach(row=>cellText.set(row,Array.from(row.children,c=>c.textContent.trim())));
+    const zhCollator=new Intl.Collator('zh');
     const totalEl=document.getElementById('total-count');
     const visibleEl=document.getElementById('visible-count');
     if(totalEl)totalEl.textContent=totalCount;
@@ -64,8 +68,8 @@ document.addEventListener('DOMContentLoaded',function(){
         // collect all non-empty values for this column
         const rawValues=[];
         rows.forEach(row=>{
-            const cell=row.children[index];
-            if(cell)rawValues.push(cell.textContent.trim());
+            const v=cellText.get(row)[index];
+            if(v!==undefined)rawValues.push(v);
         });
         const nonEmpty=rawValues.filter(v=>v!==''&&v.toLowerCase()!=='nan'&&v!=='-');
         const parsedNums=nonEmpty.map(parseCellNumber);
@@ -77,8 +81,8 @@ document.addEventListener('DOMContentLoaded',function(){
             const forceInt=/天数|排名|周数|参赛|冠军数|亚军|连胜|连败|得分|积分/.test(headerText)
                 && !/率/.test(headerText);
             const isIntCol=forceInt || parsedNums.every(n=>Number.isInteger(n));
-            let minVal=Math.min(...parsedNums);
-            let maxVal=Math.max(...parsedNums);
+            let minVal=parsedNums.reduce((a,b)=>a<b?a:b);
+            let maxVal=parsedNums.reduce((a,b)=>a>b?a:b);
             if(isIntCol){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
             // step is 1 for wide ranges: snap the ends so the slider can reach the true max
             else if((maxVal-minVal)>20){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
@@ -232,7 +236,7 @@ document.addEventListener('DOMContentLoaded',function(){
                 });
                 filterTable();
             });
-            Array.from(new Set(rawValues)).sort((a,b)=>a.localeCompare(b,'zh')).forEach(val=>{
+            Array.from(new Set(rawValues)).sort(zhCollator.compare).forEach(val=>{
                 const item=document.createElement('div');
                 item.className='option-item';
                 const cb=document.createElement('input');
@@ -285,20 +289,23 @@ document.addEventListener('DOMContentLoaded',function(){
             else sortDirection='none';
             if(sortDirection!=='none'){
                 header.classList.add('sort-'+sortDirection);
-                const rowsArray=Array.from(tbody.querySelectorAll('tr'));
-                rowsArray.sort((a,b)=>{
-                    const A=a.children[index].textContent.trim();
-                    const B=b.children[index].textContent.trim();
-                    const emA=A===''||A.toLowerCase()==='nan'||A==='-';
-                    const emB=B===''||B.toLowerCase()==='nan'||B==='-';
-                    if(emA&&!emB)return 1;
-                    if(!emA&&emB)return -1;
-                    if(emA&&emB)return 0;
-                    const nA=parseFloat(A),nB=parseFloat(B);
-                    if(!isNaN(nA)&&!isNaN(nB))return(nA-nB)*(sortDirection==='asc'?1:-1);
-                    return A.localeCompare(B,'zh')*(sortDirection==='asc'?1:-1);
+                const dir=sortDirection==='asc'?1:-1;
+                const keyed=Array.from(tbody.querySelectorAll('tr'),row=>{
+                    const cached=cellText.get(row);
+                    const A=cached?cached[index]:row.children[index].textContent.trim();
+                    const em=A===''||A.toLowerCase()==='nan'||A==='-';
+                    return {row,A,em,n:parseFloat(A)};
                 });
-                rowsArray.forEach(row=>tbody.appendChild(row));
+                keyed.sort((a,b)=>{
+                    if(a.em&&!b.em)return 1;
+                    if(!a.em&&b.em)return -1;
+                    if(a.em&&b.em)return 0;
+                    if(!isNaN(a.n)&&!isNaN(b.n))return(a.n-b.n)*dir;
+                    return zhCollator.compare(a.A,b.A)*dir;
+                });
+                const frag=document.createDocumentFragment();
+                keyed.forEach(k=>frag.appendChild(k.row));
+                tbody.appendChild(frag);
                 document.dispatchEvent(new Event('ts:filtered'));
             }
         });
@@ -317,29 +324,41 @@ document.addEventListener('DOMContentLoaded',function(){
     function filterTable(){
         let visibleCount=0;
         const statusIndex=columnMeta.findIndex(meta=>meta&&meta.type==='category'&&meta.header==='当前状态');
+        // resolve each column's filter once per pass; untouched columns drop out entirely
+        const active=[];
+        columnMeta.forEach((meta,index)=>{
+            if(!meta)return;
+            if(meta.type==='numeric'){
+                if(meta.curMin!==meta.min||meta.curMax!==meta.max)active.push({index,meta});
+            } else {
+                const cbs=allOptionContainers[index].querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]');
+                const selected=new Set();
+                cbs.forEach(cb=>{ if(cb.checked)selected.add(cb.value); });
+                // nothing ticked behaves like everything ticked
+                if(selected.size>0&&selected.size<cbs.length)active.push({index,meta,selected});
+            }
+        });
+        const extra=window.TS.extra;
         rows.forEach(row=>{
             let showRow=true;
-            const cells=row.querySelectorAll('td');
-            columnMeta.forEach((meta,index)=>{
-                if(!showRow||!cells[index])return;
-                const cellText=cells[index].textContent.trim();
-                if(meta.type==='numeric'){
-                    const n=parseCellNumber(cellText);
-                    const narrowed=meta.curMin!==meta.min||meta.curMax!==meta.max;
-                    if(meta.header==='存活天数' && narrowed){
-                        const statusText=statusIndex>=0&&cells[statusIndex]?cells[statusIndex].textContent.trim():'';
-                        if(statusText==='未参赛'||isNaN(n)) showRow=false;
-                    }
-                    if(!isNaN(n) && (n<meta.curMin || n>meta.curMax)) showRow=false;
-                } else {
-                    const oc=allOptionContainers[index];
-                    const checkboxes=Array.from(oc.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]'));
-                    const selected=checkboxes.filter(cb=>cb.checked).map(cb=>cb.value);
-                    if(selected.length>0 && !selected.includes(cellText)) showRow=false;
+            const cells=cellText.get(row);
+            for(const f of active){
+                const v=cells[f.index];
+                if(v===undefined)continue;
+                if(f.selected){
+                    if(!f.selected.has(v)){ showRow=false; break; }
+                    continue;
                 }
-            });
-            if(showRow)showRow=window.TS.extra.every(f=>f(row));
-            row.style.display=showRow?'':'none';
+                const n=parseCellNumber(v);
+                if(f.meta.header==='存活天数'){
+                    const statusText=statusIndex>=0&&cells[statusIndex]!==undefined?cells[statusIndex]:'';
+                    if(statusText==='未参赛'||isNaN(n)){ showRow=false; break; }
+                }
+                if(!isNaN(n) && (n<f.meta.curMin || n>f.meta.curMax)){ showRow=false; break; }
+            }
+            if(showRow&&extra.length)showRow=extra.every(f=>f(row));
+            const d=showRow?'':'none';
+            if(row.style.display!==d)row.style.display=d;
             if(showRow)visibleCount++;
         });
         if(visibleEl)visibleEl.textContent=visibleCount;

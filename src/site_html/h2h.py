@@ -152,8 +152,11 @@ body.dark .sel-summary-pill.season{background:rgba(255,255,255,.06);}
 .h2h-table td{padding:8px 10px;border-bottom:1px solid var(--border2);
     vertical-align:middle;color:var(--ink);}
 .h2h-table tr:hover td{background:var(--row-hover);}
-.h2h-table tr:nth-child(even) td{background:var(--row-even);}
-.h2h-table tr:nth-child(even):hover td{background:var(--row-hover);}
+.h2h-table tr.even td{background:var(--row-even);}
+.h2h-table tr.even:hover td{background:var(--row-hover);}
+.h2h-table tr.vs-pad td,.h2h-table tr.vs-pad:hover td{padding:0;border:0;background:none;}
+/* the virtual scroller does its own anchoring */
+.table-wrapper{overflow-anchor:none;}
 .result-badge{display:inline-flex;align-items:center;justify-content:center;
     width:22px;height:22px;border-radius:4px;
     font-family:'Space Mono',monospace;font-size:11px;font-weight:700;}
@@ -536,6 +539,131 @@ function _makeColDropdown(colIdx, vals){
 }
 
 var COL_KEYS = ['u','p','t','d','s','r'];
+var _recs = [];   /* query result */
+var _view = [];   /* query result after column filters */
+
+function colVal(r, key){
+    if(key==='r') return r.r===1?'W':r.r===0?'L':'?';
+    return String(r[key]);
+}
+
+function rowHtml(r, i){
+    var badge = r.r===1
+        ? '<span class="result-badge badge-w">W</span>'
+        : '<span class="result-badge badge-l">L</span>';
+    /* striping by absolute index: nth-child would shift as the window moves */
+    return '<tr'+(i%2?' class="even"':'')+'>'
+        +'<td style="color:var(--ink2)">'+escHtml(r.u)+'</td>'
+        +'<td style="font-weight:500">'+escHtml(r.p)+'</td>'
+        +'<td><span class="tour-tag">'+escHtml(r.t)+'</span></td>'
+        +'<td><span class="day-pill">Day '+r.d+'</span></td>'
+        +'<td style="font-family:\\'Space Mono\\',monospace;font-size:11px;color:var(--faint)">'+r.s+'</td>'
+        +'<td>'+badge+'</td>'
+        +'</tr>';
+}
+
+/* ── virtual scroll ──
+   Only rows near the viewport are in the DOM, between two spacer rows.
+   Row heights start as an estimate and are replaced by measured heights as rows
+   render; a Fenwick tree over the heights gives offset <-> index in O(log n). */
+var EST_ROW_H = 37, OVERSCAN = 12;
+var _vh = new Float64Array(0), _fw = new Float64Array(1), _vn = 0, _vsRaf = 0, _vsCalibrated = false;
+
+function fwBuild(){
+    _fw = new Float64Array(_vn+1);
+    for(var i=1;i<=_vn;i++){
+        _fw[i] += _vh[i-1];
+        var j = i+(i&-i);
+        if(j<=_vn) _fw[j] += _fw[i];
+    }
+}
+function fwAdd(i, d){ for(i++; i<=_vn; i+=i&-i) _fw[i] += d; }
+/* total height of the first i rows */
+function fwSum(i){ var s=0; for(; i>0; i-=i&-i) s += _fw[i]; return s; }
+/* index of the row containing offset y */
+function fwFind(y){
+    var pos=0, step=1;
+    while(step*2<=_vn) step*=2;
+    for(; step>0; step>>=1){
+        if(pos+step<=_vn && _fw[pos+step]<=y){ pos+=step; y-=_fw[pos]; }
+    }
+    return Math.min(pos, _vn-1);
+}
+
+function padRow(h){
+    return '<tr class="vs-pad"><td colspan="6" style="height:'+h+'px"></td></tr>';
+}
+
+function renderWindow(){
+    _vsRaf = 0;
+    var tbody = document.getElementById('recBody');
+    if(_vn===0){
+        tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:32px;'
+            +'color:var(--faint);font-family:\\'Space Mono\\',monospace;font-size:11px;">'
+            +'\\u6682\\u65e0\\u7b26\\u5408\\u6761\\u4ef6\\u7684\\u8bb0\\u5f55</td></tr>';
+        return;
+    }
+    var wrapper = document.querySelector('.table-wrapper');
+    var headH = document.querySelector('.h2h-table thead').offsetHeight;
+    var top = Math.max(0, wrapper.scrollTop-headH);
+    var viewH = wrapper.clientHeight || window.innerHeight;
+    var firstVis = fwFind(top);
+    var s = Math.max(0, firstVis-OVERSCAN);
+    var e = Math.min(_vn, fwFind(top+viewH)+1+OVERSCAN);
+    var html = padRow(fwSum(s));
+    for(var i=s;i<e;i++) html += rowHtml(_view[i], i);
+    html += padRow(fwSum(_vn)-fwSum(e));
+    tbody.innerHTML = html;
+
+    /* swap estimates for real heights; keep the first visible row in place */
+    var trs = tbody.children, changed = false, shift = 0, total = 0;
+    for(var k=1;k<trs.length-1;k++){
+        var idx = s+k-1, h = trs[k].getBoundingClientRect().height;
+        total += h;
+        if(Math.abs(h-_vh[idx])>0.5){
+            fwAdd(idx, h-_vh[idx]);
+            if(idx<firstVis) shift += h-_vh[idx];
+            _vh[idx] = h;
+            changed = true;
+        }
+    }
+    /* first render of a data set: use the measured average as the estimate
+       for every unseen row (rows are much taller on phones, where cells wrap) */
+    if(!_vsCalibrated){
+        _vsCalibrated = true;
+        var avg = total/(trs.length-2);
+        if(Math.abs(avg-EST_ROW_H)>1){
+            EST_ROW_H = avg;
+            for(var m=e;m<_vn;m++) _vh[m] = avg;
+            fwBuild();
+            changed = true;
+        }
+    }
+    if(changed){
+        trs[trs.length-1].firstChild.style.height = (fwSum(_vn)-fwSum(e))+'px';
+        if(shift) wrapper.scrollTop += shift;
+        /* the window was sized from estimates; render again with real heights */
+        scheduleWindow();
+    }
+}
+
+function scheduleWindow(){
+    if(!_vsRaf) _vsRaf = requestAnimationFrame(renderWindow);
+}
+
+/* new data set: forget measured heights and go back to the top */
+function resetView(){
+    _vn = _view.length;
+    _vh = new Float64Array(_vn).fill(EST_ROW_H);
+    fwBuild();
+    _vsCalibrated = false;
+    document.querySelector('.table-wrapper').scrollTop = 0;
+    document.getElementById('visCount').textContent = fmtInt(_vn);
+    renderWindow();
+}
+
+document.querySelector('.table-wrapper').addEventListener('scroll', scheduleWindow, {passive:true});
+window.addEventListener('resize', function(){ _vsCalibrated = false; scheduleWindow(); });
 
 function rebuildFilters(){
     _colDropdowns.forEach(function(d){ if(d.parentNode) d.parentNode.removeChild(d); });
@@ -543,16 +671,11 @@ function rebuildFilters(){
     var table = document.querySelector('.h2h-table');
     if(!table) return;
     var thead = table.querySelector('thead');
-    var tbody = document.getElementById('recBody');
-    var rows  = Array.from(tbody.querySelectorAll('tr[data-u]'));
     var old = thead.querySelector('.filter-row');
     if(old) thead.removeChild(old);
     var valSets = COL_KEYS.map(function(){ return new Set(); });
-    rows.forEach(function(row){
-        COL_KEYS.forEach(function(key,i){
-            var v = row.getAttribute('data-'+key);
-            if(v!=null) valSets[i].add(v);
-        });
+    _recs.forEach(function(r){
+        for(var i=0;i<COL_KEYS.length;i++) valSets[i].add(colVal(r, COL_KEYS[i]));
     });
     var filterRow = document.createElement('tr');
     filterRow.className = 'filter-row';
@@ -576,40 +699,59 @@ function rebuildFilters(){
 }
 
 function applyColFilters(){
-    var tbody = document.getElementById('recBody');
-    var rows  = Array.from(tbody.querySelectorAll('tr[data-u]'));
-    var visible = 0;
-    var selectedPerCol = _colDropdowns.map(function(dropdown){
-        return Array.from(dropdown.querySelectorAll('.option-item:not([data-select-all]) input:checked'))
-            .map(function(cb){ return cb.value; });
+    /* a column with nothing or everything ticked does not filter */
+    var active = [];
+    _colDropdowns.forEach(function(dropdown, i){
+        var cbs = dropdown.querySelectorAll('.option-item:not([data-select-all]) input');
+        var sel = new Set();
+        cbs.forEach(function(cb){ if(cb.checked) sel.add(cb.value); });
+        if(sel.size>0 && sel.size<cbs.length) active.push({key:COL_KEYS[i], sel:sel});
     });
-    rows.forEach(function(row){
-        var show = COL_KEYS.every(function(key,i){
-            var sel = selectedPerCol[i];
-            if(!sel || sel.length===0) return true;
-            return sel.includes(row.getAttribute('data-'+key));
-        });
-        row.style.display = show?'':'none';
-        if(show) visible++;
-    });
-    document.getElementById('visCount').textContent = fmtInt(visible);
+    _view = active.length ? _recs.filter(function(r){
+        for(var j=0;j<active.length;j++){
+            if(!active[j].sel.has(colVal(r, active[j].key))) return false;
+        }
+        return true;
+    }) : _recs;
+    resetView();
 }
 
 document.addEventListener('click',function(){
     _colDropdowns.forEach(function(d){ d.classList.remove('show'); });
 });
 
+/* newest first; within one tournament-day: wins, then losses, then unknown, then player name.
+   sorted once on first query so the page itself loads without the cost */
+var _recordsSorted = false;
+function sortRecords(){
+    if(_recordsSorted) return;
+    var coll = new Intl.Collator('zh');
+    RECORDS.sort(function(a,b){
+        if(a.dt!==b.dt) return a.dt<b.dt?1:-1;
+        if(a.d!==b.d) return b.d-a.d;
+        if(a.t!==b.t) return coll.compare(a.t,b.t);
+        var ra = a.r===-1?-2:a.r, rb = b.r===-1?-2:b.r;
+        if(ra!==rb) return rb-ra;
+        return coll.compare(a.p,b.p);
+    });
+    _recordsSorted = true;
+}
+
 window.runQuery = function(){
+    sortRecords();
     var recs = RECORDS.filter(function(r){
         var uOk = selU.size===0 || selU.has(r.u);
         var pOk = selP.size===0 || selP.has(r.p);
         var sOk = selS.size===0 || selS.has(String(r.s));
         return uOk && pOk && sOk;
     });
-    var W = recs.filter(function(r){ return r.r===1; }).length;
-    var L = recs.filter(function(r){ return r.r===0; }).length;
-    var nSeasons = new Set(recs.map(function(r){ return r.s; })).size;
-    var nTours   = new Set(recs.map(function(r){ return r.t; })).size;
+    var W = 0, L = 0, seasonSet = new Set(), tourSet = new Set();
+    recs.forEach(function(r){
+        if(r.r===1) W++; else if(r.r===0) L++;
+        seasonSet.add(r.s); tourSet.add(r.t);
+    });
+    var nSeasons = seasonSet.size;
+    var nTours   = tourSet.size;
     document.getElementById('scoreW').textContent = fmtInt(W);
     document.getElementById('scoreL').textContent = fmtInt(L);
     var uArr=[...selU], pArr=[...selP];
@@ -619,33 +761,12 @@ window.runQuery = function(){
     document.getElementById('statWR').textContent       = recs.length?(W/recs.length*100).toFixed(1)+'%':'\\u2014';
     document.getElementById('statSeasons').textContent  = fmtInt(nSeasons);
     document.getElementById('statTours').textContent    = fmtInt(nTours);
-    document.getElementById('visCount').textContent     = fmtInt(recs.length);
-    var tbody = document.getElementById('recBody');
-    if(recs.length===0){
-        tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:32px;'
-            +'color:var(--faint);font-family:\\'Space Mono\\',monospace;font-size:11px;">'
-            +'\\u6682\\u65e0\\u7b26\\u5408\\u6761\\u4ef6\\u7684\\u8bb0\\u5f55</td></tr>';
-    } else {
-        tbody.innerHTML = recs.map(function(r){
-            var badge = r.r===1
-                ? '<span class="result-badge badge-w">W</span>'
-                : '<span class="result-badge badge-l">L</span>';
-            var rVal = r.r===1?'W':r.r===0?'L':'?';
-            return '<tr data-u="'+escAttr(r.u)+'" data-p="'+escAttr(r.p)
-                +'" data-t="'+escAttr(r.t)+'" data-d="'+r.d
-                +'" data-s="'+r.s+'" data-r="'+rVal+'">'
-                +'<td style="color:var(--ink2)">'+escHtml(r.u)+'</td>'
-                +'<td style="font-weight:500">'+escHtml(r.p)+'</td>'
-                +'<td><span class="tour-tag">'+escHtml(r.t)+'</span></td>'
-                +'<td><span class="day-pill">Day '+r.d+'</span></td>'
-                +'<td style="font-family:\\'Space Mono\\',monospace;font-size:11px;color:var(--faint)">'+r.s+'</td>'
-                +'<td>'+badge+'</td>'
-                +'</tr>';
-        }).join('');
-    }
+    _recs = recs;
+    _view = recs;
     rebuildFilters();
     document.getElementById('results').style.display    = '';
     document.getElementById('emptyState').style.display = 'none';
+    resetView();   /* after unhiding, so the viewport has a real height */
 };
 
 function escHtml(s){
