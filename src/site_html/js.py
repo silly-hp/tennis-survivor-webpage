@@ -33,29 +33,63 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!table)return;
     const thead=table.querySelector('thead');
     const tbody=table.querySelector('tbody');
-    const rows=Array.from(tbody.querySelectorAll('tr'));
+    // Rows are models: t = cell texts (what filters and sorts read), h = {col: html} for cells
+    // whose markup is more than the text, c = tr class, u/p/d = uid / picked / detail.
+    // Pages built with _df_to_table_data ship them as JSON in #tsData and a model's <tr> is
+    // only created (TS.el) when it is shown; otherwise the models wrap the parsed rows.
+    const dataEl=document.getElementById('tsData');
+    let rows;
+    if(dataEl){
+        rows=JSON.parse(dataEl.textContent);
+    } else {
+        rows=Array.from(tbody.querySelectorAll('tr'),tr=>{
+            const m={t:Array.from(tr.children,c=>c.textContent.trim()),c:tr.className,el:tr};
+            if(tr.dataset.uid!==undefined)m.u=tr.dataset.uid;
+            if(tr.dataset.picked!==undefined)m.p=+tr.dataset.picked;
+            if(tr.dataset.detail!==undefined){ try{ m.d=JSON.parse(tr.dataset.detail||'[]'); }catch(e){ m.d=[]; } }
+            tr._m=m;
+            return m;
+        });
+    }
     const totalCount=rows.length;
     // every row lives in this array; tbody only holds the rows TS.render puts there,
     // so filtered-out (or paged-out) rows cost nothing in layout
     let order=rows.slice();
-    // read every cell once; filtering and sorting work off this cache instead of the DOM
-    const cellText=new Map();
-    rows.forEach(row=>cellText.set(row,Array.from(row.children,c=>c.textContent.trim())));
+    // filter passes run during setup render nothing (see initDone below)
+    let initDone=false, rendered=false;
     const zhCollator=new Intl.Collator('zh');
+    const escCell=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;'}[c]));
+    const cellHtml=(m,i)=>m.h&&m.h[i]!=null?m.h[i]:escCell(m.t[i]);
+    function rowEl(m){
+        if(m.el)return m.el;
+        const tr=document.createElement('tr');
+        if(m.c)tr.className=m.c;
+        if(m.u!==undefined)tr.dataset.uid=m.u;
+        if(m.p!==undefined)tr.dataset.picked=m.p;
+        if(m.d!==undefined)tr.dataset.detail=JSON.stringify(m.d);
+        tr.innerHTML=m.t.map((_,i)=>'<td>'+cellHtml(m,i)+'</td>').join('');
+        tr._m=m; m.el=tr;
+        window.TS.onRow.forEach(f=>f(m,tr));
+        return tr;
+    }
     const totalEl=document.getElementById('total-count');
     const visibleEl=document.getElementById('visible-count');
     if(totalEl)totalEl.textContent=totalCount;
     if(visibleEl)visibleEl.textContent=totalCount;
     // page scripts add row predicates to TS.extra and call TS.refresh(); 'ts:filtered' fires after each pass.
-    // TS.render(list) decides which of the matching rows go into tbody (default: all of them);
-    // TS.setOrder(arr) replaces the row order without refreshing.
+    // TS.render(list) decides which of the matching models go into tbody (default: all of them);
+    // TS.setOrder(arr) replaces the row order without refreshing; TS.el(m) gives a model's <tr>,
+    // TS.html(m,i) a cell's markup, and TS.onRow hooks run once on every <tr> TS.el creates.
     window.TS=window.TS||{extra:[]};
+    window.TS.onRow=window.TS.onRow||[];
     window.TS.refresh=()=>filterTable();
     window.TS.rows=rows;
     window.TS.visible=rows;
+    window.TS.el=rowEl;
+    window.TS.html=cellHtml;
     window.TS.render=list=>{
         const frag=document.createDocumentFragment();
-        list.forEach(r=>frag.appendChild(r));
+        list.forEach(m=>frag.appendChild(rowEl(m)));
         tbody.textContent='';
         tbody.appendChild(frag);
     };
@@ -82,7 +116,7 @@ document.addEventListener('DOMContentLoaded',function(){
         // collect all non-empty values for this column
         const rawValues=[];
         rows.forEach(row=>{
-            const v=cellText.get(row)[index];
+            const v=row.t[index];
             if(v!==undefined)rawValues.push(v);
         });
         const nonEmpty=rawValues.filter(v=>v!==''&&v.toLowerCase()!=='nan'&&v!=='-');
@@ -319,7 +353,7 @@ document.addEventListener('DOMContentLoaded',function(){
                 header.classList.add('sort-'+sortDirection);
                 const dir=sortDirection==='asc'?1:-1;
                 const keyed=order.map(row=>{
-                    const A=cellText.get(row)[index]||'';
+                    const A=row.t[index]||'';
                     const em=A===''||A.toLowerCase()==='nan'||A==='-';
                     return {row,A,em,n:parseFloat(A)};
                 });
@@ -345,8 +379,14 @@ document.addEventListener('DOMContentLoaded',function(){
     }
     updateFilterRowTop();
     new ResizeObserver(updateFilterRowTop).observe(headerRow);
+    // setup above runs filter passes (slider init); they render nothing. The first real pass
+    // comes from a page script's TS.refresh() in this same DOMContentLoaded, or else from here.
+    initDone=true;
+    setTimeout(()=>{ if(!rendered)filterTable(); },0);
 
     function filterTable(){
+        if(!initDone)return;
+        rendered=true;
         let visibleCount=0;
         const statusIndex=columnMeta.findIndex(meta=>meta&&meta.type==='category'&&meta.header==='当前状态');
         // resolve each column's filter once per pass; untouched columns drop out entirely
@@ -367,7 +407,7 @@ document.addEventListener('DOMContentLoaded',function(){
         const visible=[];
         order.forEach(row=>{
             let showRow=true;
-            const cells=cellText.get(row);
+            const cells=row.t;
             for(const f of active){
                 const v=cells[f.index];
                 if(v===undefined)continue;
@@ -512,9 +552,12 @@ document.addEventListener('DOMContentLoaded',function(){
             +'<div class="career-note">'+(t?esc(t):'<span class="career-empty">暂无</span>')+'</div></div>';
     }
 
-    document.querySelectorAll('.filterable-table tbody tr').forEach(function(row){
-        row.style.cursor='pointer';
-        row.addEventListener('click', function(){
+    // delegated: rows are created and swapped as the table pages and filters
+    var tbody=document.querySelector('.filterable-table tbody');
+    if(!tbody)return;
+    tbody.addEventListener('click', function(e){
+            var row=e.target.closest('tr');
+            if(!row||row.parentNode!==tbody||row.dataset.detail===undefined)return;
             var data={};
             try{ data=JSON.parse(row.dataset.detail||'{}'); }catch(_e){ data={}; }
             if(!data||typeof data!=='object'||Array.isArray(data)) data={};
@@ -528,7 +571,6 @@ document.addEventListener('DOMContentLoaded',function(){
             var nT=(data.titles||[]).length, nR=(data.runners||[]).length;
             if(footer) footer.textContent='冠军 '+nT+' · 亚军 '+nR+' · 点击空白处关闭';
             modal.classList.add('show');
-        });
     });
 });
 """

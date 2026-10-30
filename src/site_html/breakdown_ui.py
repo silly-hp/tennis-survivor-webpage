@@ -464,7 +464,7 @@ _JS_BREAKDOWN = r"""
       var uidSel = String(cardBtn.getAttribute('data-bd-uid'));
       var all = (window.TS && window.TS.rows) || [];
       for (var k = 0; k < all.length; k++){
-        if (all[k].getAttribute('data-uid') === uidSel){ tr = all[k]; break; }
+        if (String(all[k].u) === uidSel){ tr = window.TS.el(all[k]); break; }
       }
     }
     if (tr){

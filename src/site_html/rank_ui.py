@@ -886,13 +886,17 @@ ready(function(){
            d:col('排名变化'), main:col('今日主选'), alt:col('今日备选'), gain:col('本站得分'),
            minus:(()=>{ const i=ths.findIndex(t=>t==='扣除积分'||t.startsWith('扣除积分（')); return i; })(),
            killer:col('杀手球员'), days:col('存活天数'), d:-1};
-  const rows=[...table.tBodies[0].rows];
-  const txt=(r,i)=>(i<0||!r.cells[i])?'':r.cells[i].textContent.trim();
+  // rows are _JS_TABLE's models (r.t texts, r.h cell markup, r.u/r.p/r.d); a model's <tr>
+  // exists only while it is shown (TS.el creates it), so read the model, not the DOM
+  const rows=TS.rows;
+  const txt=(r,i)=>(i<0||r.t[i]==null)?'':r.t[i];
+  const cellHtml=(r,i)=>i<0||r.t[i]==null?'':TS.html(r,i);
   const uname=r=>txt(r,C.user);
   const byUser=new Map(rows.map(r=>[uname(r),r]));
   // the rank change rides inside 当前排名 (or the rank column): find whichever cell holds it
-  C.d=rows.length?[...rows[0].cells].findIndex(c=>c.querySelector('.rank')):-1;
-  const delta=r=>{ const s=r.cells[C.d]&&r.cells[C.d].querySelector('.rank'); return s?(parseInt(s.dataset.d||'0',10)||0):0; };
+  const hasRank=(r,i)=>!!(r.h&&r.h[i]&&r.h[i].indexOf('class="rank ')>=0);
+  C.d=rows.length?rows[0].t.findIndex((_,i)=>hasRank(rows[0],i)):-1;
+  const delta=r=>{ if(r._d===undefined){ const m=C.d>=0&&r.h&&r.h[C.d]&&r.h[C.d].match(/data-d="(-?\d+)"/); r._d=m?(parseInt(m[1],10)||0):0; } return r._d; };
 
   // ── status groups ──
   const grp=tsGrp;
@@ -907,7 +911,7 @@ ready(function(){
   const DAYS=rows.map(r=>parseInt(txt(r,C.days),10));
   const TODAY_D=Math.max(-1,...DAYS.filter((d,i)=>G[i]!=='absent'&&!isNaN(d)));
   // data-picked (from settlement) covers today's losers/suicides; fallback for old pages.
-  const TODAY=rows.map((r,i)=>r.dataset.picked!==undefined?r.dataset.picked==='1'
+  const TODAY=rows.map((r,i)=>r.p!==undefined?r.p===1
     :['alive','live','bye'].includes(G[i])||(G[i]==='out'&&DAYS[i]===TODAY_D&&used(r).length>TODAY_D));
   const inChip=(k,i)=>{ const g=G[i]; return k==='all'||(k==='entered'?ENTERED.includes(g):k==='picked'?TODAY[i]:k==='nobye'?TODAY[i]&&g!=='bye'
     :k==='outall'?(g==='out'||g==='suicide'):g===k); };
@@ -916,7 +920,7 @@ ready(function(){
 
   // ── route query (夺冠路线) ──
   const ROUTE_OK=['存活','未完赛','未选','轮空'];
-  function used(r){ try{ const d=JSON.parse(r.dataset.detail||'[]'); return Array.isArray(d)?d.map(String):[]; }catch(e){ return []; } }
+  function used(r){ return Array.isArray(r.d)?r.d.map(String):[]; }
   function routeOk(r){ if(!routes.size) return true; if(!ROUTE_OK.includes(txt(r,C.st))) return false;
     const u=used(r); for(const p of routes) if(u.includes(p)) return false; return true; }
 
@@ -932,7 +936,7 @@ ready(function(){
   TS.render=list=>{ matched=list; paginate(); };
   function paginate(){
     const show=matched.slice(0,limit), frag=document.createDocumentFragment();
-    show.forEach(r=>{ frzApply(r); frag.appendChild(r); });
+    show.forEach(r=>{ const el=TS.el(r); frzApply(el); frag.appendChild(el); });
     tbody.textContent=''; tbody.appendChild(frag);
     document.getElementById('visible-count').textContent=matched.length;
     document.getElementById('total-count').textContent=rows.length;
@@ -988,14 +992,15 @@ ready(function(){
 
   // ── stars, tags, "me" badge inside the user cell ──
   const STAR='<svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>';
-  if(C.user>=0) rows.forEach(r=>{ const td=r.cells[C.user], u=td.textContent.trim();
-    td.innerHTML='<span class="rk-user"><button type="button" class="rk-star" aria-label="关注 '+esc(u)+'" aria-haspopup="dialog" aria-expanded="false" data-u="'+esc(u)+'">'+STAR+'</button><span class="rk-uname">'+esc(u)+'</span><span class="rk-tags" data-t=""></span></span>'; });
+  // user cell markup, added to each <tr> as TS.el creates it (see the onRow hook below)
+  function userCell(td,u){
+    td.innerHTML='<span class="rk-user"><button type="button" class="rk-star" aria-label="关注 '+esc(u)+'" aria-haspopup="dialog" aria-expanded="false" data-u="'+esc(u)+'">'+STAR+'</button><span class="rk-uname">'+esc(u)+'</span><span class="rk-tags" data-t=""></span></span>'; }
   function tagsOf(u){ return S.lists.filter(l=>l.users.includes(u)).map(l=>l.name); }
-  function paintRow(r){ const u=uname(r), t=tagsOf(u), td=r.cells[C.user]; if(!td) return;
+  function paintRow(r){ if(!r.el) return; const u=uname(r), t=tagsOf(u), td=r.el.cells[C.user]; if(!td) return;
     td.querySelector('.rk-star').classList.toggle('on',t.length>0);
     td.querySelector('.rk-tags').dataset.t=t.map(x=>'★'+x).join(' ');
     td.querySelector('.rk-uname').toggleAttribute('data-me',u===S.me);
-    r.classList.toggle('rk-mine',u===S.me); }
+    r.el.classList.toggle('rk-mine',u===S.me); }
   const paintAll=()=>rows.forEach(paintRow);
   // badges/tags are CSS ::after content so the cell's textContent stays the bare name (filters, sort)
   table.addEventListener('click',e=>{ const b=e.target.closest('.rk-star'); if(b){ e.stopPropagation(); openPicker(b); } },true);
@@ -1098,7 +1103,7 @@ ready(function(){
     document.getElementById('rkMeRank').textContent='#'+txt(r,C.rank);
     document.getElementById('rkMePts').textContent=C.pts>=0?txt(r,C.pts)+' 分':'';
     document.getElementById('rkMeD').innerHTML=C.d>=0?deltaHtml(delta(r)):'';
-    const st=C.st>=0&&r.cells[C.st]?r.cells[C.st].innerHTML:'';
+    const st=cellHtml(r,C.st);
     const pick=C.main>=0?(txt(r,C.main)||'今日未选'):'';
     document.getElementById('rkMePick').innerHTML=(pick||st)?'<span>'+esc(pick)+'</span>'+st:'';
   }
@@ -1116,7 +1121,7 @@ ready(function(){
     if(!matched.includes(r)){ chip='all'; list=''; routes.clear(); renderChips(); renderWatch();
       if(rBtn){ routes.clear(); document.getElementById('rkRouteSel').innerHTML=''; document.getElementById('rkRouteRes').hidden=true; document.getElementById('rkRouteLbl').textContent='选择球员…'; } TS.refresh(); }
     const idx=matched.indexOf(r); if(idx>=limit){ limit=Math.ceil((idx+1)/PAGE)*PAGE; paginate(); }
-    const target=mqMobile.matches?root.querySelector('.rk-card-row[data-u="'+CSS.escape(u)+'"]'):r;
+    const target=mqMobile.matches?root.querySelector('.rk-card-row[data-u="'+CSS.escape(u)+'"]'):TS.el(r);
     if(target){ target.scrollIntoView({block:'center',behavior:still()?'auto':'smooth'}); flash(target); }
   }
   function flash(el){ el.classList.remove('rk-mv0','rk-mv1'); void el.offsetWidth; el.style.setProperty('--dy','0px'); el.classList.add('rk-mv0'); }
@@ -1149,7 +1154,7 @@ ready(function(){
     const show=matched.slice(0,limit);
     cardsBox.innerHTML=show.map(r=>{
       const u=uname(r), open=openCards.has(u), d=C.d>=0?delta(r):0, t=tagsOf(u);
-      const st=C.st>=0&&r.cells[C.st]?r.cells[C.st].innerHTML:'';
+      const st=cellHtml(r,C.st);
       let sub='';
       if(C.main>=0){ const m=txt(r,C.main), a=txt(r,C.alt), k=txt(r,C.killer);
         const g=grp(txt(r,C.st));
@@ -1162,8 +1167,8 @@ ready(function(){
         +'<span class="rk-c-sub">'+st+(sub?'<span class="p">'+sub+'</span>':'')+'</span></span>'
         +'<span class="rk-c-right"><span class="rk-c-pts">'+esc(C.pts>=0?txt(r,C.pts):'')+'</span>'+(C.cur>=0?'<span class="rk-c-cur">当前 <b>'+esc(txt(r,C.cur))+'</b></span>':'')+'</span>'
         +'</button><button type="button" class="rk-star'+(t.length?' on':'')+'" aria-label="关注 '+esc(u)+'" aria-haspopup="dialog" aria-expanded="false" data-u="'+esc(u)+'">'+STAR+'</button></div>'
-        +'<div class="rk-c-more"'+(open?'':' hidden')+'>'+extra+(r.dataset.detail!==undefined?'<button type="button" class="rk-btn" data-hist="1">选人历史</button>':'')
-        +(r.dataset.uid!==undefined?'<button type="button" class="rk-btn" data-bd-uid="'+esc(r.dataset.uid)+'">积分构成</button>':'')+'</div></div>';
+        +'<div class="rk-c-more"'+(open?'':' hidden')+'>'+extra+(r.d!==undefined?'<button type="button" class="rk-btn" data-hist="1">选人历史</button>':'')
+        +(r.u!==undefined?'<button type="button" class="rk-btn" data-bd-uid="'+esc(r.u)+'">积分构成</button>':'')+'</div></div>';
     }).join('');
   }
   cardsBox.addEventListener('click',e=>{
@@ -1181,13 +1186,13 @@ ready(function(){
   function play(){
     if(C.d<0) return; run++;
     const k=run%2, mobile=mqMobile.matches;
-    const view=mobile?[...cardsBox.children]:matched.slice(0,limit);
+    const view=mobile?[...cardsBox.children]:matched.slice(0,limit).map(TS.el);
     const sample=view[0]; if(!sample) return;
     const h=sample.getBoundingClientRect().height+(mobile?8:0);
     view.forEach(el=>{
-      const r=mobile?byUser.get(el.dataset.u):el; if(!r) return;
+      const r=mobile?byUser.get(el.dataset.u):el._m; if(!r) return;
       const d=delta(r); el.classList.remove('rk-mv0','rk-mv1');
-      const dp=(mobile?el:r.cells[C.d]).querySelector('.rank'); if(dp) dp.classList.remove('rk-dp0','rk-dp1');
+      const dp=(mobile?el:el.cells[C.d]).querySelector('.rank'); if(dp) dp.classList.remove('rk-dp0','rk-dp1');
       if(!d) return;
       void el.offsetWidth;
       el.style.setProperty('--dy',(Math.max(-8,Math.min(8,d))*h)+'px');
@@ -1198,14 +1203,13 @@ ready(function(){
   }
   function countUp(r,el,mobile){
     if(C.pts<0||C.gain<0) return;
-    const cell=mobile?el.querySelector('.rk-c-pts'):r.cells[C.pts]; if(!cell) return;
-    const v=r.cells[C.pts].dataset.v||txt(r,C.pts), to=parseFloat(v), gain=parseFloat(txt(r,C.gain))||0; if(isNaN(to)||!gain) return;
+    const cell=mobile?el.querySelector('.rk-c-pts'):el.cells[C.pts]; if(!cell) return;
+    const v=txt(r,C.pts), to=parseFloat(v), gain=parseFloat(txt(r,C.gain))||0; if(isNaN(to)||!gain) return;
     const from=to-gain, t0=performance.now();
     (function step(now){ const p=Math.min(1,(now-t0)/1600), e=1-Math.pow(1-p,3);
       cell.textContent=String(Math.round(from+(to-from)*e)); if(p<1) requestAnimationFrame(step); else cell.textContent=v; })(t0);
   }
-  // counting writes textContent: keep the true value for filters/sort
-  if(C.pts>=0&&C.gain>=0) rows.forEach(r=>{ const c=r.cells[C.pts]; if(c) c.dataset.v=c.textContent.trim(); });
+  // counting writes the cell's textContent only; filters/sort read the model text
   document.getElementById('rkReplay').addEventListener('click',play);
   if(C.d<0) document.getElementById('rkReplay').hidden=true;
 
@@ -1213,9 +1217,18 @@ ready(function(){
   const finalsN=parseInt(root.dataset.finals||'0',10)||0;
   const finalsSet=new Set();
   if(finalsN&&C.rank>=0){
-    rows.forEach(r=>{ const k=parseInt(txt(r,C.rank),10); if(k>0&&k<=finalsN){ finalsSet.add(r); r.classList.add('rk-final'); if(k===finalsN) r.classList.add('rk-final-last'); } });
+    rows.forEach(r=>{ const k=parseInt(txt(r,C.rank),10); if(k>0&&k<=finalsN){ finalsSet.add(r); if(k===finalsN) r._finLast=true; } });
     if(finalsSet.size){ document.getElementById('rkFinals').hidden=false; document.getElementById('rkFinalsN').textContent=finalsN; }
   }
+
+  // ── per-<tr> setup, run as TS.el creates each row (and now for rows that already exist) ──
+  function decorate(r,tr){
+    if(C.user>=0&&tr.cells[C.user]) userCell(tr.cells[C.user],uname(r));
+    if(finalsSet.has(r)){ tr.classList.add('rk-final'); if(r._finLast) tr.classList.add('rk-final-last'); }
+    paintRow(r);
+  }
+  TS.onRow.push(decorate);
+  rows.forEach(r=>{ if(r.el) decorate(r,r.el); });
 
   // ── dialogs (focus trap, Esc, backdrop) ──
   let lastFocus=null;
@@ -1239,14 +1252,13 @@ ready(function(){
   // ── 选人历史 ──
   const hist=document.getElementById('rkHist');
   function openHist(r,from){
-    if(!hist||r.dataset.detail===undefined) return;
-    let picks=[]; try{ picks=JSON.parse(r.dataset.detail||'[]'); }catch(e){}
-    if(!Array.isArray(picks)) picks=[];
-    const u=uname(r), stCell=C.st>=0&&r.cells[C.st]?r.cells[C.st].innerHTML:'';
+    if(!hist||r.d===undefined) return;
+    const picks=Array.isArray(r.d)?r.d:[];
+    const u=uname(r), stCell=cellHtml(r,C.st);
     document.getElementById('rkHistName').textContent=u;
     const stat=(k,v)=>'<span>'+k+'<b>'+v+'</b></span>';
     document.getElementById('rkHistStats').innerHTML=stat(ths[C.rank]||'排名','#'+esc(txt(r,C.rank)))
-      +(C.pts>=0?stat(ths[C.pts],esc(r.cells[C.pts].dataset.v||txt(r,C.pts))):'')
+      +(C.pts>=0?stat(ths[C.pts],esc(txt(r,C.pts))):'')
       +(C.days>=0?stat('存活天数',esc(txt(r,C.days)||'0')):'')
       +(C.st>=0?'<span>当前状态'+stCell+'</span>':'');
     const h=tsHist({picks, st:txt(r,C.st), stHtml:stCell, days:txt(r,C.days), hasSt:C.st>=0,
@@ -1255,7 +1267,7 @@ ready(function(){
     document.getElementById('rkHistSum').textContent=h.sum;
     openModal(hist,from);
   }
-  table.addEventListener('click',e=>{ if(e.target.closest('.rk-star')) return; const r=e.target.closest('tbody tr'); if(r) openHist(r,r); });
+  table.addEventListener('click',e=>{ if(e.target.closest('.rk-star')) return; const tr=e.target.closest('tbody tr'); if(tr&&tr._m) openHist(tr._m,tr); });
 
   // ── 使用说明 ──
   const help=document.getElementById('rkHelp'), HELP_KEY='ts.help.v1';

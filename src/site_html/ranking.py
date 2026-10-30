@@ -14,6 +14,7 @@ from site_html.breakdown_ui import (
 )
 from site_html.common import (
     _df_to_html_table,
+    _df_to_table_data,
     _inner_page_shell,
     _killer_panel_html,
     _load_available_players,
@@ -73,6 +74,7 @@ def render_ranking_page(
     breakdown_atp_url: str = "data/breakdown_live_atp.json",
     breakdown_wta_url: str = "data/breakdown_live_wta.json",
     expired_label: Optional[str] = None,
+    table_data: bool = True,
 ) -> str:
     """
     Build and write a ranking-table page.
@@ -131,6 +133,9 @@ def render_ranking_page(
         None hides the line.
     breakdown_atp_url / breakdown_wta_url : str
         JSON paths (relative to the HTML file) for per-user event composition.
+    table_data : bool
+        Ship the rows as JSON and let the page build only the rows it shows
+        (default). False writes every row as HTML, as before.
 
     Returns
     -------
@@ -168,7 +173,8 @@ def render_ranking_page(
     else:
         detail_col = None
 
-    main_table_html = _df_to_html_table(
+    table_builder = _df_to_table_data if table_data else _df_to_html_table
+    main_table_html = table_builder(
         df,
         rank_change_col=rank_change_col,
         detail_col=detail_col,

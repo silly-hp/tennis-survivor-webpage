@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 import html
 import json
+import re
 from pathlib import Path
 from typing import Optional, Union
 
@@ -120,6 +121,116 @@ def _format_table_cell(col: object, val: object) -> str:
     return text
 
 
+def _parse_detail(raw_detail):
+    """Normalise a pick-history / career cell to a list or dict."""
+    if isinstance(raw_detail, dict):
+        return raw_detail
+    if isinstance(raw_detail, list):
+        return [str(x) for x in raw_detail]
+    if isinstance(raw_detail, str):
+        s = raw_detail.strip()
+        if not s:
+            return []
+        try:
+            parsed = ast.literal_eval(s)
+            return (
+                [str(x) for x in parsed]
+                if isinstance(parsed, list)
+                else (parsed if isinstance(parsed, dict) else [s])
+            )
+        except Exception:
+            return [s]
+    try:
+        is_na = bool(pd.isna(raw_detail))
+    except (TypeError, ValueError):
+        is_na = False
+    return [] if is_na else [str(raw_detail)]
+
+
+def _table_rows(
+    df: pd.DataFrame,
+    rank_change_col: Optional[str],
+    detail_col: Optional[str],
+    hide_detail_col: bool,
+    uid_col: Optional[str],
+    hide_uid_col: bool,
+    row_click_class: str,
+    merge_change_into: Optional[str],
+) -> tuple[list, list[dict]]:
+    """Column list plus one dict per row, shared by the HTML and JSON table builders.
+
+    Each row: ``cls`` (tr class), ``uid`` / ``picked`` / ``detail`` (None when the
+    page has no such attribute) and ``cells`` as ``(text, html)`` pairs, where
+    ``text`` is what the browser's ``textContent.trim()`` of the cell would be.
+    """
+    skip = set()
+    if hide_detail_col and detail_col:
+        skip.add(detail_col)
+    if hide_uid_col and uid_col and uid_col in df.columns:
+        skip.add(uid_col)
+    picked_col = "_今日已选" if "_今日已选" in df.columns else None
+    if picked_col:
+        skip.add(picked_col)
+    if (
+        merge_change_into
+        and rank_change_col in df.columns
+        and merge_change_into in df.columns
+    ):
+        skip.add(rank_change_col)
+    else:
+        merge_change_into = None
+    render_cols = [c for c in df.columns if c not in skip]
+    status_cols = {c for c in render_cols if c == "当前状态" or str(c).endswith("状态")}
+    out = []
+    for _, row in df.iterrows():
+        row_cls = ""
+        if "当前状态" in status_cols:
+            row_cls = _row_status_class(row.get("当前状态"))
+        if row_click_class:
+            row_cls = f"{row_cls} {row_click_class}".strip()
+        rec = {"cls": row_cls, "uid": None, "picked": None, "detail": None}
+        if uid_col and uid_col in df.columns:
+            uid_val = row.get(uid_col)
+            try:
+                if pd.isna(uid_val):
+                    uid_val = ""
+            except (TypeError, ValueError):
+                pass
+            rec["uid"] = str(uid_val).strip() or None
+        if picked_col:
+            rec["picked"] = 1 if bool(row.get(picked_col)) else 0
+        if detail_col and detail_col in df.columns:
+            rec["detail"] = _parse_detail(row.get(detail_col, []))
+        cells = []
+        for col in render_cols:
+            val = row[col]
+            if isinstance(val, pd.Series):
+                val = val.iloc[0]
+            if merge_change_into and col == merge_change_into:
+                # the arrow lives in ::after so the cell text stays the bare number (filter / sort)
+                text = _format_table_cell(col, val)
+                cell_html = html.escape(text) + _rank_change_cell(
+                    row[rank_change_col], arrow_attr=True
+                )
+            elif rank_change_col and col == rank_change_col:
+                cell_html = _rank_change_cell(val)
+                text = html.unescape(re.sub(r"<[^>]*>", "", cell_html))
+            elif col in status_cols:
+                cell_html = _status_badge_html(val)
+                text = html.unescape(re.sub(r"<[^>]*>", "", cell_html))
+            else:
+                try:
+                    is_na = bool(pd.isna(val))
+                except (TypeError, ValueError):
+                    is_na = False
+                text = "" if is_na else _format_table_cell(col, val)
+                cell_html = html.escape(text)
+            cells.append((text.strip(), cell_html))
+        rec["cells"] = cells
+        out.append(rec)
+    return render_cols, out
+
+
 def _df_to_html_table(
     df: pd.DataFrame,
     rank_change_col: Optional[str] = "排名变化",
@@ -142,26 +253,9 @@ def _df_to_html_table(
     uid_col : str or None
         When present, emit ``data-uid`` on each row (for combined breakdown).
     """
-    skip = set()
-    if hide_detail_col and detail_col:
-        skip.add(detail_col)
-    if hide_uid_col and uid_col and uid_col in df.columns:
-        skip.add(uid_col)
-    picked_col = "_今日已选" if "_今日已选" in df.columns else None
-    if picked_col:
-        skip.add(picked_col)
-    if (
-        merge_change_into
-        and rank_change_col in df.columns
-        and merge_change_into in df.columns
-    ):
-        skip.add(rank_change_col)
-    else:
-        merge_change_into = None
-    render_cols = [c for c in df.columns if c not in skip]
-    status_cols = {c for c in render_cols if c == "当前状态" or str(c).endswith("状态")}
-    status_col = (
-        "当前状态" if "当前状态" in status_cols else (next(iter(status_cols), None))
+    render_cols, rows = _table_rows(
+        df, rank_change_col, detail_col, hide_detail_col, uid_col, hide_uid_col,
+        row_click_class, merge_change_into,
     )
     lines = ['<table class="dataframe filterable-table">']
 
@@ -173,86 +267,79 @@ def _df_to_html_table(
 
     # tbody
     lines.append("  <tbody>")
-    for _, row in df.iterrows():
-        row_cls = ""
-        if "当前状态" in status_cols:
-            row_cls = _row_status_class(row.get("当前状态"))
-        if row_click_class:
-            row_cls = f"{row_cls} {row_click_class}".strip()
-        cls_attr = f' class="{row_cls}"' if row_cls else ""
-        extra_attrs = ""
-        if uid_col and uid_col in df.columns:
-            uid_val = row.get(uid_col)
-            try:
-                if pd.isna(uid_val):
-                    uid_val = ""
-            except (TypeError, ValueError):
-                pass
-            uid_text = html.escape(str(uid_val).strip(), quote=True)
-            if uid_text:
-                extra_attrs += f' data-uid="{uid_text}"'
-        if picked_col:
-            extra_attrs += f' data-picked="{1 if bool(row.get(picked_col)) else 0}"'
-        if detail_col and detail_col in df.columns:
-            raw_detail = row.get(detail_col, [])
-            if isinstance(raw_detail, dict):
-                details = raw_detail
-            elif isinstance(raw_detail, list):
-                details = [str(x) for x in raw_detail]
-            elif isinstance(raw_detail, str):
-                s = raw_detail.strip()
-                if not s:
-                    details = []
-                else:
-                    try:
-                        parsed = ast.literal_eval(s)
-                        details = (
-                            [str(x) for x in parsed]
-                            if isinstance(parsed, list)
-                            else (parsed if isinstance(parsed, dict) else [s])
-                        )
-                    except Exception:
-                        details = [s]
-            else:
-                try:
-                    is_na = bool(pd.isna(raw_detail))
-                except (TypeError, ValueError):
-                    is_na = False
-                details = [] if is_na else [str(raw_detail)]
+    for rec in rows:
+        attrs = f' class="{rec["cls"]}"' if rec["cls"] else ""
+        if rec["uid"]:
+            attrs += f' data-uid="{html.escape(rec["uid"], quote=True)}"'
+        if rec["picked"] is not None:
+            attrs += f' data-picked="{rec["picked"]}"'
+        if rec["detail"] is not None:
             detail_json = html.escape(
-                json.dumps(details, ensure_ascii=False), quote=True
+                json.dumps(rec["detail"], ensure_ascii=False), quote=True
             )
-            lines.append(f'  <tr{cls_attr}{extra_attrs} data-detail="{detail_json}">')
-        else:
-            lines.append(f"  <tr{cls_attr}{extra_attrs}>")
-        for col in render_cols:
-            val = row[col]
-            if isinstance(val, pd.Series):
-                val = val.iloc[0]
-            if merge_change_into and col == merge_change_into:
-                # the arrow lives in ::after so the cell text stays the bare number (filter / sort)
-                ch = row[rank_change_col]
-                cell_html = html.escape(
-                    _format_table_cell(col, val)
-                ) + _rank_change_cell(ch, arrow_attr=True)
-            elif rank_change_col and col == rank_change_col:
-                cell_html = _rank_change_cell(val)
-            elif col in status_cols:
-                cell_html = _status_badge_html(val)
-            else:
-                try:
-                    is_na = bool(pd.isna(val))
-                except (TypeError, ValueError):
-                    is_na = False
-                if is_na:
-                    cell_html = ""
-                else:
-                    cell_html = html.escape(_format_table_cell(col, val))
+            attrs += f' data-detail="{detail_json}"'
+        lines.append(f"  <tr{attrs}>")
+        for _text, cell_html in rec["cells"]:
             lines.append(f"    <td>{cell_html}</td>")
         lines.append("  </tr>")
     lines.append("  </tbody>")
     lines.append("</table>")
     return "\n".join(lines)
+
+
+def _df_to_table_data(
+    df: pd.DataFrame,
+    rank_change_col: Optional[str] = "排名变化",
+    detail_col: Optional[str] = None,
+    hide_detail_col: bool = True,
+    uid_col: Optional[str] = "主键",
+    hide_uid_col: bool = True,
+    row_click_class: str = "",
+    merge_change_into: Optional[str] = None,
+) -> str:
+    """Same table as ``_df_to_html_table``, but the rows ship as JSON.
+
+    The markup is the header plus an empty tbody; ``_JS_TABLE`` reads
+    ``#tsData`` and only builds ``<tr>`` elements for rows it shows.
+    Row JSON: ``t`` cell texts, ``h`` {column index: html} for cells whose
+    markup is more than the escaped text, and ``c`` / ``u`` / ``p`` / ``d`` for
+    class, uid, picked and detail when present.
+    """
+    render_cols, rows = _table_rows(
+        df, rank_change_col, detail_col, hide_detail_col, uid_col, hide_uid_col,
+        row_click_class, merge_change_into,
+    )
+    return _table_data_markup(render_cols, rows)
+
+
+def _table_data_markup(render_cols: list, rows: list[dict]) -> str:
+    """Header-only table plus the ``#tsData`` JSON for ``_table_rows`` output."""
+    data = []
+    for rec in rows:
+        item = {"t": [t for t, _h in rec["cells"]]}
+        extra = {
+            str(i): h for i, (t, h) in enumerate(rec["cells"]) if h != html.escape(t)
+        }
+        if extra:
+            item["h"] = extra
+        if rec["cls"]:
+            item["c"] = rec["cls"]
+        if rec["uid"]:
+            item["u"] = rec["uid"]
+        if rec["picked"] is not None:
+            item["p"] = rec["picked"]
+        if rec["detail"] is not None:
+            item["d"] = rec["detail"]
+        data.append(item)
+    payload = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+    # keep "</script>" (and "<!--") inside the payload from closing the tag
+    payload = payload.replace("<", "\\u003c")
+    head = "".join(f"<th>{html.escape(str(c))}</th>" for c in render_cols)
+    return (
+        '<table class="dataframe filterable-table">'
+        f"<thead><tr>{head}</tr></thead><tbody></tbody></table>\n"
+        f'<script type="application/json" id="tsData">{payload}</script>'
+    )
 
 
 def _summary_bar_html(
