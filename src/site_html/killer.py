@@ -9,7 +9,7 @@ from typing import Optional
 
 import pandas as pd
 
-from site_html.common import _df_to_html_table, _inner_page_shell
+from site_html.common import _df_to_table_data, _inner_page_shell
 
 _CSS_KILLER = """\
 .pod-card[data-detail],.filterable-table tr.killer-clickable{cursor:pointer;}
@@ -81,11 +81,13 @@ document.addEventListener('DOMContentLoaded',()=>{
         let d=[]; try{ d=JSON.parse(el.dataset.detail||'[]'); }catch(_e){ d=[]; }
         return Array.isArray(d)?d:[];
     }
-    document.querySelectorAll('.filterable-table tbody tr[data-detail]').forEach(row=>{
-        row.addEventListener('click',()=>{
-            const cell=row.querySelectorAll('td')[nameIdx>=0?nameIdx:1];
-            open(cell?cell.textContent.trim():'',parse(row));
-        });
+    // delegated: the table script creates and swaps rows as it filters and sorts
+    const tbody=document.querySelector('.filterable-table tbody');
+    if(tbody) tbody.addEventListener('click',e=>{
+        const row=e.target.closest('tr[data-detail]');
+        if(!row||row.parentNode!==tbody) return;
+        const cell=row.querySelectorAll('td')[nameIdx>=0?nameIdx:1];
+        open(cell?cell.textContent.trim():'',parse(row));
     });
     document.querySelectorAll('.pod-card[data-detail]').forEach(card=>{
         card.addEventListener('click',()=>open(card.dataset.name||'',parse(card)));
@@ -238,7 +240,7 @@ def render_killer_page(
 
     podium_html = '<div class="podium">\n' + "\n".join(podium_cards) + "\n</div>"
     has_detail = detail_col in df.columns
-    main_table_html = _df_to_html_table(
+    main_table_html = _df_to_table_data(
         df,
         rank_change_col=None,
         detail_col=detail_col if has_detail else None,

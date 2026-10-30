@@ -931,11 +931,13 @@ ready(function(){
 
   // ── pagination + counts after every filter pass ──
   // _JS_TABLE hands over the matching rows in sort order; only the first `limit` go into tbody
-  let matched=[];
+  let matched=[], lastMobile=null;
   const tbody=table.tBodies[0];
   TS.render=list=>{ matched=list; paginate(); };
   function paginate(){
-    const show=matched.slice(0,limit), frag=document.createDocumentFragment();
+    // phones show the cards and hide the table (CSS): build only the side that is visible
+    lastMobile=mqMobile.matches;
+    const show=lastMobile?[]:matched.slice(0,limit), frag=document.createDocumentFragment();
     show.forEach(r=>{ const el=TS.el(r); frzApply(el); frag.appendChild(el); });
     tbody.textContent=''; tbody.appendChild(frag);
     document.getElementById('visible-count').textContent=matched.length;
@@ -1179,7 +1181,9 @@ ready(function(){
     const more=card.querySelector('.rk-c-more'); const o=more.hidden;
     more.hidden=!o; btn.setAttribute('aria-expanded',String(o)); o?openCards.add(u):openCards.delete(u);
   });
-  mqMobile.addEventListener('change',()=>{ renderCards(); freeze(); });
+  // rebuild for the other layout; resize is a fallback for browsers that skip the change event
+  const syncLayout=()=>{ if(mqMobile.matches!==lastMobile) paginate(); freeze(); };
+  mqMobile.addEventListener('change',syncLayout);
 
   // ── rank-change motion: slide from old position, flash, count up 即时积分 ──
   let run=0;
@@ -1358,7 +1362,7 @@ ready(function(){
   renderChips(); renderWatch(); paintAll(); renderMe();
   if(location.hash==='#watch'&&allFav().size){ list='*'; renderWatch(); renderChips(); }
   TS.refresh(); freeze();
-  window.addEventListener('resize',()=>{ clearTimeout(freeze._t); freeze._t=setTimeout(freeze,150); });
+  window.addEventListener('resize',()=>{ clearTimeout(freeze._t); freeze._t=setTimeout(syncLayout,150); });
   // #u=<name>: opened from the watch page — jump to that user's row
   const hu=location.hash.match(/^#u=(.+)$/);
   if(hu){ let u=''; try{ u=decodeURIComponent(hu[1]); }catch(e){}
