@@ -1089,7 +1089,6 @@ body.dark .rk-uname[data-me]::after{color:#06142a;}
 body:not(.dark) .rk-tags{color:#8a6a00;}
 .rk .filterable-table tr.rk-mine td{background:var(--me-dim);}
 .rk .filterable-table tr.rk-mine td:first-child{box-shadow:inset 3px 0 0 var(--me);}
-.rk .filterable-table tbody tr.rk-pg,.rk-cards .rk-pg{display:none !important;}
 .rk-empty{padding:32px;text-align:center;font-size:13px;color:var(--muted);}
 .rk-empty[hidden]{display:none;}
 .rk-foot{padding:12px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between;border-top:1px solid var(--border2);font-size:13px;color:var(--muted);}
@@ -1486,7 +1485,7 @@ body.dark .ev-more[aria-expanded="true"]{color:#06142a;}
   <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="../../atp_ranking.html">即时排名</a><a class="hd-tab" href="../../atp_race_ranking.html">冠军排名</a><a class="hd-tab" href="../../atp_champion.html">冠军榜</a><a class="hd-tab" href="../../atpkiller.html">杀手榜</a><a class="hd-tab" href="../../survivor_calendar_atp.html" aria-current="page">赛历</a><a class="hd-tab" href="../../atp_show.html">生涯统计</a><a class="hd-tab" href="../../h2h_atp.html">H2H</a></nav>
   <div class="hd-right">
     <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="../../survivor_calendar_atp.html" aria-current="page">ATP</a><a class="hd-seg-btn" href="../../survivor_calendar_wta.html">WTA</a><a class="hd-seg-btn" href="../../combined_calendar.html">联合</a></div>
-    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月30日 21:15:00</span><span class="hd-suffix"> 更新</span></span>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年10月31日 00:09:04</span><span class="hd-suffix"> 更新</span></span>
     <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
   </div>
 </header>
@@ -1583,15 +1582,67 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!table)return;
     const thead=table.querySelector('thead');
     const tbody=table.querySelector('tbody');
-    const rows=tbody.querySelectorAll('tr');
+    // Rows are models: t = cell texts (what filters and sorts read), h = {col: html} for cells
+    // whose markup is more than the text, c = tr class, u/p/d = uid / picked / detail.
+    // Pages built with _df_to_table_data ship them as JSON in #tsData and a model's <tr> is
+    // only created (TS.el) when it is shown; otherwise the models wrap the parsed rows.
+    const dataEl=document.getElementById('tsData');
+    let rows;
+    if(dataEl){
+        rows=JSON.parse(dataEl.textContent);
+    } else {
+        rows=Array.from(tbody.querySelectorAll('tr'),tr=>{
+            const m={t:Array.from(tr.children,c=>c.textContent.trim()),c:tr.className,el:tr};
+            if(tr.dataset.uid!==undefined)m.u=tr.dataset.uid;
+            if(tr.dataset.picked!==undefined)m.p=+tr.dataset.picked;
+            if(tr.dataset.detail!==undefined){ try{ m.d=JSON.parse(tr.dataset.detail||'[]'); }catch(e){ m.d=[]; } }
+            tr._m=m;
+            return m;
+        });
+    }
     const totalCount=rows.length;
+    // every row lives in this array; tbody only holds the rows TS.render puts there,
+    // so filtered-out (or paged-out) rows cost nothing in layout
+    let order=rows.slice();
+    // filter passes run during setup render nothing (see initDone below)
+    let initDone=false, rendered=false;
+    const zhCollator=new Intl.Collator('zh');
+    const escCell=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;'}[c]));
+    const cellHtml=(m,i)=>m.h&&m.h[i]!=null?m.h[i]:escCell(m.t[i]);
+    function rowEl(m){
+        if(m.el)return m.el;
+        const tr=document.createElement('tr');
+        if(m.c)tr.className=m.c;
+        if(m.u!==undefined)tr.dataset.uid=m.u;
+        if(m.p!==undefined)tr.dataset.picked=m.p;
+        if(m.d!==undefined)tr.dataset.detail=JSON.stringify(m.d);
+        tr.innerHTML=m.t.map((_,i)=>'<td>'+cellHtml(m,i)+'</td>').join('');
+        tr._m=m; m.el=tr;
+        window.TS.onRow.forEach(f=>f(m,tr));
+        return tr;
+    }
     const totalEl=document.getElementById('total-count');
     const visibleEl=document.getElementById('visible-count');
     if(totalEl)totalEl.textContent=totalCount;
     if(visibleEl)visibleEl.textContent=totalCount;
-    // page scripts add row predicates to TS.extra and call TS.refresh(); 'ts:filtered' fires after each pass
+    // page scripts add row predicates to TS.extra and call TS.refresh(); 'ts:filtered' fires after each pass.
+    // TS.render(list) decides which of the matching models go into tbody (default: all of them);
+    // TS.setOrder(arr) replaces the row order without refreshing; TS.el(m) gives a model's <tr>,
+    // TS.html(m,i) a cell's markup, and TS.onRow hooks run once on every <tr> TS.el creates.
     window.TS=window.TS||{extra:[]};
+    window.TS.onRow=window.TS.onRow||[];
     window.TS.refresh=()=>filterTable();
+    window.TS.rows=rows;
+    window.TS.visible=rows;
+    window.TS.el=rowEl;
+    window.TS.html=cellHtml;
+    window.TS.render=list=>{
+        const frag=document.createDocumentFragment();
+        list.forEach(m=>frag.appendChild(rowEl(m)));
+        tbody.textContent='';
+        tbody.appendChild(frag);
+    };
+    window.TS.setOrder=arr=>{ order=arr.slice(); };
     const headerRow=thead.querySelector('tr');
     const headers=headerRow.querySelectorAll('th');
     const filterRow=document.createElement('tr');
@@ -1614,8 +1665,8 @@ document.addEventListener('DOMContentLoaded',function(){
         // collect all non-empty values for this column
         const rawValues=[];
         rows.forEach(row=>{
-            const cell=row.children[index];
-            if(cell)rawValues.push(cell.textContent.trim());
+            const v=row.t[index];
+            if(v!==undefined)rawValues.push(v);
         });
         const nonEmpty=rawValues.filter(v=>v!==''&&v.toLowerCase()!=='nan'&&v!=='-');
         const parsedNums=nonEmpty.map(parseCellNumber);
@@ -1627,8 +1678,8 @@ document.addEventListener('DOMContentLoaded',function(){
             const forceInt=/天数|排名|周数|参赛|冠军数|亚军|连胜|连败|得分|积分/.test(headerText)
                 && !/率/.test(headerText);
             const isIntCol=forceInt || parsedNums.every(n=>Number.isInteger(n));
-            let minVal=Math.min(...parsedNums);
-            let maxVal=Math.max(...parsedNums);
+            let minVal=parsedNums.reduce((a,b)=>a<b?a:b);
+            let maxVal=parsedNums.reduce((a,b)=>a>b?a:b);
             if(isIntCol){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
             // step is 1 for wide ranges: snap the ends so the slider can reach the true max
             else if((maxVal-minVal)>20){ minVal=Math.floor(minVal); maxVal=Math.ceil(maxVal); }
@@ -1782,16 +1833,29 @@ document.addEventListener('DOMContentLoaded',function(){
                 });
                 filterTable();
             });
-            Array.from(new Set(rawValues)).sort((a,b)=>a.localeCompare(b,'zh')).forEach(val=>{
-                const item=document.createElement('div');
-                item.className='option-item';
-                const cb=document.createElement('input');
-                cb.type='checkbox';cb.value=val;cb.checked=true;
-                const label=document.createElement('span');
-                label.textContent=val;
-                item.appendChild(cb);item.appendChild(label);
-                optionsContainer.appendChild(item);
-            });
+            // the value list is built on first open: most columns are never filtered,
+            // and an unbuilt list means "everything selected" to filterTable
+            const optionValues=Array.from(new Set(rawValues)).sort(zhCollator.compare);
+            let optionsBuilt=false;
+            function buildOptions(){
+                if(optionsBuilt)return;
+                optionsBuilt=true;
+                const frag=document.createDocumentFragment();
+                optionValues.forEach(val=>{
+                    const item=document.createElement('div');
+                    item.className='option-item';
+                    const cb=document.createElement('input');
+                    cb.type='checkbox';cb.value=val;cb.checked=true;
+                    const label=document.createElement('span');
+                    label.textContent=val;
+                    item.appendChild(cb);item.appendChild(label);
+                    frag.appendChild(item);
+                });
+                optionsContainer.appendChild(frag);
+                // page scripts restyle the new items here
+                optionsContainer.dispatchEvent(new CustomEvent('ts:options'));
+            }
+            optionsContainer.tsBuild=buildOptions;
             dropdownWrapper.appendChild(trigger);
             document.body.appendChild(optionsContainer);
             allOptionContainers.push(optionsContainer);
@@ -1802,6 +1866,7 @@ document.addEventListener('DOMContentLoaded',function(){
                 document.querySelectorAll('.dropdown-content').forEach(d=>{
                     if(d!==optionsContainer)d.classList.remove('show');
                 });
+                buildOptions();
                 const isOpen=optionsContainer.classList.contains('show');
                 optionsContainer.classList.toggle('show');
                 if(!isOpen){
@@ -1835,21 +1900,21 @@ document.addEventListener('DOMContentLoaded',function(){
             else sortDirection='none';
             if(sortDirection!=='none'){
                 header.classList.add('sort-'+sortDirection);
-                const rowsArray=Array.from(tbody.querySelectorAll('tr'));
-                rowsArray.sort((a,b)=>{
-                    const A=a.children[index].textContent.trim();
-                    const B=b.children[index].textContent.trim();
-                    const emA=A===''||A.toLowerCase()==='nan'||A==='-';
-                    const emB=B===''||B.toLowerCase()==='nan'||B==='-';
-                    if(emA&&!emB)return 1;
-                    if(!emA&&emB)return -1;
-                    if(emA&&emB)return 0;
-                    const nA=parseFloat(A),nB=parseFloat(B);
-                    if(!isNaN(nA)&&!isNaN(nB))return(nA-nB)*(sortDirection==='asc'?1:-1);
-                    return A.localeCompare(B,'zh')*(sortDirection==='asc'?1:-1);
+                const dir=sortDirection==='asc'?1:-1;
+                const keyed=order.map(row=>{
+                    const A=row.t[index]||'';
+                    const em=A===''||A.toLowerCase()==='nan'||A==='-';
+                    return {row,A,em,n:parseFloat(A)};
                 });
-                rowsArray.forEach(row=>tbody.appendChild(row));
-                document.dispatchEvent(new Event('ts:filtered'));
+                keyed.sort((a,b)=>{
+                    if(a.em&&!b.em)return 1;
+                    if(!a.em&&b.em)return -1;
+                    if(a.em&&b.em)return 0;
+                    if(!isNaN(a.n)&&!isNaN(b.n))return(a.n-b.n)*dir;
+                    return zhCollator.compare(a.A,b.A)*dir;
+                });
+                order=keyed.map(k=>k.row);
+                filterTable();
             }
         });
     });
@@ -1863,35 +1928,55 @@ document.addEventListener('DOMContentLoaded',function(){
     }
     updateFilterRowTop();
     new ResizeObserver(updateFilterRowTop).observe(headerRow);
+    // setup above runs filter passes (slider init); they render nothing. The first real pass
+    // comes from a page script's TS.refresh() in this same DOMContentLoaded, or else from here.
+    initDone=true;
+    setTimeout(()=>{ if(!rendered)filterTable(); },0);
 
     function filterTable(){
+        if(!initDone)return;
+        rendered=true;
         let visibleCount=0;
         const statusIndex=columnMeta.findIndex(meta=>meta&&meta.type==='category'&&meta.header==='当前状态');
-        rows.forEach(row=>{
-            let showRow=true;
-            const cells=row.querySelectorAll('td');
-            columnMeta.forEach((meta,index)=>{
-                if(!showRow||!cells[index])return;
-                const cellText=cells[index].textContent.trim();
-                if(meta.type==='numeric'){
-                    const n=parseCellNumber(cellText);
-                    const narrowed=meta.curMin!==meta.min||meta.curMax!==meta.max;
-                    if(meta.header==='存活天数' && narrowed){
-                        const statusText=statusIndex>=0&&cells[statusIndex]?cells[statusIndex].textContent.trim():'';
-                        if(statusText==='未参赛'||isNaN(n)) showRow=false;
-                    }
-                    if(!isNaN(n) && (n<meta.curMin || n>meta.curMax)) showRow=false;
-                } else {
-                    const oc=allOptionContainers[index];
-                    const checkboxes=Array.from(oc.querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]'));
-                    const selected=checkboxes.filter(cb=>cb.checked).map(cb=>cb.value);
-                    if(selected.length>0 && !selected.includes(cellText)) showRow=false;
-                }
-            });
-            if(showRow)showRow=window.TS.extra.every(f=>f(row));
-            row.style.display=showRow?'':'none';
-            if(showRow)visibleCount++;
+        // resolve each column's filter once per pass; untouched columns drop out entirely
+        const active=[];
+        columnMeta.forEach((meta,index)=>{
+            if(!meta)return;
+            if(meta.type==='numeric'){
+                if(meta.curMin!==meta.min||meta.curMax!==meta.max)active.push({index,meta});
+            } else {
+                const cbs=allOptionContainers[index].querySelectorAll('.option-item:not([data-select-all]) input[type="checkbox"]');
+                const selected=new Set();
+                cbs.forEach(cb=>{ if(cb.checked)selected.add(cb.value); });
+                // nothing ticked behaves like everything ticked
+                if(selected.size>0&&selected.size<cbs.length)active.push({index,meta,selected});
+            }
         });
+        const extra=window.TS.extra;
+        const visible=[];
+        order.forEach(row=>{
+            let showRow=true;
+            const cells=row.t;
+            for(const f of active){
+                const v=cells[f.index];
+                if(v===undefined)continue;
+                if(f.selected){
+                    if(!f.selected.has(v)){ showRow=false; break; }
+                    continue;
+                }
+                const n=parseCellNumber(v);
+                if(f.meta.header==='存活天数'){
+                    const statusText=statusIndex>=0&&cells[statusIndex]!==undefined?cells[statusIndex]:'';
+                    if(statusText==='未参赛'||isNaN(n)){ showRow=false; break; }
+                }
+                if(!isNaN(n) && (n<f.meta.curMin || n>f.meta.curMax)){ showRow=false; break; }
+            }
+            if(showRow&&extra.length)showRow=extra.every(f=>f(row));
+            if(showRow)visible.push(row);
+        });
+        visibleCount=visible.length;
+        window.TS.visible=visible;
+        window.TS.render(visible);
         if(visibleEl)visibleEl.textContent=visibleCount;
         document.dispatchEvent(new Event('ts:filtered'));
     }
