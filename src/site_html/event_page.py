@@ -18,10 +18,14 @@ from site_html.rank_ui import (
     help_button_html,
     help_modal_html,
 )
+from points_calculation import ATP_YEAR_END_FINALS, WTA_YEAR_END_FINAL
 from site_html.types_meta import champion_type_label
 from themes import THEMES
 
 _SURFACE_THEME = {"h": "hard", "c": "clay", "g": "grass"}
+# Same series across years even when the city flips.
+_CANADA_SERIES = frozenset({"蒙特利尔", "多伦多"})
+_FINALS_TYPE = "年终总决赛"
 
 _HELP_ICON = ('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
               'aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/>'
@@ -146,6 +150,59 @@ def _help_steps(tour: str, sf: str) -> list[tuple[str, str, str]]:
     return [s1, s2, s3, s4, s5]
 
 
+def event_year_series_key(
+    city: str,
+    tour: str,
+    type_label: str = "",
+) -> str:
+    """Group key for year-jump: tour + city, with Canada / finals aliases."""
+    tour_key = "WS" if str(tour).upper() in {"WS", "WTA"} else "MS"
+    name = str(city or "").strip()
+    typ = str(type_label or "").strip() or champion_type_label(name, tour_key)
+    if name in _CANADA_SERIES:
+        return f"{tour_key}|canada"
+    if (
+        typ == _FINALS_TYPE
+        or name in ATP_YEAR_END_FINALS
+        or name in WTA_YEAR_END_FINAL
+    ):
+        return f"{tour_key}|finals"
+    return f"{tour_key}|{name}"
+
+
+def _year_jump_html(
+    year: int,
+    city: str,
+    year_siblings: list[tuple[int, str, str]],
+) -> str:
+    """Dropdown of other years in the same series; empty if fewer than two."""
+    by_year: dict[int, tuple[str, str]] = {}
+    for y, href, sibling_city in year_siblings:
+        if not href:
+            continue
+        by_year[int(y)] = (str(href), str(sibling_city or "").strip())
+    options = sorted(by_year.items(), key=lambda item: -item[0])
+    if len(options) < 2:
+        return ""
+    current_city = str(city or "").strip()
+    parts = [
+        '<select class="year-jump" aria-label="切换年份" '
+        'onchange="if(this.value) location.href=this.value">'
+    ]
+    for y, (href, sibling_city) in options:
+        selected = " selected" if int(y) == int(year) else ""
+        value = "" if int(y) == int(year) else html.escape(href, quote=True)
+        if sibling_city and sibling_city != current_city:
+            label = f"{int(y)} · {sibling_city}"
+        else:
+            label = str(int(y))
+        parts.append(
+            f'<option value="{value}"{selected}>{html.escape(label)}</option>'
+        )
+    parts.append("</select>")
+    return "".join(parts)
+
+
 def render_event_score_page(
     df: pd.DataFrame,
     *,
@@ -158,6 +215,7 @@ def render_event_score_page(
     source_url: str = "",
     stats: Optional[dict[str, Any]] = None,
     type_label: str = "",
+    year_siblings: Optional[list[tuple[int, str, str]]] = None,
 ) -> str:
     """Write one event's 战报 page; table, filters and drawers are drawn client-side from JSON."""
     del source_url  # kept for call-site compat
@@ -167,6 +225,7 @@ def render_event_score_page(
     label = str(type_label or "").strip() or champion_type_label(city, tour_code)
     chip = label if label.startswith(("ATP", "WTA")) else f"{tour_lbl} {label}"
     sf = surface_code(city, tour_code)
+    year_jump = _year_jump_html(int(year), city, list(year_siblings or []))
     rows = _rows(df)
     n = len(rows)
     alive = sum(1 for r in rows if r[3] == "A")
@@ -222,15 +281,29 @@ def render_event_score_page(
 </div>"""
 
     back = f'<a class="ev-back" href="{cal_href}">← {tour_lbl} 赛历 · {int(year)}</a>'
-    title_extra = (f'<span class="cl-tl ev-tl" data-t="{tour_lbl[0]}" data-sf="{sf}">{html.escape(chip)}</span>'
-                   + help_button_html()
-                   + f'<span class="ev-hint">点击【<span class="ev-hint-ic" role="img" aria-label="使用说明图标">{_HELP_ICON}</span>】查看页面介绍</span>')
+    title_text = city if year_jump else f"{city} · {year}"
+    title_extra = (
+        (year_jump or "")
+        + f'<span class="cl-tl ev-tl" data-t="{tour_lbl[0]}" data-sf="{sf}">{html.escape(chip)}</span>'
+        + help_button_html()
+        + f'<span class="ev-hint">点击【<span class="ev-hint-ic" role="img" aria-label="使用说明图标">{_HELP_ICON}</span>】查看页面介绍</span>'
+    )
     # the whole page wears the event's court-surface theme, not the site-wide one
     site_vars = state.css_vars
     state.set_css_vars(THEMES[_SURFACE_THEME[sf]])
     try:
-        html_str = _render_shell(city, year, tour_lbl, state_lbl=state_lbl, updated=updated, body=body,
-                                 output_path=output_path, title_extra=title_extra, pre_header=back)
+        html_str = _render_shell(
+            city,
+            year,
+            tour_lbl,
+            state_lbl=state_lbl,
+            updated=updated,
+            body=body,
+            output_path=output_path,
+            title_extra=title_extra,
+            pre_header=back,
+            title_text=title_text,
+        )
     finally:
         state.set_css_vars(site_vars)
     out = Path(output_path)
@@ -239,11 +312,22 @@ def render_event_score_page(
     return html_str
 
 
-def _render_shell(city: str, year: int, tour_lbl: str, *, state_lbl: str, updated: str, body: str,
-                  output_path: str | Path, title_extra: str, pre_header: str) -> str:
+def _render_shell(
+    city: str,
+    year: int,
+    tour_lbl: str,
+    *,
+    state_lbl: str,
+    updated: str,
+    body: str,
+    output_path: str | Path,
+    title_extra: str,
+    pre_header: str,
+    title_text: Optional[str] = None,
+) -> str:
     return _inner_page_shell(
         page_title=f"{city} {year} 战报",
-        title=f"{city} · {year}",
+        title=title_text or f"{city} · {year}",
         tour="",
         eyebrow=f"Event Recap · {tour_lbl} · {int(year)} · {state_lbl}",
         updated=updated,
@@ -268,6 +352,14 @@ body.dark:has(.ev[data-sf="c"]) .page-header{--sf:#e8603c;--sf-ink:#ff7a54;}
 body.dark:has(.ev[data-sf="g"]) .page-header{--sf:#4ca86a;--sf-ink:#7acc90;}
 body:has(.ev) .page-eye{color:var(--sf-ink);}
 .page-title .ttag:empty{display:none;}
+.year-jump{appearance:none;-webkit-appearance:none;cursor:pointer;flex-shrink:0;
+    font-family:'Space Mono',monospace;font-size:14px;font-weight:600;letter-spacing:.04em;
+    color:var(--ink);background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+    padding:4px 28px 4px 10px;line-height:1.2;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 8px center;}
+.year-jump:hover,.year-jump:focus{border-color:var(--sf, var(--primary-rim));outline:none;}
+body.dark .year-jump{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23aaa' stroke-width='1.5'/%3E%3C/svg%3E");}
 .cl-tl{flex-shrink:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;
     background:var(--sf-ink);color:#fff;}
 body.dark .cl-tl{background:var(--sf);color:#051420;}

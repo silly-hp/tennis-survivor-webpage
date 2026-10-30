@@ -127,7 +127,11 @@ def _switch_html(output_path: str | Path, season: int | None) -> str:
 
     def seg(items: list[tuple[str, str, bool]], label: str) -> str:
         links = "".join(
-            f'<a href="{href}"{" aria-current=\"page\"" if cur else ""}>{html.escape(text)}</a>'
+            '<a href="{href}"{cur}>{text}</a>'.format(
+                href=href,
+                cur=' aria-current="page"' if cur else "",
+                text=html.escape(text),
+            )
             for text, href, cur in items
         )
         return f'<div class="kn-seg" role="group" aria-label="{label}">{links}</div>'
