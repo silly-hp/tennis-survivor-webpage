@@ -33,8 +33,11 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!table)return;
     const thead=table.querySelector('thead');
     const tbody=table.querySelector('tbody');
-    const rows=tbody.querySelectorAll('tr');
+    const rows=Array.from(tbody.querySelectorAll('tr'));
     const totalCount=rows.length;
+    // every row lives in this array; tbody only holds the rows TS.render puts there,
+    // so filtered-out (or paged-out) rows cost nothing in layout
+    let order=rows.slice();
     // read every cell once; filtering and sorting work off this cache instead of the DOM
     const cellText=new Map();
     rows.forEach(row=>cellText.set(row,Array.from(row.children,c=>c.textContent.trim())));
@@ -43,9 +46,20 @@ document.addEventListener('DOMContentLoaded',function(){
     const visibleEl=document.getElementById('visible-count');
     if(totalEl)totalEl.textContent=totalCount;
     if(visibleEl)visibleEl.textContent=totalCount;
-    // page scripts add row predicates to TS.extra and call TS.refresh(); 'ts:filtered' fires after each pass
+    // page scripts add row predicates to TS.extra and call TS.refresh(); 'ts:filtered' fires after each pass.
+    // TS.render(list) decides which of the matching rows go into tbody (default: all of them);
+    // TS.setOrder(arr) replaces the row order without refreshing.
     window.TS=window.TS||{extra:[]};
     window.TS.refresh=()=>filterTable();
+    window.TS.rows=rows;
+    window.TS.visible=rows;
+    window.TS.render=list=>{
+        const frag=document.createDocumentFragment();
+        list.forEach(r=>frag.appendChild(r));
+        tbody.textContent='';
+        tbody.appendChild(frag);
+    };
+    window.TS.setOrder=arr=>{ order=arr.slice(); };
     const headerRow=thead.querySelector('tr');
     const headers=headerRow.querySelectorAll('th');
     const filterRow=document.createElement('tr');
@@ -236,16 +250,29 @@ document.addEventListener('DOMContentLoaded',function(){
                 });
                 filterTable();
             });
-            Array.from(new Set(rawValues)).sort(zhCollator.compare).forEach(val=>{
-                const item=document.createElement('div');
-                item.className='option-item';
-                const cb=document.createElement('input');
-                cb.type='checkbox';cb.value=val;cb.checked=true;
-                const label=document.createElement('span');
-                label.textContent=val;
-                item.appendChild(cb);item.appendChild(label);
-                optionsContainer.appendChild(item);
-            });
+            // the value list is built on first open: most columns are never filtered,
+            // and an unbuilt list means "everything selected" to filterTable
+            const optionValues=Array.from(new Set(rawValues)).sort(zhCollator.compare);
+            let optionsBuilt=false;
+            function buildOptions(){
+                if(optionsBuilt)return;
+                optionsBuilt=true;
+                const frag=document.createDocumentFragment();
+                optionValues.forEach(val=>{
+                    const item=document.createElement('div');
+                    item.className='option-item';
+                    const cb=document.createElement('input');
+                    cb.type='checkbox';cb.value=val;cb.checked=true;
+                    const label=document.createElement('span');
+                    label.textContent=val;
+                    item.appendChild(cb);item.appendChild(label);
+                    frag.appendChild(item);
+                });
+                optionsContainer.appendChild(frag);
+                // page scripts restyle the new items here
+                optionsContainer.dispatchEvent(new CustomEvent('ts:options'));
+            }
+            optionsContainer.tsBuild=buildOptions;
             dropdownWrapper.appendChild(trigger);
             document.body.appendChild(optionsContainer);
             allOptionContainers.push(optionsContainer);
@@ -256,6 +283,7 @@ document.addEventListener('DOMContentLoaded',function(){
                 document.querySelectorAll('.dropdown-content').forEach(d=>{
                     if(d!==optionsContainer)d.classList.remove('show');
                 });
+                buildOptions();
                 const isOpen=optionsContainer.classList.contains('show');
                 optionsContainer.classList.toggle('show');
                 if(!isOpen){
@@ -290,9 +318,8 @@ document.addEventListener('DOMContentLoaded',function(){
             if(sortDirection!=='none'){
                 header.classList.add('sort-'+sortDirection);
                 const dir=sortDirection==='asc'?1:-1;
-                const keyed=Array.from(tbody.querySelectorAll('tr'),row=>{
-                    const cached=cellText.get(row);
-                    const A=cached?cached[index]:row.children[index].textContent.trim();
+                const keyed=order.map(row=>{
+                    const A=cellText.get(row)[index]||'';
                     const em=A===''||A.toLowerCase()==='nan'||A==='-';
                     return {row,A,em,n:parseFloat(A)};
                 });
@@ -303,10 +330,8 @@ document.addEventListener('DOMContentLoaded',function(){
                     if(!isNaN(a.n)&&!isNaN(b.n))return(a.n-b.n)*dir;
                     return zhCollator.compare(a.A,b.A)*dir;
                 });
-                const frag=document.createDocumentFragment();
-                keyed.forEach(k=>frag.appendChild(k.row));
-                tbody.appendChild(frag);
-                document.dispatchEvent(new Event('ts:filtered'));
+                order=keyed.map(k=>k.row);
+                filterTable();
             }
         });
     });
@@ -339,7 +364,8 @@ document.addEventListener('DOMContentLoaded',function(){
             }
         });
         const extra=window.TS.extra;
-        rows.forEach(row=>{
+        const visible=[];
+        order.forEach(row=>{
             let showRow=true;
             const cells=cellText.get(row);
             for(const f of active){
@@ -357,10 +383,11 @@ document.addEventListener('DOMContentLoaded',function(){
                 if(!isNaN(n) && (n<f.meta.curMin || n>f.meta.curMax)){ showRow=false; break; }
             }
             if(showRow&&extra.length)showRow=extra.every(f=>f(row));
-            const d=showRow?'':'none';
-            if(row.style.display!==d)row.style.display=d;
-            if(showRow)visibleCount++;
+            if(showRow)visible.push(row);
         });
+        visibleCount=visible.length;
+        window.TS.visible=visible;
+        window.TS.render(visible);
         if(visibleEl)visibleEl.textContent=visibleCount;
         document.dispatchEvent(new Event('ts:filtered'));
     }

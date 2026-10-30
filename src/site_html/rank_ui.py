@@ -679,7 +679,6 @@ body.dark .rk-uname[data-me]::after{color:#06142a;}
 body:not(.dark) .rk-tags{color:#8a6a00;}
 .rk .filterable-table tr.rk-mine td{background:var(--me-dim);}
 .rk .filterable-table tr.rk-mine td:first-child{box-shadow:inset 3px 0 0 var(--me);}
-.rk .filterable-table tbody tr.rk-pg,.rk-cards .rk-pg{display:none !important;}
 .rk-empty{padding:32px;text-align:center;font-size:13px;color:var(--muted);}
 .rk-empty[hidden]{display:none;}
 .rk-foot{padding:12px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between;border-top:1px solid var(--border2);font-size:13px;color:var(--muted);}
@@ -927,14 +926,14 @@ ready(function(){
     return (list?true:inChip(chip,i)) && listOk(u) && routeOk(r); });
 
   // ── pagination + counts after every filter pass ──
+  // _JS_TABLE hands over the matching rows in sort order; only the first `limit` go into tbody
   let matched=[];
-  document.addEventListener('ts:filtered',paginate);
+  const tbody=table.tBodies[0];
+  TS.render=list=>{ matched=list; paginate(); };
   function paginate(){
-    matched=rows.filter(r=>r.style.display!=='none');
-    // keep current DOM (sort) order
-    matched.sort((a,b)=>a.compareDocumentPosition(b)&Node.DOCUMENT_POSITION_FOLLOWING?-1:1);
-    rows.forEach(r=>r.classList.remove('rk-pg'));
-    matched.forEach((r,i)=>{ if(i>=limit) r.classList.add('rk-pg'); });
+    const show=matched.slice(0,limit), frag=document.createDocumentFragment();
+    show.forEach(r=>{ frzApply(r); frag.appendChild(r); });
+    tbody.textContent=''; tbody.appendChild(frag);
     document.getElementById('visible-count').textContent=matched.length;
     document.getElementById('total-count').textContent=rows.length;
     const more=document.getElementById('rkMore');
@@ -1114,7 +1113,7 @@ ready(function(){
   // reveal a user's row (clears filters that hide it), scroll to it and flash it
   function jumpTo(u){
     const r=byUser.get(u); if(!r) return;
-    if(r.style.display==='none'||r.classList.contains('rk-pg')){ chip='all'; list=''; routes.clear(); renderChips(); renderWatch();
+    if(!matched.includes(r)){ chip='all'; list=''; routes.clear(); renderChips(); renderWatch();
       if(rBtn){ routes.clear(); document.getElementById('rkRouteSel').innerHTML=''; document.getElementById('rkRouteRes').hidden=true; document.getElementById('rkRouteLbl').textContent='选择球员…'; } TS.refresh(); }
     const idx=matched.indexOf(r); if(idx>=limit){ limit=Math.ceil((idx+1)/PAGE)*PAGE; paginate(); }
     const target=mqMobile.matches?root.querySelector('.rk-card-row[data-u="'+CSS.escape(u)+'"]'):r;
@@ -1123,14 +1122,20 @@ ready(function(){
   function flash(el){ el.classList.remove('rk-mv0','rk-mv1'); void el.offsetWidth; el.style.setProperty('--dy','0px'); el.classList.add('rk-mv0'); }
 
   // ── frozen rank / change / user columns (desktop) ──
+  // offsets are computed once per layout change; rows pick them up when they enter tbody
+  let frzLeft=null, frzV=0;
+  function frzApply(tr){
+    if(tr._frzV===frzV) return; tr._frzV=frzV;
+    [...tr.children].forEach((c,i)=>{ const on=!!frzLeft&&i<frzLeft.length;
+      c.classList.toggle('rk-frz',on); c.classList.toggle('rk-frz-last',on&&i===frzLeft.length-1); c.style.left=on?frzLeft[i]+'px':''; });
+  }
   function freeze(){
-    const all=table.querySelectorAll('tr');
-    all.forEach(tr=>[...tr.children].forEach(c=>{ c.classList.remove('rk-frz','rk-frz-last'); c.style.left=''; }));
-    if(mqMobile.matches||C.user<0) return;
-    const head=table.querySelector('thead tr').children; let left=0;
-    for(let i=0;i<=C.user;i++){ const w=head[i].getBoundingClientRect().width;
-      all.forEach(tr=>{ const c=tr.children[i]; if(!c) return; c.classList.add('rk-frz'); c.style.left=left+'px'; if(i===C.user) c.classList.add('rk-frz-last'); });
-      left+=w; }
+    frzV++; frzLeft=null;
+    if(!mqMobile.matches&&C.user>=0){
+      const head=table.querySelector('thead tr').children; let left=0; frzLeft=[];
+      for(let i=0;i<=C.user;i++){ frzLeft.push(left); left+=head[i].getBoundingClientRect().width; }
+    }
+    table.querySelectorAll('tr').forEach(frzApply);
   }
   // column widths shift after load (web fonts, re-rendered / filtered rows): re-pin on any header resize
   if(window.ResizeObserver){ let fq=0; const ro=new ResizeObserver(()=>{ if(!fq) fq=requestAnimationFrame(()=>{ fq=0; freeze(); }); });
@@ -1285,8 +1290,7 @@ ready(function(){
   // ── default order: rank ascending (the table's own header sort stays available) ──
   if(C.rank>=0){
     const num=r=>{ const n=parseFloat(txt(r,C.rank)); return isNaN(n)?Infinity:n; };
-    const tb=table.tBodies[0];
-    rows.slice().sort((a,b)=>num(a)-num(b)).forEach(r=>tb.appendChild(r));
+    TS.setOrder(rows.slice().sort((a,b)=>num(a)-num(b)));
   }
 
   // ── column filters: v3 popovers on top of _JS_TABLE's dropdowns (moved to <body>, same order as columns) ──
@@ -1303,13 +1307,16 @@ ready(function(){
       pop.insertAdjacentHTML('afterbegin','<span class="rk-eye rk-pop-eye">'+esc(head)+' · '+(range?'RANGE':'FILTER')+'</span>');
       if(!range){
         const all=pop.querySelector('.select-all-item'); if(all) all.removeAttribute('style');
-        const counts=new Map(); rows.forEach(r=>{ const v=txt(r,i); counts.set(v,(counts.get(v)||0)+1); });
         const box=document.createElement('div'); box.className='rk-fopts';
-        pop.querySelectorAll('.option-item:not([data-select-all])').forEach(it=>{
-          const v=it.querySelector('input').value;
-          if(v==='') it.querySelector('span').textContent='（空）';
-          it.insertAdjacentHTML('beforeend','<em class="n">'+(counts.get(v)||0)+'</em>'); box.appendChild(it); });
         pop.appendChild(box);
+        // _JS_TABLE builds the value list on first open: count and move the items in then
+        pop.addEventListener('ts:options',()=>{
+          const counts=new Map(); rows.forEach(r=>{ const v=txt(r,i); counts.set(v,(counts.get(v)||0)+1); });
+          pop.querySelectorAll(':scope > .option-item:not([data-select-all])').forEach(it=>{
+            const v=it.querySelector('input').value;
+            if(v==='') it.querySelector('span').textContent='（空）';
+            it.insertAdjacentHTML('beforeend','<em class="n">'+(counts.get(v)||0)+'</em>'); box.appendChild(it); });
+        });
       }
       pop.insertAdjacentHTML('beforeend','<div class="rk-pop-ft"><button type="button" class="rk-btn-text" data-f="clr">清除</button><button type="button" class="rk-btn rk-btn-pri" data-f="done">完成</button></div>');
       const close=()=>{ pop.classList.remove('show'); tr.focus({preventScroll:true}); };

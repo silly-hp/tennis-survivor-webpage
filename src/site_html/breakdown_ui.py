@@ -460,12 +460,16 @@ _JS_BREAKDOWN = r"""
     // mobile ranking cards (rank_ui) mirror the hidden table; their 积分构成 button carries the row's uid
     var cardBtn = el.closest ? el.closest('[data-bd-uid]') : null;
     if (!tr && cardBtn){
-      var uidSel = String(cardBtn.getAttribute('data-bd-uid')).replace(/"/g, '');
-      tr = document.querySelector('table.filterable-table tbody tr[data-uid="'+uidSel+'"]');
+      // the row may be paged out of tbody: look it up in the table script's row list
+      var uidSel = String(cardBtn.getAttribute('data-bd-uid'));
+      var all = (window.TS && window.TS.rows) || [];
+      for (var k = 0; k < all.length; k++){
+        if (all[k].getAttribute('data-uid') === uidSel){ tr = all[k]; break; }
+      }
     }
     if (tr){
       var uid = tr.getAttribute('data-uid');
-      var table = tr.closest('table');
+      var table = document.querySelector('table.filterable-table');
       var heads = Array.prototype.map.call(table.querySelectorAll('thead th'), function(th){ return th.textContent.trim(); });
       var nameIdx = heads.indexOf('用户名');
       var name = nameIdx>=0 ? (tr.children[nameIdx].textContent||'').trim() : '';
