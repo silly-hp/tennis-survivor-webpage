@@ -28,9 +28,16 @@ function toggleTheme(){
 
 # Full interactive filter+sort JS (identical logic to original pages)
 _JS_TABLE = """\
+// TS.ready + 'ts:ready' mark the end of setup (also on pages without a table), so page
+// scripts start from that instead of relying on <script> / DOMContentLoaded order.
+function tsReady(){
+    window.TS=window.TS||{extra:[]};
+    window.TS.ready=true;
+    document.dispatchEvent(new Event('ts:ready'));
+}
 document.addEventListener('DOMContentLoaded',function(){
     const table=document.querySelector('.filterable-table');
-    if(!table)return;
+    if(!table){ tsReady(); return; }
     const thead=table.querySelector('thead');
     const tbody=table.querySelector('tbody');
     // Rows are models: t = cell texts (what filters and sorts read), h = {col: html} for cells
@@ -380,9 +387,10 @@ document.addEventListener('DOMContentLoaded',function(){
     updateFilterRowTop();
     new ResizeObserver(updateFilterRowTop).observe(headerRow);
     // setup above runs filter passes (slider init); they render nothing. The first real pass
-    // comes from a page script's TS.refresh() in this same DOMContentLoaded, or else from here.
+    // comes from a page script's TS.refresh() on 'ts:ready' (fired just below), or else from here.
     initDone=true;
     setTimeout(()=>{ if(!rendered)filterTable(); },0);
+    tsReady();
 
     function filterTable(){
         if(!initDone)return;
