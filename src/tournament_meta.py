@@ -119,8 +119,21 @@ def level_order(tour: str) -> list[str]:
     return list(LEVEL_ORDER_ATP)
 
 
-def classify_surface(city: str) -> str:
+# (city, first year) → surface from that season on, ahead of the city sets above
+SURFACE_FROM_YEAR = {
+    ("林茨", 2026): "红土",  # moved from indoor hard (Jan/Feb) to April clay
+}
+
+
+def classify_surface(city: str, year: int | str | None = None) -> str:
     name = str(city or "").strip()
+    try:
+        y = int(year or 0)
+    except (TypeError, ValueError):
+        y = 0
+    for (c, since), surface in SURFACE_FROM_YEAR.items():
+        if c == name and y >= since:
+            return surface
     if name in SURFACE_GRASS:
         return "草地"
     if name in SURFACE_CLAY:

@@ -103,7 +103,9 @@ def _calendar_lookup(calendar: pd.DataFrame, tour: str) -> dict[str, dict]:
             if pd.notna(row.get("event_year"))
             else int(row.get("year") or 0),
             "level": str(row.get("level") or classify_level(city, tour_u)),
-            "surface": classify_surface(city),
+            "surface": classify_surface(
+                city, row["event_year"] if pd.notna(row.get("event_year")) else row.get("year")
+            ),
             "expires": format_expires(row.get("invalid_date")),
             "expires_month": format_expires_month(row.get("invalid_date")),
             "monday": (
@@ -419,7 +421,7 @@ def build_tour_breakdown(
                 continue
             info = meta.get(name) or {}
             level = info.get("level") or classify_level(name, tour_u)
-            surface = info.get("surface") or classify_surface(name)
+            surface = info.get("surface") or classify_surface(name, info.get("year"))
             year_s = str(info.get("year") or "")
             day_map = day_index.get((name, year_s)) or day_index.get((name, "")) or {}
             day = day_map.get(uid)

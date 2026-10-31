@@ -224,7 +224,7 @@ def render_event_score_page(
     stats = stats or {}
     label = str(type_label or "").strip() or champion_type_label(city, tour_code)
     chip = label if label.startswith(("ATP", "WTA")) else f"{tour_lbl} {label}"
-    sf = surface_code(city, tour_code)
+    sf = surface_code(city, tour_code, year)
     year_jump = _year_jump_html(int(year), city, list(year_siblings or []))
     rows = _rows(df)
     n = len(rows)
@@ -240,7 +240,7 @@ def render_event_score_page(
         "cards": _cards(stats), "rows": rows,
     }
     blob = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    cal_href = "../../survivor_calendar_wta.html" if tour_lbl == "WTA" else "../../survivor_calendar_atp.html"
+    cal_href = f"../../survivor_calendar_{tour_lbl.lower()}.html#y={int(year)}"
     state_lbl = "IN PROGRESS" if not completed else "FINISHED"
 
     body = f"""\

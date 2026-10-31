@@ -63,7 +63,7 @@ def _payload(events: list[dict[str, Any]], years: list[int], tour_code: str, tou
             int(ev.get("n_players") or 0), st or "none",
             int(s.get("day") or 0), int(s.get("alive") or 0), int(s.get("champs") or 0),
             int(s.get("top") or 0), users, "W" if ev_tour == "WS" else "A",
-            surface_code(city, ev_tour),
+            surface_code(city, ev_tour, ev.get("year")),
         ])
     # newest week first; same week by level then city (sort is stable)
     rows.sort(key=lambda r: (_type_order(r[4]), r[3]))
@@ -213,9 +213,9 @@ body.dark [data-sf="g"]{--sf:#4ca86a;--sf-ink:#7acc90;}
 """
 
 
-def surface_code(city: str, tour: str) -> str:
+def surface_code(city: str, tour: str, year: int | str | None = None) -> str:
     """"h" / "c" / "g" for an event's court surface."""
-    surface = classify_surface(city)
+    surface = classify_surface(city, year)
     if city == "斯图加特" and str(tour).upper() in {"MS", "ATP"}:  # ATP Stuttgart is the grass event
         surface = "草地"
     return {"红土": "c", "草地": "g"}.get(surface, "h")
@@ -544,7 +544,7 @@ ready(function(){
   }
 
   root.addEventListener('click',e=>{
-    const y=e.target.closest('[data-y]'); if(y){ st.year=Number(y.dataset.y); renderChips(); render(); return; }
+    const y=e.target.closest('[data-y]'); if(y){ st.year=Number(y.dataset.y); keepYear(); renderChips(); render(); return; }
     const t=e.target.closest('#clTours [data-tf]'); if(t){ st.tf=t.dataset.tf; renderChips(); render(); return; }
     const l=e.target.closest('#clLevels [data-lv]'); if(l){ st.lv=l.dataset.lv; renderChips(); render(); return; }
     if(e.target.closest('#clMine')){ st.mine=!st.mine; renderChips(); render(); return; }
@@ -602,6 +602,10 @@ ready(function(){
     if(!seen&&!location.hash){ try{ localStorage.setItem(HELP_KEY,'1'); }catch(e){} setTimeout(()=>{ openModal(help,btn); showStep(0); },600); }
   }
 
+  // #y=2025 (from an event page's back link) picks the season; year switches keep it in the URL
+  const hashYear=()=>{ const m=/(?:^#|&)y=(\d{4})/.exec(location.hash); return m?Number(m[1]):0; };
+  function keepYear(){ try{ history.replaceState(null,'',st.year===D.year?location.pathname+location.search:'#y='+st.year); }catch(e){} }
+  if(hashYear()) st.year=hashYear();
   if(!D.years.includes(st.year)) st.year=D.years[0];
   renderChips(); render();
 });
