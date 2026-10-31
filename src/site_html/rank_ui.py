@@ -864,7 +864,8 @@ function tsHist(o){
 
 JS_RANK = JS_HIST + r"""
 (function(){
-function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+// starts once the shared table script has built TS (see tsReady in _JS_TABLE)
+function ready(fn){ if(window.TS&&window.TS.ready) fn(); else document.addEventListener('ts:ready',fn,{once:true}); }
 ready(function(){
   const root=document.getElementById('rk');
   const table=root&&root.querySelector('.filterable-table');
