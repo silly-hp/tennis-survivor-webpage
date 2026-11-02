@@ -12,10 +12,25 @@ from typing import Optional, Union
 import pandas as pd
 
 from site_html import state
+from site_html.assets import asset_url
 from site_html.css import _CSS_BASE, _CSS_INNER, _CSS_ROUTE_QUERY, _FONTS
 from site_html.header import CSS_HEADER, JS_HEADER, site_header
 from site_html.js import _JS_TABLE, _JS_THEME
 from site_html.logos import _logo_pair
+
+
+def _site_css_href(page: str) -> str:
+    """Shared shell stylesheet (base + inner + route query + header)."""
+    return asset_url(
+        "site.css",
+        "\n".join((_CSS_BASE, _CSS_INNER, _CSS_ROUTE_QUERY, CSS_HEADER)),
+        page,
+    )
+
+
+def _script_tag(src: str, *, defer: bool = True) -> str:
+    href = html.escape(src, quote=True)
+    return f'<script{" defer" if defer else ""} src="{href}"></script>'
 
 
 def _rank_change_cell(value, arrow_attr: bool = False) -> str:
@@ -1052,6 +1067,9 @@ def _inner_page_shell(
     after_page: str = "",
     page: str = "",
     late_js: str = "",
+    late_asset: str = "",
+    defer_js: list[tuple[str, str]] | None = None,
+    css_assets: list[tuple[str, str]] | None = None,
     title_extra: str = "",
     subtitle: str = "",
     pre_header: str = "",
@@ -1061,11 +1079,33 @@ def _inner_page_shell(
     ``pre_header`` goes between the shared header and the page title (e.g. a back link).
 
     ``page`` is the output path; the shared header reads its section and tour from it.
-    ``late_js`` gets its own ``<script>`` after the shared ones (runs once the table is built).
+    Shared ``table.js`` / ``header.js`` load with ``defer``. Page scripts come from
+    ``defer_js`` (name, content) and/or ``late_js`` (+ optional ``late_asset``).
+    ``css_assets`` are extra shared stylesheets after ``site.css``.
+    ``_JS_THEME`` stays inline so dark mode does not flash.
     """
     tags_html = _title_tags(tour, extra_tags)
     subtitle_html = (
         f'<div class="page-sub">{html.escape(subtitle)}</div>' if subtitle else ""
+    )
+    css_links = [
+        f'<link rel="stylesheet" href="{html.escape(_site_css_href(page), quote=True)}">'
+    ]
+    for name, content in css_assets or []:
+        href = html.escape(asset_url(name, content, page), quote=True)
+        css_links.append(f'<link rel="stylesheet" href="{href}">')
+    extra_style = f"<style>\n{extra_css}\n</style>\n" if extra_css.strip() else ""
+    # Order: table.js → page scripts (hist/rank/…) → header.js (see optimization 3.1).
+    defer_tags = [_script_tag(asset_url("table.js", _JS_TABLE, page))]
+    for name, content in defer_js or []:
+        defer_tags.append(_script_tag(asset_url(name, content, page)))
+    if late_js and late_asset:
+        defer_tags.append(_script_tag(asset_url(late_asset, late_js, page)))
+    elif late_js:
+        defer_tags.append(f"<script>\n{late_js}\n</script>")
+    defer_tags.append(_script_tag(asset_url("header.js", JS_HEADER, page)))
+    boot = "\n".join(
+        part for part in (extra_js.strip(), _JS_THEME.strip()) if part
     )
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -1076,13 +1116,9 @@ def _inner_page_shell(
 {_FONTS}
 <style>
 {state.css_vars}
-{_CSS_BASE}
-{_CSS_INNER}
-{_CSS_ROUTE_QUERY}
-{CSS_HEADER}
-{extra_css}
 </style>
-</head>
+{chr(10).join(css_links)}
+{extra_style}</head>
 <body>
 <div class="page">
 
@@ -1103,13 +1139,8 @@ def _inner_page_shell(
 </div>
 {after_page}
 <script>
-{extra_js}
-{_JS_THEME}
-{_JS_TABLE}
+{boot}
 </script>
-<script>
-{JS_HEADER}
-</script>
-{f"<script>{late_js}</script>" if late_js else ""}
+{chr(10).join(defer_tags)}
 </body>
 </html>"""

@@ -333,9 +333,11 @@ def _render_shell(
         updated=updated,
         extra_tags=None,
         body_content=body,
-        extra_css=CSS_RANK + "\n" + CSS_SURFACE + CSS_EVENT,
+        extra_css=CSS_SURFACE + CSS_EVENT,
         page=str(output_path),
+        css_assets=[("rank.css", CSS_RANK)],
         late_js=JS_EVENT,
+        late_asset="event.js",
         title_extra=title_extra,
         pre_header=pre_header,
     )

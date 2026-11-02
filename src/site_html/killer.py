@@ -44,7 +44,9 @@ _CSS_KILLER = """\
 """
 
 _JS_KILLER_DETAIL = """\
-document.addEventListener('DOMContentLoaded',()=>{
+(function(){
+function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+ready(function(){
     const modal=document.getElementById('detail-modal');
     const closeBtn=document.getElementById('detail-close');
     const body=document.getElementById('detail-body');
@@ -72,9 +74,9 @@ document.addEventListener('DOMContentLoaded',()=>{
             return '<div class="dz-item'+(i===0?' top':'')+'"><span class="dz-rank">'+(i+1)+'</span>'
                 +'<div class="dz-main"><div class="dz-where">'+esc(f[0])+' · '+esc(f[1])+'</div>'
                 +'<div class="dz-who">'+(f[2]?'<i>'+esc(f[4]||'负')+'</i>'+esc(f[2]):'<i>对手待更新</i>')+'</div></div>'
-                +'<div class="dz-kills">'+esc(f[3])+'<small>__UNIT__</small></div></div>';
+                +'<div class="dz-kills">'+esc(f[3])+'<small>'+esc((window.CFG&&CFG.unit)||'')+'</small></div></div>';
         }).join('');
-        if(footer) footer.textContent='__FOOT__';
+        if(footer) footer.textContent=(window.CFG&&CFG.foot)||'';
         modal.classList.add('show');
     }
     function parse(el){
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         card.addEventListener('click',()=>open(card.dataset.name||'',parse(card)));
     });
 });
+})();
 """
 
 _DETAIL_MODAL = """\
@@ -271,9 +274,18 @@ def render_killer_page(
         updated=updated,
         extra_tags=extra_tags,
         body_content=body,
-        extra_js=_JS_KILLER_DETAIL.replace("__UNIT__", unit_label).replace("__FOOT__", footer_label)
-        if has_detail
-        else "",
+        extra_js=(
+            "window.CFG=Object.assign(window.CFG||{},"
+            + json.dumps(
+                {"unit": unit_label, "foot": footer_label},
+                ensure_ascii=False,
+            )
+            + ");\n"
+            if has_detail
+            else ""
+        ),
+        late_js=_JS_KILLER_DETAIL if has_detail else "",
+        late_asset="killer-detail.js" if has_detail else "",
         extra_css=_CSS_KILLER,
         subtitle=subtitle,
         page=str(output_path),

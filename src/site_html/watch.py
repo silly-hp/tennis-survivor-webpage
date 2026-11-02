@@ -153,9 +153,10 @@ def render_watch_page(
         updated=updated,
         extra_tags=None,
         body_content=body,
-        extra_css=CSS_RANK + "\n" + CSS_WATCH,
+        extra_css=CSS_WATCH,
         page=str(output_path),
-        late_js=JS_HIST + JS_WATCH,
+        css_assets=[("rank.css", CSS_RANK)],
+        defer_js=[("hist.js", JS_HIST), ("watch.js", JS_WATCH)],
         title_extra=title_extra,
     )
     Path(output_path).write_text(html_str, encoding="utf-8")

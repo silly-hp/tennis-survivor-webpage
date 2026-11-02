@@ -22,6 +22,7 @@ from site_html.common import (
 )
 from site_html.rank_ui import (
     CSS_RANK,
+    JS_HIST,
     JS_RANK,
     help_button_html,
     help_modal_html,
@@ -247,7 +248,7 @@ def render_ranking_page(
         detail_js = _JS_RANKING_DETAIL
     else:
         detail_js = ""
-    extra_css_parts = [CSS_RANK]
+    extra_css_parts = []
     if enable_breakdown:
         extra_css_parts.append(_CSS_BREAKDOWN)
     if enable_career_detail:
@@ -265,7 +266,8 @@ def render_ranking_page(
         # Modal must sit outside .page stacking context or it can be covered
         after_page=bd_modal,
         page=str(output_path),
-        late_js=JS_RANK,
+        css_assets=[("rank.css", CSS_RANK)],
+        defer_js=[("hist.js", JS_HIST), ("rank.js", JS_RANK)],
         title_extra=help_button_html(
             hint=not enable_breakdown,
             expired=expired_label,

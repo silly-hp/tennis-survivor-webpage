@@ -200,9 +200,11 @@ def render_champion_page(
         updated=updated,
         extra_tags=None,
         body_content=body,
-        extra_css=CSS_RANK + "\n" + CSS_CHAMPION,
+        extra_css=CSS_CHAMPION,
         page=str(output_path),
+        css_assets=[("rank.css", CSS_RANK)],
         late_js=JS_CHAMPION,
+        late_asset="champion.js",
         title_extra=title_extra,
     )
     Path(output_path).write_text(html_str, encoding="utf-8")

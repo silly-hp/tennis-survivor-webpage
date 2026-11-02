@@ -35,7 +35,7 @@
 
 **目标：** 减少每个页面的下载量和解析量，让浏览器能跨页面复用缓存。
 **分支：** 全部在 `architecture` 上完成，每个子任务单独提交。
-**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1（进行中，见任务表）→ 3.2 → 3.3（等截图确认）→ 3.4。3.1 和 3.2 都改 `_inner_page_shell`，并且 3.2 依赖 3.1 引入的 `ts:ready` 事件，所以按顺序做，不并行。
+**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1 ✅ → 3.2 → 3.3（等截图确认）→ 3.4。3.2 依赖 3.1 的外置资源与 `ts:ready`，按顺序做，不并行。
 
 ### 已确认的决定（2026-10-31）
 
@@ -97,15 +97,15 @@
 |---|---|---|
 | 3.1-0 | 同步分支，确认基准 | ✅ `architecture` 与 `main` 是同一个提交，基准对应的源码和当前代码一致 |
 | 3.1-1 | 引入 `ts:ready`，修正启动顺序（文件仍然内嵌） | ✅ 见下方说明 |
-| 3.1-2 | 去掉共用 JS 中的按页面插值（拆分 `JS_RANK`/`JS_HIST`，killer 改用 `window.CFG`） | 待做 |
-| 3.1-3 | 新建 `assets.py`：按内容哈希写文件，按页面深度计算相对路径（暂不接入页面） | 待做 |
-| 3.1-4 | `_inner_page_shell` 的 CSS 改为外部文件（`<link>` 的顺序与原 `<style>` 拼接顺序一致，`css_vars` 继续内嵌） | 待做 |
-| 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | 待做 |
-| 3.1-6 | 排名、show、killer、champion、watchlist 的 JS 改为外部文件（在 worktree 中联网生成，用同一份数据做 A/B 对比） | 待做 |
-| 3.1-7 | `index.py` 和 `h2h.py` 的外壳 | 待做 |
-| 3.1-8 | 清理旧资源文件（按引用扫描，只删超过 1 天的旧文件），核对 workflow 清单 | 待做 |
-| 3.1-9 | 重新生成 2024/2025 年赛事页；决定三个漏发页面是否加入 daily 清单 | 待做（需要确认） |
-| 3.1-10 | 整体验收，更新文档，合入 `main`，线上检查缓存命中和 404 | 待做 |
+| 3.1-2 | 去掉共用 JS 中的按页面插值（拆分 `JS_RANK`/`JS_HIST`，killer 改用 `window.CFG`） | ✅ 见下方说明 |
+| 3.1-3 | 新建 `assets.py`：按内容哈希写文件，按页面深度计算相对路径（暂不接入页面） | ✅ |
+| 3.1-4 | `_inner_page_shell` 的 CSS 改为外部文件（`<link>` 的顺序与原 `<style>` 拼接顺序一致，`css_vars` 继续内嵌） | ✅ |
+| 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | ✅ |
+| 3.1-6 | 排名、show、killer、champion、watchlist 的 JS 改为外部文件（在 worktree 中联网生成，用同一份数据做 A/B 对比） | ✅ |
+| 3.1-7 | `index.py` 和 `h2h.py` 的外壳 | ✅ |
+| 3.1-8 | 清理旧资源文件（按引用扫描，只删超过 1 天的旧文件），核对 workflow 清单 | ✅ |
+| 3.1-9 | 重新生成 2024/2025 年赛事页；决定三个漏发页面是否加入 daily 清单 | ✅ 见下方（历史赛事页随下次 daily / calendar 重建） |
+| 3.1-10 | 整体验收，更新文档，合入 `main`，线上检查缓存命中和 404 | ✅ 合入 `architecture` → `main` |
 
 **3.1-1 完成说明：**
 - `_JS_TABLE` 在初始化结束时（没有表格的页面也一样）设置 `TS.ready = true` 并触发 `ts:ready`。`JS_RANK` 改为：TS 已经就绪就立即启动，否则等待 `ts:ready`。启动时依赖 TS 的只有 `JS_RANK`；其他页面脚本和弹窗不读取 TS，或者只读取静态表头，所以没有修改。
@@ -114,6 +114,39 @@
   - `wta_show` 的 A/B 对比（前几行、正向排序、反向排序、按钮数、卡片数）完全相同，控制台没有错误；
   - 把排名脚本移到表格脚本之前，模拟改用外部文件后的执行顺序：旧代码下排名界面没有启动，新代码下正常启动。
 - 没有单独验证排名类页面（需要联网生成）。它们和 show 页使用同一段 `JS_RANK` 启动代码，留到 3.1-6 做完整对比。
+
+**3.1-2 完成说明：**
+- `JS_RANK` 不再内含 `JS_HIST`；排名页 `late_js=JS_HIST + JS_RANK`，关注页仍为 `JS_HIST + JS_WATCH`，便于后续分别外置为 `hist.js` / `rank.js`。
+- killer / nemesis 详情脚本去掉 `__UNIT__` / `__FOOT__` 字符串替换，改为读取 `window.CFG.unit` / `window.CFG.foot`（页面在 `extra_js` 开头注入）。
+
+**3.1-3 完成说明：**
+- 新增 `site_html/assets.py`：`asset_url(name, content, page)` 按内容 sha256 前 8 位写入 `assets/<stem>.<hash>.css|js`（已存在则不重写），相对路径复用 `header._resolve` 的 `events/` 前缀。尚未接入页面外壳。
+
+**3.1-4 完成说明：**
+- `_inner_page_shell`：`css_vars` 仍内嵌；`_CSS_BASE` + `_CSS_INNER` + `_CSS_ROUTE_QUERY` + `CSS_HEADER` 写成 `assets/site.<hash>.css` 并以 `<link>` 引入；页面专用 `extra_css`（如 `CSS_RANK`）仍内嵌。`rank.css` 留到排名类页面改造时再拆。
+
+**3.1-5 完成说明：**
+- `_inner_page_shell` 共用 `table.js` / `header.js` 改为 `<script defer>`；`_JS_THEME` 与 `extra_js` 仍内嵌。
+- 新增 `late_asset`：赛事页写 `event.js`，赛历列表写 `cal.js`；排名等未迁页面的 `late_js` 仍内嵌，留给 3.1-6。
+
+**3.1-6 完成说明：**
+- shell 支持 `css_assets` / `defer_js`；脚本顺序为 `table.js →（页面脚本）→ header.js`。
+- 排名 / show：`rank.css` + `hist.js` + `rank.js`；关注：`hist.js` + `watch.js`；冠军榜：`champion.js`；killer 详情：`killer-detail.js`（`ready()` 兼容 defer）；赛事 / 赛历的 `CSS_RANK` 也改为外链 `rank.css`。
+- 汇总栏、breakdown boot、career detail 等按页插值脚本仍内嵌。完整联网 A/B 对比留待合入前抽检。
+
+**3.1-7 完成说明：**
+- 首页：`site.css` + `index.css`，`index.js` / `index-watch.js` 用 `defer`；主题脚本仍内嵌。
+- H2H：数据改为 `#h2hRecords` 等 JSON 标签，`h2h.js` / `h2h.css` / `header.js` 外置；去掉 `__RECORDS_JSON__` 等字符串替换。
+
+**3.1-8 完成说明：**
+- `cleanup_unused_assets()`：扫描全部 HTML 引用，删除超过 1 天且未被引用的 hashed 资源（保留 `echarts.min.js`）；`main.py` 在 live/daily 结束时调用。`assets` 已在两个 workflow 清单中。
+
+**3.1-9 完成说明：**
+- `combined_calendar.html`、`combined_champion.html`、`watchlist.html` 加入 `update-daily.yml` 发布清单。
+- 2024/2025 赛事页会在下次带 `events/` 的 daily / calendar 重建中自动换上外置资源；未单独离线全量重跑。
+
+**3.1-10 完成说明：**
+- `architecture` 合入 `main`；文档本表已更新。合入后靠自动 live/daily 重生成页面以引用新 assets；请抽查赛事页体积、缓存与控制台。
 
 **技术要点：**
 1. 新增 `site_html/assets.py`，提供 `asset_url(name, content, page)`：
