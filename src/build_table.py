@@ -223,10 +223,12 @@ def _build_day1(
             p_df["user_id"].map(_uid_key).map(settled_scores).fillna(0).astype(int)
         )
     p_df["status"] = ""
-    # Day 1 has no score-table status. Entrants are still in; everyone else
-    # has not joined. A blank status makes the ranking view drop today's picks.
+    # Day 1 defaults: entrants 存活, others 未参赛. Live settlement outcomes
+    # (球员退赛 / 球员输球 / 自杀) are overlaid below so Day1 bye-path pages
+    # still show early exits; a later backup submit re-settles on the next run.
     p_df["fill_status"] = "未参赛"
     p_df.loc[has_submission, "fill_status"] = "存活"
+    p_df["killer"] = ""
 
     p_df = get_today_status(p_df, bye=True)
     # Bye is shown only in today_status. Do not keep the synthetic "轮空" label
@@ -239,6 +241,40 @@ def _build_day1(
     if "player_alt" in p_df.columns:
         alt_is_bye = p_df["player_alt"].astype("string").str.strip().eq("轮空")
         p_df.loc[bye_mask & alt_is_bye, "player_alt"] = ""
+
+    if settled_score_df is not None and not settled_score_df.empty:
+        settled_out = {
+            "球员退赛",
+            "球员输球",
+            "自杀(重复)",
+            "自杀(主备冲突)",
+            "自杀(退赛)",
+        }
+        settled_status = {}
+        settled_killer = {}
+        for row in settled_score_df.to_dict("records"):
+            uid = _uid_key(row.get("user_id"))
+            if not uid:
+                continue
+            st = str(row.get("fill_status") or "").strip()
+            if st in settled_out:
+                settled_status[uid] = st
+                settled_killer[uid] = str(row.get("killer") or "").strip()
+        if settled_status:
+            uid_series = p_df["user_id"].map(_uid_key)
+            for idx, uid in uid_series.items():
+                st = settled_status.get(uid)
+                if not st or p_df.at[idx, "fill_status"] == "轮空":
+                    continue
+                p_df.at[idx, "fill_status"] = st
+                killer = settled_killer.get(uid) or ""
+                if killer:
+                    p_df.at[idx, "killer"] = killer
+                # Surface settlement suicides on the Day1 pick board too.
+                mapped = _FILL_TO_TODAY_SUICIDE.get(st)
+                if mapped:
+                    p_df.at[idx, "today_status"] = mapped
+
     p_df["players"] = [_day1_pick_history(row) for row in p_df.to_dict("records")]
     if not removed_tournaments and not settled_scores:
         p_df["live_score"] = p_df["current_score"]
