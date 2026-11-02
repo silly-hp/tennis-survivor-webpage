@@ -35,7 +35,7 @@
 
 **目标：** 减少每个页面的下载量和解析量，让浏览器能跨页面复用缓存。
 **分支：** 全部在 `architecture` 上完成，每个子任务单独提交。
-**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1 ✅ → 3.2 ✅ → 3.3 ✅→ 3.4。3.2 依赖 3.1 的外置资源与 `ts:ready`，按顺序做，不并行。
+**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1 ✅ → 3.2 ✅ → 3.3 ✅ → 3.4 ✅。3.2 依赖 3.1 的外置资源与 `ts:ready`，按顺序做，不并行。
 
 ### 已确认的决定（2026-10-31）
 
@@ -197,11 +197,11 @@
 
 **验收标准：** 页面不再请求 `fonts.googleapis.com` 和 `fonts.gstatic.com`。合入后靠 daily/live 重生成页面以引用新 CSS；请抽查无外网字体请求。
 
-### 3.4 其他小项（优先级低，各 0.5 天以内）
+### 3.4 其他小项 ✅（2026-11-02）
 
-- `echarts.min.js`：`breakdown_ui.loadScriptOnce` 已经实现按需加载，只需要确认没有地方在页面加载时就引用它。
-- `index.html` 内嵌的数据如果超过 50 KB，按 3.2 的方式外置。
-- 用 `curl -sI --compressed` 抽查线上大页面，确认有 `content-encoding`。
+1. **`echarts.min.js` 按需加载：** 全站 HTML 无 `<script src=…echarts>`。仅在打开积分明细弹窗时由 `breakdown_ui` 动态 `loadScript`（先 `assets/echarts.min.js`，失败再走 jsDelivr CDN）。
+2. **`index.html` 数据外置：** 当前整页约 46 KB，内嵌 `#trend-data` 约 0.4 KB，**未超过 50 KB**，无需按 3.2 外置。若以后首页数据膨胀再拆。
+3. **线上压缩：** `curl -sI --compressed` 抽查 GitHub Pages（`silly-hp.github.io/tennis-survivor-webpage`）均有 `content-encoding: gzip`：首页、`wta_ranking.html`、`wta_show.html`、`h2h_wta.html`、`survivor_calendar_wta.html`、以及 `assets/site.*.css`。
 
 ---
 
