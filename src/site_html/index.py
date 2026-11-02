@@ -11,7 +11,9 @@ from typing import Any, Optional
 import pandas as pd
 
 from site_html import state
-from site_html.css import _CSS_BASE, _FONTS
+from site_html.assets import asset_url
+from site_html.common import _site_css_href
+from site_html.css import _FONTS
 from site_html.js import _JS_THEME
 from site_html.logos import _logo_pair
 from site_html.state import VERSION
@@ -795,6 +797,14 @@ def render_index(
         f'<div class="guide-item"><b>{html.escape(t)}</b>{html.escape(d)}</div>' for t, d in _GUIDE
     )
 
+    page = str(output_path)
+    site_href = html.escape(_site_css_href(page), quote=True)
+    index_css = html.escape(asset_url("index.css", _CSS_INDEX, page), quote=True)
+    index_js = html.escape(asset_url("index.js", _JS_INDEX, page), quote=True)
+    watch_count_js = html.escape(
+        asset_url("index-watch.js", _JS_WATCH_COUNT, page), quote=True
+    )
+
     html_str = f"""\
 <!DOCTYPE html>
 <html lang="zh">
@@ -805,9 +815,9 @@ def render_index(
     {_FONTS}
     <style>
 {state.css_vars}
-{_CSS_BASE}
-{_CSS_INDEX}
     </style>
+    <link rel="stylesheet" href="{site_href}">
+    <link rel="stylesheet" href="{index_css}">
 </head>
 <body>
 <div class="page">
@@ -861,12 +871,8 @@ def render_index(
 <script>
 {_JS_THEME}
 </script>
-<script>
-{_JS_INDEX}
-</script>
-<script>
-{_JS_WATCH_COUNT}
-</script>
+<script defer src="{index_js}"></script>
+<script defer src="{watch_count_js}"></script>
 </body>
 </html>"""
 

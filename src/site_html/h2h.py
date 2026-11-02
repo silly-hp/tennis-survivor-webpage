@@ -8,9 +8,10 @@ from pathlib import Path
 import pandas as pd
 
 from site_html import state
-from site_html.common import _topbar, _title_tags
-from site_html.header import CSS_HEADER, JS_HEADER
-from site_html.css import _CSS_BASE, _CSS_INNER, _FONTS
+from site_html.assets import asset_url
+from site_html.common import _site_css_href, _topbar, _title_tags
+from site_html.header import JS_HEADER
+from site_html.css import _FONTS
 from site_html.js import _JS_THEME
 
 _CSS_H2H = """\
@@ -290,10 +291,17 @@ body.dark .sumr-oppo-score{color:var(--primary);}
 
 _JS_H2H = """\
 (function(){
-const RECORDS = __RECORDS_JSON__;
-const USERS   = __USERS_JSON__;
-const PLAYERS = __PLAYERS_JSON__;
-const SEASONS = __SEASONS_JSON__;
+function _json(id, fallback){
+    try{
+        const node=document.getElementById(id);
+        if(!node) return fallback;
+        return JSON.parse(node.textContent);
+    }catch(e){ return fallback; }
+}
+const RECORDS = _json('h2hRecords', []);
+const USERS   = _json('h2hUsers', []);
+const PLAYERS = _json('h2hPlayers', []);
+const SEASONS = _json('h2hSeasons', []);
 
 let selU = new Set(), selP = new Set(), selS = new Set();
 let tagsExpanded = false;
@@ -1077,12 +1085,18 @@ def render_h2h_page(
         ttag_html = '<span class="ttag ttag-all">ALL</span>'
     ttag_html += '\n    <span class="ttag ttag-h2h">H2H</span>'
 
-    js = (
-        _JS_H2H.replace("__RECORDS_JSON__", records_json)
-        .replace("__USERS_JSON__", users_json)
-        .replace("__PLAYERS_JSON__", players_json)
-        .replace("__SEASONS_JSON__", seasons_json)
-    )
+    def _json_tag(tag_id: str, blob: str) -> str:
+        safe = blob.replace("</", "<\\/")
+        return (
+            f'<script type="application/json" id="{tag_id}">'
+            f"{safe}</script>"
+        )
+
+    page = str(output_path)
+    site_href = html.escape(_site_css_href(page), quote=True)
+    h2h_css = html.escape(asset_url("h2h.css", _CSS_H2H, page), quote=True)
+    h2h_js = html.escape(asset_url("h2h.js", _JS_H2H, page), quote=True)
+    header_js = html.escape(asset_url("header.js", JS_HEADER, page), quote=True)
 
     html_str = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -1093,16 +1107,14 @@ def render_h2h_page(
 {_FONTS}
 <style>
 {state.css_vars}
-{_CSS_BASE}
-{_CSS_INNER}
-{CSS_HEADER}
-{_CSS_H2H}
 </style>
+<link rel="stylesheet" href="{site_href}">
+<link rel="stylesheet" href="{h2h_css}">
 </head>
 <body>
 <div class="page">
 
-{_topbar(updated, page=str(output_path))}
+{_topbar(updated, page=page)}
 
 <div class="page-eye">{html.escape(eyebrow)}</div>
 <div class="page-title">
@@ -1253,13 +1265,15 @@ def render_h2h_page(
 </div>
 
 </div>
+{_json_tag("h2hRecords", records_json)}
+{_json_tag("h2hUsers", users_json)}
+{_json_tag("h2hPlayers", players_json)}
+{_json_tag("h2hSeasons", seasons_json)}
 <script>
 {_JS_THEME}
-{js}
 </script>
-<script>
-{JS_HEADER}
-</script>
+<script defer src="{h2h_js}"></script>
+<script defer src="{header_js}"></script>
 </body>
 </html>"""
 
