@@ -280,10 +280,10 @@ def generate_summary(df: pd.DataFrame, day1: bool = False, bye: bool = False):
     df["今日状态"] = status.fillna("已选")
     df["今日主选"] = df["今日主选"].astype("string").fillna("").str.strip()
 
-    # Board is already limited to users alive at open (see build_table).
-    # Include still-in-pool (存活/未完赛/未选/轮空) + anyone with today's pick
+    # Day1 board includes the full ranking (未参赛). Only count entrants:
+    # still-in-pool (存活/未完赛/未选/轮空) + anyone with today's pick
     # + today's suicides (incl. no-submit 自杀（退赛） with empty 今日主选).
-    if day1 or "当前状态" not in df.columns:
+    if "当前状态" not in df.columns:
         summary_src = df
     else:
         has_pick = df["今日主选"].astype("string").fillna("").str.strip().ne("")
