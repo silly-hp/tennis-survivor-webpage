@@ -100,7 +100,7 @@
 | 3.1-2 | 去掉共用 JS 中的按页面插值（拆分 `JS_RANK`/`JS_HIST`，killer 改用 `window.CFG`） | ✅ 见下方说明 |
 | 3.1-3 | 新建 `assets.py`：按内容哈希写文件，按页面深度计算相对路径（暂不接入页面） | ✅ |
 | 3.1-4 | `_inner_page_shell` 的 CSS 改为外部文件（`<link>` 的顺序与原 `<style>` 拼接顺序一致，`css_vars` 继续内嵌） | ✅ |
-| 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | 待做 |
+| 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | ✅ |
 | 3.1-6 | 排名、show、killer、champion、watchlist 的 JS 改为外部文件（在 worktree 中联网生成，用同一份数据做 A/B 对比） | 待做 |
 | 3.1-7 | `index.py` 和 `h2h.py` 的外壳 | 待做 |
 | 3.1-8 | 清理旧资源文件（按引用扫描，只删超过 1 天的旧文件），核对 workflow 清单 | 待做 |
@@ -124,6 +124,10 @@
 
 **3.1-4 完成说明：**
 - `_inner_page_shell`：`css_vars` 仍内嵌；`_CSS_BASE` + `_CSS_INNER` + `_CSS_ROUTE_QUERY` + `CSS_HEADER` 写成 `assets/site.<hash>.css` 并以 `<link>` 引入；页面专用 `extra_css`（如 `CSS_RANK`）仍内嵌。`rank.css` 留到排名类页面改造时再拆。
+
+**3.1-5 完成说明：**
+- `_inner_page_shell` 共用 `table.js` / `header.js` 改为 `<script defer>`；`_JS_THEME` 与 `extra_js` 仍内嵌。
+- 新增 `late_asset`：赛事页写 `event.js`，赛历列表写 `cal.js`；排名等未迁页面的 `late_js` 仍内嵌，留给 3.1-6。
 
 **技术要点：**
 1. 新增 `site_html/assets.py`，提供 `asset_url(name, content, page)`：

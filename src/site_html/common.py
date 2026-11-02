@@ -28,6 +28,11 @@ def _site_css_href(page: str) -> str:
     )
 
 
+def _script_tag(src: str, *, defer: bool = True) -> str:
+    href = html.escape(src, quote=True)
+    return f'<script{" defer" if defer else ""} src="{href}"></script>'
+
+
 def _rank_change_cell(value, arrow_attr: bool = False) -> str:
     """Convert a numeric rank-change value to a styled <span>.
 
@@ -1062,6 +1067,7 @@ def _inner_page_shell(
     after_page: str = "",
     page: str = "",
     late_js: str = "",
+    late_asset: str = "",
     title_extra: str = "",
     subtitle: str = "",
     pre_header: str = "",
@@ -1071,7 +1077,9 @@ def _inner_page_shell(
     ``pre_header`` goes between the shared header and the page title (e.g. a back link).
 
     ``page`` is the output path; the shared header reads its section and tour from it.
-    ``late_js`` gets its own ``<script>`` after the shared ones (runs once the table is built).
+    Shared ``table.js`` / ``header.js`` load with ``defer``. ``late_js`` is either
+    written to ``late_asset`` (also ``defer``) or inlined when ``late_asset`` is empty.
+    ``_JS_THEME`` stays inline so dark mode does not flash.
     """
     tags_html = _title_tags(tour, extra_tags)
     subtitle_html = (
@@ -1079,6 +1087,17 @@ def _inner_page_shell(
     )
     site_href = html.escape(_site_css_href(page), quote=True)
     extra_style = f"<style>\n{extra_css}\n</style>\n" if extra_css.strip() else ""
+    table_src = asset_url("table.js", _JS_TABLE, page)
+    header_src = asset_url("header.js", JS_HEADER, page)
+    if late_js and late_asset:
+        late_block = _script_tag(asset_url(late_asset, late_js, page)) + "\n"
+    elif late_js:
+        late_block = f"<script>\n{late_js}\n</script>\n"
+    else:
+        late_block = ""
+    boot = "\n".join(
+        part for part in (extra_js.strip(), _JS_THEME.strip()) if part
+    )
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1111,13 +1130,9 @@ def _inner_page_shell(
 </div>
 {after_page}
 <script>
-{extra_js}
-{_JS_THEME}
-{_JS_TABLE}
+{boot}
 </script>
-<script>
-{JS_HEADER}
-</script>
-{f"<script>{late_js}</script>" if late_js else ""}
-</body>
+{_script_tag(table_src)}
+{_script_tag(header_src)}
+{late_block}</body>
 </html>"""

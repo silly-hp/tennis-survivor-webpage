@@ -196,6 +196,7 @@ def render_calendar_page(
         extra_css=CSS_RANK + "\n" + CSS_SURFACE + CSS_CAL_LIST,
         page=str(output_path),
         late_js=JS_CAL_LIST,
+        late_asset="cal.js",
         title_extra=title_extra,
     )
     Path(output_path).write_text(html_str, encoding="utf-8")
