@@ -7,6 +7,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Optional
 
+from site_html.assets import write_data_js
 from site_html.common import _inner_page_shell
 from site_html.rank_ui import CSS_RANK, help_button_html, help_modal_html
 from tournament_meta import classify_surface
@@ -143,7 +144,20 @@ def render_calendar_page(
     default_year = int(default_year or (years_sorted[0] if years_sorted else date.today().year))
     data = _payload(events, years_sorted, tour_code, tour_lbl, default_year)
     # "</" must not end the <script> block early
-    blob = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    blob = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+    out_path = str(output_path)
+    data_name = {
+        "ATP": "cal_atp.js",
+        "WTA": "cal_wta.js",
+        "ALL": "cal_all.js",
+    }.get(tour_lbl, "cal_all.js")
+    data_href, _ = write_data_js(
+        data_name,
+        "window.__CL_DATA=" + blob + ";\n",
+        page=out_path,
+        hashed=False,
+    )
+    data_href_esc = html.escape(data_href, quote=True)
     # the header's ATP / WTA / 联合 switch already names the tour
     title = "签表幸存者赛历"
     rank_href = {"WTA": "wta_ranking.html", "ATP": "atp_ranking.html"}.get(tour_lbl, "combined_instant_ranking.html")
@@ -155,7 +169,8 @@ def render_calendar_page(
 
     body = f"""\
 <div class="rk cl" id="cl" data-tour="{tour_lbl}" data-rank="{rank_href}">
-  <script type="application/json" id="clData">{blob}</script>
+  <link rel="preload" as="script" href="{data_href_esc}">
+  <script defer src="{data_href_esc}"></script>
   <div class="cl-kpis" id="clKpis" aria-label="赛季概览"></div>
   <div id="clNow"></div>
 
@@ -415,7 +430,9 @@ JS_CAL_LIST = r"""
 function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
 ready(function(){
   const root=document.getElementById('cl'); if(!root) return;
-  let D; try{ D=JSON.parse(document.getElementById('clData').textContent); }catch(e){ return; }
+  let D=window.__CL_DATA;
+  if(!D){ try{ D=JSON.parse(document.getElementById('clData').textContent); }catch(e){ return; } }
+  if(!D) return;
   const TOUR=D.tour, E=D.events, N=D.names;
   const KEY='ts.watch.v1', HELP_KEY='ts.help.cal.v1';
   const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

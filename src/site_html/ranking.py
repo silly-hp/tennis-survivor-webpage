@@ -174,17 +174,32 @@ def render_ranking_page(
     else:
         detail_col = None
 
-    table_builder = _df_to_table_data if table_data else _df_to_html_table
-    main_table_html = table_builder(
-        df,
-        rank_change_col=rank_change_col,
-        detail_col=detail_col,
-        hide_detail_col=True,
-        uid_col="主键" if enable_breakdown else None,
-        hide_uid_col=True,
-        row_click_class="bd-clickable" if enable_breakdown else "",
-        merge_change_into=change_target if rank_change_col else None,
-    )
+    out_path = str(output_path)
+    if table_data:
+        main_table_html = _df_to_table_data(
+            df,
+            rank_change_col=rank_change_col,
+            detail_col=detail_col,
+            hide_detail_col=True,
+            uid_col="主键" if enable_breakdown else None,
+            hide_uid_col=True,
+            row_click_class="bd-clickable" if enable_breakdown else "",
+            merge_change_into=change_target if rank_change_col else None,
+            external=True,
+            data_name=f"rank_{Path(out_path).stem}.js",
+            page=out_path,
+        )
+    else:
+        main_table_html = _df_to_html_table(
+            df,
+            rank_change_col=rank_change_col,
+            detail_col=detail_col,
+            hide_detail_col=True,
+            uid_col="主键" if enable_breakdown else None,
+            hide_uid_col=True,
+            row_click_class="bd-clickable" if enable_breakdown else "",
+            merge_change_into=change_target if rank_change_col else None,
+        )
 
     detail_modal = ""
     no_detail_style = ""

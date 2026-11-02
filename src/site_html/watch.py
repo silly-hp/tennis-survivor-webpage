@@ -7,12 +7,14 @@ JSON and renders the cards client-side.
 from __future__ import annotations
 
 import ast
+import html
 import json
 from pathlib import Path
 from typing import Optional
 
 import pandas as pd
 
+from site_html.assets import write_data_js
 from site_html.common import _inner_page_shell
 from site_html.rank_ui import CSS_RANK, JS_HIST, ask_modal_html, history_modal_html
 
@@ -95,12 +97,20 @@ def render_watch_page(
         "ATP": {**_tour_payload(atp_df, atp_event), "href": _TOUR_PAGES["ATP"]},
         "WTA": {**_tour_payload(wta_df, wta_event), "href": _TOUR_PAGES["WTA"]},
     }
-    # "</" must not end the <script> block early
-    blob = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    blob = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+    out_path = str(output_path)
+    data_href, _ = write_data_js(
+        "watchlist.js",
+        "window.__WL_DATA=" + blob + ";\n",
+        page=out_path,
+        hashed=False,
+    )
+    data_href_esc = html.escape(data_href, quote=True)
 
     body = f"""\
 <div class="rk wl" id="wl">
-  <script type="application/json" id="wlData">{blob}</script>
+  <link rel="preload" as="script" href="{data_href_esc}">
+  <script defer src="{data_href_esc}"></script>
   <div class="rk-card wl-share-in" id="wlImport" role="region" aria-label="收到分享的关注列表" hidden></div>
   <section class="rk-card wl-start" id="wlStart" hidden>
     <span class="wl-start-ic">{_STAR}</span>
@@ -317,7 +327,9 @@ JS_WATCH = r"""
 function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
 ready(function(){
   const root=document.getElementById('wl'); if(!root) return;
-  let D; try{ D=JSON.parse(document.getElementById('wlData').textContent); }catch(e){ return; }
+  let D=window.__WL_DATA;
+  if(!D){ try{ D=JSON.parse(document.getElementById('wlData').textContent); }catch(e){ return; } }
+  if(!D) return;
   const TOURS=['ATP','WTA'], KEY='ts.watch.v1', esc=tsEsc;
   const $=id=>document.getElementById(id);
   const has=u=>TOURS.some(t=>D[t].users[u]);

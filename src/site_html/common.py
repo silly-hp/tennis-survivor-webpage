@@ -12,7 +12,7 @@ from typing import Optional, Union
 import pandas as pd
 
 from site_html import state
-from site_html.assets import asset_url
+from site_html.assets import asset_url, write_data_js
 from site_html.css import _CSS_BASE, _CSS_INNER, _CSS_ROUTE_QUERY, _FONTS
 from site_html.header import CSS_HEADER, JS_HEADER, site_header
 from site_html.js import _JS_TABLE, _JS_THEME
@@ -311,11 +311,16 @@ def _df_to_table_data(
     hide_uid_col: bool = True,
     row_click_class: str = "",
     merge_change_into: Optional[str] = None,
+    *,
+    external: bool = False,
+    data_name: str = "",
+    page: str = "",
 ) -> str:
     """Same table as ``_df_to_html_table``, but the rows ship as JSON.
 
     The markup is the header plus an empty tbody; ``_JS_TABLE`` reads
-    ``#tsData`` and only builds ``<tr>`` elements for rows it shows.
+    ``#tsData`` (inline) or ``window.__TS_DATA`` (external ``data/gen`` file)
+    and only builds ``<tr>`` elements for rows it shows.
     Row JSON: ``t`` cell texts, ``h`` {column index: html} for cells whose
     markup is more than the escaped text, and ``c`` / ``u`` / ``p`` / ``d`` for
     class, uid, picked and detail when present.
@@ -324,11 +329,16 @@ def _df_to_table_data(
         df, rank_change_col, detail_col, hide_detail_col, uid_col, hide_uid_col,
         row_click_class, merge_change_into,
     )
-    return _table_data_markup(render_cols, rows)
+    return _table_data_markup(
+        render_cols,
+        rows,
+        external=external,
+        data_name=data_name,
+        page=page,
+    )
 
 
-def _table_data_markup(render_cols: list, rows: list[dict]) -> str:
-    """Header-only table plus the ``#tsData`` JSON for ``_table_rows`` output."""
+def _table_rows_payload(rows: list[dict]) -> list[dict]:
     data = []
     for rec in rows:
         item = {"t": [t for t, _h in rec["cells"]]}
@@ -346,14 +356,42 @@ def _table_data_markup(render_cols: list, rows: list[dict]) -> str:
         if rec["detail"] is not None:
             item["d"] = rec["detail"]
         data.append(item)
+    return data
+
+
+def _table_data_markup(
+    render_cols: list,
+    rows: list[dict],
+    *,
+    external: bool = False,
+    data_name: str = "",
+    page: str = "",
+) -> str:
+    """Header-only table plus row JSON (inline ``#tsData`` or external file)."""
+    data = _table_rows_payload(rows)
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     # keep "</script>" (and "<!--") inside the payload from closing the tag
     payload = payload.replace("<", "\\u003c")
     head = "".join(f"<th>{html.escape(str(c))}</th>" for c in render_cols)
-    return (
+    table = (
         '<table class="dataframe filterable-table">'
-        f"<thead><tr>{head}</tr></thead><tbody></tbody></table>\n"
-        f'<script type="application/json" id="tsData">{payload}</script>'
+        f"<thead><tr>{head}</tr></thead><tbody></tbody></table>"
+    )
+    if not external:
+        return (
+            f"{table}\n"
+            f'<script type="application/json" id="tsData">{payload}</script>'
+        )
+    name = data_name or "table_data.js"
+    if not name.endswith(".js"):
+        name = f"{name}.js"
+    body = "window.__TS_DATA=" + payload + ";\n"
+    href, _digest = write_data_js(name, body, page=page or "index.html", hashed=False)
+    esc_href = html.escape(href, quote=True)
+    return (
+        f"{table}\n"
+        f'<link rel="preload" as="script" href="{esc_href}">\n'
+        f'<script defer src="{esc_href}"></script>'
     )
 
 

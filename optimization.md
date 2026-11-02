@@ -174,30 +174,19 @@
 - 用 `compare.py` 对比离线生成的结果，可见文本和数据块没有差异；
 - 控制台没有错误；暗色模式没有闪烁；`file://` 打开正常。
 
-### 3.2 数据外置与压缩编码（优先级高，工作量 3–4 天）
+### 3.2 数据外置与压缩编码 ✅
 
-**做法：**
-1. **H2H 改为按列存储加字典编码。** 用户名、球员、赛事、**周日期**各自做成一个字典，每条记录只保存整数索引：
-   ```json
-   {"users":[…],"players":[…],"tours":[…],"weeks":["2026-10-26",…],
-    "u":[…],"p":[…],"t":[…],"w":[…],"d":[…],"s":[…],"r":[…]}
-   ```
-   前端加载后还原成与现在相同的行对象（`dt = weeks[w]`），`sortRecords()` 和 `runQuery` 不需要修改。
-   *（推荐方案，待确认）* 原计划是“删掉 `dt`，由 Python 预先排好顺序”。但前端排序用的是浏览器的中文排序规则（`Intl.Collator('zh')`），Python 要做出完全相同的顺序，需要引入 `pypinyin`，而且两者在多音字、生僻字上仍可能不一致。把 `dt` 也做成字典索引后，每条记录只多一个小整数，体积几乎不变，排序逻辑完全不动，也就没有顺序不一致的风险。
-2. **数据文件：** H2H 每天更新一次，使用带哈希的文件名 `data/gen/h2h_wta.<hash>.js`。加载期间禁用“查询”按钮，并显示“加载中”；加载失败时提供“重试”。
-3. **排名类页面：** `_table_data_markup(external=True)` 输出 `<script src="data/gen/rank_xxx.js?v=<hash>" defer>`，使用固定文件名。数据就绪后执行原来的初始化，再触发 `ts:ready`。“我的卡片”和“汇总”在数据就绪前显示占位内容。
-4. **日历页和 watchlist：** 用同样的方式外置数据，优先处理 `combined_calendar.html`。
-5. 把 `data/gen` 加入两个 workflow 的清单。
+**已完成（2026-11-02）：**
+1. **H2H 列式 + 字典编码**（含 `weeks`/`dt` 索引，不改前端排序）。Python 端编码后自检还原。数据写入 `data/gen/h2h_{atp|wta|all}.<hash>.js`（`window.__H2H_DATA`）；页面通过 `CFG.dataUrl` 异步加载，加载中禁用查询并显示提示，失败可「重试」。
+2. **排名类：** `_df_to_table_data(external=True)` → 固定名 `data/gen/rank_<page>.js?v=<hash>`（`window.__TS_DATA`）；`_JS_TABLE` 优先读 `#tsData`，否则读 `__TS_DATA`。defer 顺序保证 table 初始化时数据已在。
+3. **赛历 / watchlist：** `cal_{atp|wta|all}.js`、`watchlist.js` 同样外置；JS 优先读 `__CL_DATA` / `__WL_DATA`。
+4. **`write_data_js` / `data/gen` 清理** 写入 `assets.py`；两个 workflow 清单已加 `data/gen`。
+5. 赛事页 `evData` 仍内嵌（体量相对小、页数多），留待后续若需要再拆。
 
-**风险与应对：**
-- HTML 和数据的版本不一致：数据的版本号由 HTML 指定，两者总是成对使用；旧数据按 3.1 的清理规则至少保留 1 天。
-- 编码后的数据不一致：Python 端写一个解码自检，解码结果要和原记录逐条相同；页面上再对比全选查询的记录条数、胜负数和前 50 行。
-- 首屏多一次请求：在 `<head>` 中加 `<link rel="preload" as="script">`。
-
-**验收标准：**
-- H2H 页面 gzip 后的传输体积小于 500 KB，全选查询的结果和现在完全一致；
-- 排名页 HTML 小于 100 KB，对比结果一致；
-- `file://` 打开可用；workflow 清单已更新。
+**验收（合入后靠 daily/live 重生成）：**
+- H2H HTML 应变瘦，数据在 `data/gen`；抽查全选查询条数与胜负。
+- 排名 HTML 应变瘦；筛选 / 排序 / 我的卡片正常。
+- `file://` 下相对路径 `.js` 仍可用。
 
 ### 3.3 字体（优先级中，工作量 0.5–1 天，**截图确认后再上线**）
 
