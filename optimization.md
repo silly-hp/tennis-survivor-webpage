@@ -97,7 +97,7 @@
 |---|---|---|
 | 3.1-0 | 同步分支，确认基准 | ✅ `architecture` 与 `main` 是同一个提交，基准对应的源码和当前代码一致 |
 | 3.1-1 | 引入 `ts:ready`，修正启动顺序（文件仍然内嵌） | ✅ 见下方说明 |
-| 3.1-2 | 去掉共用 JS 中的按页面插值（拆分 `JS_RANK`/`JS_HIST`，killer 改用 `window.CFG`） | 待做 |
+| 3.1-2 | 去掉共用 JS 中的按页面插值（拆分 `JS_RANK`/`JS_HIST`，killer 改用 `window.CFG`） | ✅ 见下方说明 |
 | 3.1-3 | 新建 `assets.py`：按内容哈希写文件，按页面深度计算相对路径（暂不接入页面） | 待做 |
 | 3.1-4 | `_inner_page_shell` 的 CSS 改为外部文件（`<link>` 的顺序与原 `<style>` 拼接顺序一致，`css_vars` 继续内嵌） | 待做 |
 | 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | 待做 |
@@ -114,6 +114,10 @@
   - `wta_show` 的 A/B 对比（前几行、正向排序、反向排序、按钮数、卡片数）完全相同，控制台没有错误；
   - 把排名脚本移到表格脚本之前，模拟改用外部文件后的执行顺序：旧代码下排名界面没有启动，新代码下正常启动。
 - 没有单独验证排名类页面（需要联网生成）。它们和 show 页使用同一段 `JS_RANK` 启动代码，留到 3.1-6 做完整对比。
+
+**3.1-2 完成说明：**
+- `JS_RANK` 不再内含 `JS_HIST`；排名页 `late_js=JS_HIST + JS_RANK`，关注页仍为 `JS_HIST + JS_WATCH`，便于后续分别外置为 `hist.js` / `rank.js`。
+- killer / nemesis 详情脚本去掉 `__UNIT__` / `__FOOT__` 字符串替换，改为读取 `window.CFG.unit` / `window.CFG.foot`（页面在 `extra_js` 开头注入）。
 
 **技术要点：**
 1. 新增 `site_html/assets.py`，提供 `asset_url(name, content, page)`：

@@ -22,6 +22,7 @@ from site_html.common import (
 )
 from site_html.rank_ui import (
     CSS_RANK,
+    JS_HIST,
     JS_RANK,
     help_button_html,
     help_modal_html,
@@ -265,7 +266,7 @@ def render_ranking_page(
         # Modal must sit outside .page stacking context or it can be covered
         after_page=bd_modal,
         page=str(output_path),
-        late_js=JS_RANK,
+        late_js=JS_HIST + JS_RANK,
         title_extra=help_button_html(
             hint=not enable_breakdown,
             expired=expired_label,
