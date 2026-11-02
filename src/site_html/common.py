@@ -12,10 +12,20 @@ from typing import Optional, Union
 import pandas as pd
 
 from site_html import state
+from site_html.assets import asset_url
 from site_html.css import _CSS_BASE, _CSS_INNER, _CSS_ROUTE_QUERY, _FONTS
 from site_html.header import CSS_HEADER, JS_HEADER, site_header
 from site_html.js import _JS_TABLE, _JS_THEME
 from site_html.logos import _logo_pair
+
+
+def _site_css_href(page: str) -> str:
+    """Shared shell stylesheet (base + inner + route query + header)."""
+    return asset_url(
+        "site.css",
+        "\n".join((_CSS_BASE, _CSS_INNER, _CSS_ROUTE_QUERY, CSS_HEADER)),
+        page,
+    )
 
 
 def _rank_change_cell(value, arrow_attr: bool = False) -> str:
@@ -1067,6 +1077,8 @@ def _inner_page_shell(
     subtitle_html = (
         f'<div class="page-sub">{html.escape(subtitle)}</div>' if subtitle else ""
     )
+    site_href = html.escape(_site_css_href(page), quote=True)
+    extra_style = f"<style>\n{extra_css}\n</style>\n" if extra_css.strip() else ""
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1076,13 +1088,9 @@ def _inner_page_shell(
 {_FONTS}
 <style>
 {state.css_vars}
-{_CSS_BASE}
-{_CSS_INNER}
-{_CSS_ROUTE_QUERY}
-{CSS_HEADER}
-{extra_css}
 </style>
-</head>
+<link rel="stylesheet" href="{site_href}">
+{extra_style}</head>
 <body>
 <div class="page">
 
