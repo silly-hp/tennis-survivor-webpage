@@ -45,3 +45,36 @@ def asset_url(name: str, content: str | bytes, page: str = "") -> str:
 
     _, _, _, prefix = _resolve(page or "index.html")
     return f"{prefix}assets/{filename}"
+
+
+def cleanup_unused_assets(*, max_age_seconds: int = 86400) -> list[str]:
+    """
+    Delete hashed assets under ``assets/`` that no HTML references and that are
+    older than ``max_age_seconds`` (default 1 day). Always keeps ``echarts.min.js``.
+    """
+    import re
+    import time
+
+    root = _REPO_ROOT
+    refs: set[str] = set()
+    html_files = list(root.glob("*.html")) + list((root / "events").rglob("*.html"))
+    for html_path in html_files:
+        try:
+            text = html_path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        refs.update(re.findall(r"assets/([A-Za-z0-9._-]+)", text))
+
+    keep_forever = {"echarts.min.js"}
+    now = time.time()
+    removed: list[str] = []
+    if not _ASSETS_DIR.is_dir():
+        return removed
+    for path in sorted(_ASSETS_DIR.iterdir()):
+        if not path.is_file() or path.name in keep_forever or path.name in refs:
+            continue
+        if now - path.stat().st_mtime < max_age_seconds:
+            continue
+        path.unlink(missing_ok=True)
+        removed.append(path.name)
+    return removed

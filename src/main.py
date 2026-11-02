@@ -1218,6 +1218,7 @@ def main(*, mode: str = "default"):
     )
 
     if mode == "live":
+        _cleanup_stale_assets()
         return
 
     # H2H + killer + champion pages
@@ -1228,6 +1229,7 @@ def main(*, mode: str = "default"):
 
     if mode == "daily":
         run_player_stats(refresh=True)
+        _cleanup_stale_assets()
         return
 
     # Player career stats (optional weekday hook; prefer `python main.py --stats`)
@@ -1239,6 +1241,18 @@ def main(*, mode: str = "default"):
         and datetime.now().hour == h2h_cfg["update_hour"]
     ):
         run_player_stats(refresh=True)
+    _cleanup_stale_assets()
+
+
+def _cleanup_stale_assets() -> None:
+    try:
+        from site_html.assets import cleanup_unused_assets
+
+        removed = cleanup_unused_assets()
+        if removed:
+            logger.info(f"Removed {len(removed)} unused asset(s): {', '.join(removed)}")
+    except Exception:
+        logger.exception("Asset cleanup failed")
 
 
 if __name__ == "__main__":
