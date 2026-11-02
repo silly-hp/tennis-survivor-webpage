@@ -408,7 +408,7 @@ _CSS_INDEX = """\
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:32px;}
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
 .logo-text{display:flex;flex-direction:column;gap:3px;}
-.logo-cn{font-family:'Noto Serif SC',serif;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:.06em;line-height:1;}
+.logo-cn{font-family:"Songti SC","STSong",serif;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:.06em;line-height:1;}
 .logo-en{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.22em;text-transform:uppercase;line-height:1;}
 .hd-actions{display:flex;gap:8px;align-items:center;}
 .pill-btn,.theme-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;
@@ -424,7 +424,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var
 .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:36px;}
 .hero-main{border-left:3px solid var(--primary);padding-left:20px;}
 .hero-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--primary);margin-bottom:10px;}
-.hero-title{font-family:'Noto Serif SC',serif;font-size:clamp(26px,4.5vw,38px);font-weight:700;line-height:1.2;}
+.hero-title{font-family:"Songti SC","STSong",serif;font-size:clamp(26px,4.5vw,38px);font-weight:700;line-height:1.2;}
 .live-pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2);padding:9px 14px;
     border:1px solid var(--border);border-radius:999px;background:var(--surface);}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:pulse 1.8s ease-out infinite;}
@@ -450,8 +450,8 @@ body:not(.dark) .atp .ev-eye{filter:brightness(.72);}
     display:flex;flex-direction:column;gap:14px;border-top:3px solid var(--primary);}
 .ev-card.atp,.rest-card.atp{border-top-color:var(--secondary);}
 .ev-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;}
-.ev-city{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;}
-.ev-level{font-family:'Noto Sans SC',sans-serif;font-size:12px;font-weight:400;color:var(--muted);margin-left:8px;}
+.ev-city{font-family:"Songti SC","STSong",serif;font-size:22px;font-weight:700;}
+.ev-level{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:12px;font-weight:400;color:var(--muted);margin-left:8px;}
 .ev-stats{display:flex;gap:28px;}
 .ev-stat{display:flex;flex-direction:column-reverse;gap:2px;font-size:12px;color:var(--muted);}
 .ev-stat b{font-family:'Space Mono',monospace;font-size:22px;color:var(--ink);line-height:1.1;}
@@ -510,7 +510,7 @@ body:not(.dark) .atp .ev-eye{filter:brightness(.72);}
 .off-week{background:var(--th-bg);color:#ddeef8;border-radius:16px;padding:32px;display:flex;justify-content:space-between;
     align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:36px;}
 .off-eye{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--th-text);}
-.off-week h2{font-family:'Noto Serif SC',serif;font-size:28px;margin:8px 0;}
+.off-week h2{font-family:"Songti SC","STSong",serif;font-size:28px;margin:8px 0;}
 .off-week p{font-size:14px;color:#9cbdd4;}
 .off-grid{display:flex;gap:12px;flex-wrap:wrap;}
 .off-next{background:rgba(255,255,255,.06);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:4px;
@@ -566,7 +566,7 @@ body.dark .wk-chip{background:rgba(125,206,160,.12);border-color:rgba(125,206,16
     display:flex;flex-direction:column;gap:6px;transition:transform .2s,box-shadow .2s,border-color .2s;}
 .nav-card:not(.off):hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);border-color:var(--primary-rim);}
 .nav-eye{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--primary-dark);}
-.nav-title{font-family:'Noto Serif SC',serif;font-size:19px;font-weight:700;color:var(--ink);text-decoration:none;}
+.nav-title{font-family:"Songti SC","STSong",serif;font-size:19px;font-weight:700;color:var(--ink);text-decoration:none;}
 .nav-main::after{content:'';position:absolute;inset:0;border-radius:12px;}
 .nav-desc{font-size:13px;color:var(--muted);}
 .nav-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
@@ -574,7 +574,7 @@ body.dark .wk-chip{background:rgba(125,206,160,.12);border-color:rgba(125,206,16
     border:1px solid var(--primary-rim);border-radius:999px;background:var(--primary-dim);transition:background .15s;}
 .nav-link:hover{background:var(--primary-rim);}
 .nav-card.off{opacity:.5;cursor:not-allowed;}
-.dev-badge{font-family:'Noto Sans SC',sans-serif;font-size:11px;font-weight:500;color:var(--muted);border:1px solid var(--border);
+.dev-badge{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:11px;font-weight:500;color:var(--muted);border:1px solid var(--border);
     border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:middle;white-space:nowrap;display:inline-block;}
 
 /* guide */
@@ -584,7 +584,7 @@ body.dark .wk-chip{background:rgba(125,206,160,.12);border-color:rgba(125,206,16
 .guide[open]{animation:fadeUp .22s ease-out both;}
 .guide-inner{padding:24px;display:flex;flex-direction:column;gap:14px;}
 .guide-hd{display:flex;justify-content:space-between;align-items:center;}
-.guide-hd h2{font-family:'Noto Serif SC',serif;font-size:22px;}
+.guide-hd h2{font-family:"Songti SC","STSong",serif;font-size:22px;}
 .guide-close{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface2);color:var(--ink);font:inherit;cursor:pointer;}
 .guide p{font-size:14px;color:var(--muted);line-height:1.6;}
 .guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}

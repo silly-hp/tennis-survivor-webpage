@@ -310,7 +310,7 @@ body.dark .rk-btn-pri{color:#06142a;}
 @media(max-width:720px){.rk-top-solo .rk-me{grid-template-columns:minmax(0,1fr);}}
 .rk .sum-box{max-width:none;margin:0;border-radius:12px;border-top:3px solid var(--tour);transition:transform .2s ease-out,box-shadow .2s ease-out;}
 .rk .sum-header{padding:18px 22px 12px;}
-.rk .sum-title{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ink);margin:0;}
+.rk .sum-title{font-family:"Songti SC","STSong",serif;font-size:20px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ink);margin:0;}
 .rk .sum-title::before{content:"TODAY'S PICKS";display:block;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
     letter-spacing:.2em;color:var(--tour);margin-bottom:4px;}
 .rk .sum-title-row{align-items:flex-end;margin-bottom:12px;}
@@ -319,7 +319,7 @@ body.dark .rk-btn-pri{color:#06142a;}
 .rk .sbar-name{font-size:14px;}
 .rk .sbar-track{height:10px;}
 .rk .sum-toggle{min-height:44px;font-size:13px;color:var(--primary-dark);}
-.rk .sum-copy-btn{min-height:40px;min-width:100px;justify-content:center;padding:0 14px;font-family:'Noto Sans SC',sans-serif;
+.rk .sum-copy-btn{min-height:40px;min-width:100px;justify-content:center;padding:0 14px;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
     font-size:12px;font-weight:700;color:var(--ink2);background:var(--surface);overflow:hidden;
     transition:background-color .2s ease-out,border-color .2s ease-out,color .2s ease-out;}
 .rk .sum-copy-btn.ok{background:var(--ok);border-color:var(--ok);color:#fff;animation:rkPress .24s ease-out;}
@@ -368,7 +368,7 @@ body.dark .rk .sum-copy-btn.ok{color:#06140c;}
 /* daily killers */
 .rk .dk-box{max-width:none;margin:0;border-radius:12px;border-top:3px solid var(--bad);}
 .rk .dk-toggle{min-height:48px;justify-content:space-between;background:var(--surface);padding:12px 20px;color:var(--ink);}
-.rk .dk-toggle-txt{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;}
+.rk .dk-toggle-txt{font-family:"Songti SC","STSong",serif;font-size:16px;font-weight:700;}
 .rk .dk-toggle-txt::before{content:"KILLERS · DAILY";display:block;font-family:'Space Mono',monospace;font-size:11px;
     font-weight:700;letter-spacing:.2em;color:var(--bad);text-align:left;margin-bottom:2px;}
 .rk .dk-arrow{color:var(--primary-dark);}
@@ -457,12 +457,12 @@ body.dark .rk-pop{box-shadow:0 10px 28px rgba(0,0,0,.5);}
 /* table */
 .rk .table-wrapper{border:0;border-radius:0;max-height:calc(100vh - 96px);overflow:auto;overscroll-behavior:contain;}
 .rk .filterable-table{font-size:14px;}
-.rk .filterable-table thead tr:first-child th{font-family:'Noto Sans SC',sans-serif;font-size:12px;font-weight:700;letter-spacing:0;
+.rk .filterable-table thead tr:first-child th{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:12px;font-weight:700;letter-spacing:0;
     text-transform:none;color:#fff;padding:12px 10px;}
 .rk .filterable-table td{font-size:14px;padding:9px 10px;white-space:nowrap;}
 .rk .filterable-table td:nth-child(3),.rk .filterable-table td:nth-child(4){font-family:inherit;font-weight:inherit;color:inherit;font-size:14px;}
 .rk .filterable-table td:first-child{font-family:'Space Mono',monospace;font-weight:700;color:var(--ink);font-size:14px;}
-.rk .filter-trigger{min-height:36px;font-size:12px;color:var(--muted);border-radius:8px;padding:0 8px;gap:4px;font-family:'Noto Sans SC',sans-serif;
+.rk .filter-trigger{min-height:36px;font-size:12px;color:var(--muted);border-radius:8px;padding:0 8px;gap:4px;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
     letter-spacing:0;background:var(--surface);border:1px solid var(--border);transition:border-color .15s,color .15s;}
 .rk .filter-trigger>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
 .rk .filter-trigger .rk-chev{flex-shrink:0;font-size:11px;opacity:.7;}
@@ -538,7 +538,7 @@ body.dark .dropdown-content.rk-fpop{--me:#8fb0ff;--me-dim:rgba(143,176,255,.10);
 .rk-help-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
 body.dark .rk-help-btn{color:#8fb0ff;}
 /* quiet title notes: theme-tinted, small */
-.rk-tnote{display:inline-flex;align-items:center;gap:4px;font-family:'Noto Sans SC',sans-serif;font-weight:400;font-size:12px;line-height:1;
+.rk-tnote{display:inline-flex;align-items:center;gap:4px;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-weight:400;font-size:12px;line-height:1;
     color:var(--muted);letter-spacing:0;}
 .rk-tnote-ic{display:inline-flex;color:var(--muted);}
 .rk-tnote-ic svg{width:14px;height:14px;}
@@ -561,7 +561,7 @@ body.dark .rk-help-btn{color:#8fb0ff;}
 body.dark .rk-ask-ok{color:#1a0904;}
 .rk-dlg-hd{display:flex;justify-content:space-between;gap:12px;padding:18px 20px 12px;}
 .rk-dlg-ttl{display:flex;flex-direction:column;gap:4px;min-width:0;}
-.rk-dlg-ttl h2{margin:0;font-family:'Noto Serif SC',serif;font-size:22px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rk-dlg-ttl h2{margin:0;font-family:"Songti SC","STSong",serif;font-size:22px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .rk-eye-tour{color:var(--tour);}
 .rk-dlg-act{display:flex;align-items:flex-start;gap:10px;flex-shrink:0;}
 .rk-hist-seg{display:flex;gap:3px;padding:3px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;}
@@ -597,7 +597,7 @@ body.dark .rk-ask-ok{color:#1a0904;}
 .hp-body{padding:0 20px 18px;}
 .hp-step{display:flex;flex-direction:column;gap:12px;animation:hpIn .3s ease-out both;}
 .hp-step[hidden]{display:none;}
-.hp-step h3{margin:4px 0 0;font-family:'Noto Serif SC',serif;font-size:18px;color:var(--ink);}
+.hp-step h3{margin:4px 0 0;font-family:"Songti SC","STSong",serif;font-size:18px;color:var(--ink);}
 .hp-step p{margin:0;font-size:15px;line-height:1.7;color:var(--ink2);}
 .hp-stage{position:relative;height:220px;border-radius:12px;background:var(--surface2);border:1px solid var(--border2);overflow:hidden;padding:16px;
     display:flex;flex-direction:column;gap:12px;font-size:13px;color:var(--ink);}

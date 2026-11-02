@@ -15,7 +15,7 @@ body.dark .bd-modal{--bd-hard:#00b8f0;--bd-clay:#ff7a54;--bd-grass:#4ca86a;}
 .bd-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px 12px;}
 .bd-hd::before{content:none;}
 .bd-eye{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--primary);margin-bottom:4px;}
-.bd-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;}
+.bd-title{font-family:"Songti SC","STSong",serif;font-size:22px;font-weight:700;}
 .bd-sub{font-size:13px;color:var(--muted);margin-top:4px;}
 .bd-sub b{font-family:'Space Mono',monospace;color:var(--ink);}
 .bd-close{flex-shrink:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--ink);

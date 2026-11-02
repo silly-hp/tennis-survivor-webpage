@@ -221,7 +221,7 @@ body.dark:has(.ch[data-tour="ALL"]) .page-header{--tour:#8fb0ff;}
 .ch,.rk-modal,.rk-picker{--atp:var(--secondary);--wta:var(--primary);--atp-ink:color-mix(in srgb,var(--secondary) 62%,var(--ink));
     --wta-ink:var(--primary-dark);}
 .page-title .ttag:empty{display:none;}
-.ch-hint{flex-basis:100%;font-family:'Noto Sans SC',sans-serif;font-size:13px;font-weight:400;color:var(--muted);
+.ch-hint{flex-basis:100%;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:13px;font-weight:400;color:var(--muted);
     display:inline-flex;align-items:center;}
 .ch-hint-ic{display:inline-flex;color:var(--me,#1c3f94);}
 body.dark .ch-hint-ic{color:#8fb0ff;}
@@ -273,7 +273,7 @@ body.dark .ch-views button[aria-selected="true"]{color:#06142a;}
 .ch-ev-t{display:flex;flex-direction:column;gap:2px;min-width:0;}
 .ch-ev-eye{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--wta-ink);}
 .ch-ev[data-t="A"] .ch-ev-eye{color:var(--atp-ink);}
-.ch-ev-name{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;color:var(--ink);}
+.ch-ev-name{font-family:"Songti SC","STSong",serif;font-size:18px;font-weight:700;color:var(--ink);}
 .ch-ev-n{font-size:13px;color:var(--muted);white-space:nowrap;}
 .ch-ev-n b{font-family:'Space Mono',monospace;font-size:15px;color:var(--ink);}
 .ch-chev{color:var(--muted);transition:transform .2s ease-out;}
@@ -304,12 +304,12 @@ body.dark .ch-chip[data-me]::after{color:#06142a;}
 .ch-pod-tours{display:flex;gap:4px;}
 .ch-pod-tours span{font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--primary-dim);color:var(--wta-ink);}
 .ch-pod-tours span:first-child{background:var(--secondary-dim);color:var(--atp-ink);}
-.ch-pod-name{display:flex;align-items:center;gap:8px;min-width:0;font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;}
+.ch-pod-name{display:flex;align-items:center;gap:8px;min-width:0;font-family:"Songti SC","STSong",serif;font-size:20px;font-weight:700;}
 .ch-pod-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ch-pod-n{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--muted);}
 .ch-pod-n b{font-family:'Space Mono',monospace;font-size:36px;line-height:1;color:var(--ink);}
 .ch-pod-last{font-size:12px;color:var(--muted);border-top:1px solid var(--border2);padding-top:8px;}
-.ch-me::after{content:"我";flex-shrink:0;font-family:'Noto Sans SC',sans-serif;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;
+.ch-me::after{content:"我";flex-shrink:0;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;
     background:var(--me);color:#fff;}
 body.dark .ch-me::after{color:#06142a;}
 .ch-tags::after{content:attr(data-t);font-size:11px;color:var(--atp-ink);white-space:nowrap;}
@@ -372,7 +372,7 @@ body.dark [data-lv="大满贯"]{--lv-bg:rgba(221,238,248,.12);}
 .ch-empty p,.ch-none p{margin:0;line-height:1.6;}
 .ch-none{border-top:3px solid var(--tour);color:var(--muted);}
 .ch-none svg{color:var(--tour);}
-.ch-none h2{margin:0;font-family:'Noto Serif SC',serif;font-size:20px;color:var(--ink);}
+.ch-none h2{margin:0;font-family:"Songti SC","STSong",serif;font-size:20px;color:var(--ink);}
 .ch-eye-t{color:var(--tour);}
 
 /* detail dialog */
@@ -396,7 +396,7 @@ body.dark [data-lv="大满贯"]{--lv-bg:rgba(221,238,248,.12);}
 .hp-pod strong{font-family:'Space Mono',monospace;font-size:22px;}
 .hp-ev{background:var(--surface);border-radius:10px;border-top:3px solid var(--tour);padding:10px 12px;display:flex;flex-direction:column;gap:10px;}
 .hp-ev-hd{display:flex;align-items:center;gap:10px;}
-.hp-ev-hd b{font-family:'Noto Serif SC',serif;font-size:16px;margin-right:auto;}
+.hp-ev-hd b{font-family:"Songti SC","STSong",serif;font-size:16px;margin-right:auto;}
 .hp-ev-hd em{font-style:normal;color:var(--muted);}
 .hp-ev-chips{display:flex;gap:6px;flex-wrap:wrap;animation:hpMenu 2.4s ease-in-out infinite;}
 .hp-ev-chips .hp-chip{padding-left:4px;gap:6px;}
@@ -457,7 +457,7 @@ body.dark [data-lv="大满贯"]{--lv-bg:rgba(221,238,248,.12);}
     .ch-uname{font-size:16px;font-weight:700;min-height:44px;}
     .ch-n{flex-direction:row;align-items:baseline;gap:6px;}
     .ch-n b{font-size:20px;}
-    .ch-n b::after{content:" 冠";font-family:'Noto Sans SC',sans-serif;font-size:12px;font-weight:400;color:var(--muted);}
+    .ch-n b::after{content:" 冠";font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:12px;font-weight:400;color:var(--muted);}
     .ch-last{flex-direction:row;gap:8px;font-size:12px;color:var(--muted);}
     .ch-t .rk-star{width:44px;height:44px;margin:0;}
     .ch-tnote{padding:4px 0 0;border:0;}

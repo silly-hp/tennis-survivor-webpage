@@ -131,7 +131,7 @@ body.dark .score-stat-val .wk-chip{background:rgba(125,206,160,.12);
 .cal-hub a:hover{border-color:var(--primary-rim);transform:translateY(-1px);}
 .cal-hub .eye{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;
     color:var(--faint);margin-bottom:8px;}
-.cal-hub .ttl{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;margin-bottom:6px;}
+.cal-hub .ttl{font-family:"Songti SC","STSong",serif;font-size:20px;font-weight:700;margin-bottom:6px;}
 .cal-hub .desc{font-size:13px;color:var(--muted);line-height:1.5;}
 
 @media(max-width:640px){

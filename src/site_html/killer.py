@@ -27,7 +27,7 @@ _CSS_KILLER = """\
 .dz-main{flex:1;min-width:0;}
 .dz-where{font-size:11px;color:var(--muted);letter-spacing:.02em;}
 .dz-who{margin-top:3px;font-size:14px;color:var(--ink);font-weight:600;
-    font-family:'Noto Serif SC',serif;}
+    font-family:"Songti SC","STSong",serif;}
 .dz-who i{font-style:normal;font-size:11px;font-weight:400;color:var(--faint);margin-right:6px;}
 .dz-kills{flex-shrink:0;text-align:right;font-family:'Space Mono',monospace;
     font-size:22px;font-weight:700;color:var(--primary);line-height:1;}

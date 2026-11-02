@@ -366,7 +366,7 @@ body.dark .year-jump{background-image:url("data:image/svg+xml,%3Csvg xmlns='http
     background:var(--sf-ink);color:#fff;}
 body.dark .cl-tl{background:var(--sf);color:#051420;}
 .ev-tl{font-size:13px;padding:3px 9px;align-self:center;}
-.ev-hint{flex-basis:100%;font-family:'Noto Sans SC',sans-serif;font-size:13px;font-weight:400;color:var(--muted);display:inline-flex;align-items:center;}
+.ev-hint{flex-basis:100%;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:13px;font-weight:400;color:var(--muted);display:inline-flex;align-items:center;}
 .ev-hint-ic{display:inline-flex;color:var(--me,#1c3f94);}
 body.dark .ev-hint-ic{color:#8fb0ff;}
 .ev{gap:16px;}
@@ -429,7 +429,7 @@ body.dark:has(.ev) .hd-seg-btn[aria-current="page"],body.dark:has(.ev) .hd-seg-b
 .ev-card-hd{display:flex;align-items:center;gap:10px;}
 .ev-card-t{display:flex;flex-direction:column;min-width:0;}
 .ev-card-t .rk-eye{letter-spacing:.14em;}
-.ev-card-t b{font-family:'Noto Serif SC',serif;font-size:15px;color:var(--ink);}
+.ev-card-t b{font-family:"Songti SC","STSong",serif;font-size:15px;color:var(--ink);}
 .ev-card-main{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:17px;font-weight:700;color:var(--ink);}
 .ev-card-tag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--me-dim);color:var(--me);}
 .ev-card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);line-height:1.5;}
@@ -443,7 +443,7 @@ body.dark:has(.ev) .hd-seg-btn[aria-current="page"],body.dark:has(.ev) .hd-seg-b
 .ev-board{overflow:hidden;}
 .ev-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid var(--border2);}
 .ev-bar-t{display:flex;flex-direction:column;margin-right:4px;}
-.ev-bar-t b{font-family:'Noto Serif SC',serif;font-size:15px;color:var(--ink);}
+.ev-bar-t b{font-family:"Songti SC","STSong",serif;font-size:15px;color:var(--ink);}
 .ev-seg{display:flex;gap:4px;padding:4px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;}
 .ev-seg button{min-height:36px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:700;
     display:inline-flex;align-items:center;gap:6px;transition:background-color .18s,color .18s;}
@@ -527,7 +527,7 @@ body.dark .ev-more[aria-expanded="true"]{color:#06142a;}
 /* 使用说明 previews */
 .hp-ev-hero{display:flex;flex-direction:column;gap:6px;border-left:3px solid var(--sf);padding-left:14px;}
 .hp-ev-eye{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--sf-ink);}
-.hp-ev-hero b{font-family:'Noto Serif SC',serif;font-size:20px;display:flex;align-items:center;gap:8px;}
+.hp-ev-hero b{font-family:"Songti SC","STSong",serif;font-size:20px;display:flex;align-items:center;gap:8px;}
 .hp-ev-res{font-size:13px;}
 .hp-ev-champs{display:flex;gap:6px;animation:hpMenu 2.4s ease-in-out infinite alternate;}
 .hp-ev-champs i{font-style:normal;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--star-dim);}

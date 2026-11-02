@@ -27,7 +27,7 @@ _CSS_H2H = """\
     background:var(--surface2);overflow:hidden;}
 .multisel-search{width:100%;padding:7px 10px;border:none;
     border-bottom:1px solid var(--border2);background:transparent;
-    color:var(--ink);font-size:12px;outline:none;font-family:'Noto Sans SC',sans-serif;}
+    color:var(--ink);font-size:12px;outline:none;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;}
 .multisel-search::placeholder{color:var(--faint);}
 .multisel-search:focus{border-bottom-color:var(--primary);}
 .multisel-list{max-height:160px;overflow-y:auto;padding:4px 0;}
@@ -76,7 +76,7 @@ body.dark .sel-summary-pill.season{background:rgba(255,255,255,.06);}
 .sel-summary-toggle{
     background:none;border:1px solid var(--border);color:var(--muted);
     padding:3px 10px;border-radius:999px;font-size:11px;
-    font-family:'Noto Sans SC',sans-serif;cursor:pointer;line-height:1.3;
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;cursor:pointer;line-height:1.3;
     transition:all .2s;
 }
 .sel-summary-toggle:hover{border-color:var(--primary);color:var(--primary);}
@@ -89,7 +89,7 @@ body.dark .sel-summary-pill.season{background:rgba(255,255,255,.06);}
 .sel-actions{display:flex;gap:8px;flex-shrink:0;}
 .run-btn{background:var(--primary);color:#fff;border:none;
     padding:9px 22px;border-radius:6px;font-size:13px;
-    font-family:'Noto Sans SC',sans-serif;cursor:pointer;font-weight:500;
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;cursor:pointer;font-weight:500;
     letter-spacing:.02em;transition:background .2s;white-space:nowrap;}
 .run-btn:hover{background:var(--primary-dark);}
 .run-btn:disabled{opacity:.45;cursor:not-allowed;}
@@ -100,7 +100,7 @@ body.dark .sel-summary-pill.season{background:rgba(255,255,255,.06);}
 .h2h-retry[hidden]{display:none;}
 .clear-btn{background:none;border:1px solid var(--border);color:var(--muted);
     padding:9px 16px;border-radius:6px;font-size:12px;
-    font-family:'Noto Sans SC',sans-serif;cursor:pointer;transition:all .2s;}
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;cursor:pointer;transition:all .2s;}
 .clear-btn:hover{border-color:var(--primary);color:var(--primary);}
 /* ── section divider ── */
 .section-div{display:flex;align-items:center;gap:10px;margin:20px 0 14px;}
@@ -205,7 +205,7 @@ body.dark .dropdown-content{box-shadow:0 8px 24px rgba(0,0,0,.4);}
 /* ── empty state ── */
 .empty-state{padding:60px 0;text-align:center;}
 .empty-icon{font-size:36px;margin-bottom:14px;opacity:.25;}
-.empty-title{font-family:'Noto Serif SC',serif;font-size:16px;color:var(--muted);margin-bottom:8px;}
+.empty-title{font-family:"Songti SC","STSong",serif;font-size:16px;color:var(--muted);margin-bottom:8px;}
 .empty-desc{font-size:12px;color:var(--faint);line-height:1.7;max-width:320px;margin:0 auto;}
 /* ── h2h badge ── */
 .ttag-h2h{background:rgba(42,122,74,.08);color:#1a6a3a;border:1px solid rgba(42,122,74,.2);}
@@ -220,7 +220,7 @@ body.dark .ttag-h2h{background:rgba(74,170,106,.12);color:#6ada90;border-color:r
 /* ── tab bar ── */
 .mode-tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--border2);}
 .mode-tab{background:none;border:none;cursor:pointer;padding:10px 4px 12px;
-    font-size:13px;color:var(--muted);font-family:'Noto Sans SC',sans-serif;
+    font-size:13px;color:var(--muted);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
     position:relative;transition:color .2s;}
 .mode-tab + .mode-tab{margin-left:14px;}
 .mode-tab:hover{color:var(--ink)}
@@ -246,7 +246,7 @@ body.dark .mode-tab.active{color:var(--primary);}
     margin-bottom:18px;}
 .sumr-headbar{display:grid;grid-template-columns:1fr auto;}
 .sumr-head-name{background:var(--th-bg);color:#fff;padding:14px 20px;
-    font-family:'Noto Serif SC',serif;font-size:16px;font-weight:600;
+    font-family:"Songti SC","STSong",serif;font-size:16px;font-weight:600;
     display:flex;align-items:center;gap:12px;}
 .sumr-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;
     background:var(--primary);color:#fff;display:flex;align-items:center;

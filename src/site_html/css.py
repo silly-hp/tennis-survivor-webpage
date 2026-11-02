@@ -1,17 +1,22 @@
 """Shared CSS string blocks inlined into generated pages."""
 from __future__ import annotations
 
-_FONTS = (
-    '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
-    '<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:'
-    "wght@400;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:"
-    'wght@300;400;500;700&display=swap" rel="stylesheet">'
-)
+# Space Mono is self-hosted under assets/fonts/ (see @font-face in _CSS_BASE).
+# Chinese text uses system fonts — no Google Fonts request.
+_FONTS = ""
 
 _CSS_BASE = """\
+@font-face{
+    font-family:'Space Mono';font-style:normal;font-weight:400;font-display:swap;
+    src:url(fonts/space-mono-400.woff2) format('woff2');
+}
+@font-face{
+    font-family:'Space Mono';font-style:normal;font-weight:700;font-display:swap;
+    src:url(fonts/space-mono-700.woff2) format('woff2');
+}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
-    font-family:'Noto Sans SC',sans-serif;
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
     background:var(--bg);color:var(--ink);min-height:100vh;
     transition:background .3s,color .3s;
 }
@@ -40,7 +45,7 @@ body{padding:24px 20px 60px;}
     letter-spacing:.08em;padding:5px 10px;border:1px solid var(--border2);border-radius:3px;}
 .theme-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);
     padding:7px 16px;border-radius:20px;cursor:pointer;font-size:12px;
-    font-family:'Noto Sans SC',sans-serif;transition:all .2s;}
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;transition:all .2s;}
 .theme-btn:hover{border-color:var(--primary);color:var(--primary);}
 
 /* page header */
@@ -48,7 +53,7 @@ body{padding:24px 20px 60px;}
 .page-eye{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.28em;
     color:var(--primary);text-transform:uppercase;margin-bottom:10px;}
 .page-sub{margin-top:6px;font-size:12px;font-weight:700;color:var(--primary);}
-.page-title{font-family:'Noto Serif SC',serif;font-size:clamp(22px,3vw,32px);
+.page-title{font-family:"Songti SC","STSong",serif;font-size:clamp(22px,3vw,32px);
     font-weight:700;color:var(--ink);line-height:1.2;
     display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .ttag{font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;
@@ -201,7 +206,7 @@ body.dark .sbar-ib{color:var(--secondary);}
     border-top:1px solid var(--border2);background:var(--surface2);
     color:var(--muted);font-size:12px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;gap:6px;
-    transition:background .15s,color .15s;font-family:'Noto Sans SC',sans-serif;}
+    transition:background .15s,color .15s;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;}
 .sum-toggle:hover{color:var(--primary);}
 .sum-ticon{font-size:10px;display:inline-block;transition:transform .25s;}
 .sum-toggle.open .sum-ticon{transform:rotate(180deg);}
@@ -225,7 +230,7 @@ body.dark .sum-copy-btn.copied{color:var(--primary);}
 .dk-box{margin:0 auto 18px;max-width:700px;background:var(--surface);
     border:1px solid var(--border);border-radius:10px;overflow:hidden;}
 .dk-toggle{width:100%;padding:10px 14px;border:none;background:var(--surface2);
-    color:var(--muted);font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    color:var(--muted);font-size:12px;cursor:pointer;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
     display:flex;align-items:center;justify-content:center;gap:8px;
     transition:color .15s,background .15s;}
 .dk-toggle:hover{color:var(--primary);}
@@ -361,7 +366,7 @@ body.dark .filterable-table tr.row-live td:first-child{box-shadow:inset 3px 0 0 
 .p1 .pod-medal{color:var(--rank1);}
 .p2 .pod-medal{color:var(--rank2);}
 .p3 .pod-medal{color:var(--rank3);}
-.pod-name{font-family:'Noto Serif SC',serif;font-size:14px;font-weight:600;
+.pod-name{font-family:"Songti SC","STSong",serif;font-size:14px;font-weight:600;
     color:var(--ink);margin-bottom:10px;}
 .pod-kills{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;
     color:var(--primary);line-height:1;margin-bottom:3px;}
@@ -411,7 +416,7 @@ body.dark .filterable-table tr.row-live td:first-child{box-shadow:inset 3px 0 0 
 .filter-slider-reset{
     width:100%;margin-top:4px;padding:5px 0;border:1px solid var(--border);
     border-radius:3px;background:var(--surface2);color:var(--muted);
-    font-size:10px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+    font-size:10px;cursor:pointer;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
     transition:all .15s;
 }
 .filter-slider-reset:hover{border-color:var(--primary);color:var(--primary);}
@@ -449,7 +454,7 @@ body.dark .detail-card{box-shadow:0 20px 60px rgba(0,0,0,.55),0 4px 12px rgba(0,
     font-size:15px;flex-shrink:0;
 }
 .detail-title{
-    font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;
+    font-family:"Songti SC","STSong",serif;font-size:15px;font-weight:600;
     color:var(--th-text);letter-spacing:.02em;
 }
 .detail-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--faint);margin-top:2px;}
@@ -520,7 +525,7 @@ _CSS_ROUTE_QUERY = """\
 .route-entry-icon{width:34px;height:34px;border-radius:8px;background:var(--primary-dim);
     display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
 .route-entry-text{flex:1;}
-.route-entry-title{font-family:'Noto Serif SC',serif;font-size:14px;font-weight:600;color:var(--ink);}
+.route-entry-title{font-family:"Songti SC","STSong",serif;font-size:14px;font-weight:600;color:var(--ink);}
 .route-entry-desc{font-size:11.5px;color:var(--muted);margin-top:2px;}
 .route-entry-arrow{font-size:15px;color:var(--faint);transition:transform .15s;}
 .route-entry:hover .route-entry-arrow{transform:translateX(3px);color:var(--primary);}
@@ -529,7 +534,7 @@ _CSS_ROUTE_QUERY = """\
     margin-bottom:10px;overflow:hidden;}
 .rq-search{width:100%;border:none;background:transparent;padding:8px 10px;font-size:12px;
     border-bottom:1px solid var(--border2);box-sizing:border-box;color:var(--ink);outline:none;
-    font-family:'Noto Sans SC',sans-serif;}
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;}
 .rq-search::placeholder{color:var(--faint);}
 .rq-opt-list{max-height:160px;overflow-y:auto;}
 .rq-opt{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;cursor:pointer;
@@ -546,7 +551,7 @@ _CSS_ROUTE_QUERY = """\
 .rq-tag-rm:hover{opacity:1;}
 .rq-run-btn{width:100%;background:var(--primary);color:#fff;border:none;padding:9px;
     border-radius:6px;font-size:13px;cursor:pointer;margin-bottom:16px;
-    font-family:'Noto Sans SC',sans-serif;transition:background .15s;}
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;transition:background .15s;}
 .rq-run-btn:hover{background:var(--primary-dark);}
 .rq-result-count{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;
     color:var(--faint);margin-bottom:8px;}
