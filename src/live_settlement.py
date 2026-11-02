@@ -35,11 +35,15 @@ SUICIDE_MISS = "自杀(退赛)"
 FILL_TO_STATUS = {
     "存活": 2,
     "球员输球": -2,
+    "球员退赛": -2,
     "自杀(重复)": -3,
     "自杀(主备冲突)": -4,
     "自杀(退赛)": 0,
     "未参赛": pd.NA,
 }
+
+# Early-ret / W/O / 赛前退赛换人 with no usable backup.
+STATUS_PLAYER_RETIRE = "球员退赛"
 
 
 def _as_key(value: object) -> str:
@@ -284,7 +288,7 @@ def _pick_outcome(
     player = _lookup_named_pick(draw, detail)
     if player is None:
         # Primary not on the draw: pre-match withdrawal / replacement.
-        # Same as W/O: use backup if present, otherwise loss (球员输球).
+        # Same as W/O: use backup if present, otherwise loss (→ 球员退赛).
         if allow_backup:
             alt = _alt_detail(detail)
             if alt is not None:
@@ -662,7 +666,7 @@ def _repair_early_retirement_rows(
       the last pick as the killer.
     - With backup: revive to 存活 and drop the primary from ``players`` so the
       main loop can settle on the backup (killer follows backup outcome).
-    - Without backup: normalize ``自杀(退赛)`` → ``球员输球`` with killer=primary.
+    - Without backup: normalize to ``球员退赛`` with killer=primary.
     """
     repaired = 0
 
@@ -675,7 +679,7 @@ def _repair_early_retirement_rows(
 
     for index, row in result.iterrows():
         status = str(row.get("fill_status") or "").strip()
-        if status not in {"球员输球", "自杀(退赛)"}:
+        if status not in {"球员输球", "球员退赛", "自杀(退赛)"}:
             continue
         used = _players_without_bye(row.get("players"))
         if not used:
@@ -725,11 +729,13 @@ def _repair_early_retirement_rows(
             # (e.g. 哈恰诺夫 W/O with 门希克 backup who was already out).
             # Only revive when backup can still change the outcome.
             if alt_player is not None and alt_player.eliminated:
-                result.at[index, "fill_status"] = "球员输球"
+                result.at[index, "fill_status"] = STATUS_PLAYER_RETIRE
                 result.at[index, "killer"] = last
                 result.at[index, "players"] = used
                 if "status" in result.columns:
-                    result.at[index, "status"] = FILL_TO_STATUS.get("球员输球", -2)
+                    result.at[index, "status"] = FILL_TO_STATUS.get(
+                        STATUS_PLAYER_RETIRE, -2
+                    )
                 repaired += 1
                 continue
             # Wrongly died on primary despite usable backup — revive for re-settle.
@@ -744,14 +750,17 @@ def _repair_early_retirement_rows(
             repaired += 1
             continue
         if early and not alt:
-            result.at[index, "fill_status"] = "球员输球"
+            result.at[index, "fill_status"] = STATUS_PLAYER_RETIRE
             result.at[index, "killer"] = last
             result.at[index, "players"] = used
             if "status" in result.columns:
-                result.at[index, "status"] = FILL_TO_STATUS.get("球员输球", -2)
+                result.at[index, "status"] = FILL_TO_STATUS.get(
+                    STATUS_PLAYER_RETIRE, -2
+                )
             repaired += 1
             continue
         if status == "自杀(退赛)":
+            # Late (non-early) retirement marked as miss by official page.
             result.at[index, "fill_status"] = "球员输球"
             result.at[index, "killer"] = last
             result.at[index, "players"] = used
@@ -1084,7 +1093,14 @@ def apply_live_settlement(
                 if eff_pick and eff_pick != "轮空":
                     used.append(eff_pick)
                 result.at[index, "players"] = used
-                result.at[index, "fill_status"] = "球员输球"
+                # Early-ret / 赛前退赛 with no usable backup → 球员退赛;
+                # otherwise (incl. backup lost) → 球员输球.
+                no_usable_backup = early_ret and (
+                    not alt or eff_pick == pick
+                )
+                result.at[index, "fill_status"] = (
+                    STATUS_PLAYER_RETIRE if no_usable_backup else "球员输球"
+                )
                 result.at[index, "killer"] = (
                     eff_pick if eff_pick and eff_pick != "轮空" else ""
                 )

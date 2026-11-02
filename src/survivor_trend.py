@@ -14,7 +14,7 @@ import pandas as pd
 STILL_IN = frozenset({"存活", "未完赛", "未选", "轮空", ""})
 
 
-_OUT_KEYS = ("球员输球", "自杀（重复）", "自杀（主备冲突）", "自杀（退赛）")
+_OUT_KEYS = ("球员输球", "球员退赛", "自杀（重复）", "自杀（主备冲突）", "自杀（退赛）")
 
 
 def survivor_series(

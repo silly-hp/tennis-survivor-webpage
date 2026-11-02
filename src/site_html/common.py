@@ -53,8 +53,8 @@ def _status_badge_html(val) -> str:
         cls = "st-alive"
     elif text in {"未完赛", "未选"}:
         cls = "st-live"
-    elif text in {"球员输球", "未参赛"} or text.startswith("自杀"):
-        # 自杀 / 球员输球 share one淘汰色
+    elif text in {"球员输球", "球员退赛", "未参赛"} or text.startswith("自杀"):
+        # 自杀 / 球员输球 / 球员退赛 share one淘汰色
         cls = "st-out"
     else:
         cls = "st-other"
@@ -72,7 +72,7 @@ def _row_status_class(val) -> str:
         return "row-alive"
     if text in {"未完赛", "未选"}:
         return "row-live"
-    if text in {"球员输球", "未参赛"} or text.startswith("自杀"):
+    if text in {"球员输球", "球员退赛", "未参赛"} or text.startswith("自杀"):
         return "row-out"
     return ""
 

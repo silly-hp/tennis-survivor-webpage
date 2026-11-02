@@ -772,11 +772,11 @@ body:not(.dark) .rk-tags{color:#8a6a00;}
 # Shared by the ranking and watch pages: status groups + 选人历史 day alignment.
 JS_HIST = r"""
 function tsGrp(s){ if(s==='存活')return 'alive'; if(s==='未完赛')return 'live'; if(s==='轮空')return 'bye'; if(s==='未选')return 'none';
-  if(s==='未参赛'||s==='')return 'absent'; if(s.indexOf('自杀')===0)return 'suicide'; if(s==='球员输球')return 'out'; return 'other'; }
+  if(s==='未参赛'||s==='')return 'absent'; if(s.indexOf('自杀')===0)return 'suicide'; if(s==='球员输球'||s==='球员退赛')return 'out'; return 'other'; }
 function tsEsc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 // same classes as _status_badge_html
 function tsBadge(s){ s=String(s||'').trim(); if(!s) return '';
-  const c=(s==='存活'||s==='轮空')?'st-alive':(s==='未完赛'||s==='未选')?'st-live':(s==='球员输球'||s==='未参赛'||s.indexOf('自杀')===0)?'st-out':'st-other';
+  const c=(s==='存活'||s==='轮空')?'st-alive':(s==='未完赛'||s==='未选')?'st-live':(s==='球员输球'||s==='球员退赛'||s==='未参赛'||s.indexOf('自杀')===0)?'st-out':'st-other';
   return '<span class="st-badge '+c+'">'+tsEsc(s)+'</span>'; }
 // Username combobox in the site's own popover (a native <datalist> popup can't be styled and
 // renders white-on-white in some browsers). o: {match(q) → {opts, note}, meta(u) → text,
