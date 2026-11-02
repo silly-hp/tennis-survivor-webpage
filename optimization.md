@@ -98,7 +98,7 @@
 | 3.1-0 | 同步分支，确认基准 | ✅ `architecture` 与 `main` 是同一个提交，基准对应的源码和当前代码一致 |
 | 3.1-1 | 引入 `ts:ready`，修正启动顺序（文件仍然内嵌） | ✅ 见下方说明 |
 | 3.1-2 | 去掉共用 JS 中的按页面插值（拆分 `JS_RANK`/`JS_HIST`，killer 改用 `window.CFG`） | ✅ 见下方说明 |
-| 3.1-3 | 新建 `assets.py`：按内容哈希写文件，按页面深度计算相对路径（暂不接入页面） | 待做 |
+| 3.1-3 | 新建 `assets.py`：按内容哈希写文件，按页面深度计算相对路径（暂不接入页面） | ✅ |
 | 3.1-4 | `_inner_page_shell` 的 CSS 改为外部文件（`<link>` 的顺序与原 `<style>` 拼接顺序一致，`css_vars` 继续内嵌） | 待做 |
 | 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | 待做 |
 | 3.1-6 | 排名、show、killer、champion、watchlist 的 JS 改为外部文件（在 worktree 中联网生成，用同一份数据做 A/B 对比） | 待做 |
@@ -118,6 +118,9 @@
 **3.1-2 完成说明：**
 - `JS_RANK` 不再内含 `JS_HIST`；排名页 `late_js=JS_HIST + JS_RANK`，关注页仍为 `JS_HIST + JS_WATCH`，便于后续分别外置为 `hist.js` / `rank.js`。
 - killer / nemesis 详情脚本去掉 `__UNIT__` / `__FOOT__` 字符串替换，改为读取 `window.CFG.unit` / `window.CFG.foot`（页面在 `extra_js` 开头注入）。
+
+**3.1-3 完成说明：**
+- 新增 `site_html/assets.py`：`asset_url(name, content, page)` 按内容 sha256 前 8 位写入 `assets/<stem>.<hash>.css|js`（已存在则不重写），相对路径复用 `header._resolve` 的 `events/` 前缀。尚未接入页面外壳。
 
 **技术要点：**
 1. 新增 `site_html/assets.py`，提供 `asset_url(name, content, page)`：
