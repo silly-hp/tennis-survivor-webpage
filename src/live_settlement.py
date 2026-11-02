@@ -71,6 +71,37 @@ def _details_by_user(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any
     return grouped
 
 
+def _draw_event_underway(draw: DrawStatus | None) -> bool:
+    """True once any draw entry is live or eliminated (event has started)."""
+    if draw is None or not draw.by_id:
+        return False
+    return any(p.eliminated or p.live for p in draw.by_id.values())
+
+
+def _lookup_named_pick(
+    draw: DrawStatus | None, detail: dict[str, Any]
+) -> DrawPlayer | None:
+    """
+    Resolve the named primary pick on the live draw.
+
+    Prefer the display name. A fill id that resolves to a *different* athlete
+    means the slot was reused after 赛前退赛换人 — treat the original pick as
+    absent so backup can activate.
+    """
+    if draw is None or not draw.by_id:
+        return None
+    pick = str(detail.get("player") or "").strip()
+    if not pick or pick == "轮空":
+        return None
+    named = draw.by_name.get(pick)
+    if named is not None:
+        return named
+    by_fill = draw.lookup(detail.get("fill"), None)
+    if by_fill is not None and str(by_fill.name or "").strip() == pick:
+        return by_fill
+    return None
+
+
 def _backup_is_elim_opponent(
     detail: dict[str, Any], draw: DrawStatus | None
 ) -> bool:
@@ -81,7 +112,7 @@ def _backup_is_elim_opponent(
     alt = str(detail.get("player_alt") or "").strip()
     if not pick or not alt or pick == "轮空" or alt == "轮空":
         return False
-    primary = draw.lookup(detail.get("fill"), pick)
+    primary = _lookup_named_pick(draw, detail)
     if primary is None or not primary.eliminated:
         return False
     opp = str(primary.elim_opponent or "").strip()
@@ -89,14 +120,17 @@ def _backup_is_elim_opponent(
 
 
 def _primary_early_retirement(detail: dict[str, Any], draw: DrawStatus | None) -> bool:
-    """True when 主选退赛/赛前退赛, so 备选 is actually played."""
+    """True when 主选退赛/赛前退赛/签表换人, so 备选 is actually played."""
     if draw is None or not draw.by_id:
         return False
     pick = str(detail.get("player") or "").strip()
     if not pick or pick == "轮空":
         return False
-    player = draw.lookup(detail.get("fill"), pick)
-    if player is None or not player.eliminated:
+    player = _lookup_named_pick(draw, detail)
+    # Gone from the draw entirely (pre-match withdrawal / replacement).
+    if player is None:
+        return True
+    if not player.eliminated:
         return False
     return retirement_backup_allowed(player.elim_score)
 
@@ -247,14 +281,30 @@ def _pick_outcome(
     Return ``(outcome, effective_detail)``.
 
     outcome: ``win`` / ``loss`` / ``None`` (pending).
-    When primary is eliminated by retirement/W/O before set 1 ends and a
-    backup pick exists, settle on the backup instead.
+    When primary is eliminated by retirement/W/O before set 1 ends, or is
+    gone from the draw (赛前退赛换人), and a backup pick exists, settle on
+    the backup instead.
     """
     pick = str(detail.get("player") or "").strip()
     if pick == "轮空":
         return "win", detail
-    player = draw.lookup(detail.get("fill"), pick)
+    player = _lookup_named_pick(draw, detail)
     if player is None:
+        # Primary not on the draw: pre-match withdrawal / replacement.
+        if allow_backup:
+            alt = _alt_detail(detail)
+            if alt is not None:
+                return _pick_outcome(
+                    alt,
+                    draw,
+                    fills_by_match,
+                    live_round,
+                    min_still_round,
+                    pick_round_rank=pick_round_rank,
+                    allow_backup=False,
+                )
+        if _draw_event_underway(draw):
+            return "loss", detail
         return None, detail
     progress = _bracket_progress(draw, detail, player)
     if progress == "won":
@@ -480,8 +530,10 @@ def _day_matches_finished(
     round_rank = _pick_day_round_rank(draw, day)
     seen = False
     for item in picks:
-        player = draw.lookup(item.get("fill"), item.get("player"))
+        player = _lookup_named_pick(draw, item)
         if player is None:
+            # Pre-match withdrawal / replacement: pick is decided.
+            seen = True
             continue
         seen = True
         if player.live:
@@ -651,14 +703,18 @@ def _repair_early_retirement_rows(
         settled_day = int(pd.to_numeric(row.get("day"), errors="coerce") or 0)
         if status == "自杀(退赛)" and pick_day and pick_day <= settled_day:
             continue
-        player = draw.lookup(detail.get("fill"), last)
-        if player is None or not player.eliminated:
-            # Still in the draw, or not on it: this is a missed pick, not a loss.
+        player = _lookup_named_pick(draw, detail)
+        if player is None:
+            # Primary removed from draw (赛前退赛换人) — same as early W/O.
+            early = True
+        elif not player.eliminated:
+            # Still in the draw: this is a missed pick, not a loss.
             if status == "自杀(退赛)":
                 _keep_missed_pick(index, used)
                 repaired += 1
             continue
-        early = retirement_backup_allowed(player.elim_score)
+        else:
+            early = retirement_backup_allowed(player.elim_score)
         alt = str(detail.get("player_alt") or "").strip()
         if early and alt:
             # Suicide/conflict first: backup cannot be the elim opponent.
@@ -983,14 +1039,19 @@ def apply_live_settlement(
             )
             eff_pick = str(effective.get("player") or pick).strip()
             alt = str(detail.get("player_alt") or "").strip()
-            primary_player = draw.lookup(detail.get("fill"), pick)
-            early_ret = bool(
+            primary_player = _lookup_named_pick(draw, detail)
+            primary_absent = primary_player is None
+            early_ret = primary_absent or bool(
                 primary_player is not None
                 and primary_player.eliminated
                 and retirement_backup_allowed(primary_player.elim_score)
             )
             if early_ret:
-                score_txt = str(primary_player.elim_score or "").strip()
+                score_txt = (
+                    "赛前退赛"
+                    if primary_absent
+                    else str(primary_player.elim_score or "").strip()
+                )
                 if alt and eff_pick == alt:
                     if outcome == "win":
                         bak_result = "alive"
