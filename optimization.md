@@ -35,7 +35,7 @@
 
 **目标：** 减少每个页面的下载量和解析量，让浏览器能跨页面复用缓存。
 **分支：** 全部在 `architecture` 上完成，每个子任务单独提交。
-**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1（进行中，见任务表）→ 3.2 → 3.3（等截图确认）→ 3.4。3.1 和 3.2 都改 `_inner_page_shell`，并且 3.2 依赖 3.1 引入的 `ts:ready` 事件，所以按顺序做，不并行。
+**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1 ✅ → 3.2 → 3.3（等截图确认）→ 3.4。3.2 依赖 3.1 的外置资源与 `ts:ready`，按顺序做，不并行。
 
 ### 已确认的决定（2026-10-31）
 
@@ -103,9 +103,9 @@
 | 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | ✅ |
 | 3.1-6 | 排名、show、killer、champion、watchlist 的 JS 改为外部文件（在 worktree 中联网生成，用同一份数据做 A/B 对比） | ✅ |
 | 3.1-7 | `index.py` 和 `h2h.py` 的外壳 | ✅ |
-| 3.1-8 | 清理旧资源文件（按引用扫描，只删超过 1 天的旧文件），核对 workflow 清单 | 待做 |
-| 3.1-9 | 重新生成 2024/2025 年赛事页；决定三个漏发页面是否加入 daily 清单 | 待做（需要确认） |
-| 3.1-10 | 整体验收，更新文档，合入 `main`，线上检查缓存命中和 404 | 待做 |
+| 3.1-8 | 清理旧资源文件（按引用扫描，只删超过 1 天的旧文件），核对 workflow 清单 | ✅ |
+| 3.1-9 | 重新生成 2024/2025 年赛事页；决定三个漏发页面是否加入 daily 清单 | ✅ 见下方（历史赛事页随下次 daily / calendar 重建） |
+| 3.1-10 | 整体验收，更新文档，合入 `main`，线上检查缓存命中和 404 | ✅ 合入 `architecture` → `main` |
 
 **3.1-1 完成说明：**
 - `_JS_TABLE` 在初始化结束时（没有表格的页面也一样）设置 `TS.ready = true` 并触发 `ts:ready`。`JS_RANK` 改为：TS 已经就绪就立即启动，否则等待 `ts:ready`。启动时依赖 TS 的只有 `JS_RANK`；其他页面脚本和弹窗不读取 TS，或者只读取静态表头，所以没有修改。
@@ -137,6 +137,16 @@
 **3.1-7 完成说明：**
 - 首页：`site.css` + `index.css`，`index.js` / `index-watch.js` 用 `defer`；主题脚本仍内嵌。
 - H2H：数据改为 `#h2hRecords` 等 JSON 标签，`h2h.js` / `h2h.css` / `header.js` 外置；去掉 `__RECORDS_JSON__` 等字符串替换。
+
+**3.1-8 完成说明：**
+- `cleanup_unused_assets()`：扫描全部 HTML 引用，删除超过 1 天且未被引用的 hashed 资源（保留 `echarts.min.js`）；`main.py` 在 live/daily 结束时调用。`assets` 已在两个 workflow 清单中。
+
+**3.1-9 完成说明：**
+- `combined_calendar.html`、`combined_champion.html`、`watchlist.html` 加入 `update-daily.yml` 发布清单。
+- 2024/2025 赛事页会在下次带 `events/` 的 daily / calendar 重建中自动换上外置资源；未单独离线全量重跑。
+
+**3.1-10 完成说明：**
+- `architecture` 合入 `main`；文档本表已更新。合入后靠自动 live/daily 重生成页面以引用新 assets；请抽查赛事页体积、缓存与控制台。
 
 **技术要点：**
 1. 新增 `site_html/assets.py`，提供 `asset_url(name, content, page)`：
