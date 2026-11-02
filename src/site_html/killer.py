@@ -44,7 +44,9 @@ _CSS_KILLER = """\
 """
 
 _JS_KILLER_DETAIL = """\
-document.addEventListener('DOMContentLoaded',()=>{
+(function(){
+function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+ready(function(){
     const modal=document.getElementById('detail-modal');
     const closeBtn=document.getElementById('detail-close');
     const body=document.getElementById('detail-body');
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         card.addEventListener('click',()=>open(card.dataset.name||'',parse(card)));
     });
 });
+})();
 """
 
 _DETAIL_MODAL = """\
@@ -278,10 +281,11 @@ def render_killer_page(
                 ensure_ascii=False,
             )
             + ");\n"
-            + _JS_KILLER_DETAIL
             if has_detail
             else ""
         ),
+        late_js=_JS_KILLER_DETAIL if has_detail else "",
+        late_asset="killer-detail.js" if has_detail else "",
         extra_css=_CSS_KILLER,
         subtitle=subtitle,
         page=str(output_path),

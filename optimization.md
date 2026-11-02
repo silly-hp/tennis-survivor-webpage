@@ -101,7 +101,7 @@
 | 3.1-3 | 新建 `assets.py`：按内容哈希写文件，按页面深度计算相对路径（暂不接入页面） | ✅ |
 | 3.1-4 | `_inner_page_shell` 的 CSS 改为外部文件（`<link>` 的顺序与原 `<style>` 拼接顺序一致，`css_vars` 继续内嵌） | ✅ |
 | 3.1-5 | 赛事页和赛历的 JS 改为外部文件（可离线验证，先做） | ✅ |
-| 3.1-6 | 排名、show、killer、champion、watchlist 的 JS 改为外部文件（在 worktree 中联网生成，用同一份数据做 A/B 对比） | 待做 |
+| 3.1-6 | 排名、show、killer、champion、watchlist 的 JS 改为外部文件（在 worktree 中联网生成，用同一份数据做 A/B 对比） | ✅ |
 | 3.1-7 | `index.py` 和 `h2h.py` 的外壳 | 待做 |
 | 3.1-8 | 清理旧资源文件（按引用扫描，只删超过 1 天的旧文件），核对 workflow 清单 | 待做 |
 | 3.1-9 | 重新生成 2024/2025 年赛事页；决定三个漏发页面是否加入 daily 清单 | 待做（需要确认） |
@@ -128,6 +128,11 @@
 **3.1-5 完成说明：**
 - `_inner_page_shell` 共用 `table.js` / `header.js` 改为 `<script defer>`；`_JS_THEME` 与 `extra_js` 仍内嵌。
 - 新增 `late_asset`：赛事页写 `event.js`，赛历列表写 `cal.js`；排名等未迁页面的 `late_js` 仍内嵌，留给 3.1-6。
+
+**3.1-6 完成说明：**
+- shell 支持 `css_assets` / `defer_js`；脚本顺序为 `table.js →（页面脚本）→ header.js`。
+- 排名 / show：`rank.css` + `hist.js` + `rank.js`；关注：`hist.js` + `watch.js`；冠军榜：`champion.js`；killer 详情：`killer-detail.js`（`ready()` 兼容 defer）；赛事 / 赛历的 `CSS_RANK` 也改为外链 `rank.css`。
+- 汇总栏、breakdown boot、career detail 等按页插值脚本仍内嵌。完整联网 A/B 对比留待合入前抽检。
 
 **技术要点：**
 1. 新增 `site_html/assets.py`，提供 `asset_url(name, content, page)`：

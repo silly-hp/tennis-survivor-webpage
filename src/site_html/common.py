@@ -1068,6 +1068,8 @@ def _inner_page_shell(
     page: str = "",
     late_js: str = "",
     late_asset: str = "",
+    defer_js: list[tuple[str, str]] | None = None,
+    css_assets: list[tuple[str, str]] | None = None,
     title_extra: str = "",
     subtitle: str = "",
     pre_header: str = "",
@@ -1077,24 +1079,31 @@ def _inner_page_shell(
     ``pre_header`` goes between the shared header and the page title (e.g. a back link).
 
     ``page`` is the output path; the shared header reads its section and tour from it.
-    Shared ``table.js`` / ``header.js`` load with ``defer``. ``late_js`` is either
-    written to ``late_asset`` (also ``defer``) or inlined when ``late_asset`` is empty.
+    Shared ``table.js`` / ``header.js`` load with ``defer``. Page scripts come from
+    ``defer_js`` (name, content) and/or ``late_js`` (+ optional ``late_asset``).
+    ``css_assets`` are extra shared stylesheets after ``site.css``.
     ``_JS_THEME`` stays inline so dark mode does not flash.
     """
     tags_html = _title_tags(tour, extra_tags)
     subtitle_html = (
         f'<div class="page-sub">{html.escape(subtitle)}</div>' if subtitle else ""
     )
-    site_href = html.escape(_site_css_href(page), quote=True)
+    css_links = [
+        f'<link rel="stylesheet" href="{html.escape(_site_css_href(page), quote=True)}">'
+    ]
+    for name, content in css_assets or []:
+        href = html.escape(asset_url(name, content, page), quote=True)
+        css_links.append(f'<link rel="stylesheet" href="{href}">')
     extra_style = f"<style>\n{extra_css}\n</style>\n" if extra_css.strip() else ""
-    table_src = asset_url("table.js", _JS_TABLE, page)
-    header_src = asset_url("header.js", JS_HEADER, page)
+    # Order: table.js → page scripts (hist/rank/…) → header.js (see optimization 3.1).
+    defer_tags = [_script_tag(asset_url("table.js", _JS_TABLE, page))]
+    for name, content in defer_js or []:
+        defer_tags.append(_script_tag(asset_url(name, content, page)))
     if late_js and late_asset:
-        late_block = _script_tag(asset_url(late_asset, late_js, page)) + "\n"
+        defer_tags.append(_script_tag(asset_url(late_asset, late_js, page)))
     elif late_js:
-        late_block = f"<script>\n{late_js}\n</script>\n"
-    else:
-        late_block = ""
+        defer_tags.append(f"<script>\n{late_js}\n</script>")
+    defer_tags.append(_script_tag(asset_url("header.js", JS_HEADER, page)))
     boot = "\n".join(
         part for part in (extra_js.strip(), _JS_THEME.strip()) if part
     )
@@ -1108,7 +1117,7 @@ def _inner_page_shell(
 <style>
 {state.css_vars}
 </style>
-<link rel="stylesheet" href="{site_href}">
+{chr(10).join(css_links)}
 {extra_style}</head>
 <body>
 <div class="page">
@@ -1132,7 +1141,6 @@ def _inner_page_shell(
 <script>
 {boot}
 </script>
-{_script_tag(table_src)}
-{_script_tag(header_src)}
-{late_block}</body>
+{chr(10).join(defer_tags)}
+</body>
 </html>"""
