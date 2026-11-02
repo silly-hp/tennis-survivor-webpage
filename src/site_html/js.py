@@ -48,6 +48,8 @@ document.addEventListener('DOMContentLoaded',function(){
     let rows;
     if(dataEl){
         rows=JSON.parse(dataEl.textContent);
+    }else if(window.__TS_DATA){
+        rows=window.__TS_DATA;
     } else {
         rows=Array.from(tbody.querySelectorAll('tr'),tr=>{
             const m={t:Array.from(tr.children,c=>c.textContent.trim()),c:tr.className,el:tr};

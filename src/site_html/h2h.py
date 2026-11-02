@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from site_html import state
-from site_html.assets import asset_url
+from site_html.assets import asset_url, write_data_js
 from site_html.common import _site_css_href, _topbar, _title_tags
 from site_html.header import JS_HEADER
 from site_html.css import _FONTS
@@ -93,6 +93,11 @@ body.dark .sel-summary-pill.season{background:rgba(255,255,255,.06);}
     letter-spacing:.02em;transition:background .2s;white-space:nowrap;}
 .run-btn:hover{background:var(--primary-dark);}
 .run-btn:disabled{opacity:.45;cursor:not-allowed;}
+.h2h-load-tip{margin:8px 0 0;font-size:12px;color:var(--muted);}
+.h2h-load-tip.is-err{color:#c0392b;}
+.h2h-retry{margin-left:8px;font-size:12px;color:var(--primary);background:none;border:none;
+    cursor:pointer;text-decoration:underline;padding:0;}
+.h2h-retry[hidden]{display:none;}
 .clear-btn{background:none;border:1px solid var(--border);color:var(--muted);
     padding:9px 16px;border-radius:6px;font-size:12px;
     font-family:'Noto Sans SC',sans-serif;cursor:pointer;transition:all .2s;}
@@ -291,20 +296,85 @@ body.dark .sumr-oppo-score{color:var(--primary);}
 
 _JS_H2H = """\
 (function(){
-function _json(id, fallback){
-    try{
-        const node=document.getElementById(id);
-        if(!node) return fallback;
-        return JSON.parse(node.textContent);
-    }catch(e){ return fallback; }
-}
-const RECORDS = _json('h2hRecords', []);
-const USERS   = _json('h2hUsers', []);
-const PLAYERS = _json('h2hPlayers', []);
-const SEASONS = _json('h2hSeasons', []);
-
+let RECORDS = [], USERS = [], PLAYERS = [], SEASONS = [];
+let _dataReady = false;
 let selU = new Set(), selP = new Set(), selS = new Set();
 let tagsExpanded = false;
+
+function decodeH2H(pack){
+    const users=pack.users||[], players=pack.players||[], tours=pack.tours||[], weeks=pack.weeks||[];
+    const u=pack.u||[], p=pack.p||[], t=pack.t||[], w=pack.w||[], d=pack.d||[], s=pack.s||[], r=pack.r||[];
+    const n=u.length, out=new Array(n);
+    for(let i=0;i<n;i++){
+        out[i]={u:users[u[i]], p:players[p[i]], t:tours[t[i]], d:d[i]|0, s:s[i]|0, r:r[i]|0, dt:weeks[w[i]]};
+    }
+    return out;
+}
+function applyPack(pack){
+    RECORDS = decodeH2H(pack);
+    USERS = pack.userInfo || [];
+    PLAYERS = pack.playerList || [];
+    SEASONS = pack.seasonList || [];
+    _dataReady = true;
+}
+function setLoadUI(state, detail){
+    const btn=document.getElementById('runBtn');
+    const tip=document.getElementById('h2hLoadTip');
+    if(tip){
+        tip.hidden = state==='ready';
+        tip.textContent = detail || ({loading:'数据加载中…', error:'数据加载失败', ready:''}[state]||'');
+        tip.className = 'h2h-load-tip'+(state==='error'?' is-err':'');
+    }
+    if(btn){
+        if(state==='ready') updateRunBtn();
+        else { btn.disabled = true; btn.textContent = state==='loading' ? '加载中…' : '查询 →'; }
+    }
+    const retry=document.getElementById('h2hRetry');
+    if(retry) retry.hidden = state!=='error';
+}
+function loadDataScript(url){
+    return new Promise(function(resolve, reject){
+        const s=document.createElement('script');
+        s.src=url;
+        s.async=true;
+        s.onload=function(){ resolve(window.__H2H_DATA); };
+        s.onerror=function(){ reject(new Error('load failed')); };
+        document.head.appendChild(s);
+    });
+}
+function bootPickers(){
+    buildList('uList',USERS,'user');
+    buildList('pList',PLAYERS,'player');
+    buildList('sList',SEASONS,'season');
+    if(document.getElementById('sumUList')) buildSumUserList(USERS);
+    if(document.getElementById('sumSList')) buildSumSeasonList();
+    updateRunBtn();
+    const btn=document.getElementById('runBtn');
+    if(btn) btn.textContent='查询 →';
+}
+function startDataLoad(){
+    const cfg=window.CFG||{};
+    const url=cfg.dataUrl||'';
+    if(window.__H2H_DATA){
+        applyPack(window.__H2H_DATA);
+        setLoadUI('ready');
+        bootPickers();
+        return;
+    }
+    if(!url){
+        setLoadUI('error','未配置数据地址');
+        return;
+    }
+    setLoadUI('loading');
+    loadDataScript(url).then(function(pack){
+        if(!pack) throw new Error('empty');
+        applyPack(pack);
+        setLoadUI('ready');
+        bootPickers();
+    }).catch(function(){
+        setLoadUI('error','数据加载失败，请重试');
+    });
+}
 
 function optLabel(u){
     return u.rank != null ? u.username+' ('+u.rank+')' : u.username+' (-)';
@@ -448,7 +518,9 @@ function makeTag(key, type, extraClass){
 }
 
 function updateRunBtn(){
-    document.getElementById('runBtn').disabled = (selU.size===0 || selP.size===0);
+    const btn=document.getElementById('runBtn');
+    if(!btn) return;
+    btn.disabled = (!_dataReady) || (selU.size===0 || selP.size===0);
 }
 
 window.clearAll = function(){
@@ -746,6 +818,7 @@ function sortRecords(){
 }
 
 window.runQuery = function(){
+    if(!_dataReady) return;
     sortRecords();
     var recs = RECORDS.filter(function(r){
         var uOk = selU.size===0 || selU.has(r.u);
@@ -789,11 +862,9 @@ function escAttr(s){ return escHtml(s); }
 document.getElementById('uSearch').addEventListener('input',function(){ filterList('uList',this.value,'user'); });
 document.getElementById('pSearch').addEventListener('input',function(){ filterList('pList',this.value,'player'); });
 document.getElementById('sSearch').addEventListener('input',function(){ filterList('sList',this.value,'season'); });
-
-buildList('uList',USERS,'user');
-buildList('pList',PLAYERS,'player');
-buildList('sList',SEASONS,'season');
-updateRunBtn();
+const retryBtn=document.getElementById('h2hRetry');
+if(retryBtn) retryBtn.addEventListener('click',function(){ startDataLoad(); });
+startDataLoad();
 
 /* ── mode tabs ── */
 window.switchMode = function(mode){
@@ -999,7 +1070,7 @@ def _h2h_season_list(df: pd.DataFrame) -> list[int]:
     return sorted([int(s) for s in seasons], reverse=True)
 
 
-def _h2h_records_json(df: pd.DataFrame) -> str:
+def _h2h_records_frame(df: pd.DataFrame) -> pd.DataFrame:
     cols_needed = [
         "username",
         "player",
@@ -1024,21 +1095,88 @@ def _h2h_records_json(df: pd.DataFrame) -> str:
         .fillna(-1)
         .astype(int)
     )
-    out = out.sort_values(["week_start_date", "day"], ascending=[False, False])
-    records = []
-    for _, row in out.iterrows():
-        records.append(
-            {
-                "u": str(row["username"]),
-                "p": str(row["player"]),
-                "t": str(row["tournament"]),
-                "d": int(row["day"]),
-                "s": int(row["season"]),
-                "r": int(row["result"]),
-                "dt": str(row["week_start_date"]),
-            }
+    return out.sort_values(
+        ["week_start_date", "day"], ascending=[False, False]
+    ).reset_index(drop=True)
+
+
+def _dict_index(values: list[str]) -> tuple[list[str], list[int]]:
+    table: list[str] = []
+    pos: dict[str, int] = {}
+    idxs: list[int] = []
+    for raw in values:
+        key = str(raw)
+        i = pos.get(key)
+        if i is None:
+            i = len(table)
+            pos[key] = i
+            table.append(key)
+        idxs.append(i)
+    return table, idxs
+
+
+def _h2h_columnar_pack(df: pd.DataFrame) -> dict:
+    """Columnar + dictionary encoding for H2H records (phase 3.2)."""
+    frame = _h2h_records_frame(df)
+    users, u_idx = _dict_index(frame["username"].astype(str).tolist())
+    players, p_idx = _dict_index(frame["player"].astype(str).tolist())
+    tours, t_idx = _dict_index(frame["tournament"].astype(str).tolist())
+    weeks, w_idx = _dict_index(frame["week_start_date"].astype(str).tolist())
+    pack = {
+        "users": users,
+        "players": players,
+        "tours": tours,
+        "weeks": weeks,
+        "u": u_idx,
+        "p": p_idx,
+        "t": t_idx,
+        "w": w_idx,
+        "d": frame["day"].astype(int).tolist(),
+        "s": frame["season"].astype(int).tolist(),
+        "r": frame["result"].astype(int).tolist(),
+        "userInfo": _h2h_user_list(df),
+        "playerList": _h2h_player_list(df),
+        "seasonList": _h2h_season_list(df),
+    }
+    decoded = _decode_h2h_pack(pack)
+    expected = [
+        {
+            "u": str(row["username"]),
+            "p": str(row["player"]),
+            "t": str(row["tournament"]),
+            "d": int(row["day"]),
+            "s": int(row["season"]),
+            "r": int(row["result"]),
+            "dt": str(row["week_start_date"]),
+        }
+        for _, row in frame.iterrows()
+    ]
+    if decoded != expected:
+        raise AssertionError("H2H columnar encode/decode mismatch")
+    return pack
+
+
+def _decode_h2h_pack(pack: dict) -> list[dict]:
+    users, players, tours, weeks = (
+        pack["users"],
+        pack["players"],
+        pack["tours"],
+        pack["weeks"],
+    )
+    return [
+        {
+            "u": users[ui],
+            "p": players[pi],
+            "t": tours[ti],
+            "d": int(di),
+            "s": int(si),
+            "r": int(ri),
+            "dt": weeks[wi],
+        }
+        for ui, pi, ti, wi, di, si, ri in zip(
+            pack["u"], pack["p"], pack["t"], pack["w"], pack["d"], pack["s"], pack["r"]
         )
-    return json.dumps(records, ensure_ascii=False)
+    ]
 
 
 def render_h2h_page(
@@ -1071,32 +1209,32 @@ def render_h2h_page(
     -------
     str : generated HTML
     """
-    users_json = json.dumps(_h2h_user_list(df), ensure_ascii=False)
-    players_json = json.dumps(_h2h_player_list(df), ensure_ascii=False)
-    seasons_json = json.dumps(_h2h_season_list(df), ensure_ascii=False)
-    records_json = _h2h_records_json(df)
-
     tour_upper = tour.upper()
     if tour_upper == "ATP":
         ttag_html = '<span class="ttag ttag-atp">ATP</span>'
+        data_stem = "h2h_atp.js"
     elif tour_upper == "WTA":
         ttag_html = '<span class="ttag ttag-wta">WTA</span>'
+        data_stem = "h2h_wta.js"
     else:
         ttag_html = '<span class="ttag ttag-all">ALL</span>'
+        data_stem = "h2h_all.js"
     ttag_html += '\n    <span class="ttag ttag-h2h">H2H</span>'
 
-    def _json_tag(tag_id: str, blob: str) -> str:
-        safe = blob.replace("</", "<\\/")
-        return (
-            f'<script type="application/json" id="{tag_id}">'
-            f"{safe}</script>"
-        )
-
     page = str(output_path)
+    pack = _h2h_columnar_pack(df)
+    payload = json.dumps(pack, ensure_ascii=False, separators=(",", ":"))
+    data_js = (
+        "window.__H2H_DATA="
+        + payload.replace("</", "<\\/")
+        + ";\n"
+    )
+    data_href, _digest = write_data_js(data_stem, data_js, page=page, hashed=True)
     site_href = html.escape(_site_css_href(page), quote=True)
     h2h_css = html.escape(asset_url("h2h.css", _CSS_H2H, page), quote=True)
     h2h_js = html.escape(asset_url("h2h.js", _JS_H2H, page), quote=True)
     header_js = html.escape(asset_url("header.js", JS_HEADER, page), quote=True)
+    cfg_json = json.dumps({"dataUrl": data_href}, ensure_ascii=False)
 
     html_str = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -1157,9 +1295,11 @@ def render_h2h_page(
     <div class="sel-tags" id="selTags"></div>
     <div class="sel-actions">
       <button class="clear-btn" onclick="clearAll()">清空</button>
-      <button class="run-btn" id="runBtn" onclick="runQuery()" disabled>查询 →</button>
+      <button class="run-btn" id="runBtn" onclick="runQuery()" disabled>加载中…</button>
     </div>
   </div>
+  <div class="h2h-load-tip" id="h2hLoadTip">数据加载中…</div>
+  <button type="button" class="h2h-retry" id="h2hRetry" hidden>重试</button>
 </div>
 
 <div id="results" style="display:none;">
@@ -1265,13 +1405,11 @@ def render_h2h_page(
 </div>
 
 </div>
-{_json_tag("h2hRecords", records_json)}
-{_json_tag("h2hUsers", users_json)}
-{_json_tag("h2hPlayers", players_json)}
-{_json_tag("h2hSeasons", seasons_json)}
 <script>
+window.CFG=Object.assign(window.CFG||{{}},{cfg_json});
 {_JS_THEME}
 </script>
+<link rel="preload" as="script" href="{html.escape(data_href, quote=True)}">
 <script defer src="{h2h_js}"></script>
 <script defer src="{header_js}"></script>
 </body>
