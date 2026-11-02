@@ -35,7 +35,7 @@
 
 **目标：** 减少每个页面的下载量和解析量，让浏览器能跨页面复用缓存。
 **分支：** 全部在 `architecture` 上完成，每个子任务单独提交。
-**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1 ✅ → 3.2 ✅ → 3.3（architecture 已改，等截图确认后合入）→ 3.4。3.2 依赖 3.1 的外置资源与 `ts:ready`，按顺序做，不并行。
+**顺序：** 3.0 ✅ → 3.0b 小 bug 修复 ✅ → 3.1 ✅ → 3.2 ✅ → 3.3 ✅→ 3.4。3.2 依赖 3.1 的外置资源与 `ts:ready`，按顺序做，不并行。
 
 ### 已确认的决定（2026-10-31）
 
@@ -188,14 +188,14 @@
 - 排名 HTML 应变瘦；筛选 / 排序 / 我的卡片正常。
 - `file://` 下相对路径 `.js` 仍可用。
 
-### 3.3 字体（优先级中，工作量 0.5–1 天，**截图确认后再合入 main**）
+### 3.3 字体（优先级中，工作量 0.5–1 天，✅（2026-11-02 合入 main））
 
-**已在 `architecture` 实现（待截图确认后合入）：**
+**已完成并合入 `main`：**
 1. 中文改用系统字体：`"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif`；标题使用 `"Songti SC","STSong",serif`。
 2. Space Mono 自行托管于 `assets/fonts/`（400 / 700 woff2，`font-display: swap`，附 OFL）。`_CSS_BASE` 用相对路径 `url(fonts/…)`（相对 `assets/*.css`）。
 3. 去掉 Google Fonts `<link>`（`_FONTS = ""`）。本地 Mac 亮/暗 + 手机宽度已截图对比；Windows 需在对应环境确认。
 
-**验收标准：** 页面不再请求 `fonts.googleapis.com` 和 `fonts.gstatic.com`；确认视觉后再合入 `main`。
+**验收标准：** 页面不再请求 `fonts.googleapis.com` 和 `fonts.gstatic.com`。合入后靠 daily/live 重生成页面以引用新 CSS；请抽查无外网字体请求。
 
 ### 3.4 其他小项（优先级低，各 0.5 天以内）
 
