@@ -71,13 +71,6 @@ def _details_by_user(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any
     return grouped
 
 
-def _draw_event_underway(draw: DrawStatus | None) -> bool:
-    """True once any draw entry is live or eliminated (event has started)."""
-    if draw is None or not draw.by_id:
-        return False
-    return any(p.eliminated or p.live for p in draw.by_id.values())
-
-
 def _lookup_named_pick(
     draw: DrawStatus | None, detail: dict[str, Any]
 ) -> DrawPlayer | None:
@@ -291,6 +284,7 @@ def _pick_outcome(
     player = _lookup_named_pick(draw, detail)
     if player is None:
         # Primary not on the draw: pre-match withdrawal / replacement.
+        # Same as W/O: use backup if present, otherwise loss (球员输球).
         if allow_backup:
             alt = _alt_detail(detail)
             if alt is not None:
@@ -303,9 +297,7 @@ def _pick_outcome(
                     pick_round_rank=pick_round_rank,
                     allow_backup=False,
                 )
-        if _draw_event_underway(draw):
-            return "loss", detail
-        return None, detail
+        return "loss", detail
     progress = _bracket_progress(draw, detail, player)
     if progress == "won":
         return "win", detail
