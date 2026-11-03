@@ -43,6 +43,8 @@ CANADA_EVENTS = {"蒙特利尔", "多伦多"}
 STATS_CACHE = Path(__file__).resolve().parent.parent / "data" / "player_events.json"
 ROLLING_SCORE_CACHE = Path(__file__).resolve().parent.parent / "data" / "rolling_scores.json"
 TOUR_DATES_PATH = Path(__file__).resolve().parent.parent / "data" / "tournament_dates.json"
+SCORE_CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "event_scores"
+BYE_PICK = "轮空"
 # Forced zeros start with 2026 Indian Wells. Rankings update every Monday
 # except the Monday inside a two-week event.
 FORCED_ZERO_START = datetime(2026, 3, 2)
@@ -167,6 +169,109 @@ def _longest_streak(
     return max(best_days, 0), text
 
 
+def _normalize_players(raw: Any) -> list[str]:
+    if raw is None:
+        return []
+    try:
+        if isinstance(raw, float) and pd.isna(raw):
+            return []
+    except (TypeError, ValueError):
+        pass
+    if isinstance(raw, str):
+        text = raw.strip()
+        if not text:
+            return []
+        try:
+            parsed = json.loads(text)
+            if isinstance(parsed, list):
+                return [str(x) for x in parsed]
+        except json.JSONDecodeError:
+            return [text]
+        return [text]
+    if isinstance(raw, (list, tuple)):
+        return [str(x) for x in raw]
+    return []
+
+
+def _score_players_map(tour: str, event_id: str, year: str) -> dict[str, list[str]]:
+    """uid -> players[] from local event_scores cache."""
+    path = SCORE_CACHE_DIR / f"{tour}_{event_id}_{year}.json"
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    out: dict[str, list[str]] = {}
+    for row in payload.get("rows") or []:
+        uid = _as_key(row.get("user_id"))
+        if not uid:
+            continue
+        out[uid] = _normalize_players(row.get("players"))
+    return out
+
+
+def _pick_actions(
+    players: list[str], *, champion: bool, day: int
+) -> list[tuple[str, str]]:
+    """Per-pick outcomes for lose-streak: bye / correct / wrong.
+
+    轮空 neither extends nor breaks a lose streak. 选对 resets it. 选错 adds 1.
+    """
+    if players:
+        actions: list[tuple[str, str]] = []
+        last = len(players) - 1
+        for index, name in enumerate(players):
+            label = str(name or "")
+            if label == BYE_PICK:
+                actions.append(("bye", label))
+            elif champion or index < last:
+                actions.append(("correct", label))
+            else:
+                actions.append(("wrong", label))
+        return actions
+    # No pick list: champion = only corrects; day0 exit = one wrong;
+    # deeper exits without picks can't see 轮空, so treat prior days as correct.
+    if champion:
+        return [("correct", "")] * max(int(day), 0)
+    if int(day) <= 0:
+        return [("wrong", "")]
+    return [("correct", "")] * int(day) + [("wrong", "")]
+
+
+def _lose_streak(person: pd.DataFrame) -> tuple[int, str]:
+    """Longest run of consecutive wrong-pick days.
+
+    选对打断；轮空不计；每站出局那天的选错 +1。
+    """
+    best = 0
+    best_detail: list[str] = []
+    streak = 0
+    detail: list[str] = []
+    rows = list(person.sort_values(["monday", "name"]).itertuples())
+    for row in rows:
+        players = _normalize_players(getattr(row, "players", None))
+        actions = _pick_actions(
+            players, champion=bool(row.champion), day=int(row.day)
+        )
+        for kind, pick in actions:
+            if kind == "bye":
+                continue
+            if kind == "correct":
+                if streak > best:
+                    best = streak
+                    best_detail = detail[:]
+                streak = 0
+                detail = []
+                continue
+            streak += 1
+            detail.append(str(row.label))
+    if streak > best:
+        best = streak
+        best_detail = detail[:]
+    return best, ", ".join(best_detail)
+
+
 def _unique_event_name(name: str, year: str, used: set[str]) -> str:
     if name not in used:
         used.add(name)
@@ -276,6 +381,8 @@ def _records_from_event(
                 "champion": uid in champions,
                 "runner": False,
                 "completed": not in_progress,
+                "players": _normalize_players(row.get("players")),
+                "fill_status": str(row.get("fill_status") or ""),
             }
         )
     _apply_outcome_flags(records, day_points)
@@ -388,6 +495,7 @@ def _collect_history(
     tour_cache = cache.setdefault(tennis_type, {})
     records: list[dict[str, Any]] = []
     changed = False
+    tour_code = TOUR_CODE[tennis_type]
 
     def _snapshot_fresh(cached: dict[str, Any] | None) -> bool:
         return bool(
@@ -396,13 +504,42 @@ def _collect_history(
             and int(cached.get("played_rev") or 1) >= PLAYED_REV
         )
 
+    def _hydrate_with_players(cached: dict[str, Any]) -> list[dict[str, Any]]:
+        """Hydrate records and backfill players[] from event_scores when missing."""
+        nonlocal changed
+        points = list(cached.get("day_points") or [])
+        event_records = _hydrate_records(cached.get("records") or [], points)
+        need = [row for row in event_records if not _normalize_players(row.get("players"))]
+        if not need:
+            return event_records
+        players_map = _score_players_map(
+            tour_code, str(cached.get("id") or ""), str(cached.get("year") or "")
+        )
+        if not players_map:
+            return event_records
+        touched = False
+        for row in event_records:
+            if _normalize_players(row.get("players")):
+                continue
+            filled = players_map.get(str(row.get("主键") or ""))
+            if filled is None:
+                continue
+            row["players"] = filled
+            touched = True
+        if touched:
+            cached["records"] = _serialize_records(event_records)
+            changed = True
+        return event_records
+
     if not refresh:
         # Cache-only mode: hydrate everything already stored
         for cached in tour_cache.values():
             if not isinstance(cached, dict) or not cached.get("completed"):
                 continue
-            points = list(cached.get("day_points") or [])
-            records.extend(_hydrate_records(cached.get("records") or [], points))
+            records.extend(_hydrate_with_players(cached))
+        if changed:
+            _save_cache(cache, cache_path)
+            logger.info(f"backfilled players into stats cache {cache_path}")
         return records
 
     catalog = _list_tour_events(tennis_type)
@@ -412,8 +549,7 @@ def _collect_history(
         if key in catalog_keys or not isinstance(cached, dict):
             continue
         if cached.get("completed"):
-            points = list(cached.get("day_points") or [])
-            records.extend(_hydrate_records(cached.get("records") or [], points))
+            records.extend(_hydrate_with_players(cached))
 
     for index, info in enumerate(catalog, start=1):
         if not info.get("id") or not info.get("year"):
@@ -432,7 +568,7 @@ def _collect_history(
                 cached["event_days"] = len(points)
                 changed = True
             if _snapshot_is_final(cached.get("records") or [], points):
-                event_records = _hydrate_records(cached.get("records") or [], points)
+                event_records = _hydrate_with_players(cached)
                 records.extend(event_records)
                 continue
             logger.info(
@@ -947,14 +1083,9 @@ def build_player_stats(
         season = person[person["season_year"] == season_year]
         titles = person[person["champion"]]
         runners = person[person["runner"]]
-        # 连败 = 连续「一天也没活」(day==0) 的参赛站；活到 day>=1 即打断。
-        # 每站按 1 计入天数（day 本身为 0，不能拿来加总）。
-        lose_flags = [
-            ((not row.champion) and int(row.day) < 1, row.label, 1)
-            for row in person.itertuples()
-        ]
+        # 连败 = 连续选错天数：选对打断，轮空不计，每站出局那天选错 +1。
         win_days, win_detail = _win_streak(person)
-        lose_days, lose_detail = _longest_streak(lose_flags, False)
+        lose_days, lose_detail = _lose_streak(person)
         season_possible = int(season["max_day"].sum()) if not season.empty else 0
         all_possible = int(person["max_day"].sum()) if not person.empty else 0
         season_rate = (
