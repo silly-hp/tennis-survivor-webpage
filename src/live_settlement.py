@@ -6,6 +6,7 @@ English score/submission column names.
 """
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from typing import Any, Optional
 
@@ -219,6 +220,14 @@ def _alt_detail(detail: dict[str, Any]) -> dict[str, Any] | None:
     return out
 
 
+# Combined pick-day labels like ``R1＆R2`` / ``R1&R2`` (multi-round same day).
+_COMBINED_ROUND_RE = re.compile(r"[＆&]")
+
+
+def _is_combined_round_label(label: str) -> bool:
+    return bool(_COMBINED_ROUND_RE.search(str(label or "")))
+
+
 def _pick_day_round_rank(draw: DrawStatus | None, day: int) -> int:
     """Tennis round this survivor pick day is contested in."""
     field_n = len(draw.by_id) if draw and draw.by_id else 0
@@ -228,7 +237,14 @@ def _pick_day_round_rank(draw: DrawStatus | None, day: int) -> int:
     for item in draw.pick_days if draw else []:
         if int(item.get("day") or 0) != day:
             continue
-        rank = _survivor_round_rank(str(item.get("round") or ""), field_n)
+        label = str(item.get("round") or "")
+        # Multi-round days (e.g. Paris Day2 ``R1＆R2``) have no single rank.
+        # Returning 0 skips the strict ``round_rank > pick_round_rank`` gate so
+        # completed-match / min_still_round heuristics can settle R64 winners
+        # who only advanced to R32 (not past a false "must be past R32" bar).
+        if _is_combined_round_label(label):
+            return 0
+        rank = _survivor_round_rank(label, field_n)
         if rank:
             return rank
     opening = opening_round_rank(field_n)
