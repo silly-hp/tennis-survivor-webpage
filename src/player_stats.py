@@ -55,8 +55,8 @@ TWO_WEEK_EVENTS = set(GRAND_SLAMS) | {
     "上海",
 }
 PLAYED_STATUS = {"存活", "球员输球", "球员退赛", "自杀(退赛)", "自杀(重复)", "自杀(主备冲突)"}
-# Bump when PLAYED_STATUS grows so completed score snapshots are fetched again.
-PLAYED_REV = 2
+# Bump when PLAYED_STATUS / who counts as played changes so snapshots refetch.
+PLAYED_REV = 3
 # Long free-text details live in the row-click modal (not table columns).
 DISPLAY_COLS = [
     "排名",
@@ -101,8 +101,9 @@ def _score(row: dict[str, Any]) -> int:
 
 
 def _played(row: dict[str, Any]) -> bool:
+    # Include day==0 exits (一天没活). Old filter required day>0 and dropped them.
     status = str(row.get("fill_status") or "")
-    return status in PLAYED_STATUS and (_day(row) > 0 or status == "存活")
+    return status in PLAYED_STATUS
 
 
 def _win_streak(person: pd.DataFrame) -> tuple[int, str]:
@@ -946,8 +947,10 @@ def build_player_stats(
         season = person[person["season_year"] == season_year]
         titles = person[person["champion"]]
         runners = person[person["runner"]]
+        # 连败 = 连续「一天也没活」(day==0) 的参赛站；活到 day>=1 即打断。
+        # 每站按 1 计入天数（day 本身为 0，不能拿来加总）。
         lose_flags = [
-            ((not row.champion) and int(row.day) <= 1, row.label, int(row.day))
+            ((not row.champion) and int(row.day) < 1, row.label, 1)
             for row in person.itertuples()
         ]
         win_days, win_detail = _win_streak(person)
