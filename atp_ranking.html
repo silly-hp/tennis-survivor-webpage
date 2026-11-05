@@ -114,7 +114,7 @@ body.dark {
   <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="atp_ranking.html" aria-current="page">即时排名</a><a class="hd-tab" href="atp_race_ranking.html">冠军排名</a><a class="hd-tab" href="atp_champion.html">冠军榜</a><a class="hd-tab" href="atpkiller.html">杀手榜</a><a class="hd-tab" href="survivor_calendar_atp.html">赛历</a><a class="hd-tab" href="atp_show.html">生涯统计</a><a class="hd-tab" href="h2h_atp.html">H2H</a></nav>
   <div class="hd-right">
     <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="atp_ranking.html" aria-current="page">ATP</a><a class="hd-seg-btn" href="wta_ranking.html">WTA</a><a class="hd-seg-btn" href="combined_instant_ranking.html">联合</a></div>
-    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年11月05日 14:37:42</span><span class="hd-suffix"> 更新</span></span>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年11月05日 14:53:39</span><span class="hd-suffix"> 更新</span></span>
     <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
   </div>
 </header>
@@ -142,9 +142,9 @@ body.dark {
         </button></span>
         </div>
         <div class="sum-meta">
-        <span class="meta-chip chip-valid">✓ 38 人已选</span>
+        <span class="meta-chip chip-valid">✓ 40 人已选</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-nosel">29 人未选</span>
+    <span class="meta-chip chip-nosel">27 人未选</span>
     <span class="meta-sep">｜</span>
     <span class="meta-total">总计 67 人</span>
         </div>
@@ -166,10 +166,10 @@ body.dark {
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = false;
-        var ROWS    = [{"name": "穆塞蒂", "normal": 13, "bye": 0, "status": "live"}, {"name": "保罗", "normal": 10, "bye": 0, "status": "live"}, {"name": "谢尔顿", "normal": 4, "bye": 0, "status": "live"}, {"name": "阿尔卡拉斯", "normal": 3, "bye": 0, "status": "live"}, {"name": "埃切韦里", "normal": 2, "bye": 0, "status": "live"}, {"name": "菲斯", "normal": 2, "bye": 0, "status": "live"}, {"name": "鲁德", "normal": 2, "bye": 0, "status": "live"}, {"name": "博尔热斯", "normal": 1, "bye": 0, "status": "live"}, {"name": "布塞", "normal": 1, "bye": 0, "status": "live"}];
-        var TOTALS  = {"normal": 38, "bye": 0, "grand": 38, "suicide": 0, "nosel": 29};
-        var MAX_VAL = 13;
-        var CLIPBOARD_HEADER = "已选38\n未选29";
+        var ROWS    = [{"name": "穆塞蒂", "normal": 14, "bye": 0, "status": "live"}, {"name": "保罗", "normal": 10, "bye": 0, "status": "live"}, {"name": "谢尔顿", "normal": 5, "bye": 0, "status": "live"}, {"name": "阿尔卡拉斯", "normal": 3, "bye": 0, "status": "live"}, {"name": "埃切韦里", "normal": 2, "bye": 0, "status": "live"}, {"name": "菲斯", "normal": 2, "bye": 0, "status": "live"}, {"name": "鲁德", "normal": 2, "bye": 0, "status": "live"}, {"name": "博尔热斯", "normal": 1, "bye": 0, "status": "live"}, {"name": "布塞", "normal": 1, "bye": 0, "status": "live"}];
+        var TOTALS  = {"normal": 40, "bye": 0, "grand": 40, "suicide": 0, "nosel": 27};
+        var MAX_VAL = 14;
+        var CLIPBOARD_HEADER = "已选40\n未选27";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -493,8 +493,8 @@ body.dark {
         <div class="table-wrapper">
             <div id="table-container">
             <table class="dataframe filterable-table"><thead><tr><th>即时排名</th><th>当前排名</th><th>用户名</th><th>当前状态</th><th>存活天数</th><th>杀手球员</th><th>今日主选</th><th>今日备选</th><th>本站得分</th><th>扣除积分（巴黎、都灵）</th><th>即时积分</th></tr></thead><tbody></tbody></table>
-<link rel="preload" as="script" href="data/gen/rank_atp_ranking.js?v=9d912c19">
-<script defer src="data/gen/rank_atp_ranking.js?v=9d912c19"></script>
+<link rel="preload" as="script" href="data/gen/rank_atp_ranking.js?v=96ca49f8">
+<script defer src="data/gen/rank_atp_ranking.js?v=96ca49f8"></script>
         </div>
     </div>
   <div class="rk-cards" id="rkCards" aria-live="off"></div>
