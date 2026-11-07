@@ -340,7 +340,18 @@ def _pick_outcome(
         return "loss", detail
     if player.live:
         return None, detail
+    # Advanced past this pick day's round (e.g. QF pick while already in SF)
+    # even when nobody else submitted the opponent on the same match id.
+    # Checked before bracket "pending": some QF picks keep a stale match_id
+    # (e.g. 1401) whose bracket columns never move past that round, which
+    # would otherwise trap winners like 范阿舍 as 待定 forever.
+    if pick_round_rank and player.round_rank > pick_round_rank:
+        return "win", detail
     if progress == "pending":
+        mid = str(detail.get("normal_match_id") or "").strip()
+        mid_rnd = int(mid[1]) if len(mid) == 4 and mid.isdigit() else 0
+        if mid_rnd and player.round_rank > mid_rnd:
+            return "win", detail
         return None, detail
     fill = str(detail.get("fill") or "").strip()
     for opp_id in fills_by_match.get(detail.get("normal_match_id")) or set():
@@ -349,13 +360,9 @@ def _pick_outcome(
         opp = draw.lookup(opp_id, None)
         if opp and opp.eliminated:
             return "win", detail
-    # Advanced past this pick day's round (e.g. R32 done, now sitting at R16)
-    # even when nobody else submitted the opponent on the same match id.
     if pick_round_rank:
         # Round is known, so the cross-pick heuristics below would misfire
         # when stragglers from an earlier round are still unplayed.
-        if player.round_rank > pick_round_rank:
-            return "win", detail
         return None, detail
     if live_round and player.round_rank > live_round:
         return "win", detail
