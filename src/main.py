@@ -361,7 +361,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             .drop("removed_point", axis=1)
             .rename(COL_ZH_DICT, axis=1)
         )
-        return table, race, r, None, None, day, [], ra, set(), [], [], []
+        return table, race, r, None, None, day, [], ra, set(), [], [], [], []
 
     r, s, re, ra = fetch_all_tables(tour_cfg["event"], tour=tour_code)
     day = infer_day(s, re)
@@ -369,6 +369,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
     bye_users: set[str] = set()
     live_players: list[str] = []
     eliminated_players: list[str] = []
+    remaining_players: list[str] = []
     pending_uids: set[str] = set()
     backup_events: list = []
     history: list[dict] = []
@@ -392,6 +393,13 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                 p.name
                 for p in draw.by_id.values()
                 if p.eliminated and str(p.name or "").strip()
+            ]
+            # Still in the draw after the pick list closes (the champion is
+            # no longer selectable, but she is not eliminated).
+            remaining_players = [
+                p.name
+                for p in draw.by_id.values()
+                if not p.eliminated and str(p.name or "").strip()
             ]
             re, counts, bye_users, play_day, pending_uids, backup_events = (
                 settle_tour_scores(
@@ -513,6 +521,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
         backup_events,
         eliminated_players,
         history,
+        remaining_players,
     )
 
 
@@ -1194,6 +1203,7 @@ def main(*, mode: str = "default"):
         atp_backup_events,
         atp_eliminated,
         atp_history,
+        atp_remaining,
     ) = build_tour_tables(atp_cfg, "MS", "ATP")
     (
         wta_table,
@@ -1208,19 +1218,23 @@ def main(*, mode: str = "default"):
         wta_backup_events,
         wta_eliminated,
         wta_history,
+        wta_remaining,
     ) = build_tour_tables(wta_cfg, "WS", "WTA")
     # Event detail: players, dates, rounds/scores for current day
     atp_players = []
     wta_players = []
 
-    # Always keep remaining (selectable) players for summary coloring + route query
+    # Selectable names, plus anyone still in the draw. The pick list is empty
+    # once the event is over, and the champion must not be painted 淘汰.
     if atp_cfg.get("event") is not None:
         atp_details = fetch_event_detail(atp_cfg["event"], YEAR, "MS")
         atp_players = [p["name"] for p in atp_details["players"]]
+    atp_players = list(dict.fromkeys([*(atp_remaining or []), *atp_players]))
 
     if wta_cfg.get("event") is not None:
         wta_details = fetch_event_detail(wta_cfg["event"], YEAR, "WS")
         wta_players = [p["name"] for p in wta_details["players"]]
+    wta_players = list(dict.fromkeys([*(wta_remaining or []), *wta_players]))
 
     players_output = {
         "updated": datetime.now().strftime(datetime_format),
