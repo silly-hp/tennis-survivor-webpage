@@ -75,6 +75,20 @@ DISPLAY_COLS = [
     "赛季存活率",
     "历史存活率",
 ]
+# Combined page drops best rank and the two streak columns. Those are
+# per-tour notions; the combined board ranks the sum of the two tours.
+COMBINED_DISPLAY_COLS = [
+    "排名",
+    "用户名",
+    "周期参赛数",
+    "周期冠军数",
+    "历史冠军数",
+    "历史亚军数",
+    "世界第一周数",
+    "历史最高得分",
+    "赛季存活率",
+    "历史存活率",
+]
 CAREER_DETAIL_COL = "_生涯明细"
 
 TOUR_CODE = {"atp": "MS", "wta": "WS"}
@@ -803,8 +817,8 @@ def _rolling_peaks(
     history: pd.DataFrame,
     tour: str,
     this_monday: datetime,
-) -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
-    """Best rank, best score, and weeks at No.1 from the end-date 52-week window.
+) -> tuple[dict[str, int], dict[str, int], dict[str, int], list]:
+    """Best rank, best score, weeks at No.1, and each Monday's point board.
 
     From Indian Wells 2026 onward, a 0 already on the current official board
     stays in that edition until it expires. Which equal-score event is kept
@@ -814,7 +828,7 @@ def _rolling_peaks(
     """
     events = _catalog_events(tour)
     if not events:
-        return {}, {}, {}
+        return {}, {}, {}, []
     zero_names, official_scores, board_monday = _official_board(tour)
     edition = {}
     for event in events:
@@ -866,6 +880,9 @@ def _rolling_peaks(
     best_score: dict[str, int] = {}
     weeks_at_one: dict[str, int] = defaultdict(int)
     board_totals: dict[str, int] = {}
+    # (monday, uid -> points). Empty boards stay in the list so the gap
+    # until the next Monday is not credited to the previous No.1.
+    weeks: list[tuple[datetime, dict[str, int]]] = []
     for index, monday in enumerate(mondays):
         if monday < FORCED_ZERO_START:
             continue
@@ -900,6 +917,7 @@ def _rolling_peaks(
             total, _counted = _player_total(scores, tour)
             if total > 0 or scores:
                 totals[uid] = total
+        weeks.append((monday, dict(totals)))
         if not totals:
             continue
         ordered = sorted(totals.items(), key=lambda item: (-item[1], item[0]))
@@ -930,7 +948,7 @@ def _rolling_peaks(
         f"{tour} rolling ranks from {FORCED_ZERO_START.date()}: "
         f"{len(best_rank)} players, {len([m for m in mondays if m >= FORCED_ZERO_START])} Mondays"
     )
-    return best_rank, best_score, dict(weeks_at_one)
+    return best_rank, best_score, dict(weeks_at_one), weeks
 
 
 def build_player_stats(
@@ -939,6 +957,7 @@ def build_player_stats(
     *,
     cache_path: Path = STATS_CACHE,
     refresh: bool = True,
+    boards_out: Optional[dict[str, list]] = None,
 ) -> pd.DataFrame:
     """Build the career-stats table for ``atp`` or ``wta``."""
     tennis_type = tennis_type.strip().lower()
@@ -967,6 +986,8 @@ def build_player_stats(
     )
 
     if not records:
+        if boards_out is not None:
+            boards_out[tennis_type] = []
         return pd.DataFrame(columns=DISPLAY_COLS)
 
     history = pd.DataFrame(records)
@@ -989,6 +1010,7 @@ def build_player_stats(
     best_rank: dict[str, int] = {}
     best_score: dict[str, int] = {}
     weeks_at_one: dict[str, int] = defaultdict(int)
+    legacy_weeks: list[tuple[datetime, dict[str, int]]] = []
     rank_points: list[datetime] = []
     if event_mondays:
         rank_points = sorted(
@@ -1024,6 +1046,7 @@ def build_player_stats(
         ]
         window = completed.loc[mask]
         if window.empty:
+            legacy_weeks.append((monday, {}))
             continue
         canada = window[window["name"].isin(CANADA_EVENTS)]
         if not canada.empty:
@@ -1049,6 +1072,7 @@ def build_player_stats(
         )
         events = list(scores.columns)
         totals = scores.apply(lambda row: row_total(row, rules, events), axis=1)
+        legacy_weeks.append((monday, {uid: int(total) for uid, total in totals.items()}))
         ranks = totals.rank(ascending=False, method="min")
         nxt = (
             rank_points[index + 1]
@@ -1066,9 +1090,11 @@ def build_player_stats(
             if rank_int == 1:
                 weeks_at_one[uid] += nweeks
 
-    rolled_rank, rolled_score, rolled_weeks = _rolling_peaks(
+    rolled_rank, rolled_score, rolled_weeks, rolling_weeks = _rolling_peaks(
         completed, tennis_type, this_monday
     )
+    if boards_out is not None:
+        boards_out[tennis_type] = [*legacy_weeks, *rolling_weeks]
     for uid, rank_int in rolled_rank.items():
         best_rank[uid] = min(best_rank.get(uid, rank_int), rank_int)
     for uid, total_int in rolled_score.items():
@@ -1138,6 +1164,171 @@ def build_player_stats(
     return view
 
 
+def _combined_peaks(
+    atp_weeks: list[tuple[datetime, dict[str, int]]],
+    wta_weeks: list[tuple[datetime, dict[str, int]]],
+) -> tuple[dict[str, int], dict[str, int]]:
+    """Best combined score and weeks at No.1.
+
+    Each tour keeps its own board. On a Monday, the combined score is that
+    week's ATP total plus that week's WTA total (a tour with no new board
+    keeps the total from its previous Monday). Rank is taken on the sum.
+    """
+    atp: dict[datetime, dict[str, int]] = {}
+    for monday, totals in atp_weeks:
+        atp[monday] = totals
+    wta: dict[datetime, dict[str, int]] = {}
+    for monday, totals in wta_weeks:
+        wta[monday] = totals
+    mondays = sorted(set(atp) | set(wta))
+    carried = {"atp": {}, "wta": {}}
+    series: dict[str, dict[datetime, dict[str, int]]] = {"atp": atp, "wta": wta}
+    timeline: list[tuple[datetime, dict[str, int]]] = []
+    for monday in mondays:
+        for tour in ("atp", "wta"):
+            if monday in series[tour]:
+                carried[tour] = series[tour][monday]
+        totals: dict[str, int] = {}
+        for uid in set(carried["atp"]) | set(carried["wta"]):
+            totals[uid] = int(carried["atp"].get(uid, 0)) + int(carried["wta"].get(uid, 0))
+        timeline.append((monday, totals))
+
+    best_score: dict[str, int] = {}
+    weeks_at_one: dict[str, int] = defaultdict(int)
+    for index, (monday, totals) in enumerate(timeline):
+        if not totals:
+            continue
+        nxt = (
+            timeline[index + 1][0]
+            if index + 1 < len(timeline)
+            else monday + timedelta(weeks=1)
+        )
+        nweeks = max((nxt - monday).days // 7, 0)
+        ordered = sorted(totals.items(), key=lambda item: (-item[1], item[0]))
+        rank = 0
+        last_score = None
+        for place, (uid, total) in enumerate(ordered, start=1):
+            if total != last_score:
+                rank = place
+                last_score = total
+            best_score[uid] = max(best_score.get(uid, int(total)), int(total))
+            if rank == 1 and int(total) > 0 and nweeks:
+                weeks_at_one[uid] += nweeks
+    return best_score, dict(weeks_at_one)
+
+
+def _tagged_results(rows: pd.DataFrame) -> list[str]:
+    if rows is None or rows.empty:
+        return []
+    ordered = rows.sort_values(["monday", "tour"])
+    return [
+        f"{str(row.tour).upper()} · {row.label}"
+        for row in ordered.itertuples()
+    ]
+
+
+def build_combined_player_stats(
+    atp_boards: Optional[list] = None,
+    wta_boards: Optional[list] = None,
+    *,
+    atp_event: Optional[dict[str, Any]] = None,
+    wta_event: Optional[dict[str, Any]] = None,
+    cache_path: Path = STATS_CACHE,
+    refresh: bool = True,
+) -> pd.DataFrame:
+    """Career table for one user across ATP and WTA.
+
+    Counts and survival rates add the two tours together. Weekly score and
+    the No.1 count come from the summed board. Best rank and the streak
+    columns stay on the single-tour pages.
+    """
+    boards = {"atp": atp_boards, "wta": wta_boards}
+    current = {"atp": atp_event, "wta": wta_event}
+    frames: list[pd.DataFrame] = []
+    for tour in ("atp", "wta"):
+        if boards[tour] is None:
+            sink: dict[str, list] = {}
+            build_player_stats(
+                tour,
+                current[tour],
+                cache_path=cache_path,
+                refresh=refresh,
+                boards_out=sink,
+            )
+            boards[tour] = sink.get(tour) or []
+        records = _collect_history(
+            tour, current[tour], cache_path=cache_path, refresh=refresh
+        )
+        if not records:
+            continue
+        frame = pd.DataFrame(records)
+        frame["tour"] = tour
+        frames.append(frame)
+
+    if not frames:
+        return pd.DataFrame(columns=COMBINED_DISPLAY_COLS)
+
+    history = pd.concat(frames, ignore_index=True)
+    history = history.sort_values(["monday", "tour", "name"]).reset_index(drop=True)
+    users = (
+        history.groupby("主键", as_index=False)
+        .agg(用户名=("用户名", "last"))
+        .set_index("主键")
+    )
+    best_score, weeks_at_one = _combined_peaks(boards["atp"] or [], boards["wta"] or [])
+    this_monday = beijing_now().replace(hour=0, minute=0, second=0, microsecond=0)
+    this_monday = this_monday - timedelta(days=this_monday.weekday())
+    season_year = this_monday.year
+    window_start = this_monday - timedelta(weeks=52)
+
+    rows_out: list[dict[str, Any]] = []
+    for uid, meta in users.iterrows():
+        person = history[history["主键"] == uid]
+        cycle = person[person["monday"] > window_start]
+        season = person[person["season_year"] == season_year]
+        titles = person[person["champion"]]
+        runners = person[person["runner"]]
+        season_possible = int(season["max_day"].sum()) if not season.empty else 0
+        all_possible = int(person["max_day"].sum()) if not person.empty else 0
+        season_rate = (
+            round(float(season["day"].sum()) / season_possible, 6)
+            if season_possible
+            else 0.0
+        )
+        all_rate = (
+            round(float(person["day"].sum()) / all_possible, 6) if all_possible else 0.0
+        )
+        rows_out.append(
+            {
+                "主键": uid,
+                "用户名": meta["用户名"],
+                "周期参赛数": int(len(cycle)),
+                "周期冠军数": int(season["champion"].sum()) if not season.empty else 0,
+                "历史冠军数": int(titles.shape[0]),
+                "历史亚军数": int(runners.shape[0]),
+                "世界第一周数": int(weeks_at_one.get(uid, 0)),
+                "历史最高得分": int(best_score.get(uid, 0)),
+                "赛季存活率": season_rate,
+                "历史存活率": all_rate,
+                CAREER_DETAIL_COL: {
+                    "titles": _tagged_results(titles),
+                    "runners": _tagged_results(runners),
+                },
+            }
+        )
+
+    frame = pd.DataFrame(rows_out)
+    frame = frame.sort_values(
+        ["历史冠军数", "历史亚军数", "历史最高得分", "用户名"],
+        ascending=[False, False, False, True],
+    ).reset_index(drop=True)
+    frame["排名"] = range(1, len(frame) + 1)
+    view = frame[COMBINED_DISPLAY_COLS + [CAREER_DETAIL_COL]].copy()
+    for col in ("赛季存活率", "历史存活率"):
+        view[col] = view[col].map(lambda v: f"{float(v) * 100:.1f}%")
+    return view
+
+
 def update_player_stats_pages(
     output_dir: str | Path = "..",
     *,
@@ -1147,17 +1338,18 @@ def update_player_stats_pages(
     wta_event: Optional[dict[str, Any]] = None,
     updated: Optional[str] = None,
 ) -> list[Path]:
-    """Build ATP/WTA show pages with frog UI."""
+    """Build ATP/WTA show pages, plus the combined page when both tours run."""
     from survivor_html import render_ranking_page
 
     output_dir = Path(output_dir)
     updated = updated or beijing_now().strftime("%Y年%m月%d日 %H:%M:%S")
     written: list[Path] = []
     current = {"atp": atp_event, "wta": wta_event}
+    boards: dict[str, list] = {}
     for tour in tours:
         logger.info(f"building {tour.upper()} player stats (refresh={refresh})")
         df = build_player_stats(
-            tour, current.get(tour), refresh=refresh
+            tour, current.get(tour), refresh=refresh, boards_out=boards
         )
         out = output_dir / f"{tour}_show.html"
         render_ranking_page(
@@ -1176,4 +1368,30 @@ def update_player_stats_pages(
         )
         written.append(out)
         logger.info(f"wrote {out} ({len(df)} rows)")
+    if "atp" in boards and "wta" in boards:
+        logger.info(f"building combined player stats (refresh={refresh})")
+        combined = build_combined_player_stats(
+            boards.get("atp"),
+            boards.get("wta"),
+            atp_event=atp_event,
+            wta_event=wta_event,
+            refresh=refresh,
+        )
+        out = output_dir / "combined_show.html"
+        render_ranking_page(
+            df=combined,
+            title="联合球员成绩统计",
+            tour="ALL",
+            eyebrow="ATP + WTA · Career & Cycle Stats",
+            updated=updated,
+            summary_df=None,
+            rank_change_col=None,
+            extra_tags=["生涯统计", "点击行查看夺冠/夺亚"],
+            available_players=None,
+            enable_detail=False,
+            enable_career_detail=True,
+            output_path=str(out),
+        )
+        written.append(out)
+        logger.info(f"wrote {out} ({len(combined)} rows)")
     return written

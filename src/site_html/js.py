@@ -573,11 +573,15 @@ document.addEventListener('DOMContentLoaded',function(){
             if(!data||typeof data!=='object'||Array.isArray(data)) data={};
             var name=getPlayerName(row);
             if(metaLine) metaLine.textContent=name||'';
+            var streak = '';
+            if (Object.prototype.hasOwnProperty.call(data, 'win_streak'))
+                streak += textBlock('连胜细节', data.win_streak);
+            if (Object.prototype.hasOwnProperty.call(data, 'lose_streak'))
+                streak += textBlock('连败细节', data.lose_streak);
             body.innerHTML =
                 chipBlock('夺冠明细', data.titles, '暂无夺冠')
                 + chipBlock('夺亚明细', data.runners, '暂无夺亚')
-                + textBlock('连胜细节', data.win_streak)
-                + textBlock('连败细节', data.lose_streak);
+                + streak;
             var nT=(data.titles||[]).length, nR=(data.runners||[]).length;
             if(footer) footer.textContent='冠军 '+nT+' · 亚军 '+nR+' · 点击空白处关闭';
             modal.classList.add('show');

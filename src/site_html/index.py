@@ -337,6 +337,8 @@ def _nav_cards(season) -> dict[str, list[dict[str, Any]]]:
              "href": "combined_ranking.html"},
             {"eye": "Hall of Fame", "title": "历史冠军榜", "desc": "ATP + WTA 冠军合并排行，标注 ATP / WTA",
              "href": "combined_champion.html"},
+            {"eye": "Survivor Career", "title": "幸存者生涯统计", "desc": "ATP + WTA 参赛、夺冠与存活率合计",
+             "href": "combined_show.html"},
         ],
     }
 
@@ -399,7 +401,7 @@ _GUIDE = [
     ("历史冠军榜", "按赛事看每站冠军，或按用户看夺冠次数排行；可按赛季、级别筛选，联合页标注 ATP / WTA。"),
     ("杀手榜", "哪些球员淘汰了最多幸存者，可看本赛季与历年总榜。"),
     ("幸存者赛历", "按年份、级别浏览每站赛事的本站得分与冠军。"),
-    ("幸存者生涯统计", "个人生涯参赛、夺冠、连胜与存活率；H2H 查你与某位球员的胜负。"),
+    ("幸存者生涯统计", "个人生涯参赛、夺冠、连胜与存活率；联合页把 ATP 与 WTA 加在一起。H2H 查你与某位球员的胜负。"),
 ]
 
 

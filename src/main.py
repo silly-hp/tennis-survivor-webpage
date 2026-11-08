@@ -1098,7 +1098,7 @@ def _load_cfg():
 
 
 def run_player_stats(refresh: bool = True):
-    """Generate atp_show.html / wta_show.html (independent of live ranking)."""
+    """Generate atp_show.html / wta_show.html / combined_show.html."""
     global cfg, YEAR, datetime_format
     cfg = _load_cfg()
     YEAR = cfg["year"]
@@ -1427,7 +1427,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--stats",
         action="store_true",
-        help="只更新球员生涯统计页（atp_show / wta_show，增量缓存）",
+        help="只更新球员生涯统计页（atp_show / wta_show / combined_show，增量缓存）",
     )
     parser.add_argument(
         "--stats-cache-only",

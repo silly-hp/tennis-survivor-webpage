@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>联合球员成绩统计</title>
+
+<style>
+:root {
+    /* surfaces — icy pale blue, AO arena daylight */
+    --bg:#f0f7fb; --bg2:#e0eef6; --surface:#ffffff; --surface2:#f4fafd;
+ 
+    /* primary: AO cyan #0088bb */
+    --primary:#0088bb; --primary-dark:#005f85;
+    --primary-dim:rgba(0,136,187,.10); --primary-rim:rgba(0,136,187,.28);
+ 
+    /* secondary: US Open gold #c49800 */
+    --secondary:#c49800;
+    --secondary-dim:rgba(196,152,0,.10); --secondary-rim:rgba(196,152,0,.26);
+ 
+    /* typography */
+    --ink:#051420; --ink2:#0e2a3c; --muted:#4a6878; --faint:#90aabf;
+ 
+    /* borders */
+    --border:rgba(5,20,32,.10); --border2:rgba(5,20,32,.06);
+ 
+    /* table chrome — deep navy header, bright AO cyan accent */
+    --th-bg:#002d44; --th-text:#00aaee;
+    --row-hover:rgba(0,136,187,.05); --row-even:rgba(5,20,32,.02);
+    --filter-bg:#e6f3fa; --drop-bg:#ffffff; --track-bg:#cce6f4;
+ 
+    /* podium medals */
+    --rank1:#005f85; --rank2:#5a6e80; --rank3:#a07800;
+}
+body.dark {
+    /* surfaces — US Open night: deep navy stadium */
+    --bg:#030c14; --bg2:#071422; --surface:#0a1d30; --surface2:#102840;
+ 
+    /* primary: bright AO cyan for night */
+    --primary:#00b8f0; --primary-dark:#40d0ff;
+    --primary-dim:rgba(0,184,240,.13); --primary-rim:rgba(0,184,240,.30);
+ 
+    /* secondary: US Open gold at full brightness */
+    --secondary:#f0c000;
+    --secondary-dim:rgba(240,192,0,.12); --secondary-rim:rgba(240,192,0,.28);
+ 
+    /* typography */
+    --ink:#ddeef8; --ink2:#a8c8de; --muted:#5a84a0; --faint:#1e3850;
+ 
+    /* borders */
+    --border:rgba(221,238,248,.10); --border2:rgba(221,238,248,.06);
+ 
+    /* table chrome */
+    --th-bg:#010810; --th-text:#00b8f0;
+    --row-hover:rgba(0,184,240,.07); --row-even:rgba(255,255,255,.025);
+    --filter-bg:#071422; --drop-bg:#102840; --track-bg:#102840;
+ 
+    /* podium medals */
+    --rank1:#40d0ff; --rank2:#6a88a8; --rank3:#f0c000;
+}
+</style>
+<link rel="stylesheet" href="assets/site.6edc0fbe.css">
+<link rel="stylesheet" href="assets/rank.3ceb4e9e.css">
+<style>
+.career-sec{margin:0 0 14px;}
+.career-sec:last-child{margin-bottom:0;}
+.career-sec-hd{display:flex;align-items:baseline;justify-content:space-between;
+  gap:10px;margin-bottom:8px;font-size:12px;color:var(--muted);}
+.career-sec-hd span{font-family:'Space Mono',monospace;letter-spacing:.08em;
+  text-transform:uppercase;font-size:10px;color:var(--faint);}
+.career-sec-hd em{font-style:normal;font-family:'Space Mono',monospace;
+  color:var(--primary-dark);font-weight:700;}
+body.dark .career-sec-hd em{color:var(--primary);}
+.career-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.career-chip{display:inline-block;padding:4px 9px;border-radius:999px;
+  background:var(--surface2);border:0.5px solid var(--border);font-size:12px;
+  color:var(--ink);line-height:1.35;max-width:100%;}
+.career-note{font-size:13px;line-height:1.6;color:var(--ink2,var(--muted));
+  padding:8px 10px;border-radius:8px;background:var(--surface2);}
+.career-empty{font-size:12px;color:var(--faint);}
+.filterable-table tbody tr{cursor:pointer;}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="site-hd">
+  <a class="back-link" href="index.html">
+    <svg class="logo-light" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true" style="width:28px;height:28px;flex-shrink:0;">
+  <g style="stroke:var(--ink,#1a2035)" stroke-linecap="round" opacity=".8">
+    <ellipse cx="50" cy="43" rx="33" ry="37" fill="none" stroke-width="2.5"/>
+    <line x1="43" y1="79" x2="57" y2="79" stroke-width="3"/>
+    <line x1="50" y1="80" x2="50" y2="96" stroke-width="4"/>
+  </g>
+  <g style="stroke:var(--primary,#E8541A)" stroke-width="1.8" stroke-linecap="round" fill="none">
+    <line x1="23" y1="28" x2="40" y2="28"/>
+    <line x1="23" y1="37" x2="40" y2="37"/>
+    <line x1="23" y1="51" x2="40" y2="51"/>
+    <line x1="23" y1="60" x2="40" y2="60"/>
+    <line x1="40" y1="28" x2="40" y2="37"/>
+    <line x1="40" y1="51" x2="40" y2="60"/>
+    <line x1="40" y1="32.5" x2="57" y2="32.5"/>
+    <line x1="40" y1="55.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="32.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="44" x2="67" y2="44" stroke-width="2.2"/>
+  </g>
+  <circle cx="72" cy="44" r="5.5" style="fill:var(--secondary,#E8541A)"/>
+  <circle cx="72" cy="44" r="2.5" style="fill:var(--surface,#ffffff)"/>
+</svg>
+<svg class="logo-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true" style="width:28px;height:28px;flex-shrink:0;display:none;">
+  <g style="stroke:var(--ink,#1a2035)" stroke-linecap="round" opacity=".8">
+    <ellipse cx="50" cy="43" rx="33" ry="37" fill="none" stroke-width="2.5"/>
+    <line x1="43" y1="79" x2="57" y2="79" stroke-width="3"/>
+    <line x1="50" y1="80" x2="50" y2="96" stroke-width="4"/>
+  </g>
+  <g style="stroke:var(--primary,#E8541A)" stroke-width="1.8" stroke-linecap="round" fill="none">
+    <line x1="23" y1="28" x2="40" y2="28"/>
+    <line x1="23" y1="37" x2="40" y2="37"/>
+    <line x1="23" y1="51" x2="40" y2="51"/>
+    <line x1="23" y1="60" x2="40" y2="60"/>
+    <line x1="40" y1="28" x2="40" y2="37"/>
+    <line x1="40" y1="51" x2="40" y2="60"/>
+    <line x1="40" y1="32.5" x2="57" y2="32.5"/>
+    <line x1="40" y1="55.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="32.5" x2="57" y2="55.5"/>
+    <line x1="57" y1="44" x2="67" y2="44" stroke-width="2.2"/>
+  </g>
+  <circle cx="72" cy="44" r="5.5" style="fill:var(--secondary,#E8541A)"/>
+  <circle cx="72" cy="44" r="2.5" style="fill:var(--surface,#ffffff)"/>
+</svg>
+    ← 首页
+  </a>
+  <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="combined_instant_ranking.html">即时排名</a><a class="hd-tab" href="combined_ranking.html">冠军排名</a><a class="hd-tab" href="combined_champion.html">冠军榜</a><a class="hd-tab" href="atpkiller.html">杀手榜</a><a class="hd-tab" href="combined_calendar.html">赛历</a><a class="hd-tab" href="combined_show.html" aria-current="page">生涯统计</a><a class="hd-tab" href="h2h_atp.html">H2H</a></nav>
+  <div class="hd-right">
+    <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="atp_show.html">ATP</a><a class="hd-seg-btn" href="wta_show.html">WTA</a><a class="hd-seg-btn" href="combined_show.html" aria-current="page">联合</a></div>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年11月08日 23:54:56</span><span class="hd-suffix"> 更新</span></span>
+    <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
+  </div>
+</header>
+<button type="button" class="to-top" id="toTop" aria-label="回到顶部" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<div class="page-header">
+  <div class="page-eye">ATP + WTA · Career &amp; Cycle Stats</div>
+  <div class="page-title">
+    联合球员成绩统计
+    <span class="ttag ttag-all">ALL</span>
+      <span class="ttag ttag-all">生涯统计</span>
+      <span class="ttag ttag-all">点击行查看夺冠/夺亚</span>
+    <button type="button" class="rk-help-btn" id="rkHelpBtn" aria-haspopup="dialog" aria-label="使用说明" title="使用说明"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5h.01"/></svg></button><span class="rk-tnote">点击<span class="rk-tnote-ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5h.01"/></svg></span>查看页面说明</span>
+  </div>
+  
+</div>
+
+        
+<div class="rk" id="rk" data-tour="ALL" data-finals="0" data-byeday="0">
+<div class="rk-top rk-top-solo"><aside class="rk-aside"><section class="rk-card rk-me" id="rkMe" aria-live="polite">
+  <div class="rk-me-hd"><span class="rk-eye rk-eye-me">MY STATUS</span><span class="rk-me-name" id="rkMeName"></span></div>
+  <div class="rk-me-set" id="rkMeSet">
+    <label class="rk-me-lbl" for="rkMeInput">输入你的用户名，置顶显示你的状态</label>
+    <div class="rk-me-row"><input id="rkMeInput" class="rk-input" autocomplete="off" placeholder="你的用户名">
+    <button type="button" class="rk-btn rk-btn-pri" id="rkMeSave">设为我</button>
+    <div class="rk-pop rk-sug" id="rkMeSug" role="listbox" aria-label="用户名建议" hidden></div></div>
+    <span class="rk-note">也可在任意行的 ☆ 菜单里选“设为我”。只保存在本机浏览器。</span>
+  </div>
+  <div class="rk-me-body" id="rkMeBody" hidden>
+    <div class="rk-me-big"><span class="rk-me-rank" id="rkMeRank"></span><span class="rk-me-pts" id="rkMePts"></span><span class="rk-me-d" id="rkMeD"></span></div>
+    <div class="rk-me-pick" id="rkMePick"></div>
+    <button type="button" class="rk-btn rk-btn-pri rk-btn-block" id="rkMeJump">跳到我的行<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+    <button type="button" class="rk-btn-text" id="rkMeChange">更换用户名</button>
+  </div>
+</section></aside></div>
+
+
+<section class="rk-card rk-tcard" id="watch">
+  <div class="rk-share" id="rkShare" hidden></div>
+  <div class="rk-watch" id="rkWatch">
+    <span class="rk-watch-t"><span class="rk-star-ic"><svg width="16" height="16" viewBox="0 0 24 24" stroke-width="1.8" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>关注</span>
+    <span class="rk-watch-tabs" id="rkWatchTabs"></span>
+    <span class="rk-watch-new" id="rkWatchNew"></span>
+    <button type="button" class="rk-btn rk-btn-sm rk-share-btn" id="rkShareBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><span>复制分享链接</span></button>
+  </div>
+  <div class="rk-manage" id="rkManage" hidden></div>
+  <div class="rk-finals-note" id="rkFinals" hidden><span class="rk-f" aria-hidden="true"></span><span>底色标出的前 <b id="rkFinalsN"></b> 名为当前年终总决赛入围用户，虚线为入围线</span></div>
+  <div class="rk-chips">
+    <span class="rk-chip-row" id="rkChips" role="group" aria-label="按状态筛选"></span>
+  </div>
+
+        <div class="table-wrapper">
+            <div id="table-container">
+            <table class="dataframe filterable-table"><thead><tr><th>排名</th><th>用户名</th><th>周期参赛数</th><th>周期冠军数</th><th>历史冠军数</th><th>历史亚军数</th><th>世界第一周数</th><th>历史最高得分</th><th>赛季存活率</th><th>历史存活率</th></tr></thead><tbody></tbody></table>
+<link rel="preload" as="script" href="data/gen/rank_combined_show.js?v=1ed96757">
+<script defer src="data/gen/rank_combined_show.js?v=1ed96757"></script>
+            
+        </div>
+    </div>
+  <div class="rk-cards" id="rkCards" aria-live="off"></div>
+  <div class="rk-empty" id="rkEmpty" hidden>这个筛选下暂时没有人</div>
+  <div class="rk-foot">
+    <button type="button" class="rk-btn rk-btn-sm" id="rkReplay"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg><span>重播排名变化</span></button>
+    <span class="rk-count">显示 <b id="visible-count">0</b> / <span id="total-count">0</span></span>
+    <button type="button" class="rk-btn" id="rkMore" hidden>再显示 50 行</button>
+  </div>
+</section>
+<div class="rk-pop rk-picker" id="rkPicker" role="dialog" aria-label="加入哪个列表" hidden></div>
+<div class="rk-modal" id="rkAsk" hidden>
+  <div class="rk-dlg rk-ask" role="alertdialog" aria-modal="true" aria-labelledby="rkAskT" aria-describedby="rkAskD" tabindex="-1">
+    <div class="rk-dlg-hd"><div class="rk-dlg-ttl"><span class="rk-eye">CONFIRM</span><h2 id="rkAskT"></h2></div></div>
+    <p class="rk-ask-d" id="rkAskD"></p>
+    <div class="rk-dlg-ft"><span></span><span class="rk-dlg-nav"><button type="button" class="rk-btn" data-close="1" data-v="0">取消</button><button type="button" class="rk-btn rk-ask-ok" data-v="1" id="rkAskOk"></button></span></div>
+  </div>
+</div>
+    <div id="detail-modal" class="detail-modal">
+      <div class="detail-card">
+        <div class="detail-hd">
+          <div class="detail-title-wrap">
+            <div class="detail-icon">📋</div>
+            <div>
+              <div class="detail-title">生涯明细</div>
+              <div class="detail-meta" id="detail-meta-line"></div>
+            </div>
+          </div>
+          <button id="detail-close" class="detail-close" type="button">✕ 关闭</button>
+        </div>
+        <div class="detail-scroll">
+          <div id="detail-body" class="detail-list"></div>
+        </div>
+        <div class="detail-footer" id="detail-footer"></div>
+      </div>
+    </div>
+<div class="rk-modal" id="rkHelp" hidden>
+  <div class="rk-dlg rk-dlg-help" role="dialog" aria-modal="true" aria-labelledby="rkHelpT" tabindex="-1">
+    <div class="rk-dlg-hd">
+      <div class="rk-dlg-ttl"><span class="rk-eye rk-eye-me">HOW IT WORKS · <span id="rkHelpNo">1</span> / 5</span><h2 id="rkHelpT">联合球员成绩统计 · 使用说明</h2></div>
+      <button type="button" class="rk-x" data-close="1" aria-label="关闭使用说明"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="hp-bars" aria-hidden="true"><span class="hp-bar"><i></i></span><span class="hp-bar"><i></i></span><span class="hp-bar"><i></i></span><span class="hp-bar"><i></i></span><span class="hp-bar"><i></i></span></div>
+    <div class="hp-body" aria-live="polite"><section class="hp-step" data-i="0" aria-label="先看与你相关的人" hidden><div class="hp-stage" aria-hidden="true"><div class="hp-row"><span class="hp-chip">全部 756</span><span class="hp-chip on">已选 80<i class="hp-ping"></i></span><span class="hp-chip">存活 41</span><span class="hp-chip">未完赛 29</span></div><div class="hp-lines"><i></i><i></i><i></i></div><span class="hp-foot">显示 80 / 756 · 再显示 50 行</span></div><h3>先看与你相关的人</h3><p>默认只显示今天已选人的用户。点状态标签切换存活 / 未完赛 / 淘汰等，底部显示筛到的人数，长表格每次加载 50 行。</p></section><section class="hp-step" data-i="1" aria-label="每一列都能筛选" hidden><div class="hp-stage" aria-hidden="true"><div class="hp-grid"><b>排名</b><b>用户名</b><b>今日主选</b><b>即时积分</b><span>1 ~ 10</span><span>zoe, eric</span><span class="on">西里奇 等 2 项</span><span>≥ 4000</span></div><div class="hp-menu"><span class="hp-ck on">西里奇</span><span class="hp-ck on">蒂兰特</span><span class="hp-ck">武基奇</span></div><svg class="hp-cur" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l16 9-7 2-3 7z"/></svg></div><h3>每一列都能筛选</h3><p>表头下的筛选框：文字列可多选，排名、积分等数字列可按范围筛选；用户名可输入多个关键词（如 zoe, eric）。条件之间叠加生效。</p></section><section class="hp-step" data-i="2" aria-label="夺冠路线查询" hidden><div class="hp-stage" aria-hidden="true"><div class="hp-row"><b class="hp-blue">你还能夺冠吗？</b><span class="hp-dd">已选 1 名球员 ▾</span><span class="hp-sel">蒂兰特 ✕</span></div><div class="hp-list"><span><b>Dagenais</b><em>仍可选</em></span><span class="gone"><b>逍遥笑叹红尘</b><em>已用过</em></span><span><b>做丞琳永远的歌迷ya</b><em>仍可选</em></span></div></div><h3>夺冠路线查询</h3><p>选择一名或多名球员，表格只保留这些球员都还没用过、且仍存活的用户 —— 看看谁还能靠他们走到最后。</p></section><section class="hp-step" data-i="3" aria-label="关注与“我”" hidden><div class="hp-stage" aria-hidden="true"><div class="hp-row"><b class="hp-gold">★ 关注</b><span class="hp-chip gold">好友 2</span><span class="hp-chip">对手 2</span></div><div class="hp-list"><span class="me"><b>wennuan78</b><em class="hp-me">我</em></span><span><b>☆ 逍遥笑叹红尘</b><em class="hp-tag">★好友</em></span></div><div class="hp-menu hp-menu-l"><span class="hp-ck on">好友</span><span class="hp-ck">对手</span><span class="hp-blue">设为“我”</span></div></div><h3>关注与“我”</h3><p>点每行的 ☆ 把人加进自己的关注列表，或设为“我”：你的行会高亮，右侧显示我的状态。列表只存在本机，可用“复制分享链接”带到别的设备。</p></section><section class="hp-step" data-i="4" aria-label="排名变化与更多" hidden><div class="hp-stage" aria-hidden="true"><div class="hp-list"><span><b>1 · wennuan78</b><em>—</em></span><span class="hp-bump"><b>2 · 逍遥笑叹红尘</b><em class="up">▲2</em></span><span><b>3 · 年终的W</b><em class="down">▼1</em></span></div><div class="hp-row"><span class="hp-ok">✓ 已复制</span></div></div><h3>排名变化与更多</h3><p>即时排名旁的 ▲▼ 是排名变化，页面加载时变化的行会滑到新位置。点用户名查看选人历史，“复制统计”一键复制今日选人。</p></section></div>
+    <div class="rk-dlg-ft">
+      <button type="button" class="rk-btn-text" id="rkHelpMute">不再自动显示</button>
+      <span class="rk-dlg-nav"><button type="button" class="rk-btn" id="rkHelpPrev">上一步</button><button type="button" class="rk-btn rk-btn-pri" id="rkHelpNext">下一步</button></span>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+    var modal=document.getElementById('detail-modal');
+    var closeBtn=document.getElementById('detail-close');
+    var body=document.getElementById('detail-body');
+    var metaLine=document.getElementById('detail-meta-line');
+    var footer=document.getElementById('detail-footer');
+    if(!modal||!closeBtn||!body)return;
+
+    function esc(s){
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function closeModal(){
+        var card=modal.querySelector('.detail-card');
+        if(card){ card.style.transform='translateY(10px) scale(.97)'; card.style.opacity='0'; }
+        setTimeout(function(){
+            modal.classList.remove('show');
+            if(card){ card.style.transform=''; card.style.opacity=''; }
+        },220);
+    }
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
+    document.addEventListener('keydown', function(e){
+        if(e.key==='Escape'&&modal.classList.contains('show')) closeModal();
+    });
+
+    function getPlayerName(row){
+        var cells=row.querySelectorAll('td');
+        for(var i=0;i<cells.length;i++){
+            var t=cells[i].textContent.trim();
+            if(t&&i>0&&isNaN(parseFloat(t))) return t;
+        }
+        return '';
+    }
+
+    function chipBlock(title, items, emptyText){
+        var list=Array.isArray(items)?items:[];
+        var chips=list.length
+            ? list.map(function(x){ return '<span class="career-chip">'+esc(x)+'</span>'; }).join('')
+            : '<span class="career-empty">'+esc(emptyText)+'</span>';
+        return '<div class="career-sec">'
+            +'<div class="career-sec-hd"><span>'+esc(title)+'</span>'
+            +'<em>'+list.length+'</em></div>'
+            +'<div class="career-chips">'+chips+'</div></div>';
+    }
+
+    function textBlock(title, text){
+        var t=String(text||'').trim();
+        return '<div class="career-sec">'
+            +'<div class="career-sec-hd"><span>'+esc(title)+'</span></div>'
+            +'<div class="career-note">'+(t?esc(t):'<span class="career-empty">暂无</span>')+'</div></div>';
+    }
+
+    // delegated: rows are created and swapped as the table pages and filters
+    var tbody=document.querySelector('.filterable-table tbody');
+    if(!tbody)return;
+    tbody.addEventListener('click', function(e){
+            var row=e.target.closest('tr');
+            if(!row||row.parentNode!==tbody||row.dataset.detail===undefined)return;
+            var data={};
+            try{ data=JSON.parse(row.dataset.detail||'{}'); }catch(_e){ data={}; }
+            if(!data||typeof data!=='object'||Array.isArray(data)) data={};
+            var name=getPlayerName(row);
+            if(metaLine) metaLine.textContent=name||'';
+            var streak = '';
+            if (Object.prototype.hasOwnProperty.call(data, 'win_streak'))
+                streak += textBlock('连胜细节', data.win_streak);
+            if (Object.prototype.hasOwnProperty.call(data, 'lose_streak'))
+                streak += textBlock('连败细节', data.lose_streak);
+            body.innerHTML =
+                chipBlock('夺冠明细', data.titles, '暂无夺冠')
+                + chipBlock('夺亚明细', data.runners, '暂无夺亚')
+                + streak;
+            var nT=(data.titles||[]).length, nR=(data.runners||[]).length;
+            if(footer) footer.textContent='冠军 '+nT+' · 亚军 '+nR+' · 点击空白处关闭';
+            modal.classList.add('show');
+    });
+});
+function _themeLabel(dark){
+    const btn=document.getElementById('themeBtn');
+    if(!btn)return;
+    const lbl=btn.querySelector('.theme-label');  // shared header: keep the SVG icons
+    if(lbl)lbl.textContent=dark?'亮色':'暗色';
+    else btn.textContent=dark?'☀ 亮色':'🌙 暗色';
+}
+function toggleTheme(){
+    const going=!document.body.classList.contains('dark');
+    document.body.classList.toggle('dark',going);
+    _themeLabel(going);
+    document.querySelectorAll('.logo-light').forEach(e=>e.style.display=going?'none':'block');
+    document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=going?'block':'none');
+    try{localStorage.setItem('theme',going?'dark':'light');}catch(e){}
+}
+(function(){
+    let dark=false;
+    try{dark=localStorage.getItem('theme')==='dark';}catch(e){}  // throws on data: URLs
+    document.body.classList.toggle('dark',dark);
+    document.querySelectorAll('.logo-light').forEach(e=>e.style.display=dark?'none':'block');
+    document.querySelectorAll('.logo-dark').forEach(e=>e.style.display=dark?'block':'none');
+    _themeLabel(dark);
+})();
+</script>
+<script defer src="assets/table.23cd56dc.js"></script>
+<script defer src="assets/hist.36791391.js"></script>
+<script defer src="assets/rank.ba1699af.js"></script>
+<script defer src="assets/header.15112f97.js"></script>
+</body>
+</html>
