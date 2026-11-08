@@ -113,6 +113,11 @@ def _backup_is_elim_opponent(
     primary = _lookup_named_pick(draw, detail)
     if primary is None or not primary.eliminated:
         return False
+    # elim_opponent is whoever beat them eventually. If this pick's match was
+    # already won, that later opponent was not the other side of this match.
+    match_rank = _match_round_rank(draw, detail)
+    if match_rank and primary.round_rank > match_rank:
+        return False
     opp = str(primary.elim_opponent or "").strip()
     return bool(opp) and opp == alt
 
@@ -228,6 +233,30 @@ def _is_combined_round_label(label: str) -> bool:
     return bool(_COMBINED_ROUND_RE.search(str(label or "")))
 
 
+def _match_round_rank(draw: DrawStatus | None, detail: dict[str, Any]) -> int:
+    """Round rank of the match named by ``normal_match_id``.
+
+    The id is ``[tour][round][match]``. The round digit counts from this
+    event's opening round (1 = R64 on a 64-draw), not a bracket column.
+    A player whose current round is past that rank won this match, even if
+    a later round has since eliminated them. Combined pick days (``R1＆R2``)
+    have no single day rank, so this is what separates an R64 win from an
+    R32 loss submitted on the same day.
+    """
+    if draw is None or not draw.by_id:
+        return 0
+    text = str(detail.get("normal_match_id") or "").strip()
+    if text.endswith(".0") and text[:-2].isdigit():
+        text = text[:-2]
+    if len(text) != 4 or not text.isdigit():
+        return 0
+    digit = int(text[1])
+    if digit < 1:
+        return 0
+    opening = opening_round_rank(len(draw.by_id))
+    return opening + digit - 1 if opening else 0
+
+
 def _pick_day_round_rank(draw: DrawStatus | None, day: int) -> int:
     """Tennis round this survivor pick day is contested in."""
     field_n = len(draw.by_id) if draw and draw.by_id else 0
@@ -321,6 +350,14 @@ def _pick_outcome(
     progress = _bracket_progress(draw, detail, player)
     if progress == "won":
         return "win", detail
+    # Reached a later round, so this pick was won — even if a later round
+    # has since eliminated them. Still sitting in this round is not a win
+    # (the match may be unfinished, or this is the round they lost).
+    if pick_round_rank and player.round_rank > pick_round_rank:
+        return "win", detail
+    match_rank = _match_round_rank(draw, detail)
+    if match_rank and player.round_rank > match_rank:
+        return "win", detail
     if player.eliminated:
         # Conflict / suicide already handled upstream; never activate backup
         # onto the opponent who just eliminated the primary.
@@ -340,14 +377,6 @@ def _pick_outcome(
         return "loss", detail
     if player.live:
         return None, detail
-    # Advanced past this pick day's round (e.g. QF pick while already in SF)
-    # even when nobody else submitted the opponent on the same match id.
-    # Must run before bracket "pending": some picks keep a stale match_id
-    # whose columns never move, which would otherwise trap winners as 待定.
-    # Strictly ``>`` (not ``>=``): still sitting in this round means the match
-    # for today's pick is not done yet (e.g. both SF players at rr==6).
-    if pick_round_rank and player.round_rank > pick_round_rank:
-        return "win", detail
     if progress == "pending":
         return None, detail
     fill = str(detail.get("fill") or "").strip()
@@ -892,6 +921,9 @@ def apply_live_settlement(
     draw: DrawStatus | None,
     rank_by_id: dict[str, int] | None = None,
     base_score: int = 0,
+    *,
+    play_day_cap: int | None = None,
+    force_closed: bool = False,
 ) -> tuple[pd.DataFrame, dict[str, int], set[str], set[str], list[dict[str, Any]]]:
     """
     Settle alive users against the live draw.
@@ -914,6 +946,9 @@ def apply_live_settlement(
     grouped = _details_by_user(detail_rows)
     bye_users = first_day_bye_users(detail_rows, draw, rank_by_id)
     play_day = current_play_day(draw, detail_rows, official_settled_day(score_df))
+    # Historical replay settles through an earlier day and stops there.
+    if play_day_cap is not None and int(play_day_cap) > 0:
+        play_day = int(play_day_cap)
     fills_by_match: dict[Any, set[str]] = defaultdict(set)
     pick_players = []
     if draw is not None and draw.by_id:
@@ -967,7 +1002,9 @@ def apply_live_settlement(
     pending_users: set[str] = set()
     backup_events: list[dict[str, Any]] = []
     open_names = _selectable_open_names(draw)
-    play_day_closed = pick_day_closed(draw, detail_rows, play_day)
+    play_day_closed = (
+        True if force_closed else pick_day_closed(draw, detail_rows, play_day)
+    )
     for index, row in result.iterrows():
         if str(row.get("fill_status") or "") != "存活":
             continue
@@ -1172,6 +1209,72 @@ def apply_live_settlement(
         )
 
     return result, counts, bye_users, pending_users, backup_events
+
+
+def _mark_alive_at_day_open(
+    score_df: pd.DataFrame,
+    detail_rows: list[dict[str, Any]],
+    day: int,
+) -> pd.DataFrame:
+    """Who was still in at the open of ``day`` (survived it, or went out on it)."""
+    grouped = _details_by_user(detail_rows)
+    flags: list[bool] = []
+    for row in score_df.to_dict("records"):
+        status = str(row.get("fill_status") or "").strip()
+        if status in {"", "未参赛"}:
+            flags.append(False)
+            continue
+        if status == "存活":
+            # Pending on an earlier day also stays 存活. Only someone who
+            # has actually completed this day was still in at its close.
+            survived = int(pd.to_numeric(row.get("day"), errors="coerce") or 0)
+            flags.append(survived >= int(day))
+            continue
+        uid = _as_key(row.get("user_id"))
+        players = _players_without_bye(row.get("players"))
+        death_day = 0
+        if players:
+            detail = _detail_for_pick(grouped.get(uid, []), str(players[-1]).strip())
+            if detail is not None:
+                death_day = int(detail.get("day") or 0)
+        if death_day <= 0:
+            survived = int(pd.to_numeric(row.get("day"), errors="coerce") or 0)
+            death_day = survived + 1
+        flags.append(death_day == int(day))
+    out = score_df.copy()
+    out["alive_at_open"] = flags
+    return out
+
+
+def settle_score_as_of_day(
+    submission_df: Optional[pd.DataFrame],
+    draw: DrawStatus | None,
+    rank_df: Optional[pd.DataFrame],
+    base_score: int,
+    day: int,
+) -> tuple[Optional[pd.DataFrame], set[str], list[dict[str, Any]]]:
+    """
+    Closed score table at the end of ``day``.
+
+    Replays from a blank board (the official score is only the latest row)
+    and stops on that day, treating it as already closed.
+    """
+    blank = ensure_score_df(None, submission_df)
+    details = submission_to_detail_rows(submission_df)
+    if blank is None or blank.empty or not details or int(day) < 1:
+        return None, set(), []
+    settled, _counts, bye_users, _pending, backups = apply_live_settlement(
+        blank,
+        details,
+        draw,
+        rank_by_id_from_df(rank_df),
+        base_score=base_score,
+        play_day_cap=int(day),
+        force_closed=True,
+    )
+    if settled is None or settled.empty:
+        return settled, bye_users, backups
+    return _mark_alive_at_day_open(settled, details, int(day)), bye_users, backups
 
 
 def settle_tour_scores(

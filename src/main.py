@@ -50,6 +50,7 @@ from draw_status import fetch_draw_status
 from live_settlement import (
     day1_out_points,
     pick_day_closed,
+    settle_score_as_of_day,
     settle_tour_scores,
     submission_to_detail_rows,
     summarize_backup_events,
@@ -211,13 +212,126 @@ def get_meta_stats(day, table, submissions):
     return total, today
 
 
+def _closed_day_boards(
+    tour_cfg,
+    tour_label,
+    rank_df,
+    race_df,
+    submission_df,
+    draw,
+    play_day: int,
+) -> list[dict]:
+    """Instant and race tables at the close of each day before ``play_day``."""
+    base = day1_out_points(tour_cfg.get("name"), tour_label)
+    boards: list[dict] = []
+    for day in range(1, int(play_day)):
+        try:
+            score_df, bye_users, backups = settle_score_as_of_day(
+                submission_df, draw, rank_df, base, day
+            )
+            if score_df is None or score_df.empty:
+                continue
+            kwargs = dict(
+                submission_df=submission_df,
+                score_df=score_df,
+                day=day,
+                bye_rate=tour_cfg["bye_rate"],
+                new_tournament_name=tour_cfg["name"],
+                tour=tour_label,
+                use_settled_score=day > 1,
+                bye_user_ids=bye_users if day == 1 else None,
+            )
+            table = build_ranking_table(
+                rank_df=rank_df,
+                removed_tournament_name=tour_cfg.get("removed_tournament_name"),
+                **kwargs,
+            ).rename(COL_ZH_DICT, axis=1)
+            race = build_ranking_table(rank_df=race_df, **kwargs)
+            if "removed_point" in race.columns:
+                race = race.drop("removed_point", axis=1)
+            race = race.rename(COL_ZH_DICT, axis=1)
+            if day == 1 and "今日状态" in table.columns:
+                if "今日状态" in race.columns:
+                    race = race.drop("今日状态", axis=1)
+                race = race.merge(
+                    table.loc[:, ["user_id", "今日状态"]], how="left", on="user_id"
+                )
+            boards.append(
+                {"day": day, "table": table, "race": race, "backups": backups}
+            )
+        except Exception:
+            logger.exception(f"{tour_label} closed-day replay failed on day {day}")
+            continue
+    if boards:
+        logger.info(
+            f"{tour_label} closed days: "
+            + ", ".join(str(item["day"]) for item in boards)
+        )
+    return boards
+
+
+def _closed_day_player_sets(labeled: pd.DataFrame) -> tuple[list[str], list[str]]:
+    """Who won or lost that closed day, so the summary can mark 存活 / 淘汰."""
+    if (
+        labeled is None
+        or getattr(labeled, "empty", True)
+        or "今日主选" not in labeled.columns
+        or "当前状态" not in labeled.columns
+    ):
+        return [], []
+    pick = labeled["今日主选"].astype("string").fillna("").str.strip()
+    status = labeled["当前状态"].astype("string").fillna("").str.strip()
+    named = pick.ne("") & ~pick.eq("轮空")
+    alive = set(pick[named & status.isin(["存活", "轮空"])])
+    lost = set(pick[named & status.isin(["球员输球", "球员退赛"])]) - alive
+    return sorted(alive), sorted(lost)
+
+
+def _historical_view(table: pd.DataFrame, tour_cfg) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Closed-day board: no 未完赛, and later eliminations do not rewrite that day."""
+    labeled = _label_removed_point(
+        prepare_rank_change(mark_unpicked_status(table)), tour_cfg
+    )
+    view = drop_today_status_column(hide_today_picks_for_eliminated(labeled))
+    return labeled, view
+
+
+def _current_from_history(items: Optional[list]) -> int:
+    days = [int(item["day"]) for item in (items or [])]
+    return max(days) + 1 if days else 0
+
+
+def _pack_history(items: list[dict], tour_cfg, bye_flag: bool, *, race: bool = False) -> list[dict]:
+    packed = []
+    for item in items or []:
+        labeled, view = _historical_view(item["table"], tour_cfg)
+        alive_players, eliminated_players = _closed_day_player_sets(labeled)
+        if race:
+            _race_labeled, view = _historical_view(item["race"], tour_cfg)
+        day = int(item["day"])
+        packed.append(
+            {
+                "day": day,
+                "df": view,
+                "summary_df": generate_summary(
+                    labeled, day1=(day == 1), bye=bool(bye_flag and day == 1)
+                ),
+                "killer_df": daily_killer_stats(labeled),
+                "backup_events": summarize_backup_events(item.get("backups")),
+                "available_players": alive_players,
+                "eliminated_players": eliminated_players,
+            }
+        )
+    return packed
+
+
 def build_tour_tables(tour_cfg, tour_code, tour_label):
     """Fetch and build ranking + race tables for one tour.
 
     Returns
     -------
     table, race, raw_rank, submissions, score_df, day, live_players, raw_race,
-    pending_uids, backup_events
+    pending_uids, backup_events, eliminated, history
     """
     if tour_cfg.get("event") is None:
         logger.info(f"{tour_label} — no tournament this week, skipping fetch")
@@ -247,7 +361,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             .drop("removed_point", axis=1)
             .rename(COL_ZH_DICT, axis=1)
         )
-        return table, race, r, None, None, day, [], ra, set(), [], []
+        return table, race, r, None, None, day, [], ra, set(), [], [], []
 
     r, s, re, ra = fetch_all_tables(tour_cfg["event"], tour=tour_code)
     day = infer_day(s, re)
@@ -257,6 +371,8 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
     eliminated_players: list[str] = []
     pending_uids: set[str] = set()
     backup_events: list = []
+    history: list[dict] = []
+    draw = None
 
     settlement_cfg = (cfg or {}).get("settlement") or {}
     if settlement_cfg.get("enabled", True) and s is not None:
@@ -348,6 +464,14 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
         .drop("removed_point", axis=1)
         .rename(COL_ZH_DICT, axis=1)
     )
+    if draw is not None and int(day) > 1 and s is not None:
+        try:
+            history = _closed_day_boards(
+                tour_cfg, tour_label, r, ra, s, draw, int(day)
+            )
+        except Exception:
+            logger.exception(f"{tour_label} closed-day replay failed")
+            history = []
     if day == 1 and "今日状态" in table.columns:
         if "今日状态" in race.columns:
             race = race.drop("今日状态", axis=1)
@@ -388,6 +512,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
         pending_uids,
         backup_events,
         eliminated_players,
+        history,
     )
 
 
@@ -567,6 +692,8 @@ def update_rank_pages(
     wta_backup_events: list = None,
     atp_eliminated: list = None,
     wta_eliminated: list = None,
+    atp_history: list = None,
+    wta_history: list = None,
 ):
     # Mark 未完赛/未选 first (keep today's picks for losers so summary counts them),
     # then hide picks only on the rendered table.
@@ -618,6 +745,8 @@ def update_rank_pages(
         backup_events=atp_backup,
         expired_label=_expired_label((cfg or {}).get("atp")),
         output_path="../atp_ranking.html",
+        history=_pack_history(atp_history, (cfg or {}).get("atp"), atp_bye),
+        current_day=_current_from_history(atp_history),
     )
     render_ranking_page(
         atp_race_view,
@@ -635,6 +764,10 @@ def update_rank_pages(
         eliminated_players=atp_eliminated,
         backup_events=atp_backup,
         output_path="../atp_race_ranking.html",
+        history=_pack_history(
+            atp_history, (cfg or {}).get("atp"), atp_bye, race=True
+        ),
+        current_day=_current_from_history(atp_history),
     )
 
     wta_base = mark_unpicked_status(
@@ -685,6 +818,8 @@ def update_rank_pages(
         backup_events=wta_backup,
         expired_label=_expired_label((cfg or {}).get("wta")),
         output_path="../wta_ranking.html",
+        history=_pack_history(wta_history, (cfg or {}).get("wta"), wta_bye),
+        current_day=_current_from_history(wta_history),
     )
     render_ranking_page(
         wta_race_view,
@@ -702,6 +837,10 @@ def update_rank_pages(
         eliminated_players=wta_eliminated,
         backup_events=wta_backup,
         output_path="../wta_race_ranking.html",
+        history=_pack_history(
+            wta_history, (cfg or {}).get("wta"), wta_bye, race=True
+        ),
+        current_day=_current_from_history(wta_history),
     )
 
     # 我的关注: same views as the live ranking pages, both tours on one card
@@ -1054,6 +1193,7 @@ def main(*, mode: str = "default"):
         atp_pending,
         atp_backup_events,
         atp_eliminated,
+        atp_history,
     ) = build_tour_tables(atp_cfg, "MS", "ATP")
     (
         wta_table,
@@ -1067,6 +1207,7 @@ def main(*, mode: str = "default"):
         wta_pending,
         wta_backup_events,
         wta_eliminated,
+        wta_history,
     ) = build_tour_tables(wta_cfg, "WS", "WTA")
     # Event detail: players, dates, rounds/scores for current day
     atp_players = []
@@ -1215,6 +1356,8 @@ def main(*, mode: str = "default"):
         wta_backup_events=wta_backup_events,
         atp_eliminated=atp_eliminated,
         wta_eliminated=wta_eliminated,
+        atp_history=atp_history,
+        wta_history=wta_history,
     )
 
     if mode == "live":

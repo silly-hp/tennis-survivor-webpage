@@ -110,6 +110,8 @@ body.dark .chip-out .sdot{background:#a8adb4;}
 .bak-arrow{color:var(--faint);font-size:12px;flex-shrink:0;}
 .bak-alt{font-size:12px;color:var(--ink);min-width:3.5em;}
 .bak-chips{display:inline-flex;flex-wrap:wrap;gap:4px;}
+.sbar-bak .meta-chip{font-size:9px;font-weight:500;letter-spacing:.04em;padding:1px 5px;
+    border-radius:8px;line-height:1.35;}
 body.dark .tag-bak{background:rgba(212,160,72,.14);color:#e0b56a;border-color:rgba(212,160,72,.28);}
 body.dark .sbar-row.is-bak .sbar-dot{background:#e0b56a;box-shadow:0 0 0 2px rgba(224,181,106,.16);}
 body.dark .sbar-row.is-bak .sbar-label{color:#ead0a0;}

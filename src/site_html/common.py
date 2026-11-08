@@ -403,6 +403,8 @@ def _summary_bar_html(
     eliminated_players: Optional[list[str]] = None,
     backup_events: Optional[list] = None,
     picks_open: bool = True,
+    dom_prefix: str = "",
+    panel_title: str = "今日选人统计",
 ) -> str:
     """
     Convert a generate_summary() DataFrame into the bar-chart summary panel.
@@ -647,16 +649,18 @@ def _summary_bar_html(
     if suicide_total > 0:
         header_lines.append(f"🔴自杀{suicide_total}")
     clipboard_header = json.dumps("\n".join(header_lines), ensure_ascii=False)
+    p = dom_prefix or ""
+    title_html = html.escape(panel_title)
 
     # ── assemble HTML ─────────────────────────────────────────────────────────
     return f"""\
         <div class="sum-box">
         <div class="sum-header">
         <div class="sum-title-row">
-        <span class="sum-title">今日选人统计</span>
-        <span class="sum-copy-wrap"><span class="sum-copy-note" id="sumCopyNote" aria-live="polite"></span>
-        <button class="sum-copy-btn" id="sumCopyBtn" type="button" onclick="copySumStats()" title="复制选人统计文本">
-            <span class="cp-in" id="sumCopyIn">复制统计</span>
+        <span class="sum-title">{title_html}</span>
+        <span class="sum-copy-wrap"><span class="sum-copy-note" id="{p}sumCopyNote" aria-live="polite"></span>
+        <button class="sum-copy-btn" id="{p}sumCopyBtn" type="button" title="复制选人统计文本">
+            <span class="cp-in" id="{p}sumCopyIn">复制统计</span>
         </button></span>
         </div>
         <div class="sum-meta">
@@ -664,10 +668,10 @@ def _summary_bar_html(
         </div>
         </div>
         {col_hd_html}
-        <div class="sum-list" id="sumList"></div>
-        <button class="sum-toggle" id="sumToggle" onclick="toggleSumPanel()">
-        <span id="sumToggleTxt">显示全部 {len(rows_js)} 名球员）</span>
-        <span class="sum-ticon" id="sumTicon">▼</span>
+        <div class="sum-list" id="{p}sumList"></div>
+        <button class="sum-toggle" id="{p}sumToggle" type="button">
+        <span id="{p}sumToggleTxt">显示全部 {len(rows_js)} 名球员）</span>
+        <span class="sum-ticon" id="{p}sumTicon">▼</span>
         </button>
     </div>
     <script>
@@ -748,7 +752,8 @@ def _summary_bar_html(
         }}
 
         function renderList(){{
-        var list = document.getElementById('sumList');
+        var list = document.getElementById('{p}sumList');
+        if (!list) return;
         list.innerHTML = '';
 
         ROWS.forEach(function(r, i){{
@@ -830,9 +835,9 @@ def _summary_bar_html(
 
         /* button label */
         var hidN = ROWS.length - TOP_N;
-        var btn  = document.getElementById('sumToggle');
-        var txt  = document.getElementById('sumToggleTxt');
-        var ico  = document.getElementById('sumTicon');
+        var btn  = document.getElementById('{p}sumToggle');
+        var txt  = document.getElementById('{p}sumToggleTxt');
+        var ico  = document.getElementById('{p}sumTicon');
         btn.classList.toggle('open', expanded);
         ico.style.transform = expanded ? 'rotate(180deg)' : '';
         txt.textContent = expanded
@@ -840,17 +845,19 @@ def _summary_bar_html(
             : '显示全部 ' + ROWS.length + ' 名球员';
         }}
 
-        window.toggleSumPanel = function(){{
+        function toggleSumPanel(){{
         expanded = !expanded;
         renderList();
         if (expanded) {{
-            var segs = document.querySelectorAll('#sumList .sbar-row.s-exp .sbar-seg');
+            var segs = document.querySelectorAll('#{p}sumList .sbar-row.s-exp .sbar-seg');
             segs.forEach(function(el){{
             var w = el.style.width; el.style.width = '0%';
             requestAnimationFrame(function(){{ el.style.width = w; }});
             }});
             }}
-        }};
+        }}
+        var toggleBtn = document.getElementById('{p}sumToggle');
+        if (toggleBtn) toggleBtn.addEventListener('click', toggleSumPanel);
 
         /* 🔴出局 🟡待定 🟢存活. 存活 includes non-bye advancers plus 轮空; 待定 includes 未选. */
         function outcomeLine(){{
@@ -873,7 +880,7 @@ def _summary_bar_html(
             return '🔴出局' + out + ' 🟡待定' + live + ' 🟢存活' + alive;
         }}
 
-        window.copySumStats = function(){{
+        function copySumStats(){{
             var lines = [CLIPBOARD_HEADER];
             ROWS.forEach(function(r){{
                 if (!r.normal) return;
@@ -896,9 +903,9 @@ def _summary_bar_html(
             var OK = '<svg class="cp-draw" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>已复制';
             var ERR = '<svg class="cp-draw" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>复制失败';
             function setCopy(state){{
-                var btn = document.getElementById('sumCopyBtn');
-                var inner = document.getElementById('sumCopyIn');
-                var note = document.getElementById('sumCopyNote');
+                var btn = document.getElementById('{p}sumCopyBtn');
+                var inner = document.getElementById('{p}sumCopyIn');
+                var note = document.getElementById('{p}sumCopyNote');
                 if (!btn || !inner) return;
                 btn.classList.remove('ok', 'err', 'back');
                 void btn.offsetWidth;  // restart the swap animation
@@ -923,7 +930,9 @@ def _summary_bar_html(
             try {{
                 navigator.clipboard.writeText(text).then(function(){{ setCopy('ok'); }}, legacyCopy);
             }} catch (e) {{ legacyCopy(); }}
-        }};
+        }}
+        var copyBtn = document.getElementById('{p}sumCopyBtn');
+        if (copyBtn) copyBtn.addEventListener('click', copySumStats);
 
         renderList();
     }})();
