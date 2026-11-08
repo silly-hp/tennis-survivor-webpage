@@ -1208,6 +1208,20 @@ def apply_live_settlement(
             lambda s: FILL_TO_STATUS.get(str(s), 2)
         )
 
+    # Official scores can already mark today's losers 球员输球 before this
+    # runs, so the pre-settlement snapshot misses them. A pick on this day
+    # means they were still in at the open — keep it on the board.
+    picked_today = {
+        _as_key(item.get("user_id"))
+        for item in detail_rows
+        if int(item.get("day") or 0) == int(play_day)
+        and str(item.get("player") or "").strip() not in {"", "轮空"}
+    }
+    picked_today.discard("")
+    if picked_today and "user_id" in result.columns:
+        keys = result["user_id"].map(_as_key)
+        result.loc[keys.isin(picked_today), "alive_at_open"] = True
+
     return result, counts, bye_users, pending_users, backup_events
 
 
