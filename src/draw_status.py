@@ -629,8 +629,59 @@ def parse_draw_status(html: str, gender: str) -> DrawStatus:
         round_points=_parse_round_points(soup, gender),
         bracket=_parse_bracket_slots(soup, gender),
     )
+    # Finished events may drop ``.cDrawEntryEliminated`` from the entry list
+    # (Hong Kong 2026 final: every player elim=false). Recover losers from the
+    # bracket: if someone in the match advanced to column rnd+1 and this
+    # player did not, they are out.
+    _infer_eliminations_from_bracket(status)
     _annotate_elim_scores(status, soup, gender)
     return status
+
+
+def _infer_eliminations_from_bracket(status: DrawStatus) -> None:
+    """Mark losers using bracket advance when the entry list has no elim class."""
+    if not status.bracket or not status.by_id:
+        return
+    max_seq = max(status.bracket.keys())
+    max_col = 0
+    for cols in status.bracket.values():
+        for col in cols:
+            try:
+                max_col = max(max_col, int(col))
+            except (TypeError, ValueError):
+                pass
+    if max_col < 2:
+        return
+    for rnd in range(1, max_col):
+        match_no = 1
+        while match_no <= 128:
+            span = list(status.bracket_span(rnd, match_no))
+            if not span or span[0] > max_seq:
+                break
+            players_here: set[str] = set()
+            winners: set[str] = set()
+            for seq in span:
+                cols = status.bracket.get(seq) or {}
+                for col, pid in cols.items():
+                    try:
+                        c = int(col)
+                    except (TypeError, ValueError):
+                        continue
+                    if not pid:
+                        continue
+                    if c == rnd:
+                        players_here.add(str(pid))
+                    elif c == rnd + 1:
+                        winners.add(str(pid))
+            if winners:
+                for pid in players_here:
+                    if pid in winners:
+                        continue
+                    player = status.by_id.get(pid)
+                    if player is None or player.live:
+                        continue
+                    player.eliminated = True
+            match_no += 1
 
 
 def parse_pick_days(html: str, year: str | int | None = None) -> list[dict[str, Any]]:
