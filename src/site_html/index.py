@@ -592,6 +592,18 @@ body.dark .wk-chip{background:rgba(125,206,160,.12);border-color:rgba(125,206,16
 .guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .guide-item{background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--muted);}
 .guide-item b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px;}
+.notice{
+    width:min(560px, calc(100% - 32px));
+    max-width:560px;
+    height:fit-content;
+    max-height:min(85vh, 720px);
+    margin:auto;
+    inset:0;
+    overflow:auto;
+}
+.notice[open]{animation:none;}
+.notice-eye{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--primary-dark);margin-bottom:4px;}
+.notice .guide-grid{grid-template-columns:1fr;}
 
 footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);display:flex;justify-content:space-between;
     align-items:flex-end;flex-wrap:wrap;gap:12px;}
@@ -635,6 +647,7 @@ footer{margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);disp
     .seg{width:100%;} .seg button{flex:1;padding:0;}
     .guide{margin:auto auto 0;width:100%;max-width:none;border-radius:18px 18px 0 0;}
     .guide-grid{grid-template-columns:1fr;}
+    .notice{margin:auto;width:min(560px, calc(100% - 32px));max-width:560px;border-radius:16px;}
     .off-week{padding:24px;}
 }
 @media(prefers-reduced-motion:reduce){
@@ -669,6 +682,19 @@ _JS_INDEX = r"""
   document.querySelectorAll('.guide-open').forEach(b=>b.addEventListener('click',()=>guide.showModal()));
   guide.querySelector('.guide-close').addEventListener('click',()=>guide.close());
   guide.addEventListener('click',e=>{if(e.target===guide)guide.close();});
+
+  // ── first-visit announcement ──
+  const NOTICE_KEY='ts.notice.combined-finals';
+  const notice=document.getElementById('notice');
+  if(notice){
+    const remember=()=>{ try{ localStorage.setItem(NOTICE_KEY,'1'); }catch(e){} };
+    notice.addEventListener('close', remember);
+    notice.querySelector('.guide-close').addEventListener('click',()=>notice.close());
+    notice.addEventListener('click',e=>{ if(e.target===notice) notice.close(); });
+    let seen=false;
+    try{ seen=localStorage.getItem(NOTICE_KEY)==='1'; }catch(e){ seen=true; }
+    if(!seen) notice.showModal();
+  }
 
   // ── survivor trend charts ──
   const data=JSON.parse(document.getElementById('trend-data').textContent||'{}');
@@ -860,6 +886,25 @@ def render_index(
         <span class="ver">v{html.escape(version)}</span>
     </footer>
 </div>
+
+<dialog class="guide notice" id="notice" aria-labelledby="noticeTitle">
+    <div class="guide-inner">
+        <div class="guide-hd">
+            <div>
+                <div class="notice-eye">公告</div>
+                <h2 id="noticeTitle">联合年终</h2>
+            </div>
+            <button type="button" class="guide-close" aria-label="关闭">✕</button>
+        </div>
+        <p>蛙网将举办联合年终。玩家可以同时参加 WTA 和 ATP 年终。</p>
+        <div class="guide-grid">
+            <div class="guide-item"><b>照常选人</b>单项没有入围，也可以在丘网上正常选人。丘网会保留选人记录。</div>
+            <div class="guide-item"><b>得分</b>两项得分取均值，作为联合年终得分。</div>
+            <div class="guide-item"><b>参赛</b>两项年终都参加，视为成功参加联合年终。只参加一项，视为未参赛。</div>
+            <div class="guide-item"><b>有效参赛</b>在所有参赛选手里，联合冠军排名前 8 的玩家视为有效参赛。</div>
+        </div>
+    </div>
+</dialog>
 
 <dialog class="guide" id="guide" aria-label="使用指南">
     <div class="guide-inner">
