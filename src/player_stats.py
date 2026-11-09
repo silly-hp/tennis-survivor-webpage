@@ -572,7 +572,33 @@ def _collect_history(
         in_progress = live_key == (info.get("name"), str(info.get("year") or ""))
         cached = tour_cache.get(key) if isinstance(tour_cache.get(key), dict) else None
         if in_progress:
-            logger.info(f"skip in-progress {info.get('year')}-{info.get('name')}")
+            # The configured week stays "current" after the final. Include it
+            # once the score ladder is complete; leave a live week out.
+            rows = _fetch_event_score_rows(info)
+            points = _fetch_event_day_points(info)
+            event_records = _records_from_event(
+                info, rows, in_progress=False, day_points=points
+            )
+            if (
+                not event_records
+                or len(points) < 2
+                or not _snapshot_is_final(event_records, points)
+            ):
+                logger.info(f"skip in-progress {info.get('year')}-{info.get('name')}")
+                continue
+            logger.info(f"include finished {info.get('year')}-{info.get('name')}")
+            tour_cache[key] = {
+                "id": info.get("id"),
+                "name": info.get("name"),
+                "year": str(info.get("year") or ""),
+                "completed": True,
+                "event_days": len(points),
+                "day_points": points,
+                "played_rev": PLAYED_REV,
+                "records": _serialize_records(event_records),
+            }
+            changed = True
+            records.extend(event_records)
             continue
         if _snapshot_fresh(cached):
             points = list(cached.get("day_points") or [])
@@ -598,6 +624,12 @@ def _collect_history(
             info, rows, in_progress=False, day_points=points
         )
         if not event_records:
+            continue
+        if len(points) < 2 or not _snapshot_is_final(event_records, points):
+            logger.info(f"skip unfinished {info.get('year')}-{info.get('name')}")
+            if isinstance(tour_cache.get(key), dict):
+                tour_cache.pop(key, None)
+                changed = True
             continue
         tour_cache[key] = {
             "id": info.get("id"),
