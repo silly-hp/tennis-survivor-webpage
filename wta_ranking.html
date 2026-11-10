@@ -114,7 +114,7 @@ body.dark {
   <nav class="hd-tabs" aria-label="栏目"><a class="hd-tab" href="wta_ranking.html" aria-current="page">即时排名</a><a class="hd-tab" href="wta_race_ranking.html">冠军排名</a><a class="hd-tab" href="wta_champion.html">冠军榜</a><a class="hd-tab" href="wtakiller.html">杀手榜</a><a class="hd-tab" href="survivor_calendar_wta.html">赛历</a><a class="hd-tab" href="wta_show.html">生涯统计</a><a class="hd-tab" href="h2h_wta.html">H2H</a></nav>
   <div class="hd-right">
     <div class="hd-seg" role="group" aria-label="巡回赛"><a class="hd-seg-btn" href="atp_ranking.html">ATP</a><a class="hd-seg-btn" href="wta_ranking.html" aria-current="page">WTA</a><a class="hd-seg-btn" href="combined_instant_ranking.html">联合</a></div>
-    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年11月10日 18:04:31</span><span class="hd-suffix"> 更新</span></span>
+    <span class="hd-live"><span class="hd-dot"></span><span class="hd-time">2026年11月10日 18:20:13</span><span class="hd-suffix"> 更新</span></span>
     <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换明暗"><svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label">暗色</span></button>
   </div>
 </header>
@@ -144,11 +144,11 @@ body.dark {
         <div class="sum-meta">
         <span class="meta-chip chip-valid">✓ 非轮空 0 人</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-chip chip-bye">◎ 轮空 19 人</span>
+    <span class="meta-chip chip-bye">◎ 轮空 20 人</span>
     <span class="meta-sep">｜</span>
     <span class="meta-chip chip-suicide">⚠ 5 人自杀</span>
     <span class="meta-sep">｜</span>
-    <span class="meta-total">总计 45 人</span>
+    <span class="meta-total">总计 46 人</span>
         </div>
         </div>
             <div class="sum-col-hd">
@@ -173,10 +173,10 @@ body.dark {
     (function(){
         var TOP_N   = 3;
         var HAS_BYE = true;
-        var ROWS    = [{"name": "高芙", "normal": 0, "bye": 6, "status": "live"}, {"name": "佩古拉", "normal": 0, "bye": 11, "status": "out"}, {"name": "诺斯科娃", "normal": 0, "bye": 2, "status": "live"}];
-        var TOTALS  = {"normal": 0, "bye": 19, "grand": 19, "suicide": 5, "nosel": 0};
-        var MAX_VAL = 11;
-        var CLIPBOARD_HEADER = "参赛24\n🟢轮空19\n🔴自杀5";
+        var ROWS    = [{"name": "高芙", "normal": 0, "bye": 6, "status": "live"}, {"name": "佩古拉", "normal": 0, "bye": 12, "status": "out"}, {"name": "诺斯科娃", "normal": 0, "bye": 2, "status": "live"}];
+        var TOTALS  = {"normal": 0, "bye": 20, "grand": 20, "suicide": 5, "nosel": 0};
+        var MAX_VAL = 12;
+        var CLIPBOARD_HEADER = "参赛25\n🟢轮空20\n🔴自杀5";
         var expanded = false;
 
         function pct(n){ return ((n / TOTALS.grand) * 100).toFixed(1) + '%'; }
@@ -507,8 +507,8 @@ body.dark {
         <div class="table-wrapper">
             <div id="table-container">
             <table class="dataframe filterable-table"><thead><tr><th>即时排名</th><th>当前排名</th><th>用户名</th><th>当前状态</th><th>存活天数</th><th>杀手球员</th><th>今日主选</th><th>今日备选</th><th>本站得分</th><th>扣除积分（利雅得）</th><th>即时积分</th></tr></thead><tbody></tbody></table>
-<link rel="preload" as="script" href="data/gen/rank_wta_ranking.js?v=aa5e3085">
-<script defer src="data/gen/rank_wta_ranking.js?v=aa5e3085"></script>
+<link rel="preload" as="script" href="data/gen/rank_wta_ranking.js?v=06af8084">
+<script defer src="data/gen/rank_wta_ranking.js?v=06af8084"></script>
             
         </div>
     </div>
