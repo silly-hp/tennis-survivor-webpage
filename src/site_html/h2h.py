@@ -252,10 +252,6 @@ body.dark .mode-tab.active{color:var(--primary);}
 .sumr-head-name{background:var(--th-bg);color:#fff;padding:14px 20px;
     font-family:"Songti SC","STSong",serif;font-size:16px;font-weight:600;
     display:flex;align-items:center;gap:12px;}
-.sumr-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;
-    background:var(--primary);color:#fff;display:flex;align-items:center;
-    justify-content:center;font-family:'Space Mono',monospace;font-size:13px;
-    font-weight:700;}
 .sumr-head-scope{background:var(--primary);color:#fff;padding:14px 20px;
     font-size:12px;display:flex;align-items:center;justify-content:flex-end;
     letter-spacing:.02em;white-space:nowrap;}
@@ -359,6 +355,8 @@ function bootPickers(){
     buildList('sList',SEASONS,'season');
     if(document.getElementById('sumUList')) buildSumUserList(USERS);
     if(document.getElementById('sumSList')) buildSumSeasonList();
+    if(document.getElementById('plPList')) filterPlPlayerList(document.getElementById('plPSearch').value);
+    if(document.getElementById('plSList')) buildPlSeasonList();
     updateRunBtn();
     const btn=document.getElementById('runBtn');
     if(btn) btn.textContent='查询 →';
@@ -878,13 +876,18 @@ if(retryBtn) retryBtn.addEventListener('click',function(){ startDataLoad(); });
 startDataLoad();
 
 /* ── mode tabs ── */
+var MODE_IDS = { query: ['tabBtnQuery', 'tabQuery'],
+                 summary: ['tabBtnSummary', 'tabSummary'],
+                 player: ['tabBtnPlayer', 'tabPlayer'] };
 window.switchMode = function(mode){
-    var isQuery = (mode === 'query');
-    document.getElementById('tabBtnQuery').classList.toggle('active', isQuery);
-    document.getElementById('tabBtnSummary').classList.toggle('active', !isQuery);
-    document.getElementById('tabQuery').classList.toggle('active', isQuery);
-    document.getElementById('tabSummary').classList.toggle('active', !isQuery);
-    if(!isQuery && typeof clampOppoRows === 'function') clampOppoRows();
+    Object.keys(MODE_IDS).forEach(function(m){
+        var btn = document.getElementById(MODE_IDS[m][0]);
+        var panel = document.getElementById(MODE_IDS[m][1]);
+        if(btn) btn.classList.toggle('active', m === mode);
+        if(panel) panel.classList.toggle('active', m === mode);
+    });
+    /* rows rendered inside a hidden panel had no layout to measure */
+    if(mode !== 'query' && typeof clampOppoRows === 'function') clampOppoRows();
 };
 
 /* ── summary tab: multi-user picker (one person may own several accounts) ── */
@@ -1081,7 +1084,7 @@ function renderUserSummary(){
         var playersHtml = g.players.map(function(p){
             return '<span class="sumr-oppo-player">' + escHtml(p) + '</span>';
         }).join('');
-        return '<div class="sumr-oppo-row" data-key="' + g.w + ':' + g.l + '">'
+        return '<div class="sumr-oppo-row" data-key="u' + g.w + ':' + g.l + '">'
             + '<div class="sumr-oppo-score">' + g.w + ':' + g.l + '</div>'
             + '<div class="sumr-oppo-players">' + playersHtml + '</div>'
             + '</div>';
@@ -1091,8 +1094,155 @@ function renderUserSummary(){
         '<div class="sumr-card">'
         + '<div class="sumr-headbar">'
         +   '<div class="sumr-head-name">'
-        +     (multi ? '' : '<span class="sumr-avatar">' + escHtml(names[0].trim().charAt(0).toUpperCase()) + '</span>')
         +     '<span class="sumr-head-users">' + nameHtml + '</span></div>'
+        +   '<div class="sumr-head-scope">' + escHtml(scopeText) + '</div>'
+        + '</div>'
+        + '<div class="sumr-statrow">'
+        +   '<div class="sumr-stat"><div class="sumr-stat-num win">' + fmtInt(wins) + '</div>'
+        +     '<div class="sumr-stat-lbl win">胜 <b>' + winPct + '%</b></div></div>'
+        +   '<div class="sumr-donut-wrap">' + sumrDonutSvg(winPct) + '</div>'
+        +   '<div class="sumr-stat"><div class="sumr-stat-num lose">' + fmtInt(losses) + '</div>'
+        +     '<div class="sumr-stat-lbl lose">负 <b>' + losePct + '%</b></div></div>'
+        + '</div>'
+        + '<div class="sumr-oppo-list">' + (rowsHtml || '<div class="sumr-empty">暂无对阵记录</div>') + '</div>'
+        + '</div>';
+    clampOppoRows();
+}
+
+/* ── player summary tab: single player, users grouped by W:L ── */
+var plSelectedPlayer = null;
+var plSelectedSeason = null;   /* null = all time */
+
+function buildPlPlayerList(items){
+    var el = document.getElementById('plPList');
+    el.innerHTML = '';
+    if(!items.length){ el.innerHTML = '<div class="opt-empty">无结果</div>'; return; }
+    items.forEach(function(name){
+        var on = (plSelectedPlayer === name);
+        var div = document.createElement('div');
+        div.className = 'opt-item' + (on ? ' checked' : '');
+        var cb = document.createElement('input');
+        cb.type = 'radio'; cb.name = 'plPlayerRadio';
+        cb.checked = on;
+        cb.addEventListener('change', function(){
+            plSelectedPlayer = name;
+            filterPlPlayerList(document.getElementById('plPSearch').value);
+            renderPlayerSummary();
+        });
+        var span = document.createElement('span');
+        span.className = 'opt-name'; span.title = name; span.textContent = name;
+        div.appendChild(cb); div.appendChild(span);
+        div.addEventListener('click', function(e){ if(e.target !== cb) cb.click(); });
+        el.appendChild(div);
+    });
+}
+
+function filterPlPlayerList(q){
+    q = (q || '').toLowerCase();
+    buildPlPlayerList(PLAYERS.filter(function(name){
+        return String(name).toLowerCase().indexOf(q) !== -1;
+    }));
+}
+
+document.getElementById('plPSearch').addEventListener('input', function(){
+    filterPlPlayerList(this.value);
+});
+
+function buildPlSeasonList(){
+    var el = document.getElementById('plSList');
+    el.innerHTML = '';
+    [null].concat(SEASONS).forEach(function(s){
+        var on = (plSelectedSeason === s);
+        var div = document.createElement('div');
+        div.className = 'opt-item' + (on ? ' checked' : '');
+        var cb = document.createElement('input');
+        cb.type = 'radio'; cb.name = 'plSeasonRadio';
+        cb.checked = on;
+        cb.addEventListener('change', function(){
+            plSelectedSeason = s;
+            buildPlSeasonList();
+            renderPlayerSummary();
+        });
+        var span = document.createElement('span');
+        span.className = 'opt-name'; span.textContent = s === null ? '全部赛季' : String(s);
+        div.appendChild(cb); div.appendChild(span);
+        div.addEventListener('click', function(e){ if(e.target !== cb) cb.click(); });
+        el.appendChild(div);
+    });
+}
+
+function renderPlayerSummary(){
+    var container = document.getElementById('plResults');
+    var empty = document.getElementById('plEmptyState');
+    var player = plSelectedPlayer;
+    if(player === null){
+        container.innerHTML = '';
+        empty.style.display = '';
+        return;
+    }
+    empty.style.display = 'none';
+    var recs = RECORDS.filter(function(r){
+        return r.p === player
+            && (plSelectedSeason === null || r.s === plSelectedSeason);
+    });
+
+    /* W/L is the player's own result in the match the user picked */
+    var wins = 0, losses = 0, byUser = {};
+    recs.forEach(function(r){
+        if(r.r !== 1 && r.r !== 0) return;
+        if(r.r === 1) wins++; else losses++;
+        if(!byUser[r.u]) byUser[r.u] = { w: 0, l: 0 };
+        if(r.r === 1) byUser[r.u].w++; else byUser[r.u].l++;
+    });
+    var decided = wins + losses;
+    var winPct = decided ? Math.round((wins / decided) * 100) : 0;
+    var losePct = decided ? (100 - winPct) : 0;
+
+    /* current-rank order: USERS is already sorted by rank, unranked last */
+    var rankIdx = {};
+    USERS.forEach(function(u, i){ rankIdx[u.username] = i; });
+    var rankInfo = {};
+    USERS.forEach(function(u){ rankInfo[u.username] = u.rank; });
+    function byRank(a, b){
+        var ia = rankIdx[a] === undefined ? Infinity : rankIdx[a];
+        var ib = rankIdx[b] === undefined ? Infinity : rankIdx[b];
+        return ia !== ib ? ia - ib : (a < b ? -1 : a > b ? 1 : 0);
+    }
+
+    var groups = {};
+    Object.keys(byUser).forEach(function(u){
+        var rec = byUser[u];
+        var key = rec.w + ':' + rec.l;
+        if(!groups[key]) groups[key] = { w: rec.w, l: rec.l, users: [] };
+        groups[key].users.push(u);
+    });
+    var groupArr = Object.keys(groups).map(function(k){ return groups[k]; });
+    groupArr.sort(function(a, b){
+        if(b.w !== a.w) return b.w - a.w;
+        return a.l - b.l;
+    });
+
+    var userCount = Object.keys(byUser).length;
+    var scopeLabel = plSelectedSeason !== null ? String(plSelectedSeason) + ' 赛季' : '全部赛季';
+    var scopeText = '共 ' + fmtInt(recs.length) + ' 场比赛 · ' + fmtInt(userCount) + ' 位用户 · ' + scopeLabel;
+
+    var rowsHtml = groupArr.map(function(g){
+        var usersHtml = g.users.sort(byRank).map(function(u){
+            var rk = rankInfo[u];
+            return '<span class="sumr-oppo-player" title="当前排名 ' + (rk != null ? rk : '-') + '">'
+                + escHtml(u) + '</span>';
+        }).join('');
+        return '<div class="sumr-oppo-row" data-key="p' + g.w + ':' + g.l + '">'
+            + '<div class="sumr-oppo-score">' + g.w + ':' + g.l + '</div>'
+            + '<div class="sumr-oppo-players">' + usersHtml + '</div>'
+            + '</div>';
+    }).join('');
+
+    container.innerHTML =
+        '<div class="sumr-card">'
+        + '<div class="sumr-headbar">'
+        +   '<div class="sumr-head-name">'
+        +     '<span class="sumr-head-users"><span class="sumr-head-user">' + escHtml(player) + '</span></span></div>'
         +   '<div class="sumr-head-scope">' + escHtml(scopeText) + '</div>'
         + '</div>'
         + '<div class="sumr-statrow">'
@@ -1111,7 +1261,7 @@ function renderUserSummary(){
 var sumExpandedRows = new Set();   /* "w:l" keys the user expanded */
 
 function clampOppoRows(){
-    document.querySelectorAll('#sumResults .sumr-oppo-row').forEach(clampOppoRow);
+    document.querySelectorAll('#sumResults .sumr-oppo-row, #plResults .sumr-oppo-row').forEach(clampOppoRow);
 }
 
 function clampOppoRow(row){
@@ -1151,11 +1301,30 @@ function clampOppoRow(row){
     });
 }
 
+/* re-measure when a results area changes width (window resize, a hidden
+   panel or pane becoming visible); height changes from clamping are ignored */
 var _clampTimer = null;
-window.addEventListener('resize', function(){
+function scheduleClamp(){
     clearTimeout(_clampTimer);
     _clampTimer = setTimeout(clampOppoRows, 120);
-});
+}
+if(window.ResizeObserver){
+    var _lastW = {};
+    var _ro = new ResizeObserver(function(entries){
+        var changed = false;
+        entries.forEach(function(e){
+            var w = Math.round(e.contentRect.width);
+            if(_lastW[e.target.id] !== w){ _lastW[e.target.id] = w; changed = true; }
+        });
+        if(changed) scheduleClamp();
+    });
+    ['sumResults', 'plResults'].forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) _ro.observe(el);
+    });
+} else {
+    window.addEventListener('resize', scheduleClamp);
+}
 
 filterSumUserList('');
 buildSumSeasonList();
@@ -1383,6 +1552,7 @@ def render_h2h_page(
 <div class="mode-tabs">
   <button class="mode-tab active" id="tabBtnQuery" onclick="switchMode('query')">对战查询</button>
   <button class="mode-tab" id="tabBtnSummary" onclick="switchMode('summary')">用户汇总</button>
+  <button class="mode-tab" id="tabBtnPlayer" onclick="switchMode('player')">球员汇总</button>
 </div>
 
 <div id="tabQuery" class="tab-panel active">
@@ -1522,6 +1692,40 @@ def render_h2h_page(
     <div class="empty-title">选择一位或多位用户查看汇总战绩</div>
     <div class="empty-desc">
       展示对阵每一位球员的累计胜负记录，多选时合并统计（适用于同一人的多个账号）
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="tabPlayer" class="tab-panel">
+
+<div class="summary-picker">
+  <div class="summary-picker-cols">
+    <div class="summary-picker-col">
+      <div class="sel-label">选择球员</div>
+      <div class="multisel-box">
+        <input class="multisel-search" id="plPSearch" placeholder="搜索球员名…">
+        <div class="multisel-list" id="plPList"></div>
+      </div>
+    </div>
+    <div class="summary-picker-col">
+      <div class="sel-label">选择赛季</div>
+      <div class="multisel-box">
+        <div class="multisel-list" id="plSList" style="max-height:160px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="plResults"></div>
+
+<div id="plEmptyState">
+  <div class="empty-state">
+    <div class="empty-icon">🎾</div>
+    <div class="empty-title">选择一位球员查看汇总战绩</div>
+    <div class="empty-desc">
+      展示该球员在每位用户手中的累计胜负，同一战绩的用户按当前排名从高到低排列
     </div>
   </div>
 </div>
