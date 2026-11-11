@@ -47,6 +47,13 @@ from survivor_html import (
 from champion_stats import render_champion_pages
 from weather import build_weather_cards
 from draw_status import fetch_draw_status
+from finals_settlement import (
+    eligible_user_ids,
+    fetch_pick_day_results,
+    filter_eligible,
+    finals_score_name,
+    is_year_end_final,
+)
 from live_settlement import (
     day1_out_points,
     pick_day_closed,
@@ -220,6 +227,7 @@ def _closed_day_boards(
     submission_df,
     draw,
     play_day: int,
+    day_results=None,
 ) -> list[dict]:
     """Instant and race tables at the close of each day before ``play_day``."""
     base = day1_out_points(tour_cfg.get("name"), tour_label)
@@ -227,7 +235,7 @@ def _closed_day_boards(
     for day in range(1, int(play_day)):
         try:
             score_df, bye_users, backups = settle_score_as_of_day(
-                submission_df, draw, rank_df, base, day
+                submission_df, draw, rank_df, base, day, day_results=day_results
             )
             if score_df is None or score_df.empty:
                 continue
@@ -331,8 +339,12 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
     Returns
     -------
     table, race, raw_rank, submissions, score_df, day, live_players, raw_race,
-    pending_uids, backup_events, eliminated, history
+    pending_uids, backup_events, eliminated, history, remaining_players
     """
+    finals_mode = is_year_end_final(tour_cfg.get("name"), tour_cfg.get("event"))
+    points_name = finals_score_name(tour_cfg.get("name"), tour_cfg.get("event"))
+    if finals_mode:
+        tour_cfg = {**tour_cfg, "bye_rate": 0, "name": points_name or tour_cfg.get("name")}
     if tour_cfg.get("event") is None:
         logger.info(f"{tour_label} — no tournament this week, skipping fetch")
         r, _ = fetch_table(option="rank", tour=tour_code)
@@ -369,12 +381,13 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
     bye_users: set[str] = set()
     live_players: list[str] = []
     eliminated_players: list[str] = []
-    remaining_players: list[str] = []
     pending_uids: set[str] = set()
     backup_events: list = []
     history: list[dict] = []
     draw = None
 
+    day_results = None
+    remaining_players: list = []
     settlement_cfg = (cfg or {}).get("settlement") or {}
     if settlement_cfg.get("enabled", True) and s is not None:
         try:
@@ -401,6 +414,26 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                 for p in draw.by_id.values()
                 if not p.eliminated and str(p.name or "").strip()
             ]
+            if finals_mode:
+                eligible = eligible_user_ids(
+                    ra, tour_label, tour_cfg.get("name", ""), tour_cfg.get("event")
+                )
+                if eligible:
+                    before = 0 if s is None else int(s["user_id"].nunique())
+                    s = filter_eligible(s, eligible)
+                    re = filter_eligible(re, eligible)
+                    kept = 0 if s is None else int(s["user_id"].nunique())
+                    logger.info(
+                        f"{tour_label}年终总决赛有效选人 {len(eligible)} 人"
+                        f"（并列第8计入），选人 {before} → {kept}"
+                    )
+                else:
+                    logger.warning(
+                        f"{tour_label}年终总决赛没能算出开赛前前8，暂不过滤选人"
+                    )
+                day_results = fetch_pick_day_results(
+                    tour_cfg["event"], getattr(draw, "pick_days", None)
+                )
             re, counts, bye_users, play_day, pending_uids, backup_events = (
                 settle_tour_scores(
                     re,
@@ -408,6 +441,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                     draw,
                     rank_df=r,
                     base_score=day1_out_points(tour_cfg.get("name"), tour_label),
+                    day_results=day_results,
                 )
             )
             if play_day > 0:
@@ -418,9 +452,12 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                 draw, submission_to_detail_rows(s), int(day)
             )
             # Day1 must keep the bye-rate table path for 轮空/非轮空 summary.
-            # Settled score path is only used from Day2 onward.
+            # Day1 keeps the bye-rate table path. Finals have no byes, so
+            # day 1 uses the settled board as soon as there is a score table.
             use_settled = (
-                re is not None and not re.empty and int(day) > 1
+                re is not None
+                and not re.empty
+                and (int(day) > 1 or finals_mode)
             )
             if any(counts.values()) or bye_users:
                 logger.info(
@@ -475,7 +512,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
     if draw is not None and int(day) > 1 and s is not None:
         try:
             history = _closed_day_boards(
-                tour_cfg, tour_label, r, ra, s, draw, int(day)
+                tour_cfg, tour_label, r, ra, s, draw, int(day), day_results
             )
         except Exception:
             logger.exception(f"{tour_label} closed-day replay failed")
@@ -1224,6 +1261,7 @@ def main(*, mode: str = "default"):
     atp_players = []
     wta_players = []
 
+    # Always keep remaining (selectable) players for summary coloring + route query
     # Selectable names, plus anyone still in the draw. The pick list is empty
     # once the event is over, and the champion must not be painted 淘汰.
     if atp_cfg.get("event") is not None:
@@ -1235,7 +1273,6 @@ def main(*, mode: str = "default"):
         wta_details = fetch_event_detail(wta_cfg["event"], YEAR, "WS")
         wta_players = [p["name"] for p in wta_details["players"]]
     wta_players = list(dict.fromkeys([*(wta_remaining or []), *wta_players]))
-
     players_output = {
         "updated": datetime.now().strftime(datetime_format),
         "ATP": atp_players,
@@ -1319,11 +1356,15 @@ def main(*, mode: str = "default"):
             week_data=week_data,
             trends={
                 "ATP": survivor_series(atp_re, atp_day, summary_checkin(
-                    atp_table, atp_day, atp_cfg["bye_rate"] != 0,
+                    atp_table, atp_day,
+                    atp_cfg["bye_rate"] != 0
+                    and not is_year_end_final(atp_cfg.get("name"), atp_cfg.get("event")),
                     atp_players, atp_live, atp_pending, atp_eliminated,
                     picks_open=picks_open("ATP"))),
                 "WTA": survivor_series(wta_re, wta_day, summary_checkin(
-                    wta_table, wta_day, wta_cfg["bye_rate"] != 0,
+                    wta_table, wta_day,
+                    wta_cfg["bye_rate"] != 0
+                    and not is_year_end_final(wta_cfg.get("name"), wta_cfg.get("event")),
                     wta_players, wta_live, wta_pending, wta_eliminated,
                     picks_open=picks_open("WTA"))),
             },
@@ -1354,8 +1395,14 @@ def main(*, mode: str = "default"):
         wta_race,
         atp_day1=(atp_day == 1),
         wta_day1=(wta_day == 1),
-        atp_bye=(atp_cfg["bye_rate"] != 0),
-        wta_bye=(wta_cfg["bye_rate"] != 0),
+        atp_bye=(
+            atp_cfg["bye_rate"] != 0
+            and not is_year_end_final(atp_cfg.get("name"), atp_cfg.get("event"))
+        ),
+        wta_bye=(
+            wta_cfg["bye_rate"] != 0
+            and not is_year_end_final(wta_cfg.get("name"), wta_cfg.get("event"))
+        ),
         atp_players=atp_players,
         wta_players=wta_players,
         atp_live_players=atp_live,

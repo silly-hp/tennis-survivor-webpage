@@ -32,7 +32,7 @@ ATP_FORCED = [
 ATP_UNCOMBINED = ["蒙特卡洛"]
 # Olympics is bonus, like the year-end final: always counted, no slot.
 ATP_FINALS = ["都灵", "奥运会"]
-WTA_FINALS = ["利雅得", "奥运会"]
+WTA_FINALS = ["利雅得", "印第安维尔斯年终", "奥运会"]
 
 YEAR_TAIL = re.compile(r"^(.*)((?:19|20)\d{2})$")
 

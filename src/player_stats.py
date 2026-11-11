@@ -19,6 +19,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from draw_status import DAY_SCORE_RE, USER_AGENT, beijing_now
+from finals_settlement import finals_score_name
 from live_settlement import _as_key
 from logger import get_logger
 from parser import _strip_html, fetch_survivor_calendar_event_df, fetch_table
@@ -430,7 +431,7 @@ def _list_tour_events(tennis_type: str, years: list[int] | None = None) -> list[
             events.append(
                 {
                     "id": str(row["event_id"]),
-                    "name": str(row.get("city") or ""),
+                    "name": finals_score_name(row.get("city"), row.get("event_id")),
                     "year": str(int(row["event_year"]) if pd.notna(row.get("event_year")) else year),
                     "gender": tour,
                     "monday": monday.replace(tzinfo=None)
@@ -700,7 +701,7 @@ def _catalog_events(tour: str) -> list[dict[str, Any]]:
         row = {
             "id": str(item.get("event_id") or ""),
             "year": str(item.get("event_year") or start.year),
-            "name": str(item.get("city") or ""),
+            "name": finals_score_name(item.get("city"), item.get("event_id")),
             "start": start,
         }
         if (

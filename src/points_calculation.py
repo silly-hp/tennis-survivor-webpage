@@ -19,7 +19,9 @@ WTA1000_COMBINED = {
     "北京",
 }
 WTA1000_NON_COMBINED = {"多哈", "迪拜", "武汉"}
-WTA_YEAR_END_FINAL = {"利雅得"}
+# 印第安维尔斯年终 is the 2026 WTA finals (event 30808). The March 1000
+# stays 印第安维尔斯 and is not in this set.
+WTA_YEAR_END_FINAL = {"利雅得", "印第安维尔斯年终"}
 
 ATP_MANDATORY = {
     "印第安维尔斯",

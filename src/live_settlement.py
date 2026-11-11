@@ -19,6 +19,13 @@ from draw_status import (
     opening_round_rank,
     retirement_backup_allowed,
 )
+from finals_settlement import (
+    FinalsMatch,
+    day_matches_finished,
+    finals_pick_outcome,
+    match_for,
+    same_phase_names,
+)
 from logger import get_logger
 from points_calculation import (
     ATP_MANDATORY,
@@ -597,6 +604,7 @@ def current_play_day(
     draw: DrawStatus | None,
     detail_rows: list[dict[str, Any]] | None = None,
     official_day: int = 0,
+    day_results: dict[int, list[FinalsMatch]] | None = None,
 ) -> int:
     """
     Pick day currently in play. Starting from the first day, stay on a day
@@ -622,9 +630,12 @@ def current_play_day(
     play = days[0]
     while play + 1 in days:
         settled = official_day >= play
+        if day_results is not None:
+            finished = day_matches_finished(day_results.get(play))
+        else:
+            finished = _day_matches_finished(draw, detail_rows, play)
         if not settled and not (
-            _day_matches_finished(draw, detail_rows, play)
-            and _next_day_open(draw, detail_rows, play)
+            finished and _next_day_open(draw, detail_rows, play)
         ):
             break
         play += 1
@@ -682,6 +693,21 @@ def _with_day1_bye(players, show_bye: bool) -> list:
     if show_bye:
         return ["轮空", *picks]
     return picks
+
+
+def _recorded_picks(
+    details: list[dict[str, Any]], used: list
+) -> list[tuple[int, str]]:
+    """Pair already-settled pick names with the submission day they came from."""
+    named = [
+        item
+        for item in details
+        if str(item.get("player") or "").strip() not in {"", "轮空"}
+    ]
+    recorded: list[tuple[int, str]] = []
+    for name, item in zip(used, named):
+        recorded.append((int(item.get("day") or 0), str(name).strip()))
+    return recorded
 
 
 def _detail_for_pick(
@@ -924,6 +950,7 @@ def apply_live_settlement(
     *,
     play_day_cap: int | None = None,
     force_closed: bool = False,
+    day_results: dict[int, list[FinalsMatch]] | None = None,
 ) -> tuple[pd.DataFrame, dict[str, int], set[str], set[str], list[dict[str, Any]]]:
     """
     Settle alive users against the live draw.
@@ -945,7 +972,12 @@ def apply_live_settlement(
 
     grouped = _details_by_user(detail_rows)
     bye_users = first_day_bye_users(detail_rows, draw, rank_by_id)
-    play_day = current_play_day(draw, detail_rows, official_settled_day(score_df))
+    # Finals have no byes; each pick is judged on that day's match.
+    if day_results is not None:
+        bye_users = set()
+    play_day = current_play_day(
+        draw, detail_rows, official_settled_day(score_df), day_results
+    )
     # Historical replay settles through an earlier day and stops there.
     if play_day_cap is not None and int(play_day_cap) > 0:
         play_day = int(play_day_cap)
@@ -1001,7 +1033,21 @@ def apply_live_settlement(
     counts = dict(empty)
     pending_users: set[str] = set()
     backup_events: list[dict[str, Any]] = []
-    open_names = _selectable_open_names(draw)
+    # Finals days only offer players who are on court; an empty bracket pool
+    # must not turn a still-legal group into 自杀(退赛).
+    open_names = [] if day_results is not None else _selectable_open_names(draw)
+
+    def _judge(detail: dict[str, Any], day: int):
+        if day_results is not None:
+            return finals_pick_outcome(detail, day_results.get(int(day)) or [])
+        return _pick_outcome(
+            detail,
+            draw,
+            fills_by_match,
+            live_round,
+            min_still_round,
+            pick_round_rank=_pick_day_round_rank(draw, day),
+        )
     play_day_closed = (
         True if force_closed else pick_day_closed(draw, detail_rows, play_day)
     )
@@ -1033,18 +1079,12 @@ def apply_live_settlement(
                 pick = str(detail.get("player") or "").strip()
                 if not pick or pick == "轮空" or not used or used[-1] != pick:
                     break
-                outcome, _ = _pick_outcome(
-                    detail,
-                    draw,
-                    fills_by_match,
-                    live_round,
-                    min_still_round,
-                    pick_round_rank=_pick_day_round_rank(draw, official_day),
-                )
+                outcome, _ = _judge(detail, official_day)
                 if outcome is None:
                     used = used[:-1]
                     official_day -= 1
                 break
+        recorded = _recorded_picks(grouped.get(uid, []), used)
         for detail in grouped.get(uid, []):
             day = int(detail.get("day") or 0)
             if day <= official_day:
@@ -1053,10 +1093,14 @@ def apply_live_settlement(
             if not pick:
                 pending = True
                 break
-            suicide = _suicide_reason(detail, used, draw)
+            repeat_used = (
+                same_phase_names(recorded, day) if day_results is not None else used
+            )
+            suicide = _suicide_reason(detail, repeat_used, draw)
             if suicide:
                 if pick != "轮空":
                     used.append(pick)
+                    recorded.append((day, pick))
                 result.at[index, "players"] = used
                 result.at[index, "fill_status"] = suicide
                 result.at[index, "killer"] = ""
@@ -1084,32 +1128,41 @@ def apply_live_settlement(
                 counts["win"] += 1
                 counts["bye"] += 1
                 continue
-            if draw is None or not draw.by_id:
+            if day_results is None and (draw is None or not draw.by_id):
                 pending = True
                 break
-            outcome, effective = _pick_outcome(
-                detail,
-                draw,
-                fills_by_match,
-                live_round,
-                min_still_round,
-                pick_round_rank=_pick_day_round_rank(draw, day),
-            )
+            if draw is None:
+                pending = True
+                break
+            outcome, effective = _judge(detail, day)
             eff_pick = str(effective.get("player") or pick).strip()
             alt = str(detail.get("player_alt") or "").strip()
             primary_player = _lookup_named_pick(draw, detail)
             primary_absent = primary_player is None
-            early_ret = primary_absent or bool(
-                primary_player is not None
-                and primary_player.eliminated
-                and retirement_backup_allowed(primary_player.elim_score)
-            )
-            if early_ret:
-                score_txt = (
-                    "赛前退赛"
-                    if primary_absent
-                    else str(primary_player.elim_score or "").strip()
+            if day_results is not None:
+                played = match_for(pick, day_results.get(day) or [])
+                primary_absent = played is None
+                early_ret = bool(
+                    played
+                    and played.decided
+                    and played.winner_name != pick
+                    and retirement_backup_allowed(played.score)
+                ) or primary_absent
+            else:
+                early_ret = primary_absent or bool(
+                    primary_player is not None
+                    and primary_player.eliminated
+                    and retirement_backup_allowed(primary_player.elim_score)
                 )
+            if early_ret:
+                if day_results is not None and played is not None:
+                    score_txt = str(played.score or "").strip() or "退赛"
+                else:
+                    score_txt = (
+                        "赛前退赛"
+                        if primary_absent
+                        else str(primary_player.elim_score or "").strip()
+                    )
                 if alt and eff_pick == alt:
                     if outcome == "win":
                         bak_result = "alive"
@@ -1137,6 +1190,7 @@ def apply_live_settlement(
             if outcome == "win":
                 if eff_pick and eff_pick != "轮空":
                     used.append(eff_pick)
+                    recorded.append((day, eff_pick))
                 official_day = day
                 result.at[index, "players"] = used
                 result.at[index, "day"] = day
@@ -1149,6 +1203,7 @@ def apply_live_settlement(
             if outcome == "loss":
                 if eff_pick and eff_pick != "轮空":
                     used.append(eff_pick)
+                    recorded.append((day, eff_pick))
                 result.at[index, "players"] = used
                 # Early-ret / 赛前退赛 with no usable backup → 球员退赛;
                 # otherwise (incl. backup lost) → 球员输球.
@@ -1266,6 +1321,7 @@ def settle_score_as_of_day(
     rank_df: Optional[pd.DataFrame],
     base_score: int,
     day: int,
+    day_results: dict[int, list[FinalsMatch]] | None = None,
 ) -> tuple[Optional[pd.DataFrame], set[str], list[dict[str, Any]]]:
     """
     Closed score table at the end of ``day``.
@@ -1285,6 +1341,7 @@ def settle_score_as_of_day(
         base_score=base_score,
         play_day_cap=int(day),
         force_closed=True,
+        day_results=day_results,
     )
     if settled is None or settled.empty:
         return settled, bye_users, backups
@@ -1297,6 +1354,7 @@ def settle_tour_scores(
     draw: DrawStatus | None,
     rank_df: Optional[pd.DataFrame] = None,
     base_score: int = 0,
+    day_results: dict[int, list[FinalsMatch]] | None = None,
 ) -> tuple[
     Optional[pd.DataFrame], dict[str, int], set[str], int, set[str], list[dict[str, Any]]
 ]:
@@ -1319,9 +1377,16 @@ def settle_tour_scores(
 
     ranks = rank_by_id_from_df(rank_df)
     settled, counts, bye_users, pending_users, backup_events = apply_live_settlement(
-        ensured, detail_rows, draw, ranks, base_score=base_score
+        ensured,
+        detail_rows,
+        draw,
+        ranks,
+        base_score=base_score,
+        day_results=day_results,
     )
-    play_day = current_play_day(draw, detail_rows, official_settled_day(ensured))
+    play_day = current_play_day(
+        draw, detail_rows, official_settled_day(ensured), day_results
+    )
     if any(counts.values()):
         logger.info(
             "Live settlement: "
