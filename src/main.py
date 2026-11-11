@@ -51,6 +51,7 @@ from finals_settlement import (
     eligible_user_ids,
     fetch_pick_day_results,
     filter_eligible,
+    finals_player_sets,
     finals_score_name,
     is_year_end_final,
 )
@@ -447,6 +448,16 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             )
             if play_day > 0:
                 day = play_day
+            if finals_mode and day_results is not None:
+                # The draw's 淘汰 flag is meaningless in round robin; color
+                # the pick summary from today's matches instead.
+                live_players, eliminated_players, remaining_players = (
+                    finals_player_sets(
+                        [p.name for p in draw.by_id.values()],
+                        day_results,
+                        int(day),
+                    )
+                )
             # 未选 users can still pick while today's list is open (→ 待定);
             # once it closes they are 自杀（退赛）. A day never opened stays open.
             _PICKS_OPEN[tour_label] = not pick_day_closed(

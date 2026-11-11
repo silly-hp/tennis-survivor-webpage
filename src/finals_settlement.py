@@ -149,6 +149,60 @@ def day_matches_finished(matches: list[FinalsMatch] | None) -> bool:
     return all(match.decided for match in matches)
 
 
+def _loser_name(match: FinalsMatch) -> str:
+    if not match.decided:
+        return ""
+    for name in (match.left_name, match.right_name):
+        if name and name != match.winner_name:
+            return name
+    return ""
+
+
+def finals_player_sets(
+    draw_names: list[str],
+    day_results: dict[int, list[FinalsMatch]] | None,
+    day: int,
+) -> tuple[list[str], list[str], list[str]]:
+    """(live, eliminated, remaining) player names for the pick summary.
+
+    The draw entry list's 淘汰 flag means nothing in round robin, so the
+    status comes from today's matches: the loser of a finished match is
+    淘汰, both sides of an unfinished one are 未完赛. Remaining is the whole
+    field during the group stage; from the semifinals on it is the players
+    on the knockout days minus anyone who lost there.
+    """
+    results = day_results or {}
+    live: list[str] = []
+    eliminated: list[str] = []
+    for match in results.get(int(day)) or []:
+        if match.decided:
+            loser = _loser_name(match)
+            if loser:
+                eliminated.append(loser)
+        else:
+            live.extend(name for name in (match.left_name, match.right_name) if name)
+    names = [str(name).strip() for name in draw_names or [] if str(name or "").strip()]
+    remaining = names
+    if int(day) >= KNOCKOUT_FROM:
+        knock = [
+            match
+            for key, matches in results.items()
+            if int(key) >= KNOCKOUT_FROM
+            for match in matches or []
+        ]
+        players = {
+            name for match in knock for name in (match.left_name, match.right_name) if name
+        }
+        if players:
+            out = {_loser_name(match) for match in knock} - {""}
+            remaining = [name for name in names if name in players and name not in out]
+    return (
+        list(dict.fromkeys(live)),
+        list(dict.fromkeys(eliminated)),
+        list(dict.fromkeys(remaining)),
+    )
+
+
 def match_for(name: str, matches: list[FinalsMatch] | None) -> FinalsMatch | None:
     label = str(name or "").strip()
     if not label or label == "轮空":
