@@ -476,7 +476,7 @@ def write_breakdown_bundle(
     fetch_day_rounds: bool = False,
     years: Optional[list[int]] = None,
 ) -> dict[str, Path]:
-    """Write live + race breakdown JSON files for ATP/WTA."""
+    """Write live + race breakdown data (.js wrappers) for ATP/WTA."""
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     years = years or list(range(2024, 2028))
@@ -534,10 +534,11 @@ def write_breakdown_bundle(
             removed_tournament_name=removed,
             event_score_by_uid=score_map or None,
         )
-        path = output_dir / filename
         payload = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
-        path.write_text(payload, encoding="utf-8")
-        # Companion .js works with file:// (script src), unlike fetch+JSON
+        # Only the .js wrapper is published: it loads via <script> (works on
+        # file://) and nothing reads a .json copy, which used to double the
+        # committed size. Drop any stale .json left by older runs.
+        (output_dir / filename).unlink(missing_ok=True)
         js_name = filename.replace(".json", ".js")
         var_name = {
             "breakdown_live_atp.json": "__BD_LIVE_ATP",
@@ -549,7 +550,6 @@ def write_breakdown_bundle(
         js_path.write_text(
             f"window.{var_name}={payload};\n", encoding="utf-8"
         )
-        written[filename] = path
         written[js_name] = js_path
-        logger.info(f"wrote {path} + {js_name} ({len(data)} users)")
+        logger.info(f"wrote {js_path} ({len(data)} users)")
     return written

@@ -11,7 +11,7 @@ from typing import Any, Optional
 import pandas as pd
 
 from site_html import state
-from site_html.assets import asset_url
+from site_html.assets import asset_url, write_page
 from site_html.common import _site_css_href
 from site_html.css import _FONTS
 from site_html.js import _JS_THEME
@@ -923,5 +923,5 @@ def render_index(
 </body>
 </html>"""
 
-    Path(output_path).write_text(html_str, encoding="utf-8")
+    write_page(output_path, html_str)
     return html_str

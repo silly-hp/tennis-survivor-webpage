@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from site_html import state
-from site_html.assets import asset_url, write_data_js
+from site_html.assets import asset_url, write_data_js, write_page
 from site_html.common import _site_css_href, _topbar, _title_tags
 from site_html.header import JS_HEADER
 from site_html.css import _FONTS
@@ -1415,6 +1415,6 @@ window.CFG=Object.assign(window.CFG||{{}},{cfg_json});
 </body>
 </html>"""
 
-    Path(output_path).write_text(html_str, encoding="utf-8")
+    write_page(output_path, html_str)
     return html_str
 

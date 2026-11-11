@@ -14,7 +14,7 @@ from site_html.breakdown_ui import (
     breakdown_boot_script,
     breakdown_modal_html,
 )
-from site_html.assets import write_data_js
+from site_html.assets import write_data_js, write_page
 from site_html.common import (
     _df_to_html_table,
     _inner_page_shell,
@@ -136,8 +136,8 @@ def render_ranking_page(
     enable_detail: bool = True,
     enable_career_detail: bool = False,
     enable_breakdown: bool = False,
-    breakdown_atp_url: str = "data/breakdown_live_atp.json",
-    breakdown_wta_url: str = "data/breakdown_live_wta.json",
+    breakdown_atp_url: str = "data/breakdown_live_atp.js",
+    breakdown_wta_url: str = "data/breakdown_live_wta.js",
     expired_label: Optional[str] = None,
     table_data: bool = True,
     history: Optional[list[dict]] = None,
@@ -446,5 +446,5 @@ def render_ranking_page(
         ),
     )
 
-    Path(output_path).write_text(html_str, encoding="utf-8")
+    write_page(output_path, html_str)
     return html_str
