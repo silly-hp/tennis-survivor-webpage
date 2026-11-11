@@ -46,7 +46,7 @@ frog_chen_web/
 │   ├── event_scores/                   # 各站得分缓存
 │   ├── event_draws/                    # 签表对阵缓存（克星/爆冷）
 │   ├── event_day_rounds/               # 选人日→轮次标签
-│   ├── breakdown_*.json / *.js         # 积分构成
+│   ├── breakdown_*.js                      # 积分构成
 │   └── player_events.json              # 生涯统计缓存
 │
 ├── src/

@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Optional
 
-from site_html.assets import write_data_js
+from site_html.assets import write_data_js, write_page
 from site_html.common import _inner_page_shell
 from site_html.rank_ui import CSS_RANK, help_button_html, help_modal_html
 from tournament_meta import classify_surface
@@ -215,7 +215,7 @@ def render_calendar_page(
         late_asset="cal.js",
         title_extra=title_extra,
     )
-    Path(output_path).write_text(html_str, encoding="utf-8")
+    write_page(output_path, html_str)
     return html_str
 
 

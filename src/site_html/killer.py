@@ -9,6 +9,7 @@ from typing import Optional
 
 import pandas as pd
 
+from site_html.assets import write_page
 from site_html.common import _df_to_table_data, _inner_page_shell
 
 _CSS_KILLER = """\
@@ -291,6 +292,6 @@ def render_killer_page(
         page=str(output_path),
     )
 
-    Path(output_path).write_text(html_str, encoding="utf-8")
+    write_page(output_path, html_str)
     return html_str
 

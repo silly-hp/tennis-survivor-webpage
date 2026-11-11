@@ -312,8 +312,8 @@ def update_combined_pages(
             "ALL · Combined Live Ranking",
             ["即时"],
             "combined_instant_ranking.html",
-            "data/breakdown_live_atp.json",
-            "data/breakdown_live_wta.json",
+            "data/breakdown_live_atp.js",
+            "data/breakdown_live_wta.js",
         ),
         (
             race,
@@ -321,8 +321,8 @@ def update_combined_pages(
             "ALL · Combined Race Ranking",
             ["冠军积分"],
             "combined_ranking.html",
-            "data/breakdown_race_atp.json",
-            "data/breakdown_race_wta.json",
+            "data/breakdown_race_atp.js",
+            "data/breakdown_race_wta.js",
         ),
     ]
     for df, title, eyebrow, tags, filename, atp_url, wta_url in specs:

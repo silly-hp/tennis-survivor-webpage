@@ -14,7 +14,7 @@ from typing import Optional
 
 import pandas as pd
 
-from site_html.assets import write_data_js
+from site_html.assets import write_data_js, write_page
 from site_html.common import _inner_page_shell
 from site_html.rank_ui import CSS_RANK, JS_HIST, ask_modal_html, history_modal_html
 
@@ -169,7 +169,7 @@ def render_watch_page(
         defer_js=[("hist.js", JS_HIST), ("watch.js", JS_WATCH)],
         title_extra=title_extra,
     )
-    Path(output_path).write_text(html_str, encoding="utf-8")
+    write_page(output_path, html_str)
     return html_str
 
 

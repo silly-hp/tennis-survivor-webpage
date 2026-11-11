@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from site_html.calendar_list import render_calendar_page  # noqa: F401  (re-export)
+from site_html.assets import write_page
 from site_html.common import _inner_page_shell
 from site_html.event_page import (  # noqa: F401  (re-export)
     event_year_series_key,
@@ -172,5 +173,5 @@ def render_calendar_hub_page(
         extra_css=_CSS_CALENDAR,
         page=str(output_path),
     )
-    Path(output_path).write_text(html_str, encoding="utf-8")
+    write_page(output_path, html_str)
     return html_str

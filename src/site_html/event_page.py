@@ -10,6 +10,7 @@ import pandas as pd
 
 from site_html.calendar_list import CSS_SURFACE, surface_code
 from site_html import state
+from site_html.assets import write_page
 from site_html.common import _inner_page_shell
 from site_html.rank_ui import (
     CSS_RANK,
@@ -308,7 +309,7 @@ def render_event_score_page(
         state.set_css_vars(site_vars)
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(html_str, encoding="utf-8")
+    write_page(out, html_str)
     return html_str
 
 
