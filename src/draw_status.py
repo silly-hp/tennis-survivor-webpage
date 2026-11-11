@@ -105,6 +105,9 @@ class DrawStatus:
     # Bracket slots: draw row seq -> {round column: player_id}. Column ``r`` holds
     # the round-``r`` participants, ``r + 1`` the winners of that round.
     bracket: dict[int, dict[int, str]] = field(default_factory=dict)
+    # Year-end finals group stage: {player_a_id, player_b_id} ->
+    # (winner_id, score as the winner's row shows it). Unplayed pairs absent.
+    rr_results: dict[frozenset, tuple[str, str]] = field(default_factory=dict)
 
     def bracket_span(self, rnd: int, match_no: int) -> range:
         """Draw rows covered by match ``match_no`` of round ``rnd``."""
@@ -562,6 +565,61 @@ def _parse_bracket_slots(soup: BeautifulSoup, gender: str) -> dict[int, dict[int
     return {}
 
 
+def _rr_rows(table) -> list:
+    body = table.find("tbody") or table
+    return body.find_all("tr", recursive=False)
+
+
+def parse_rr_results(soup: BeautifulSoup, gender: str) -> dict[frozenset, tuple[str, str]]:
+    """Finished group-stage matches from the round-robin grid.
+
+    Row ``i`` column ``j`` is player i against player j: ``DataIn`` means
+    the row player won, ``DataOut`` that they lost, and an ``unixtime``
+    span that the match is not played yet. The cell text is the score from
+    the row player's side. The grid has no match ids or dates, but each
+    pair meets once in a group, so the pair is the key.
+    """
+    gender = str(gender).strip().upper()
+    out: dict[frozenset, tuple[str, str]] = {}
+    for part in soup.select(".cDrawPart"):
+        if part.get("data-id") != gender:
+            continue
+        for table in part.select("table.cDrawBlockRR"):
+            rows = _rr_rows(table)
+            if len(rows) < 2:
+                continue
+            columns = [
+                str(node.get("data-id") or "").strip()
+                if (node := td.select_one("pname"))
+                else ""
+                for td in rows[0].find_all("td", recursive=False)[1:]
+            ]
+            for row in rows[1:]:
+                cells = row.find_all("td", recursive=False)
+                if not cells:
+                    continue
+                head = cells[0].select_one("pname")
+                row_id = str(head.get("data-id") or "").strip() if head else ""
+                if not row_id:
+                    continue
+                for col_id, cell in zip(columns, cells[1:]):
+                    if not col_id or col_id == row_id:
+                        continue
+                    classes = cell.get("class") or []
+                    if "DataIn" in classes:
+                        winner = row_id
+                    elif "DataOut" in classes:
+                        winner = col_id
+                    else:
+                        continue
+                    score = cell.get_text(" ", strip=True)
+                    key = frozenset((row_id, col_id))
+                    # Keep the winner's side of the score when both are seen.
+                    if key not in out or winner == row_id:
+                        out[key] = (winner, score)
+    return out
+
+
 def parse_draw_status(html: str, gender: str) -> DrawStatus:
     gender = str(gender).strip().upper()
     soup = BeautifulSoup(html, "html.parser")
@@ -628,6 +686,7 @@ def parse_draw_status(html: str, gender: str) -> DrawStatus:
         by_name=by_name,
         round_points=_parse_round_points(soup, gender),
         bracket=_parse_bracket_slots(soup, gender),
+        rr_results=parse_rr_results(soup, gender),
     )
     # Finished events may drop ``.cDrawEntryEliminated`` from the entry list
     # (Hong Kong 2026 final: every player elim=false). Recover losers from the
@@ -701,6 +760,7 @@ def parse_pick_days(html: str, year: str | int | None = None) -> list[dict[str, 
             "round": "",
             "open": False,
             "has_cards": False,
+            "cards": [],
         }
     for info in soup.select(".cSurvivorDayPickInfo"):
         cards = info.select(".cSurvivorSmallCard, .cSurvivorCard")
@@ -717,8 +777,24 @@ def parse_pick_days(html: str, year: str | int | None = None) -> list[dict[str, 
         day = card_days[0] if card_days else int(info.get("data-id") or 0) + 1
         item = by_day.setdefault(
             day,
-            {"day": day, "date": None, "round": "", "open": False, "has_cards": False},
+            {
+                "day": day,
+                "date": None,
+                "round": "",
+                "open": False,
+                "has_cards": False,
+                "cards": [],
+            },
         )
+        # Two cards with the same data-normalid are the two sides of one match.
+        item["cards"] = [
+            {
+                "id": str(card.get("data-id") or "").strip(),
+                "name": str(card.get("data-name") or "").strip(),
+                "match_id": str(card.get("data-normalid") or "").strip(),
+            }
+            for card in cards
+        ]
         if card_dates and not item.get("date"):
             try:
                 item["date"] = datetime.strptime(card_dates[0][:10], "%Y-%m-%d").date()

@@ -48,6 +48,7 @@ from champion_stats import render_champion_pages
 from weather import build_weather_cards
 from draw_status import fetch_draw_status
 from finals_settlement import (
+    complete_day_results,
     eligible_user_ids,
     fetch_pick_day_results,
     filter_eligible,
@@ -433,8 +434,12 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
                     logger.warning(
                         f"{tour_label}年终总决赛没能算出开赛前前8，暂不过滤选人"
                     )
-                day_results = fetch_pick_day_results(
-                    tour_cfg["event"], getattr(draw, "pick_days", None)
+                day_results = complete_day_results(
+                    fetch_pick_day_results(
+                        tour_cfg["event"], getattr(draw, "pick_days", None)
+                    ),
+                    draw,
+                    submission_to_detail_rows(s) if s is not None else None,
                 )
             re, counts, bye_users, play_day, pending_uids, backup_events = (
                 settle_tour_scores(

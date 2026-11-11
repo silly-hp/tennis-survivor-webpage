@@ -7,12 +7,13 @@ top 8 (ties at 8th included) stay in the field.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from datetime import date as date_type, timedelta
 
 import pandas as pd
 import requests
 
-from draw_status import USER_AGENT, retirement_backup_allowed
+from draw_status import USER_AGENT, beijing_now, retirement_backup_allowed
 from logger import get_logger
 from points_calculation import calculate_points, parse_events
 
@@ -87,10 +88,44 @@ class FinalsMatch:
     winner_name: str = ""
     score: str = ""
     live: bool = False
+    winner_id: str = ""
 
     @property
     def decided(self) -> bool:
-        return bool(self.winner_name) and not self.live
+        return bool(self.winner_name or self.winner_id) and not self.live
+
+    def side(self, player_id: str = "", name: str = "") -> str:
+        """``"left"`` / ``"right"`` for the given player, else ``""``.
+
+        Names are tried first; the player id covers a results page whose
+        names are missing or spelled differently.
+        """
+        label = str(name or "").strip()
+        if label:
+            if label == self.left_name:
+                return "left"
+            if label == self.right_name:
+                return "right"
+        pid = _player_id(player_id)
+        if pid:
+            if pid == self.left_id:
+                return "left"
+            if pid == self.right_id:
+                return "right"
+        return ""
+
+    def won_by(self, player_id: str = "", name: str = "") -> bool:
+        side = self.side(player_id, name)
+        if not side or not self.decided:
+            return False
+        if self.winner_id:
+            return self.winner_id == (self.left_id if side == "left" else self.right_id)
+        return self.winner_name == (self.left_name if side == "left" else self.right_name)
+
+
+def _player_id(value: object) -> str:
+    key = _as_key(value)
+    return "" if key in {"", "0"} else key
 
 
 def same_phase_names(recorded: list[tuple[int, str]], day: int) -> list[str]:
@@ -143,8 +178,22 @@ def filter_eligible(df: pd.DataFrame | None, eligible: set[str]) -> pd.DataFrame
     return df.loc[keys.isin(eligible)].copy()
 
 
-def day_matches_finished(matches: list[FinalsMatch] | None) -> bool:
+def expected_match_count(day: int) -> int:
+    """Singles per finals day: two group matches, two semifinals, one final."""
+    return 1 if int(day) > KNOCKOUT_FROM else 2
+
+
+def day_complete(matches: list[FinalsMatch] | None, day: int = 0) -> bool:
+    """Every match of the day is listed. ``day=0`` (unknown) trusts the list."""
     if not matches:
+        return False
+    if int(day or 0) <= 0:
+        return True
+    return len(matches) >= expected_match_count(day)
+
+
+def day_matches_finished(matches: list[FinalsMatch] | None, day: int = 0) -> bool:
+    if not day_complete(matches, day):
         return False
     return all(match.decided for match in matches)
 
@@ -152,9 +201,10 @@ def day_matches_finished(matches: list[FinalsMatch] | None) -> bool:
 def _loser_name(match: FinalsMatch) -> str:
     if not match.decided:
         return ""
-    for name in (match.left_name, match.right_name):
-        if name and name != match.winner_name:
-            return name
+    if match.won_by(match.left_id, match.left_name):
+        return match.right_name
+    if match.won_by(match.right_id, match.right_name):
+        return match.left_name
     return ""
 
 
@@ -203,14 +253,144 @@ def finals_player_sets(
     )
 
 
-def match_for(name: str, matches: list[FinalsMatch] | None) -> FinalsMatch | None:
+def match_for(
+    name: str,
+    matches: list[FinalsMatch] | None,
+    player_id: object = None,
+) -> FinalsMatch | None:
+    """Today's match for a pick: by name first, then by player id."""
     label = str(name or "").strip()
-    if not label or label == "轮空":
+    if label == "轮空":
+        return None
+    pid = _player_id(player_id)
+    if not label and not pid:
         return None
     for match in matches or []:
-        if label in {match.left_name, match.right_name}:
+        if label and label in {match.left_name, match.right_name}:
             return match
+    if pid:
+        for match in matches or []:
+            if pid in {match.left_id, match.right_id}:
+                return match
     return None
+
+
+MatchPairs = dict[int, dict[str, set[str]]]
+
+
+def match_id_pairs(
+    detail_rows: list[dict] | None,
+    pick_days: list[dict] | None = None,
+) -> MatchPairs:
+    """Day → match id → player ids that carry that id.
+
+    A finals match id is ``2`` + group + two group slots in round robin
+    (``2212``, a replacement takes slot 5 as in ``2153``) and ``2`` + round
+    + match number in the knockout (``2101`` SF1, ``2201`` F). The id does
+    not name the players, so they come from the survivor page cards of the
+    open day and from every submitted primary / backup. When a player is
+    replaced mid-group the same match gets a new id (2025: ``2234`` →
+    ``2235``), so ids are only compared within one day.
+    """
+    out: MatchPairs = {}
+
+    def _add(day: object, match_id: object, player_id: object) -> None:
+        try:
+            key_day = int(day or 0)
+        except (TypeError, ValueError):
+            return
+        mid, pid = _player_id(match_id), _player_id(player_id)
+        if key_day <= 0 or not mid or not pid:
+            return
+        out.setdefault(key_day, {}).setdefault(mid, set()).add(pid)
+
+    for item in pick_days or []:
+        for card in item.get("cards") or []:
+            _add(item.get("day"), card.get("match_id"), card.get("id"))
+    for row in detail_rows or []:
+        _add(row.get("day"), row.get("normal_match_id"), row.get("fill"))
+        _add(row.get("day"), row.get("normal_match_id_alt"), row.get("fill_alt"))
+    return out
+
+
+def _opponent_ids(pairs: MatchPairs | None, day: int, player_id: object) -> set[str]:
+    pid = _player_id(player_id)
+    if not pid:
+        return set()
+    found: set[str] = set()
+    for players in (pairs or {}).get(int(day or 0), {}).values():
+        if pid in players:
+            found |= players - {pid}
+    return found
+
+
+def _absent_confirmed(
+    detail: dict,
+    matches: list[FinalsMatch] | None,
+    day: int,
+    pairs: MatchPairs | None,
+) -> bool:
+    """The pick is not in today's matches because they really withdrew.
+
+    True once the day's match list is complete, or when the scheduled
+    opponent is on court against someone else (replacement). Otherwise the
+    results page may just not list the match yet, so stay pending.
+    """
+    if day_complete(matches, day):
+        return True
+    for opp in _opponent_ids(pairs, day, detail.get("fill")):
+        if match_for("", matches, opp) is not None:
+            return True
+    return False
+
+
+def primary_state(
+    detail: dict,
+    matches: list[FinalsMatch] | None,
+    day: int = 0,
+    pairs: MatchPairs | None = None,
+) -> tuple[str, FinalsMatch | None]:
+    """Where the primary pick stands on ``day``.
+
+    ``won`` / ``lost`` / ``early`` (lost by W/O or retirement inside set 1)
+    / ``absent`` (withdrew before the match) / ``pending`` (not decided or
+    not listed yet).
+    """
+    pick = str(detail.get("player") or "").strip()
+    match = match_for(pick, matches, detail.get("fill"))
+    if match is None:
+        if matches and _absent_confirmed(detail, matches, day, pairs):
+            return "absent", None
+        return "pending", None
+    if not match.decided:
+        return "pending", match
+    if match.won_by(detail.get("fill"), pick):
+        return "won", match
+    if retirement_backup_allowed(match.score):
+        return "early", match
+    return "lost", match
+
+
+def finals_conflict(
+    detail: dict,
+    matches: list[FinalsMatch] | None,
+    day: int = 0,
+    pairs: MatchPairs | None = None,
+) -> bool:
+    """Primary and backup are the two sides of one match (自杀(主备冲突)).
+
+    Uses today's matches and the day's match-id pairs by player id, so a
+    match whose id changed after a replacement is still caught.
+    """
+    pick = str(detail.get("player") or "").strip()
+    alt = str(detail.get("player_alt") or "").strip()
+    if not pick or not alt or "轮空" in {pick, alt} or pick == alt:
+        return False
+    first = match_for(pick, matches, detail.get("fill"))
+    if first is not None and first.side(detail.get("fill_alt"), alt):
+        return True
+    alt_id = _player_id(detail.get("fill_alt"))
+    return bool(alt_id) and alt_id in _opponent_ids(pairs, day, detail.get("fill"))
 
 
 def _alt_detail(detail: dict) -> dict | None:
@@ -234,35 +414,90 @@ def finals_pick_outcome(
     detail: dict,
     matches: list[FinalsMatch] | None,
     *,
+    day: int = 0,
+    pairs: MatchPairs | None = None,
     allow_backup: bool = True,
 ) -> tuple[str | None, dict]:
     """Win if the picked player won today's match. Pending until that match ends.
 
     An empty match list means the results page was not loaded: stay pending
     instead of eliminating the field. A primary who is not in today's matches
-    is treated as withdrawn, so the backup is judged when one was submitted.
+    counts as withdrawn only once the day's list is complete or the opponent
+    is on court against a replacement; the backup is then judged when one
+    was submitted. W/O or retirement inside set 1 also hands over to it.
     """
     pick = str(detail.get("player") or "").strip()
     if not matches:
         return None, detail
     if not pick or pick == "轮空":
         return "loss", detail
-    match = match_for(pick, matches)
-    if match is None:
-        if allow_backup:
-            alt = _alt_detail(detail)
-            if alt is not None:
-                return finals_pick_outcome(alt, matches, allow_backup=False)
-        return "loss", detail
-    if not match.decided:
+    state, _match = primary_state(detail, matches, day, pairs)
+    if state == "pending":
         return None, detail
-    if match.winner_name == pick:
+    if state == "won":
         return "win", detail
-    if allow_backup and retirement_backup_allowed(match.score):
+    if allow_backup and state in {"absent", "early"}:
         alt = _alt_detail(detail)
         if alt is not None:
-            return finals_pick_outcome(alt, matches, allow_backup=False)
+            return finals_pick_outcome(
+                alt, matches, day=day, pairs=pairs, allow_backup=False
+            )
     return "loss", detail
+
+
+def complete_day_results(
+    day_results: dict[int, list[FinalsMatch]] | None,
+    draw,
+    detail_rows: list[dict] | None = None,
+) -> dict[int, list[FinalsMatch]] | None:
+    """Fill gaps in the results pages from the draw.
+
+    * Missing names (no stat link on the results page) come from the draw.
+    * A group match the results page still shows as unfinished takes its
+      result from the round-robin grid, which has no dates and so cannot
+      miss a match that ran past midnight.
+    * A group day whose results page gave nothing is rebuilt from the
+      day's match-id pairs plus the grid; such a list may be short, so an
+      absent pick there stays pending.
+    """
+    if day_results is None or draw is None:
+        return day_results
+    by_id = getattr(draw, "by_id", None) or {}
+    names = {pid: str(p.name or "").strip() for pid, p in by_id.items()}
+    grid = getattr(draw, "rr_results", None) or {}
+
+    def _from_grid(match: FinalsMatch, day: int) -> FinalsMatch:
+        left = match.left_name or names.get(match.left_id, "")
+        right = match.right_name or names.get(match.right_id, "")
+        winner_name = match.winner_name or names.get(match.winner_id, "")
+        out = replace(match, left_name=left, right_name=right, winner_name=winner_name)
+        if out.decided or out.live or day >= KNOCKOUT_FROM:
+            return out
+        hit = grid.get(frozenset((match.left_id, match.right_id)))
+        if not hit:
+            return out
+        winner_id, score = hit
+        return replace(
+            out, winner_id=winner_id, winner_name=names.get(winner_id, ""), score=score
+        )
+
+    pairs = match_id_pairs(detail_rows, getattr(draw, "pick_days", None))
+    filled: dict[int, list[FinalsMatch]] = {}
+    for day, matches in day_results.items():
+        day = int(day)
+        fixed = [_from_grid(match, day) for match in matches or []]
+        if not fixed and day < KNOCKOUT_FROM:
+            for players in pairs.get(day, {}).values():
+                if len(players) != 2:
+                    continue
+                left_id, right_id = sorted(players)
+                fixed.append(
+                    _from_grid(FinalsMatch(left_id, right_id, "", ""), day)
+                )
+            if fixed:
+                logger.info(f"Finals day {day}: rebuilt {len(fixed)} matches from draw")
+        filled[day] = fixed
+    return filled
 
 
 def _set_count(row) -> int:
@@ -317,13 +552,15 @@ def parse_result_matches(html: str, event_id: str | int) -> list[FinalsMatch]:
             left_name, right_name = "", ""
         rows = node.select("tr")
         winner_name = ""
+        winner_id = ""
         live = str(node.get("match-status") or "") == "1" or any(
             "Live" in str(item) for item in classes
         )
-        for row, name in zip(rows, (left_name, right_name)):
+        for row, name, pid in zip(rows, (left_name, right_name), (left_id, right_id)):
             row_classes = " ".join(row.get("class") or [])
-            if "cResultMatchMidTableRowWinner" in row_classes and name:
+            if "cResultMatchMidTableRowWinner" in row_classes:
                 winner_name = name
+                winner_id = pid
                 live = False
         matches.append(
             FinalsMatch(
@@ -334,6 +571,7 @@ def parse_result_matches(html: str, event_id: str | int) -> list[FinalsMatch]:
                 winner_name=winner_name,
                 score=_match_score(node, rows),
                 live=live,
+                winner_id=winner_id,
             )
         )
     return matches
@@ -345,16 +583,26 @@ def fetch_pick_day_results(
     *,
     session: requests.Session | None = None,
     timeout: int = 60,
+    today: date_type | None = None,
 ) -> dict[int, list[FinalsMatch]]:
-    """Results for each survivor pick day. A redirected date is ignored."""
+    """Results for each survivor pick day. A redirected date is ignored.
+
+    Days dated after tomorrow (Beijing) cannot have been played and are
+    left empty without a request; pick days use the venue's date, which is
+    never ahead of Beijing.
+    """
     sess = session or requests.Session()
     out: dict[int, list[FinalsMatch]] = {}
+    last = (today or beijing_now().date()) + timedelta(days=1)
     for item in pick_days or []:
         day = int(item.get("day") or 0)
         date = item.get("date")
         if day <= 0 or not date:
             continue
         iso = date.isoformat() if hasattr(date, "isoformat") else str(date)[:10]
+        if iso > last.isoformat():
+            out[day] = []
+            continue
         url = f"https://www.live-tennis.cn/zh/result/{iso}"
         try:
             response = sess.get(

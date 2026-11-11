@@ -22,8 +22,11 @@ from draw_status import (
 from finals_settlement import (
     FinalsMatch,
     day_matches_finished,
+    finals_conflict,
     finals_pick_outcome,
     match_for,
+    match_id_pairs,
+    primary_state,
     same_phase_names,
 )
 from logger import get_logger
@@ -211,6 +214,112 @@ def _suicide_reason(
     ):
         return SUICIDE_REPEAT
     return None
+
+
+def _finals_suicide_reason(
+    detail: dict[str, Any],
+    used: list[str],
+    matches: list[FinalsMatch],
+    day: int,
+    pairs: dict | None,
+) -> str | None:
+    """``_suicide_reason`` for the year-end finals.
+
+    The draw's 淘汰 flag and elimination opponent mean nothing in round
+    robin, so 主备冲突 and the backup-repeat check read the day's matches.
+    """
+    base = _suicide_reason(detail, used, None)
+    if base:
+        return base
+    if finals_conflict(detail, matches, day, pairs):
+        return SUICIDE_CONFLICT
+    alt = str(detail.get("player_alt") or "").strip()
+    if alt and alt != "轮空" and alt in used:
+        state, _ = primary_state(detail, matches, day, pairs)
+        if state in {"absent", "early"}:
+            return SUICIDE_REPEAT
+    return None
+
+
+def _set_fill_status(
+    result: pd.DataFrame, index, status: str, killer: str, used: list
+) -> None:
+    result.at[index, "fill_status"] = status
+    result.at[index, "killer"] = killer
+    result.at[index, "players"] = used
+    if "status" in result.columns:
+        result.at[index, "status"] = FILL_TO_STATUS.get(status, -2)
+
+
+def _repair_finals_rows(
+    result: pd.DataFrame,
+    grouped: dict[str, list[dict[str, Any]]],
+    day_results: dict[int, list[FinalsMatch]],
+    pairs: dict | None,
+) -> int:
+    """``_repair_early_retirement_rows`` judged on the finals day's matches.
+
+    Rows are only touched when that day's match settles the question; a day
+    with no results or an undecided match keeps the official row.
+    """
+    repaired = 0
+    for index, row in result.iterrows():
+        status = str(row.get("fill_status") or "").strip()
+        if status not in {"球员输球", "球员退赛", "自杀(退赛)"}:
+            continue
+        used = _players_without_bye(row.get("players"))
+        if not used:
+            continue
+        last = str(used[-1]).strip()
+        uid = _as_key(row.get("user_id"))
+        detail = _detail_for_pick(grouped.get(uid, []), last)
+        if detail is None:
+            if status == "自杀(退赛)":
+                _set_fill_status(result, index, "自杀(退赛)", "", used)
+                repaired += 1
+            continue
+        pick_day = int(detail.get("day") or 0)
+        settled_day = int(pd.to_numeric(row.get("day"), errors="coerce") or 0)
+        if status == "自杀(退赛)" and pick_day and pick_day <= settled_day:
+            continue
+        matches = day_results.get(pick_day) or []
+        if not matches:
+            continue
+        state, _ = primary_state(detail, matches, pick_day, pairs)
+        if state == "pending":
+            continue
+        if state == "won":
+            # The pick won that day: a death here is a missed later pick.
+            if status == "自杀(退赛)":
+                _set_fill_status(result, index, "自杀(退赛)", "", used)
+                repaired += 1
+            continue
+        early = state in {"absent", "early"}
+        alt = str(detail.get("player_alt") or "").strip()
+        if early and alt:
+            if finals_conflict(detail, matches, pick_day, pairs):
+                _set_fill_status(result, index, SUICIDE_CONFLICT, "", used)
+                repaired += 1
+                continue
+            if match_for(alt, matches, detail.get("fill_alt")) is None:
+                # The backup is not on court that day either.
+                _set_fill_status(result, index, STATUS_PLAYER_RETIRE, last, used)
+                repaired += 1
+                continue
+            # Died on the primary despite a usable backup — revive for re-settle.
+            used = used[:-1]
+            _set_fill_status(result, index, "存活", "", used)
+            result.at[index, "day"] = max(0, (pick_day or (len(used) + 1)) - 1)
+            repaired += 1
+            continue
+        if early:
+            _set_fill_status(result, index, STATUS_PLAYER_RETIRE, last, used)
+            repaired += 1
+            continue
+        if status == "自杀(退赛)":
+            _set_fill_status(result, index, "球员输球", last, used)
+            repaired += 1
+    return repaired
 
 
 def _alt_detail(detail: dict[str, Any]) -> dict[str, Any] | None:
@@ -631,7 +740,7 @@ def current_play_day(
     while play + 1 in days:
         settled = official_day >= play
         if day_results is not None:
-            finished = day_matches_finished(day_results.get(play))
+            finished = day_matches_finished(day_results.get(play), play)
         else:
             finished = _day_matches_finished(draw, detail_rows, play)
         if not settled and not (
@@ -1018,12 +1127,23 @@ def apply_live_settlement(
     # Snapshot before settlement mutates fill_status — today's pick summary
     # must only count users who were still alive at the open of the day.
     result["alive_at_open"] = result["fill_status"].astype(str).eq("存活")
-    if draw is not None and draw.by_id:
+    pairs = (
+        match_id_pairs(detail_rows, draw.pick_days if draw else None)
+        if day_results is not None
+        else None
+    )
+    repairable = day_results is not None or (draw is not None and draw.by_id)
+    if day_results is not None:
+        repaired_n = _repair_finals_rows(result, grouped, day_results, pairs)
+        if repaired_n:
+            logger.info(f"Repaired {repaired_n} finals early-retirement rows")
+    elif repairable:
         repaired_n = _repair_early_retirement_rows(result, grouped, draw)
         if repaired_n:
             logger.info(
                 f"Repaired {repaired_n} early-retirement / 退赛 rows for backup"
             )
+    if repairable:
         # Revived rows were wrongly marked dead on primary; treat as alive at open
         # so today's pick board / summary still include them.
         result.loc[
@@ -1039,7 +1159,9 @@ def apply_live_settlement(
 
     def _judge(detail: dict[str, Any], day: int):
         if day_results is not None:
-            return finals_pick_outcome(detail, day_results.get(int(day)) or [])
+            return finals_pick_outcome(
+                detail, day_results.get(int(day)) or [], day=int(day), pairs=pairs
+            )
         return _pick_outcome(
             detail,
             draw,
@@ -1096,7 +1218,13 @@ def apply_live_settlement(
             repeat_used = (
                 same_phase_names(recorded, day) if day_results is not None else used
             )
-            suicide = _suicide_reason(detail, repeat_used, draw)
+            suicide = (
+                _finals_suicide_reason(
+                    detail, repeat_used, day_results.get(day) or [], day, pairs
+                )
+                if day_results is not None
+                else _suicide_reason(detail, repeat_used, draw)
+            )
             if suicide:
                 if pick != "轮空":
                     used.append(pick)
@@ -1140,14 +1268,11 @@ def apply_live_settlement(
             primary_player = _lookup_named_pick(draw, detail)
             primary_absent = primary_player is None
             if day_results is not None:
-                played = match_for(pick, day_results.get(day) or [])
-                primary_absent = played is None
-                early_ret = bool(
-                    played
-                    and played.decided
-                    and played.winner_name != pick
-                    and retirement_backup_allowed(played.score)
-                ) or primary_absent
+                state, played = primary_state(
+                    detail, day_results.get(day) or [], day, pairs
+                )
+                primary_absent = state == "absent"
+                early_ret = state in {"absent", "early"}
             else:
                 early_ret = primary_absent or bool(
                     primary_player is not None
