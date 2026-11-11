@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import Tuple, Dict, Optional, Union, List
-from points_calculation import calculate_points, parse_events
+from points_calculation import calculate_points, entry_floor, parse_events
 from live_settlement import clean_player_list
 
 
@@ -176,6 +176,10 @@ def compute_live_ranking(
         live_ranking["new_details"] = live_ranking["details_text"].apply(parse_events)
         live_ranking["removed_point"] = 0
 
+    # Before this week's points go in. Official details may already list it.
+    live_ranking["entry_floor"] = live_ranking["new_details"].map(
+        lambda details: entry_floor(details, tour, new_tournament_name)
+    )
     live_ranking["new_details"] = live_ranking.apply(
         lambda r: add_new_tournament(r["new_details"], r["score"], new_tournament_name),
         axis=1,

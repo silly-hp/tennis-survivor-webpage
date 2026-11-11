@@ -19,6 +19,7 @@ OUTPUT_COLS = [
     "本站得分",
     "扣除积分",
     "即时积分",
+    "起计分",
     "选人明细",
 ]
 
@@ -47,7 +48,7 @@ def prepare_rank_change(df):
         df["即时排名"], errors="coerce"
     )
     df["排名变化"] = df["排名变化"].astype("Int64")
-    for col in ("当前排名", "当前积分", "本站得分", "扣除积分", "即时积分", "即时排名", "存活天数"):
+    for col in ("当前排名", "当前积分", "本站得分", "扣除积分", "即时积分", "起计分", "即时排名", "存活天数"):
         if col in df.columns:
             df[col] = (
                 pd.to_numeric(df[col], errors="coerce").round(0).astype("Int64")

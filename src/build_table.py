@@ -5,7 +5,7 @@ from typing import Optional, Union, List, Set
 
 from live_ranking import compute_live_ranking, remove_current_tournament
 from logger import get_logger
-from points_calculation import parse_events, calculate_points
+from points_calculation import calculate_points, entry_floor, parse_events
 from submission_stats import get_today_status
 
 logger = get_logger(__name__)
@@ -36,6 +36,7 @@ OUTPUT_COLUMNS = [
     "player_alt",
     "removed_point",
     "live_score",
+    "entry_floor",
     "live_rank",
     "today_status",
     "day",
@@ -55,6 +56,7 @@ INT_OUTPUT_COLS = [
     "score",
     "removed_point",
     "live_score",
+    "entry_floor",
     "live_rank",
     "day",
     "rank_change",
@@ -97,7 +99,9 @@ def build_ranking_table(
             settled_score_df=score_df,
         ).sort_values(by="current_rank", ascending=True, na_position="last")
     elif day == 0:
-        return _build_day0(rank_df, removed_tournament_name, tour).sort_values(
+        return _build_day0(
+            rank_df, removed_tournament_name, tour, new_tournament_name
+        ).sort_values(
             by="current_rank", ascending=True, na_position="last"
         )
     else:
@@ -279,6 +283,9 @@ def _build_day1(
     if not removed_tournaments and not settled_scores:
         p_df["live_score"] = p_df["current_score"]
         p_df["removed_point"] = 0
+        p_df["entry_floor"] = p_df["details_text"].map(
+            lambda text: entry_floor(parse_events(text), tour, new_tournament_name)
+        )
     else:
         def _remove_many(details_text):
             details = parse_events(details_text)
@@ -295,6 +302,9 @@ def _build_day1(
                 p_df["new_details"] = p_df["new_details"].apply(
                     lambda d: {**(d or {}), tn: 0}
                 )
+        p_df["entry_floor"] = p_df["new_details"].map(
+            lambda details: entry_floor(details, tour, new_tournament_name)
+        )
         if settled_scores and new_tournament_name:
             # Add this event's settled points for everyone who submitted.
             p_df["new_details"] = [
@@ -325,6 +335,7 @@ def _build_day0(
     rank_df: pd.DataFrame,
     removed_tournament_name: Optional[Union[str, List[str]]],
     tour: str,
+    new_tournament_name: Optional[str] = None,
 ) -> pd.DataFrame:
     removed_tournaments = _normalize_removed_tournaments(removed_tournament_name)
     rank_base = rank_df.loc[
@@ -347,6 +358,9 @@ def _build_day0(
             )
     if removed_tournaments:
         rank_base["event_num"] -= len(removed_tournaments)
+    rank_base["entry_floor"] = rank_base["new_details"].map(
+        lambda details: entry_floor(details, tour, new_tournament_name)
+    )
     rank_base["live_score"] = rank_base.apply(
         lambda r: calculate_points(r["new_details"], tour=tour)["total_points"],
         axis=1,

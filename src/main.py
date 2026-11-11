@@ -90,6 +90,7 @@ COL_ZH_DICT = {
     "fill_status": "当前状态",
     "removed_point": "扣除积分",
     "live_score": "即时积分",
+    "entry_floor": "起计分",
     "live_rank": "即时排名",
     "rank_change": "排名变化",
     "today_status": "今日状态",

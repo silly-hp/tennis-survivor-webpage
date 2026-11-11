@@ -417,6 +417,59 @@ def print_breakdown(result: dict):
     print("=" * 50)
 
 
+def _bonus_event(name: str) -> bool:
+    """Slams, the year-end final, and the Olympics always count."""
+    return (
+        name in GRAND_SLAMS
+        or name in WTA_YEAR_END_FINAL
+        or name in ATP_YEAR_END_FINALS
+        or name in OLYMPICS
+    )
+
+
+def _mandatory_has_room(name: str, tour: str, scores: dict) -> bool:
+    """True when this event still has an open mandatory slot."""
+    tour_upper = str(tour).upper()
+    if tour_upper == "WTA" and name in WTA1000_COMBINED:
+        attended = sum(1 for key in scores if key in WTA1000_COMBINED)
+        return attended < MIN_COMBINED
+    if tour_upper == "WTA" and name in WTA1000_NON_COMBINED:
+        attended = sum(1 for key in scores if key in WTA1000_NON_COMBINED)
+        return attended < MIN_NON_COMBINED
+    if tour_upper == "ATP" and name in ATP_MANDATORY:
+        attended = sum(1 for key in scores if key in ATP_MANDATORY)
+        return attended < MIN_MANDATORY
+    return False
+
+
+def entry_floor(
+    tournament_scores: dict | None,
+    tour: str,
+    event_name: str | None,
+) -> int:
+    """Lowest counted score this event can replace.
+
+    Computed without this event's own points. An open slot, a slam, the
+    year-end final, and the Olympics are 0. A 1000 whose mandatory quota is
+    already full competes with the other counted events; a mandatory 0 from
+    another event is not a score it can replace.
+    """
+    name = str(event_name or "").strip()
+    scores = dict(tournament_scores or {})
+    if name:
+        scores.pop(name, None)
+    if not name or _bonus_event(name):
+        return 0
+    if _mandatory_has_room(name, tour, scores):
+        return 0
+    others = calculate_points(scores, tour=tour)["breakdown"]["others"]
+    counted = others.get("tournaments_counted") or {}
+    slots = int(others.get("slots_available") or 0)
+    if slots <= 0 or len(counted) < slots or not counted:
+        return 0
+    return int(min(counted.values()))
+
+
 def calculate_points(
     detailed_dict: dict[str, int],
     debugging: bool = False,
