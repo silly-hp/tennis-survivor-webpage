@@ -240,6 +240,10 @@ body.dark .mode-tab.active{color:var(--primary);}
 @media(max-width:600px){
     .summary-picker-cols{grid-template-columns:1fr;}
 }
+.sum-footer{display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:8px;margin-top:12px;}
+.sum-footer .clear-btn:disabled{opacity:.45;cursor:default;
+    border-color:var(--border);color:var(--muted);}
 
 /* ── summary: profile header bar ── */
 .sumr-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;
@@ -255,6 +259,9 @@ body.dark .mode-tab.active{color:var(--primary);}
 .sumr-head-scope{background:var(--primary);color:#fff;padding:14px 20px;
     font-size:12px;display:flex;align-items:center;justify-content:flex-end;
     letter-spacing:.02em;white-space:nowrap;}
+.sumr-head-users{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;min-width:0;}
+.sumr-head-user{overflow-wrap:anywhere;}
+.sumr-head-sep{font-family:'Space Mono',monospace;font-size:13px;opacity:.55;}
 body.dark .sumr-head-name{background:var(--th-bg);}
 body.dark .sumr-head-scope{background:var(--primary-dark);}
 
@@ -284,6 +291,10 @@ body.dark .sumr-oppo-score{color:var(--primary);}
 .sumr-oppo-players{flex:1;display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center;
     padding:11px 16px;}
 .sumr-oppo-player{font-size:13px;color:var(--ink2);}
+.sumr-oppo-player[hidden]{display:none;}
+.sumr-oppo-more{background:none;border:none;padding:0;font-size:13px;font-weight:700;
+    color:var(--secondary);cursor:pointer;font-family:inherit;white-space:nowrap;}
+.sumr-oppo-more:hover{text-decoration:underline;text-underline-offset:3px;}
 .sumr-empty{padding:40px 0;text-align:center;color:var(--faint);font-size:13px;
     font-family:'Space Mono',monospace;letter-spacing:.06em;}
 
@@ -873,10 +884,11 @@ window.switchMode = function(mode){
     document.getElementById('tabBtnSummary').classList.toggle('active', !isQuery);
     document.getElementById('tabQuery').classList.toggle('active', isQuery);
     document.getElementById('tabSummary').classList.toggle('active', !isQuery);
+    if(!isQuery && typeof clampOppoRows === 'function') clampOppoRows();
 };
 
-/* ── summary tab: single-user picker ── */
-var sumSelectedUser = null;
+/* ── summary tab: multi-user picker (one person may own several accounts) ── */
+var sumSelectedUsers = new Set();
 
 function buildSumUserList(items){
     var el = document.getElementById('sumUList');
@@ -884,16 +896,14 @@ function buildSumUserList(items){
     if(!items.length){ el.innerHTML = '<div class="opt-empty">无结果</div>'; return; }
     items.forEach(function(item){
         var label = optLabel(item);
+        var on = sumSelectedUsers.has(item.username);
         var div = document.createElement('div');
-        div.className = 'opt-item' + (sumSelectedUser === item.username ? ' checked' : '');
+        div.className = 'opt-item' + (on ? ' checked' : '');
         var cb = document.createElement('input');
-        cb.type = 'radio'; cb.name = 'sumUserRadio';
-        cb.checked = (sumSelectedUser === item.username);
+        cb.type = 'checkbox';
+        cb.checked = on;
         cb.addEventListener('change', function(){
-            sumSelectedUser = item.username;
-            document.getElementById('sumUSearch').value = item.username;
-            filterSumUserList('');
-            renderUserSummary(sumSelectedUser);
+            toggleSumUser(item.username, cb.checked);
         });
         var nameSpan = document.createElement('span');
         nameSpan.className = 'opt-name'; nameSpan.title = label; nameSpan.textContent = label;
@@ -904,14 +914,65 @@ function buildSumUserList(items){
 }
 
 function filterSumUserList(q){
+    q = (q || '').toLowerCase();
     buildSumUserList(USERS.filter(function(item){
-        return optLabel(item).toLowerCase().indexOf(q.toLowerCase()) !== -1;
+        return optLabel(item).toLowerCase().indexOf(q) !== -1;
     }));
+}
+
+function sumUsersOrdered(){
+    /* keep the picker's (rank) order, not click order */
+    return USERS.map(function(u){ return u.username; })
+        .filter(function(n){ return sumSelectedUsers.has(n); });
+}
+
+function toggleSumUser(name, checked){
+    if(checked) sumSelectedUsers.add(name); else sumSelectedUsers.delete(name);
+    filterSumUserList(document.getElementById('sumUSearch').value);
+    renderSumTags();
+    renderUserSummary();
+}
+
+function renderSumTags(){
+    var el = document.getElementById('sumSelTags');
+    var clr = document.getElementById('sumClearBtn');
+    if(!el) return;
+    el.innerHTML = '';
+    var names = sumUsersOrdered();
+    if(clr) clr.disabled = names.length === 0;
+    if(!names.length){
+        var none = document.createElement('span');
+        none.className = 'row-count';
+        none.textContent = '未选择用户（可多选，合并统计同一人的多个账号）';
+        el.appendChild(none);
+        return;
+    }
+    names.forEach(function(n){
+        var tag = document.createElement('span');
+        tag.className = 'sel-tag';
+        var rm = document.createElement('button');
+        rm.type = 'button'; rm.className = 'sel-tag-rm'; rm.textContent = '\u00d7';
+        rm.setAttribute('aria-label', '移除 ' + n);
+        rm.addEventListener('click', function(){ toggleSumUser(n, false); });
+        tag.appendChild(document.createTextNode(n + ' '));
+        tag.appendChild(rm);
+        el.appendChild(tag);
+    });
+}
+
+function clearSumUsers(){
+    sumSelectedUsers.clear();
+    document.getElementById('sumUSearch').value = '';
+    filterSumUserList('');
+    renderSumTags();
+    renderUserSummary();
 }
 
 document.getElementById('sumUSearch').addEventListener('input', function(){
     filterSumUserList(this.value);
 });
+var _sumClear = document.getElementById('sumClearBtn');
+if(_sumClear) _sumClear.addEventListener('click', clearSumUsers);
 
 /* ── summary tab: donut chart ── */
 function sumrDonutSvg(winPct){
@@ -939,7 +1000,7 @@ function buildSumSeasonList(){
     allCb.addEventListener('change', function(){
         sumSelectedSeason = null;
         buildSumSeasonList();
-        if(sumSelectedUser) renderUserSummary(sumSelectedUser);
+        renderUserSummary();
     });
     var allSpan = document.createElement('span');
     allSpan.className = 'opt-name'; allSpan.textContent = '全部赛季';
@@ -956,7 +1017,7 @@ function buildSumSeasonList(){
         cb.addEventListener('change', function(){
             sumSelectedSeason = s;
             buildSumSeasonList();
-            if(sumSelectedUser) renderUserSummary(sumSelectedUser);
+            renderUserSummary();
         });
         var span = document.createElement('span');
         span.className = 'opt-name'; span.textContent = String(s);
@@ -967,20 +1028,20 @@ function buildSumSeasonList(){
 }
 
 /* ── summary tab: main render ── */
-function renderUserSummary(username){
+function renderUserSummary(){
     var container = document.getElementById('sumResults');
     var empty = document.getElementById('sumEmptyState');
-    var recs = RECORDS.filter(function(r){ return r.u === username; });
-    if(sumSelectedSeason !== null){
-        recs = recs.filter(function(r){ return r.s === sumSelectedSeason; });
-    }
-
-    if(recs.length === 0){
+    var names = sumUsersOrdered();
+    if(names.length === 0){
         container.innerHTML = '';
         empty.style.display = '';
         return;
     }
     empty.style.display = 'none';
+    var recs = RECORDS.filter(function(r){
+        return sumSelectedUsers.has(r.u)
+            && (sumSelectedSeason === null || r.s === sumSelectedSeason);
+    });
 
     var wins = recs.filter(function(r){ return r.r === 1; }).length;
     var losses = recs.filter(function(r){ return r.r === 0; }).length;
@@ -1008,14 +1069,19 @@ function renderUserSummary(username){
         return a.l - b.l;
     });
 
-    var initials = username.trim().charAt(0).toUpperCase();
+    var multi = names.length > 1;
+    var nameHtml = names.map(function(n){
+        return '<span class="sumr-head-user">' + escHtml(n) + '</span>';
+    }).join('<span class="sumr-head-sep">+</span>');
     var scopeLabel = sumSelectedSeason !== null ? String(sumSelectedSeason) + ' 赛季' : '全部赛季';
+    var scopeText = (multi ? names.length + ' 个账号合并 · ' : '')
+        + '共 ' + fmtInt(recs.length) + ' 场比赛 · ' + scopeLabel;
 
     var rowsHtml = groupArr.map(function(g){
         var playersHtml = g.players.map(function(p){
             return '<span class="sumr-oppo-player">' + escHtml(p) + '</span>';
         }).join('');
-        return '<div class="sumr-oppo-row">'
+        return '<div class="sumr-oppo-row" data-key="' + g.w + ':' + g.l + '">'
             + '<div class="sumr-oppo-score">' + g.w + ':' + g.l + '</div>'
             + '<div class="sumr-oppo-players">' + playersHtml + '</div>'
             + '</div>';
@@ -1024,8 +1090,10 @@ function renderUserSummary(username){
     container.innerHTML =
         '<div class="sumr-card">'
         + '<div class="sumr-headbar">'
-        +   '<div class="sumr-head-name"><span class="sumr-avatar">' + escHtml(initials) + '</span>' + escHtml(username) + '</div>'
-        +   '<div class="sumr-head-scope">共 ' + fmtInt(recs.length) + ' 场比赛 · ' + escHtml(scopeLabel) + '</div>'
+        +   '<div class="sumr-head-name">'
+        +     (multi ? '' : '<span class="sumr-avatar">' + escHtml(names[0].trim().charAt(0).toUpperCase()) + '</span>')
+        +     '<span class="sumr-head-users">' + nameHtml + '</span></div>'
+        +   '<div class="sumr-head-scope">' + escHtml(scopeText) + '</div>'
         + '</div>'
         + '<div class="sumr-statrow">'
         +   '<div class="sumr-stat"><div class="sumr-stat-num win">' + fmtInt(wins) + '</div>'
@@ -1036,10 +1104,62 @@ function renderUserSummary(username){
         + '</div>'
         + '<div class="sumr-oppo-list">' + (rowsHtml || '<div class="sumr-empty">暂无对阵记录</div>') + '</div>'
         + '</div>';
+    clampOppoRows();
 }
+
+/* ── summary tab: keep each record row to one line, rest folded into “等N人” ── */
+var sumExpandedRows = new Set();   /* "w:l" keys the user expanded */
+
+function clampOppoRows(){
+    document.querySelectorAll('#sumResults .sumr-oppo-row').forEach(clampOppoRow);
+}
+
+function clampOppoRow(row){
+    var box = row.querySelector('.sumr-oppo-players');
+    if(!box) return;
+    var key = row.getAttribute('data-key');
+    var old = box.querySelector('.sumr-oppo-more');
+    if(old) old.remove();
+    var items = Array.prototype.slice.call(box.querySelectorAll('.sumr-oppo-player'));
+    items.forEach(function(el){ el.hidden = false; });
+    if(items.length < 2) return;
+    var top = items[0].offsetTop;
+    var fits = items.every(function(el){ return el.offsetTop === top; });
+    if(fits) return;   /* already a single line: no toggle */
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sumr-oppo-more';
+    box.appendChild(btn);
+
+    if(sumExpandedRows.has(key)){
+        btn.textContent = '收起 \\u25b4';
+        btn.setAttribute('aria-expanded', 'true');
+    } else {
+        /* hide from the end until the remaining names plus the button sit on line 1 */
+        var shown = items.length;
+        btn.setAttribute('aria-expanded', 'false');
+        do {
+            shown--;
+            items[shown].hidden = true;
+            btn.textContent = '等' + (items.length - shown) + '人 \u25be';
+        } while(shown > 1 && btn.offsetTop !== top);
+    }
+    btn.addEventListener('click', function(){
+        if(sumExpandedRows.has(key)) sumExpandedRows.delete(key); else sumExpandedRows.add(key);
+        clampOppoRow(row);
+    });
+}
+
+var _clampTimer = null;
+window.addEventListener('resize', function(){
+    clearTimeout(_clampTimer);
+    _clampTimer = setTimeout(clampOppoRows, 120);
+});
 
 filterSumUserList('');
 buildSumSeasonList();
+renderSumTags();
 })();"""
 
 def _h2h_user_list(df: pd.DataFrame) -> list[dict]:
@@ -1388,6 +1508,10 @@ def render_h2h_page(
       </div>
     </div>
   </div>
+  <div class="sum-footer">
+    <div class="sel-tags" id="sumSelTags"></div>
+    <button type="button" class="clear-btn" id="sumClearBtn" disabled>清空</button>
+  </div>
 </div>
 
 <div id="sumResults"></div>
@@ -1395,9 +1519,9 @@ def render_h2h_page(
 <div id="sumEmptyState">
   <div class="empty-state">
     <div class="empty-icon">🎯</div>
-    <div class="empty-title">选择一位用户查看汇总战绩</div>
+    <div class="empty-title">选择一位或多位用户查看汇总战绩</div>
     <div class="empty-desc">
-      展示该用户对阵每一位球员的累计胜负记录
+      展示对阵每一位球员的累计胜负记录，多选时合并统计（适用于同一人的多个账号）
     </div>
   </div>
 </div>
