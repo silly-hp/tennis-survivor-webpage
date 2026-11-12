@@ -1389,8 +1389,9 @@ def apply_live_settlement(
         )
 
     # Official scores can already mark today's losers 球员输球 before this
-    # runs, so the pre-settlement snapshot misses them. A pick on this day
-    # means they were still in at the open — keep it on the board.
+    # runs, so the opening snapshot misses them. A pick on this day puts them
+    # back only when the score table still has them through yesterday.
+    # Someone eliminated earlier stays out, even if a later pick was submitted.
     picked_today = {
         _as_key(item.get("user_id"))
         for item in detail_rows
@@ -1400,7 +1401,11 @@ def apply_live_settlement(
     picked_today.discard("")
     if picked_today and "user_id" in result.columns:
         keys = result["user_id"].map(_as_key)
-        result.loc[keys.isin(picked_today), "alive_at_open"] = True
+        survived = pd.to_numeric(result["day"], errors="coerce").fillna(0)
+        reached_today = survived >= int(play_day) - 1
+        result.loc[
+            keys.isin(picked_today) & reached_today, "alive_at_open"
+        ] = True
 
     return result, counts, bye_users, pending_users, backup_events
 
