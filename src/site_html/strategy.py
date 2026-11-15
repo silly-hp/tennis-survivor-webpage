@@ -35,9 +35,9 @@ _CSS = """
 .st-head h3{margin:0;font-size:16px;}
 .st-caret{margin-left:auto;color:var(--faint);font-size:12px;transition:transform .15s;}
 .st-event[open] .st-caret{transform:rotate(180deg);color:var(--primary);}
-.st-strip{display:flex;gap:6px;overflow-x:auto;padding:2px 14px 12px;scrollbar-width:thin;}
+.st-strip{display:flex;flex-wrap:wrap;gap:6px;padding:2px 14px 12px;}
 .st-event[open] .st-strip{display:none;}
-.st-chip{display:inline-flex;align-items:baseline;gap:4px;flex:0 0 auto;padding:3px 8px;border-radius:999px;
+.st-chip{display:inline-flex;align-items:baseline;gap:4px;max-width:100%;padding:3px 8px;border-radius:999px;
     background:var(--surface2);border:1px solid var(--border2);font-size:13px;white-space:nowrap;}
 .st-chip .st-day{margin-right:2px;}
 .st-meta{color:var(--muted);font-size:13px;}
