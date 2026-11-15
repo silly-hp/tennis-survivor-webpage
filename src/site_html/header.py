@@ -25,6 +25,7 @@ _SECTIONS: dict[str, tuple[str, dict[str, str]]] = {
                      "ALL": "combined_calendar.html"}),
     "career": ("生涯统计", {"ATP": "atp_show.html", "WTA": "wta_show.html",
                            "ALL": "combined_show.html"}),
+    "strategy": ("策略", {"ATP": "strategy_atp.html", "WTA": "strategy_wta.html"}),
     "h2h": ("H2H", {"ATP": "h2h_atp.html", "WTA": "h2h_wta.html"}),
 }
 _TOUR_LABEL = {"ATP": "ATP", "WTA": "WTA", "ALL": "联合"}

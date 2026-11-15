@@ -380,19 +380,22 @@ def find_corresponding_week_events(
 
 
 def _resolve_removed_names(
-    last_yr_calendar_path: str,
     tour_flag: str,
     event_dict: dict,
     current_id,
 ) -> list[str]:
-    """Load last-year calendar and return −52w counterpart city name(s)."""
-    calendar_path = Path(last_yr_calendar_path)
-    if not calendar_path.exists():
-        logger.warning(
-            "last-year calendar missing at %s; skip replace-map", calendar_path
-        )
+    """Fetch last year's calendar and return the −52w counterpart city name(s)."""
+    from event_calendar import load_or_fetch_calendar
+
+    week = pd.Timestamp(event_dict["week_start_date"])
+    year = int(week.year) - 1
+    calendar_dir = Path(__file__).resolve().parent.parent / "data"
+    last_calendar = load_or_fetch_calendar(
+        year, calendar_dir=calendar_dir, refresh=True
+    )
+    if last_calendar is None or last_calendar.empty:
+        logger.warning("last-year calendar unavailable for %s; skip replace-map", year)
         return []
-    last_calendar = pd.read_json(calendar_path, orient="table")
     for col in ["week_start_date", "valid_from", "invalid_date"]:
         if col in last_calendar.columns:
             last_calendar[col] = pd.to_datetime(last_calendar[col])
@@ -410,7 +413,6 @@ def build_tour_config(
     config_manager,
     tour_label,
     valid_flag,
-    last_yr_calendar_path: str,
     ranking_monday: pd.Timestamp,
     debug_flag: bool = False,
 ):
@@ -435,9 +437,7 @@ def build_tour_config(
             "name": event_dict["city"],
             "week_start_date": event_dict["week_start_date"].strftime("%Y-%m-%d"),
         }
-        week_names = _resolve_removed_names(
-            last_yr_calendar_path, tour_flag, event_dict, current_id
-        )
+        week_names = _resolve_removed_names(tour_flag, event_dict, current_id)
         if week_names:
             config_dict["removed_tournament_name"] = (
                 week_names[0] if len(week_names) == 1 else week_names
@@ -472,9 +472,7 @@ def build_tour_config(
     # Same event: still refresh −52w removed mapping (algorithm / calendar drift).
     config_dict = dict(config.get(tour_label) or {})
     if valid_flag and event_dict is not None:
-        week_names = _resolve_removed_names(
-            last_yr_calendar_path, tour_flag, event_dict, current_id
-        )
+        week_names = _resolve_removed_names(tour_flag, event_dict, current_id)
         new_removed = (
             week_names[0]
             if len(week_names) == 1

@@ -67,7 +67,7 @@ from live_settlement import (
 from player_stats import update_player_stats_pages
 from combined_ranking import update_combined_pages
 from event_calendar import update_survivor_calendar_pages
-from home_weeks import load_calendar_json, prepare_home_weeks
+from home_weeks import prepare_home_weeks
 from survivor_trend import pick_summary, summary_checkin, survivor_series
 from day_killers import daily_killer_stats
 
@@ -1140,7 +1140,6 @@ def refresh_event_config():
             config_file,
             tour_label=tour[0],
             valid_flag=valid_flag,
-            last_yr_calendar_path="../data/calendar_2025.json",
             ranking_monday=pd.Timestamp(rank["monday"].iloc[0]),
         )
         logger.info(f"Update {tour[0]} event: {event_config['name']}")
@@ -1315,13 +1314,13 @@ def main(*, mode: str = "default"):
     if home_cfg.get("week_cards", True):
         try:
             this_cal, _ = fetch_survivor_calendar_event_df(YEAR)
-            last_cal_path = home_cfg.get(
-                "last_calendar_path", f"{output_dir}/data/calendar_{YEAR - 1}.json"
+            from event_calendar import load_or_fetch_calendar
+
+            last_cal = load_or_fetch_calendar(
+                int(YEAR) - 1,
+                calendar_dir=Path(output_dir) / "data",
+                refresh=True,
             )
-            last_cal = load_calendar_json(last_cal_path)
-            if last_cal.empty:
-                # Fallback: fetch previous season calendar live
-                last_cal, _ = fetch_survivor_calendar_event_df(YEAR - 1)
             champs_path = cfg.get("champions_path", f"{output_dir}/data/champions.csv")
             champions = (
                 pd.read_csv(champs_path)
@@ -1515,6 +1514,11 @@ if __name__ == "__main__":
         default=None,
         help="只处理指定年份（可多次传入），默认 config years_from..year",
     )
+    parser.add_argument(
+        "--strategy",
+        action="store_true",
+        help="用 2024–2026 赛前排名和赔率回测两条策略，并生成策略页",
+    )
     args = parser.parse_args()
     if args.live and args.daily:
         parser.error("--live and --daily are mutually exclusive")
@@ -1525,6 +1529,10 @@ if __name__ == "__main__":
             refresh=not args.calendar_cache_only,
             years=args.calendar_year,
         )
+    elif args.strategy:
+        from strategy_sim import run_strategy_sim
+
+        run_strategy_sim()
     elif args.live:
         main(mode="live")
     elif args.daily:

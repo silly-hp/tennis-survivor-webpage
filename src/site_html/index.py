@@ -325,6 +325,8 @@ def _nav_cards(season) -> dict[str, list[dict[str, Any]]]:
              "href": f"survivor_calendar_{t}.html"},
             {"eye": "Survivor Career", "title": "幸存者生涯统计", "desc": "生涯数据与对战记录",
              "links": [("生涯统计", f"{t}_show.html"), ("H2H 对战", f"h2h_{t}.html")]},
+            {"eye": "Strategy", "title": "策略模拟", "desc": "固定规则在 2024–2026 的得分和名次",
+             "href": f"strategy_{t}.html"},
         ]
 
     return {
