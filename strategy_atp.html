@@ -73,8 +73,18 @@ body.dark {
 .st-sum i{font-style:normal;color:var(--muted);font-size:12px;}
 .st-note{color:var(--muted);font-size:13px;margin:0 0 16px;}
 .st-event{border:1px solid var(--border);border-radius:14px;margin:0 0 12px;background:var(--surface);overflow:hidden;}
+.st-event summary{list-style:none;cursor:pointer;}
+.st-event summary::-webkit-details-marker{display:none;}
 .st-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;padding:12px 14px;border-bottom:1px solid var(--border2);}
+.st-event:not([open]) .st-head{border-bottom:0;padding-bottom:4px;}
 .st-head h3{margin:0;font-size:16px;}
+.st-caret{margin-left:auto;color:var(--faint);font-size:12px;transition:transform .15s;}
+.st-event[open] .st-caret{transform:rotate(180deg);color:var(--primary);}
+.st-strip{display:flex;gap:6px;overflow-x:auto;padding:2px 14px 12px;scrollbar-width:thin;}
+.st-event[open] .st-strip{display:none;}
+.st-chip{display:inline-flex;align-items:baseline;gap:4px;flex:0 0 auto;padding:3px 8px;border-radius:999px;
+    background:var(--surface2);border:1px solid var(--border2);font-size:13px;white-space:nowrap;}
+.st-chip .st-day{margin-right:2px;}
 .st-meta{color:var(--muted);font-size:13px;}
 .st-meta b{color:var(--ink);}
 .st-picks{list-style:none;margin:0;padding:0;}
@@ -86,9 +96,13 @@ body.dark {
 .st-win{color:var(--up,#1a7f37);font-weight:700;}
 .st-loss{color:var(--down,#b42318);font-weight:700;}
 .st-score{font-variant-numeric:tabular-nums;font-weight:700;}
-.st-chart-wrap{margin-top:22px;}
-.st-chart-wrap h2{font-size:16px;margin:0 0 4px;}
-.st-chart{width:100%;height:180px;}
+.st-chart-wrap{margin-top:22px;padding:16px 16px 12px;border:1px solid var(--border);border-radius:16px;background:var(--surface);}
+.st-chart-wrap h2{font-size:16px;margin:0 0 2px;}
+.st-chart{width:100%;height:auto;display:block;}
+.st-grid{stroke:var(--border);stroke-width:1;}
+.st-axis{fill:var(--muted);font-size:11px;font-family:'Space Mono',ui-monospace,monospace;}
+.st-chart-cap{color:var(--muted);font-size:12px;margin:8px 0 0;}
+.st-pt circle{fill:var(--surface);stroke:var(--primary);stroke-width:2;}
 @media (max-width:720px){
     .st-picks li{grid-template-columns:48px minmax(0,1fr); }
     .st-score{grid-column:2;}
@@ -185,23 +199,53 @@ body.dark {
   function stat(v,label){return '<span><b>'+esc(v)+'</b><i>'+esc(label)+'</i></span>';}
   function chart(ranks){
     if(!ranks.length) return '<p class="st-note">这一年没有可画的名次。</p>';
-    var w=640,h=170,pad=28;
+    var w=720,h=248,left=48,right=16,top=16,bottom=34;
     var ys=ranks.map(function(r){return r.rank;});
     var min=Math.min.apply(null,ys), max=Math.max.apply(null,ys);
-    if(min===max) max=min+1;
-    var pts=ranks.map(function(r,i){
-      var x=pad+(ranks.length===1? (w-2*pad)/2 : i*(w-2*pad)/(ranks.length-1));
-      var y=pad+(r.rank-min)/(max-min)*(h-2*pad);
-      return {x:x,y:y,r:r};
-    });
+    var span=Math.max(1,max-min), gutter=Math.max(1,Math.round(span*0.12));
+    var y0=Math.max(1,min-gutter), y1=max+gutter;
+    function xAt(i){
+      if(ranks.length===1) return (left+w-right)/2;
+      return left+i*(w-left-right)/(ranks.length-1);
+    }
+    function yAt(rank){return top+(rank-y0)/(y1-y0)*(h-top-bottom);}
+    var pts=ranks.map(function(r,i){return {x:xAt(i),y:yAt(r.rank),r:r};});
     var line=pts.map(function(p){return p.x.toFixed(1)+","+p.y.toFixed(1);}).join(" ");
+    var floor=h-bottom;
+    var area=pts[0].x.toFixed(1)+","+floor+" "+line+" "+pts[pts.length-1].x.toFixed(1)+","+floor;
+    var grid="", seen={};
+    for(var t=0;t<=4;t++){
+      var rank=Math.round(y0+(y1-y0)*t/4);
+      if(seen[rank]) continue;
+      seen[rank]=1;
+      var yy=yAt(rank);
+      grid+='<line class="st-grid" x1="'+left+'" x2="'+(w-right)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'"/>'
+        +'<text class="st-axis" x="'+(left-8)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end">'+rank+'</text>';
+    }
+    var marks=[0];
+    if(ranks.length>2) marks.push(Math.floor((ranks.length-1)/2));
+    if(ranks.length>1) marks.push(ranks.length-1);
+    var labels=marks.filter(function(i,idx,arr){return arr.indexOf(i)===idx;}).map(function(i){
+      var anchor=i===0?"start":(i===ranks.length-1?"end":"middle");
+      return '<text class="st-axis" x="'+pts[i].x.toFixed(1)+'" y="'+(h-10)+'" text-anchor="'+anchor+'">'+esc(pts[i].r.city)+'</text>';
+    }).join("");
+    var dots=pts.map(function(p){
+      return '<g class="st-pt"><circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3.5">'
+        +'<title>'+esc(p.r.city)+' · 第 '+p.r.rank+' 名</title></circle></g>';
+    }).join("");
     var last=pts[pts.length-1];
-    return '<svg class="st-chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="名次走势">'
-      +'<polyline fill="none" stroke="#1c3f94" stroke-width="2" points="'+line+'"/>'
-      +'<text x="'+pad+'" y="16" fill="currentColor" font-size="11">最好 '+min+'</text>'
-      +'<text x="'+pad+'" y="'+(h-6)+'" fill="currentColor" font-size="11">最低 '+max+'</text>'
-      +'<text x="'+(last.x-8)+'" y="'+(last.y-8)+'" fill="currentColor" font-size="11" text-anchor="end">'+esc(last.r.city)+' '+last.r.rank+'</text>'
-      +'</svg>';
+    var endLeft=last.x>w-64;
+    return '<svg class="st-chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="名次走势，越靠上名次越好">'
+      +'<defs><linearGradient id="stArea" x1="0" y1="0" x2="0" y2="1">'
+      +'<stop offset="0" stop-color="var(--primary)" stop-opacity="0.28"/>'
+      +'<stop offset="1" stop-color="var(--primary)" stop-opacity="0"/></linearGradient></defs>'
+      +grid
+      +'<polygon points="'+area+'" fill="url(#stArea)"/>'
+      +'<polyline points="'+line+'" fill="none" stroke="var(--primary)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'
+      +dots
+      +'<circle cx="'+last.x.toFixed(1)+'" cy="'+last.y.toFixed(1)+'" r="5" fill="var(--primary)"/>'
+      +'<text class="st-axis" x="'+(endLeft?last.x-8:last.x+8).toFixed(1)+'" y="'+(Math.max(top+12,last.y-8)).toFixed(1)+'" text-anchor="'+(endLeft?"end":"start")+'">'+last.r.rank+'</text>'
+      +labels+'</svg><p class="st-chart-cap">纵轴是名次，越靠上越好。停在点上可看站名。</p>';
   }
   function dayLine(p){
     var extra=[];
@@ -232,12 +276,18 @@ body.dark {
     var events=(pack().events||[]).filter(function(e){return e.year===year;});
     document.getElementById("stEvents").innerHTML=events.map(function(e){
       var out=e.champion?"冠军":(e.status||"");
-      return '<article class="st-event"><div class="st-head"><h3>'+esc(e.city)+'</h3>'
+      var chips=(e.picks||[]).map(function(p){
+        return '<span class="st-chip"><span class="st-day">'+p.day+'</span>'+esc(p.player)
+          +' <span class="'+(p.won?'st-win':'st-loss')+'">'+(p.won?'胜':'负')+'</span></span>';
+      }).join("");
+      return '<details class="st-event"><summary><div class="st-head"><h3>'+esc(e.city)+'</h3>'
         +'<span class="st-meta">'+esc(e.week)+' · '+esc(e.level)+' · '+e.survived+'/'+e.days+' 天</span>'
         +'<span class="st-meta">本站得分 <b>'+esc(e.score)+'</b></span>'
         +'<span class="st-meta">当时名次 <b>'+(e.rank==null?"—":e.rank)+'</b></span>'
-        +'<span class="st-meta">'+esc(out)+'</span></div><ol class="st-picks">'
-        +(e.picks||[]).map(dayLine).join("")+'</ol></article>';
+        +'<span class="st-meta">'+esc(out)+'</span>'
+        +'<span class="st-caret" aria-hidden="true">▾</span></div>'
+        +'<div class="st-strip">'+chips+'</div></summary><ol class="st-picks">'
+        +(e.picks||[]).map(dayLine).join("")+'</ol></details>';
     }).join("") || '<p class="st-note">这一年没有模拟站。</p>';
     var ranks=(pack().ranks||[]).filter(function(r){return r.year===year;});
     document.getElementById("stChart").innerHTML='<h2>名次走势</h2>'+chart(ranks);
