@@ -1517,7 +1517,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--strategy",
         action="store_true",
-        help="用 2024–2026 赛前排名和赔率回测三条策略，并生成策略页",
+        help="用 2024–2026 赛前排名、赔率和用户选人记录回测四条策略，2026 起可按轮空重算，并生成策略页",
     )
     args = parser.parse_args()
     if args.live and args.daily:

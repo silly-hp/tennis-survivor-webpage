@@ -3,8 +3,10 @@
 Picks come from tennis-data (pre-match rank and odds). The 2024 Olympics are
 not in those workbooks, so they use a saved match file with the same fields.
 Event scores use this site's published day ladder and the best-18 rule.
-Olympic points sit on top of the 18. Year-end finals are left out. Each pick
-day is the site's own date and round, not a raw count of calendar dates.
+Olympic points sit on top of the 18. The displayed season total leaves
+year-end finals out. A 2026 bye replay can play them only when the season
+total is inside the top 8, and those points go into the rolling rank only.
+Each pick day is the site's own date and round, not a raw count of calendar dates.
 """
 
 from __future__ import annotations
@@ -18,11 +20,13 @@ from typing import Any, Optional
 
 from openpyxl import load_workbook
 
-from finals_settlement import is_year_end_final
+from draw_status import field_bracket_size
+from finals_settlement import finals_score_name, is_year_end_final
 from live_settlement import day1_out_points
 from logger import get_logger
 from points_calculation import (
     ATP_YEAR_END_FINALS,
+    GRAND_SLAMS,
     WTA_YEAR_END_FINAL,
     calculate_points,
 )
@@ -47,6 +51,7 @@ TENNIS_ROUND = {
     "Quarterfinals": "QF",
     "Semifinals": "SF",
     "The Final": "F",
+    "Round Robin": "RR",
 }
 YEARS = (2024, 2025, 2026)
 MAIN_ROUNDS = {
@@ -57,12 +62,14 @@ MAIN_ROUNDS = {
     "Quarterfinals",
     "Semifinals",
     "The Final",
+    "Round Robin",
 }
 SKIP_CITIES = set(ATP_YEAR_END_FINALS) | set(WTA_YEAR_END_FINAL)
 STRATEGIES = (
     ("rank", "排名最高"),
     ("favorite", "最被看好"),
     ("second", "次被看好"),
+    ("popular", "最受欢迎"),
 )
 
 # Tennis-data tournament title -> site city (or cities, when the English
@@ -102,6 +109,8 @@ EN_CITIES: dict[str, tuple[str, ...]] = {
     "Swiss Indoors": ("巴塞尔",),
     "Belgrade Open": ("贝尔格莱德",),
     "Hong Kong Tennis Open": ("香港",),
+    "Masters Cup": ("都灵",),
+    "WTA Finals": ("利雅得", "印第安维尔斯"),
     "Adelaide International": ("阿德莱德",),
     "Brisbane International": ("布里斯班",),
     "Open Sud de France": ("蒙彼利埃",),
@@ -631,8 +640,14 @@ def assign_pick_days(
         if slot["base"]:
             by_base[slot["base"]].append(index)
     for match in matches:
-        base = TENNIS_ROUND.get(match.get("round") or "")
-        indexes = by_base.get(base or "") or []
+        round_name = match.get("round") or ""
+        if round_name == "Round Robin":
+            indexes = [
+                index for index, slot in enumerate(slots) if slot["base"].startswith("RR")
+            ]
+        else:
+            base = TENNIS_ROUND.get(round_name)
+            indexes = by_base.get(base or "") or []
         if not indexes:
             continue
         dated = [index for index in indexes if slots[index]["date"] is not None]
@@ -729,6 +744,49 @@ def _choose_second(players: list[dict[str, Any]], used: set[str]) -> Optional[di
     return fallback[0]
 
 
+def _day_votes(ballots: list[list[str]], day_index: int) -> list[tuple[str, int]]:
+    """How many users picked each player on this site day. More votes, then name."""
+    counts: dict[str, int] = defaultdict(int)
+    for picks in ballots:
+        if day_index >= len(picks):
+            continue
+        name = picks[day_index]
+        if not name or name == "轮空":
+            continue
+        counts[name] += 1
+    return sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+
+
+def _choose_popular(
+    players: list[dict[str, Any]],
+    used: set[str],
+    used_shown: set[str],
+    ballots: list[list[str]],
+    day_index: int,
+    show_name,
+) -> Optional[dict[str, Any]]:
+    """Most-picked player that day who is on court and not already used.
+
+    Picking a used player would be a repeat suicide, so the next name in the
+    vote list is taken instead. A name nobody can still play is skipped too.
+    """
+    available: dict[str, dict[str, Any]] = {}
+    for player in players:
+        if player["name"] in used:
+            continue
+        shown = show_name(player["name"]) if show_name else player["name"]
+        if shown in used_shown:
+            continue
+        available.setdefault(shown, player)
+    for name, votes in _day_votes(ballots, day_index):
+        player = available.get(name)
+        if player is None:
+            continue
+        player["votes"] = votes
+        return player
+    return None
+
+
 def _choose(strategy: str, players: list[dict[str, Any]], used: set[str]) -> Optional[dict[str, Any]]:
     if strategy == "second":
         return _choose_second(players, used)
@@ -744,8 +802,19 @@ def _choose(strategy: str, players: list[dict[str, Any]], used: set[str]) -> Opt
     return pool[0]
 
 
-def _event_score(survived: int, ladder: list[int], city: str, tour: str) -> int:
-    if survived <= 0:
+def _event_score(
+    survived: int,
+    ladder: list[int],
+    city: str,
+    tour: str,
+    bye_exit: bool = False,
+) -> int:
+    """Points for the days survived.
+
+    A first-day bye that loses on day 2 scores as a day-1 loss, not as the
+    opening rung a day-1 winner would keep.
+    """
+    if bye_exit or survived <= 0:
         return day1_out_points(city, tour)
     return int(ladder[survived - 1])
 
@@ -789,18 +858,50 @@ def simulate_event(
     tour: str,
     day_groups: Optional[list[list[dict[str, Any]]]] = None,
     pending: int = 0,
+    ballots: Optional[list[list[str]]] = None,
+    show_name=None,
+    bye: bool = False,
 ) -> dict[str, Any]:
     days = day_groups if day_groups is not None else _days(matches)
     pending = max(0, min(int(pending or 0), len(days)))
     playable = days[: len(days) - pending] if pending else days
     ranks = _entry_ranks(matches)
     used: set[str] = set()
+    used_shown: set[str] = set()
     picks = []
     survived = 0
     running = 0
     status = "存活"
+    start_day = 1
+    bye_exit = False
+    # A first-day bye does not use a player. The opening rung is kept only
+    # when day 2 is won; a day-2 loss pays the day-1 exit score.
+    if bye and playable and ladder:
+        survived = 1
+        running = int(ladder[0])
+        picks.append(
+            {
+                "day": 1,
+                "player": "轮空",
+                "opponent": "",
+                "won": True,
+                "rank": None,
+                "odds": None,
+                "score": running,
+                "bye": True,
+            }
+        )
+        start_day = 2
     for day_no, day in enumerate(playable, start=1):
-        choice = _choose(strategy, _players_on(day, ranks), used)
+        if day_no < start_day:
+            continue
+        court = _players_on(day, ranks)
+        if strategy == "popular":
+            choice = _choose_popular(
+                court, used, used_shown, ballots or [], day_no - 1, show_name
+            )
+        else:
+            choice = _choose(strategy, court, used)
         if choice is None:
             status = "无人可选"
             break
@@ -808,23 +909,29 @@ def simulate_event(
         if won:
             survived = day_no
             running = int(ladder[day_no - 1])
-        elif day_no == 1:
+        elif day_no == 1 or (bye and day_no == 2):
             running = day1_out_points(city, tour)
-        picks.append(
-            {
-                "day": day_no,
-                "player": choice["name"],
-                "opponent": choice["opponent"],
-                "won": won,
-                "rank": None if choice["rank"] >= 9999 else choice["rank"],
-                "odds": round(float(choice["odds"]), 2),
-                "score": running,
-            }
-        )
+            if bye and day_no == 2:
+                bye_exit = True
+                if picks and picks[0].get("bye"):
+                    picks[0]["score"] = running
+        pick = {
+            "day": day_no,
+            "player": choice["name"],
+            "opponent": choice["opponent"],
+            "won": won,
+            "rank": None if choice["rank"] >= 9999 else choice["rank"],
+            "odds": round(float(choice["odds"]), 2),
+            "score": running,
+        }
+        if choice.get("votes") is not None:
+            pick["votes"] = int(choice["votes"])
+        picks.append(pick)
         if not won:
             status = "球员输球"
             break
         used.add(choice["name"])
+        used_shown.add(show_name(choice["name"]) if show_name else choice["name"])
     if status == "存活" and pending:
         finished = False
         status_out = "进行中"
@@ -835,9 +942,11 @@ def simulate_event(
         "days": len(days),
         "counted_days": len(playable) if pending else len(days),
         "survived": survived,
-        "score": _event_score(survived, ladder, city, tour),
+        "score": _event_score(survived, ladder, city, tour, bye_exit),
+        "bye_exit": bye_exit,
         "status": status_out,
         "champion": finished,
+        "bye": bool(picks and picks[0].get("bye")),
         "picks": picks,
     }
 
@@ -920,23 +1029,37 @@ def extend_names(
             changed = True
 
 
-def load_user_scores(code: str, event_id: str, year: int, city: str) -> dict[str, dict[str, Any]]:
+def load_user_board(
+    code: str, event_id: str, year: int, city: str
+) -> tuple[dict[str, dict[str, Any]], list[list[str]], list[str]]:
+    """Real users' event scores, each user's picks, and day-1 entrant ids.
+
+    ``players`` in the score file is the old pick record: index 0 is day 1.
+    A leading ``轮空`` stays in place so later days do not shift. A non-empty
+    day-1 cell, including ``轮空``, counts as a day-1 entry.
+    """
     path = SCORES / f"{code}_{event_id}_{year}.json"
     if not path.exists():
-        return {}
+        return {}, [], []
     payload = json.loads(path.read_text(encoding="utf-8"))
     users: dict[str, dict[str, Any]] = {}
+    ballots: list[list[str]] = []
+    day1: list[str] = []
     for row in payload.get("rows") or []:
+        players = [str(item).strip() for item in (row.get("players") or [])]
+        ballots.append(players)
         user_id = str(row.get("user_id") or "").strip()
         if not user_id:
             continue
+        if players and players[0]:
+            day1.append(user_id)
         try:
             score = int(row.get("score") or 0)
         except (TypeError, ValueError):
             continue
         name = str(row.get("username") or user_id).strip() or user_id
         users[user_id] = {"id": user_id, "name": name, "city": city, "score": score}
-    return users
+    return users, ballots, day1
 
 
 def _rank_of(bot_points: int, others: list[int]) -> int:
@@ -1139,6 +1262,329 @@ def _translate(name: str, alias: dict[str, str], bare: set[str] | None = None) -
     return chinese
 
 
+BYE_FROM = 2026
+FINALS_SPOTS = 8
+
+
+def _draw_field(code: str, event_id: str, year: int) -> int:
+    """Main-draw size: every named player, excluding a written-in bye."""
+    path = DRAWS / f"{code}_{event_id}_{year}.json"
+    if not path.exists():
+        return 0
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    names: set[str] = set()
+    for match in payload.get("matches") or []:
+        for key in ("left", "right", "winner", "loser"):
+            name = str(match.get(key) or "").strip()
+            if name and name.lower() not in {"bye", "轮空"}:
+                names.add(name)
+    return len(names)
+
+
+def _drop_names(event: dict[str, Any], events: list[dict[str, Any]]) -> list[str]:
+    """City keys replaced when this week is added: the stop 52 weeks earlier."""
+    target = event["week"] - timedelta(weeks=52)
+    best: Optional[int] = None
+    names: list[str] = []
+    for other in events:
+        if other["tour"] != event["tour"] or other is event:
+            continue
+        delta = abs((other["week"] - target).days)
+        if delta > 10:
+            continue
+        if best is None or delta < best:
+            best = delta
+            names = []
+        if delta == best:
+            name = other["points_name"]
+            if name not in names:
+                names.append(name)
+    return names
+
+
+def _bye_quota(field: int, n_real: int, slam: bool, finals: bool) -> int:
+    """First-day bye slots once the strategy is counted as one more entrant.
+
+    Slams and the year-end finals have none. Otherwise the draw's own byes
+    are shared across the day-1 field: seeds * entrants // bracket.
+    """
+    if slam or finals or field <= 1 or n_real < 0:
+        return 0
+    bracket = field_bracket_size(field)
+    seeds = bracket - field
+    if seeds <= 0 or bracket <= 0:
+        return 0
+    return seeds * (n_real + 1) // bracket
+
+
+def _gets_bye(
+    entrants: list[tuple[int, int, str]],
+    points: int,
+    n_events: int,
+    quota: int,
+) -> bool:
+    """True when the strategy is inside this event's bye slots.
+
+    Higher points rank first, then fewer events in the window. A real user
+    with the same points and the same event count stays ahead.
+    """
+    if quota <= 0:
+        return False
+    ahead = 0
+    for user_points, user_events, _uid in entrants:
+        if user_points > points or (
+            user_points == points and user_events <= n_events
+        ):
+            ahead += 1
+    return ahead < quota
+
+
+def _in_finals(points: int, others: list[int], spots: int = FINALS_SPOTS) -> bool:
+    """True when fewer than ``spots`` real season totals are at least this high.
+
+    Users tied with the strategy take the place. The strategy does not.
+    """
+    ahead = sum(1 for score in others if score >= points)
+    return ahead < spots
+
+
+def _entrant_form(
+    events: list[dict[str, Any]], tour: str
+) -> dict[tuple[int, str], list[tuple[int, int, str]]]:
+    """Rolling points of each day-1 entrant, before that event is added."""
+    held: dict[str, dict[str, int]] = defaultdict(dict)
+    out: dict[tuple[int, str], list[tuple[int, int, str]]] = {}
+    ordered = sorted(events, key=lambda item: (item["week"], item["city"], item["event_id"]))
+    for event in ordered:
+        if event["year"] >= BYE_FROM:
+            rows = []
+            for uid in event["day1"]:
+                scores = held.get(uid) or {}
+                rows.append((_totals(scores, tour) if scores else 0, len(scores), uid))
+            out[(event["year"], event["event_id"])] = rows
+        for city in event.get("drop") or []:
+            for scores in held.values():
+                scores.pop(city, None)
+        for row in event["users"].values():
+            held[row["id"]][event["points_name"]] = row["score"]
+    return out
+
+
+def _season_totals(events: list[dict[str, Any]], tour: str) -> dict[int, list[int]]:
+    """Calendar-year best-18 totals, finals excluded by the caller."""
+    by_year: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for event in events:
+        by_year[event["year"]].append(event)
+    out: dict[int, list[int]] = {}
+    for year, rows in by_year.items():
+        users: dict[str, dict[str, int]] = defaultdict(dict)
+        for event in rows:
+            for row in event["users"].values():
+                users[row["id"]][event["city"]] = row["score"]
+        out[year] = [_totals(dict(scores), tour) for scores in users.values()]
+    return out
+
+
+def _ladder_points(
+    tour: str,
+    year: int,
+    event_id: str,
+    city: str,
+    ladders: dict[str, dict[str, Any]],
+    finals: bool,
+) -> Optional[list[int]]:
+    ladder = ladders.get(f"{tour}:{year}:{event_id}")
+    if ladder and (ladder["city"] == city or finals):
+        return list(ladder["points"])
+    if finals:
+        return None
+    found = next(
+        (
+            item
+            for key, item in ladders.items()
+            if key.startswith(f"{tour}:{year}:") and item["city"] == city
+        ),
+        None,
+    )
+    return list(found["points"]) if found else None
+
+
+def _translate_picks(
+    picks: list[dict[str, Any]],
+    alias: dict[str, str],
+    bare: set[str],
+    unmapped: set[str],
+) -> None:
+    for pick in picks:
+        if pick.get("bye"):
+            continue
+        shown = _translate(pick["player"], alias, bare)
+        if shown == pick["player"]:
+            unmapped.add(pick["player"])
+        pick["player"] = shown
+        pick["opponent"] = _translate(pick["opponent"], alias, bare)
+
+
+def _bye_replay(
+    tour: str,
+    strategy: str,
+    timeline: list[dict[str, Any]],
+    normal: dict[tuple[int, str], dict[str, Any]],
+    entrants: dict[tuple[int, str], list[tuple[int, int, str]]],
+    season_users: dict[int, list[int]],
+    ranked: list[dict[str, Any]],
+    prefixes: dict[int, list[list[int]]],
+    show_name,
+    alias: dict[str, str],
+    bare: set[str],
+    unmapped: set[str],
+) -> dict[str, Any]:
+    """2026+ results with a rolling first-day bye.
+
+    The rank entering the first event of a year is the instant ranking left
+    by the previous year. After each event the strategy and the real users
+    drop the stop from 52 weeks earlier and add this event. The page's
+    season total still uses the calendar-year best 18 and still omits finals.
+    """
+    ordered = sorted(timeline, key=lambda item: (item["week"], item["city"], item["event_id"]))
+    rolling: dict[str, int] = {}
+    season: dict[int, dict[str, int]] = defaultdict(dict)
+    played: list[dict[str, Any]] = []
+    for event in ordered:
+        year = event["year"]
+        key = (year, event["event_id"])
+        result: Optional[dict[str, Any]] = None
+        took_bye = False
+        if event["finals"]:
+            bot_points = _totals(season.get(year) or {}, tour)
+            qualified = _in_finals(bot_points, season_users.get(year) or [])
+            if qualified and event.get("playable"):
+                result = simulate_event(
+                    strategy,
+                    event["matches"],
+                    event["ladder"],
+                    event["points_name"],
+                    tour,
+                    day_groups=event["day_groups"],
+                    pending=int(event.get("pending") or 0),
+                    ballots=event["ballots"] if strategy == "popular" else None,
+                    show_name=show_name if strategy == "popular" else None,
+                )
+            elif qualified:
+                logger.info(
+                    f"{tour} {strategy} {year} {event['city']} "
+                    "冠军积分前八，但年终没有可模拟的赛程"
+                )
+        elif year < BYE_FROM:
+            result = normal.get(key)
+        elif event.get("playable"):
+            points = _totals(rolling, tour) if rolling else 0
+            took_bye = _gets_bye(
+                entrants.get(key) or [],
+                points,
+                len(rolling),
+                _bye_quota(event["field"], len(event["day1"]), event["slam"], False),
+            )
+            result = simulate_event(
+                strategy,
+                event["matches"],
+                event["ladder"],
+                event["city"],
+                tour,
+                day_groups=event["day_groups"],
+                pending=int(event.get("pending") or 0),
+                ballots=event["ballots"] if strategy == "popular" else None,
+                show_name=show_name if strategy == "popular" else None,
+                bye=took_bye,
+            )
+            expected = _event_score(
+                result["survived"],
+                event["ladder"],
+                event["city"],
+                tour,
+                bool(result.get("bye_exit")),
+            )
+            if result["score"] != expected:
+                raise RuntimeError(
+                    f"{tour} {year} {event['city']} bye score {result['score']} != {expected}"
+                )
+        for city in event.get("drop") or []:
+            rolling.pop(city, None)
+        if result is None:
+            continue
+        rolling[event["points_name"]] = int(result["score"])
+        if event["finals"] or year < BYE_FROM:
+            if not event["finals"]:
+                season[year][event["points_name"]] = int(result["score"])
+            continue
+        season[year][event["points_name"]] = int(result["score"])
+        stored = {**event, **result, "bye": bool(result.get("bye"))}
+        _translate_picks(stored["picks"], alias, bare, unmapped)
+        played.append(stored)
+
+    year_events = [item for item in played if item["year"] >= BYE_FROM]
+    by_year: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for item in year_events:
+        by_year[item["year"]].append(item)
+    years_out = []
+    events_out = []
+    ranks_out = []
+    for year in sorted(by_year):
+        rows = by_year[year]
+        scored = [item for item in ranked if item["year"] == year]
+        year_prefixes = prefixes.get(year) or []
+        bot_scores = {item["city"]: item["score"] for item in rows}
+        series, points, rank = _bot_series(scored, year_prefixes, bot_scores, tour)
+        rank_by_city = {item["city"]: item["rank"] for item in series}
+        ranks_out.extend(item for item in series if item["played"])
+        played_n = len(rows)
+        titles = sum(1 for item in rows if item["champion"])
+        survived_days = sum(int(item["survived"]) for item in rows)
+        days = sum(int(item.get("counted_days") or item["days"]) for item in rows)
+        years_out.append(
+            {
+                "year": year,
+                "played": played_n,
+                "points": points,
+                "rank": rank,
+                "titles": titles,
+                "days": days,
+                "survived_days": survived_days,
+                "avg_days": round(survived_days / played_n, 2) if played_n else 0,
+                "survival": round(survived_days / days, 3) if days else 0,
+                "finish_rate": round(titles / played_n, 3) if played_n else 0,
+                "byes": sum(1 for item in rows if item.get("bye")),
+            }
+        )
+        for item in sorted(rows, key=lambda row: row["week"]):
+            events_out.append(
+                {
+                    "year": year,
+                    "week": item["week"].isoformat(),
+                    "city": item["city"],
+                    "level": item["level"],
+                    "days": item["days"],
+                    "survived": item["survived"],
+                    "score": item["score"],
+                    "status": item["status"],
+                    "champion": item["champion"],
+                    "bye": bool(item.get("bye")),
+                    "rank": rank_by_city.get(item["city"]),
+                    "picks": item["picks"],
+                }
+            )
+    bye_count = sum(int(item["byes"]) for item in years_out)
+    bye_cities = [item["city"] for item in events_out if item.get("bye")]
+    logger.info(
+        f"{tour} {strategy} bye {bye_count} "
+        + ", ".join(
+            f"{item['year']} {item['points']} pts rank {item['rank']}" for item in years_out
+        )
+        + (f" | {', '.join(bye_cities)}" if bye_cities else "")
+    )
+    return {"years": years_out, "events": events_out, "ranks": ranks_out, "bye_count": bye_count}
+
+
 def run_strategy_sim() -> dict[str, Any]:
     from site_html.strategy import render_strategy_pages
 
@@ -1177,6 +1623,7 @@ def run_strategy_sim() -> dict[str, Any]:
     prepared: list[dict[str, Any]] = []
     ranked: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
+    timeline: list[dict[str, Any]] = []
 
     for year in YEARS:
         for event in load_calendar(year):
@@ -1189,53 +1636,71 @@ def run_strategy_sim() -> dict[str, Any]:
                 "event_id": event["event_id"],
                 "level": event["level"],
             }
-            users = load_user_scores(
+            users, ballots, day1 = load_user_board(
                 event["code"], event["event_id"], event["year"], city
             )
+            ballots = [
+                [
+                    _bare_chinese(name, bare) if name and name != "轮空" else name
+                    for name in picks
+                ]
+                for picks in ballots
+            ]
             year_end = (
                 is_year_end_final(city, event["event_id"])
                 or city in SKIP_CITIES
             )
-            if year_end:
-                skipped.append({**base, "reason": "年终总决赛"})
-                continue
             schedule = load_pick_schedule(event["code"], event["event_id"], event["year"])
             pick_dates = [
                 played for item in schedule if (played := _as_date(item.get("date")))
             ]
             if pick_dates and abs((min(pick_dates) - event["week"]).days) > 21:
                 event["week"] = min(pick_dates)
-            ranked.append({**event, "users": users})
+            node = {
+                **event,
+                "users": users,
+                "day1": day1,
+                "ballots": ballots,
+                "finals": year_end,
+                "slam": city in GRAND_SLAMS,
+                "points_name": finals_score_name(city, event["event_id"]),
+                "field": _draw_field(event["code"], event["event_id"], event["year"]),
+                "playable": False,
+                "matches": [],
+                "day_groups": [],
+                "ladder": [],
+                "pending": 0,
+            }
+            timeline.append(node)
+            if year_end:
+                skipped.append({**base, "reason": "年终总决赛"})
+            else:
+                ranked.append({**event, "users": users})
             if city == "奥运会":
                 matches = load_olympic(tour, event["year"])
             else:
                 matches = align_event(event, pools[tour], schedule)
             if not matches:
-                skipped.append({**base, "reason": "没有赛前赔率"})
+                if not year_end:
+                    skipped.append({**base, "reason": "没有赛前赔率"})
                 continue
-            ladder = ladders.get(f"{tour}:{event['year']}:{event['event_id']}")
-            if not ladder or ladder["city"] != city:
-                ladder = next(
-                    (
-                        item
-                        for key, item in ladders.items()
-                        if key.startswith(f"{tour}:{event['year']}:")
-                        and item["city"] == city
-                    ),
-                    None,
-                )
+            ladder = _ladder_points(
+                tour, event["year"], event["event_id"], city, ladders, year_end
+            )
             if not ladder:
-                skipped.append({**base, "reason": "没有分数阶梯"})
+                if not year_end:
+                    skipped.append({**base, "reason": "没有分数阶梯"})
                 continue
-            if len(schedule) != len(ladder["points"]):
-                skipped.append(
-                    {
-                        **base,
-                        "reason": "没有选人日日期" if not schedule else "选人日与分数阶梯不一致",
-                        "site_days": len(ladder["points"]),
-                        "match_days": len(schedule),
-                    }
-                )
+            if len(schedule) != len(ladder):
+                if not year_end:
+                    skipped.append(
+                        {
+                            **base,
+                            "reason": "没有选人日日期" if not schedule else "选人日与分数阶梯不一致",
+                            "site_days": len(ladder),
+                            "match_days": len(schedule),
+                        }
+                    )
                 continue
             day_groups = assign_pick_days(matches, schedule)
             pending = _unpublished_tail(
@@ -1248,16 +1713,25 @@ def run_strategy_sim() -> dict[str, Any]:
                 bare,
                 roots,
             )
-            prepared.append(
+            node.update(
                 {
-                    **event,
                     "matches": matches,
                     "day_groups": day_groups,
-                    "ladder": ladder["points"],
-                    "users": users,
+                    "ladder": ladder,
                     "pending": pending,
+                    "playable": True,
                 }
             )
+            if not year_end:
+                prepared.append(node)
+    for event in timeline:
+        event["drop"] = _drop_names(event, timeline)
+    ready = [
+        f"{event['tour']} {event['year']} {event['city']}"
+        for event in timeline
+        if event["finals"] and event["playable"]
+    ]
+    logger.info(f"finals playable: {', '.join(ready) if ready else 'none'}")
 
     payload: dict[str, Any] = {
         "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -1276,6 +1750,15 @@ def run_strategy_sim() -> dict[str, Any]:
             for year in YEARS
         }
         strategies: dict[str, Any] = {}
+        tour_timeline = [item for item in timeline if item["tour"] == tour]
+        entrants = _entrant_form(tour_timeline, tour)
+        season_users = _season_totals(
+            [item for item in ranked if item["tour"] == tour], tour
+        )
+
+        def show_name(name: str) -> str:
+            return _translate(name, alias, bare)
+
         for key, _label in STRATEGIES:
             simulated = []
             for event in tour_events:
@@ -1287,6 +1770,8 @@ def run_strategy_sim() -> dict[str, Any]:
                     tour,
                     day_groups=event["day_groups"],
                     pending=int(event.get("pending") or 0),
+                    ballots=event["ballots"] if key == "popular" else None,
+                    show_name=show_name if key == "popular" else None,
                 )
                 expected = _event_score(
                     result["survived"], event["ladder"], event["city"], tour
@@ -1357,6 +1842,20 @@ def run_strategy_sim() -> dict[str, Any]:
                 "years": year_rows,
                 "events": event_rows,
                 "ranks": rank_series,
+                "bye": _bye_replay(
+                    tour,
+                    key,
+                    tour_timeline,
+                    {(item["year"], item["event_id"]): item for item in simulated},
+                    entrants,
+                    season_users,
+                    [item for item in ranked if item["tour"] == tour],
+                    prefixes_by_year,
+                    show_name,
+                    alias,
+                    bare,
+                    unmapped,
+                ),
             }
         payload["tours"][tour] = {
             "strategies": strategies,
