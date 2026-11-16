@@ -149,6 +149,7 @@ EN_CITIES: dict[str, tuple[str, ...]] = {
     "Athens Open": ("雅典",),
     "Generali Open": ("基茨比厄尔",),
     "Guadalajara Open": ("瓜达拉哈拉",),
+    "Nordic Open": ("斯德哥尔摩",),
 }
 
 # One English title covers two cities. Location picks the city.
