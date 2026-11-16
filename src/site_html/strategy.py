@@ -1,4 +1,4 @@
-"""策略 page: one tour, two strategies, one year at a time."""
+"""策略 page: one tour, three strategies, one year at a time."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 LABELS = (
     ("rank", "排名最高"),
     ("favorite", "最被看好"),
+    ("second", "次被看好"),
 )
 
 _CSS = """
@@ -224,7 +225,7 @@ def render_strategy_pages(payload: dict[str, Any]) -> None:
         body = f"""
 <div class="st-switch" id="stSwitch" role="group" aria-label="策略">{buttons}</div>
 <div class="st-switch" id="stYear" role="group" aria-label="年份"></div>
-<p class="st-note">按本站分数阶梯和最佳 18 站计分。年终总决赛不计入。奥运会加在最佳 18 站之上。选人日用网站公布的日期和轮次。{align_note}{unmapped_note}每天右侧的数字是活到这一天的本站得分。</p>
+<p class="st-note">按本站分数阶梯和最佳 18 站计分。年终总决赛不计入。奥运会加在最佳 18 站之上。选人日用网站公布的日期和轮次。{align_note}{unmapped_note}次被看好：每场先取赔率更低的人，这些人里选第二低；只剩一个就选他。某场赔率更高的人，只有在不选他就没人可选时才选，有几个就选其中赔率最低的。每天右侧的数字是活到这一天的本站得分。</p>
 <div class="st-sum" id="stSum"></div>
 <div id="stEvents"></div>
 <div class="st-chart-wrap" id="stChart"></div>

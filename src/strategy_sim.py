@@ -62,6 +62,7 @@ SKIP_CITIES = set(ATP_YEAR_END_FINALS) | set(WTA_YEAR_END_FINAL)
 STRATEGIES = (
     ("rank", "排名最高"),
     ("favorite", "最被看好"),
+    ("second", "次被看好"),
 )
 
 # Tennis-data tournament title -> site city (or cities, when the English
@@ -672,7 +673,7 @@ def assign_pick_days(
 
 def _players_on(day: list[dict[str, Any]], ranks: dict[str, int]) -> list[dict[str, Any]]:
     players = []
-    for match in day:
+    for match_no, match in enumerate(day):
         players.append(
             {
                 "name": match["winner"],
@@ -680,6 +681,7 @@ def _players_on(day: list[dict[str, Any]], ranks: dict[str, int]) -> list[dict[s
                 "rank": ranks.get(match["winner"]) or 9999,
                 "odds": match["w_odds"],
                 "won": True,
+                "match": match_no,
             }
         )
         players.append(
@@ -689,12 +691,47 @@ def _players_on(day: list[dict[str, Any]], ranks: dict[str, int]) -> list[dict[s
                 "rank": ranks.get(match["loser"]) or 9999,
                 "odds": match["l_odds"],
                 "won": False,
+                "match": match_no,
             }
         )
     return players
 
 
+def _choose_second(players: list[dict[str, Any]], used: set[str]) -> Optional[dict[str, Any]]:
+    """Pick the second-shortest price among each match's shorter price.
+
+    Equal prices use the name order, and the earlier name is that match's
+    shorter side. A longer price is eligible only after that match's shorter
+    side is already used and no shorter-side candidate is left. Among those
+    leftovers, pick the shortest price. Pick whenever anyone is still free.
+    """
+    grouped: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for item in players:
+        grouped[item["match"]].append(item)
+    preferred: list[dict[str, Any]] = []
+    fallback: list[dict[str, Any]] = []
+    for group in grouped.values():
+        ordered = sorted(group, key=lambda item: (item["odds"], item["name"]))
+        if ordered[0]["name"] not in used:
+            preferred.append(ordered[0])
+            continue
+        rest = [item for item in ordered[1:] if item["name"] not in used]
+        if rest:
+            fallback.append(rest[0])
+    if len(preferred) >= 2:
+        preferred.sort(key=lambda item: (item["odds"], item["name"]))
+        return preferred[1]
+    if preferred:
+        return preferred[0]
+    if not fallback:
+        return None
+    fallback.sort(key=lambda item: (item["odds"], item["name"]))
+    return fallback[0]
+
+
 def _choose(strategy: str, players: list[dict[str, Any]], used: set[str]) -> Optional[dict[str, Any]]:
+    if strategy == "second":
+        return _choose_second(players, used)
     pool = [item for item in players if item["name"] not in used]
     if not pool:
         return None
