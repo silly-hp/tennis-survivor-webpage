@@ -865,13 +865,12 @@ def annotate_multi_day_rounds(round_by_day: dict[int, str]) -> dict[int, str]:
     return out
 
 
-def pick_rounds_to_result_rounds(round_by_day: dict[int, str]) -> dict[int, str]:
-    """Map pick-page ``当前轮次`` → result round for survivor day scores.
+def result_rounds_to_pick_rounds(round_by_day: dict[int, str]) -> dict[int, str]:
+    """Turn an old shifted cache (last day ``W``) back into the day's round.
 
-    The pick page labels the round being selected (championship day is ``F``)
-    while surviving that day awards the next-stage points (``500`` = ``W``).
-    Shift non-``R1`` days to the following pick label; the final ``F`` becomes
-    ``W``. Early ``R1/…`` days stay as-is (first-round exits).
+    The first day after ``R1`` is ``R2`` when its label is bare, ``RR1`` when
+    the event is a round robin, and the ``/1`` half when the stored label is
+    ``…/2``.
     """
     cleaned: dict[int, str] = {}
     for day, raw in round_by_day.items():
@@ -884,7 +883,54 @@ def pick_rounds_to_result_rounds(round_by_day: dict[int, str]) -> dict[int, str]
             cleaned[d] = text
     if not cleaned:
         return {}
+    if cleaned[max(cleaned)].split("/", 1)[0].strip().upper() != "W":
+        return cleaned
 
+    def base(label: str) -> str:
+        return label.split("/", 1)[0].strip().upper()
+
+    last = max(cleaned)
+    ordered = sorted(cleaned)
+    first_late = next(
+        (day for day in ordered if day != last and base(cleaned[day]) != "R1"),
+        None,
+    )
+    picks: dict[int, str] = {}
+    for day in ordered:
+        if day == last or (first_late is not None and day >= first_late):
+            continue
+        picks[day] = cleaned[day]
+    if first_late is not None:
+        for day in range(first_late + 1, last):
+            picks[day] = cleaned[day - 1]
+        label = cleaned[first_late]
+        if label.endswith("/2"):
+            picks[first_late] = label[:-1] + "1"
+        elif base(label).startswith("RR"):
+            picks[first_late] = "RR1"
+        else:
+            picks[first_late] = "R2"
+    picks[last] = "F"
+    return picks
+
+
+def pick_rounds_to_result_rounds(round_by_day: dict[int, str]) -> dict[int, str]:
+    """Round a player exits in, from the pick-page ``当前轮次``.
+
+    Dying on a day is the next day's label: ``R2/2`` → ``R3/1``, ``SF`` → ``F``.
+    ``R1`` stays. The championship day ``F`` becomes ``W``.
+    """
+    cleaned: dict[int, str] = {}
+    for day, raw in round_by_day.items():
+        try:
+            d = int(day)
+        except (TypeError, ValueError):
+            continue
+        text = str(raw or "").strip()
+        if text:
+            cleaned[d] = text
+    if not cleaned:
+        return {}
     days = sorted(cleaned)
     out: dict[int, str] = {}
     for idx, day in enumerate(days):
@@ -900,12 +946,28 @@ def pick_rounds_to_result_rounds(round_by_day: dict[int, str]) -> dict[int, str]
     return out
 
 
-def day_round_labels(days: dict) -> list[str]:
-    """Ordered *result* round labels for Day 1..N (empty string when unknown).
+def load_day_rounds(round_by_day: dict[int, str]) -> dict[int, str]:
+    """Day → the round played that day (pick-page ``当前轮次``).
 
-    Converts pick-page rounds (``F`` on title day) to score-board rounds
-    (``W`` for champions, ``F`` for finalists, …).
+    The cache stores that label. A file whose last day is ``W`` is an older
+    copy that had been shifted forward; convert it back.
     """
+    cleaned: dict[int, str] = {}
+    for day, raw in round_by_day.items():
+        try:
+            d = int(day)
+        except (TypeError, ValueError):
+            continue
+        text = str(raw or "").strip()
+        if text:
+            cleaned[d] = text
+    if cleaned and cleaned[max(cleaned)].split("/", 1)[0].strip().upper() == "W":
+        return result_rounds_to_pick_rounds(cleaned)
+    return cleaned
+
+
+def day_round_labels(days: dict) -> list[str]:
+    """Ordered pick-page rounds for Day 1..N (empty string when unknown)."""
     if not days:
         return []
     nums = []
@@ -917,20 +979,17 @@ def day_round_labels(days: dict) -> list[str]:
     if not nums:
         return []
     max_day = max(nums)
-    pick: dict[int, str] = {}
+    labels: list[str] = []
     for i in range(1, max_day + 1):
         info = days.get(str(i)) or days.get(i) or {}
-        label = str(info.get("round") or "").strip()
-        if label:
-            pick[i] = label
-    result = pick_rounds_to_result_rounds(pick)
-    return [result.get(i, pick.get(i, "")) for i in range(1, max_day + 1)]
+        labels.append(str(info.get("round") or "").strip())
+    return labels
 
 
 def get_coordinates(city):
     geolocator = Nominatim(user_agent="survivor_event")
     try:
-        location = geolocator.geocode(city)
+        location = geolocator.geocode(city, timeout=15)
         if location:
             return location.latitude, location.longitude
         else:

@@ -202,7 +202,7 @@ def _help_steps(has_finals: bool) -> list[tuple[str, str, str]]:
 def _help_steps_combined() -> list[tuple[str, str, str]]:
     chip = '<span class="hp-chip">{}</span>'
     s1 = ("ATP + WTA 联合排名",
-          "这一页把两个巡回赛的成绩合在一起：总分 = ATP 总分 + WTA 总分，按总分排名。右侧列出每站赛事的得分，状态列分别显示两边的今日状态；点任意一行可看积分构成。",
+          "这一页把两个巡回赛的成绩合在一起：总分 = ATP 总分 + WTA 总分 + WTA年终 + ATP年终。年终两列是女子和男子年终总决赛得分的一半。右侧列出每站赛事的得分，状态列分别显示两边的今日状态；点任意一行可看积分构成。",
           '<div class="hp-grid"><b>排名</b><b>用户名</b><b>总分</b><b>ATP / WTA</b>'
           '<span>1 —</span><span>wennuan78</span><span class="on">9750</span><span>4778 / 4972</span>'
           '<span>2 ▲1</span><span>逍遥笑叹红尘</span><span>9412</span><span>4231 / 5181</span></div>')
@@ -213,7 +213,7 @@ def _help_steps_combined() -> list[tuple[str, str, str]]:
           '<div class="hp-menu"><span class="hp-ck on">存活</span><span class="hp-ck on">未完赛</span><span class="hp-ck">球员输球</span></div>'
           + _CURSOR)
     s3 = ("点用户查看积分构成",
-          "点表格里任意一行，弹出这位用户的积分构成：切换 ATP / WTA，按赛事级别、场地（硬地 / 红土 / 草地）或积分失效月份查看，左侧列出每站得分与轮次。",
+          "点表格里任意一行，弹出这位用户的积分构成：切换 ATP / WTA / 联合，按赛事级别、场地（硬地 / 红土 / 草地）或积分失效月份查看，左侧列出每站得分与轮次。联合页的年终总决赛写出女子、男子两站得分。",
           '<div class="hp-row"><span class="hp-seg"><i class="on">ATP</i><i>WTA</i></span>'
           '<span class="hp-seg"><i>赛事类型</i><i class="on">场地</i><i>失效时间</i></span></div>'
           '<div class="hp-bd"><div class="hp-bd-list"><span class="s-hard">硬地 · 上海 <b>1000</b></span>'

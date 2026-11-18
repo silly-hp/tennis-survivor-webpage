@@ -696,13 +696,9 @@ ROUND_NAMES = {
 def _load_pick_rounds(
     tour: str, event_id: str, season: int, cache_dir: str = "../data/event_day_rounds"
 ) -> dict[int, str]:
-    """
-    Pick day -> label of the round that day's matches belong to (``R1/2``, ``QF``).
+    """Pick day → the round played that day (``R1/2``, ``QF``, ``F``)."""
+    from parser import load_day_rounds
 
-    Older caches hold the pick-page labels as is. Newer ones hold the *result*
-    labels (last day ``W``, see ``pick_rounds_to_result_rounds``), which sit one
-    day ahead of the pick labels once the first round is over; undo that shift.
-    """
     path = Path(cache_dir) / f"{tour}_{event_id}_{int(season)}.json"
     if not path.exists():
         return {}
@@ -711,26 +707,7 @@ def _load_pick_rounds(
         days = {int(k): str(v).strip() for k, v in raw.items() if str(v).strip()}
     except (OSError, ValueError):
         return {}
-    if not days or days[max(days)] != "W":
-        return days
-
-    def base(label: str) -> str:
-        return label.split("/", 1)[0].upper()
-
-    last = max(days)
-    picks: dict[int, str] = {last: "F"}
-    first_late = next((d for d in sorted(days) if base(days[d]) != "R1"), None)
-    for day in sorted(days):
-        if day == last or (first_late is not None and day >= first_late):
-            continue
-        picks[day] = days[day]
-    if first_late is not None:
-        for day in range(first_late + 1, last):
-            picks[day] = days[day - 1]
-        # the first non-R1 pick day is the "/1" half of the next result label
-        if days[first_late].endswith("/2"):
-            picks[first_late] = days[first_late][:-1] + "1"
-    return picks
+    return load_day_rounds(days)
 
 
 def round_name(label: str, day: int) -> str:

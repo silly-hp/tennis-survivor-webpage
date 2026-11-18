@@ -452,9 +452,15 @@ def build_tour_config(
 
         if current_id is not None:
             # find coordination
-            lat, lon = get_coordinates(event_dict["city_en"])
-            config_dict["latitude"] = lat
-            config_dict["longitude"] = lon
+            coords = get_coordinates(event_dict["city_en"])
+            if coords:
+                config_dict["latitude"], config_dict["longitude"] = coords
+            else:
+                logger.warning(
+                    "%s %s: coordinates unavailable, keeping the previous ones",
+                    tour_flag,
+                    event_dict.get("city"),
+                )
 
             # find bye rate
             draw_info = get_draw_info(current_id, event_dict["event_year"], tour_flag)

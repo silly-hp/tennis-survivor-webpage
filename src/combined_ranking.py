@@ -13,6 +13,13 @@ from typing import Any, Optional
 
 import pandas as pd
 
+from combined_finals import (
+    load_year_end,
+    points_event_name,
+    select_field,
+    strip_individual_finals,
+    current_event_is_finals,
+)
 from live_settlement import _as_key
 from logger import get_logger
 
@@ -223,12 +230,143 @@ def build_combined(
             ordered_extra.append(col)
             combined[col] = _to_int(combined[col])
 
-    # Keep 主键 for row click → breakdown charts (hidden in HTML render)
+    # Keep 主键 for row click → breakdown charts (hidden in HTML render).
+    # Last week's tour totals stay on the frame so 排名变化 can be recomputed
+    # after year-end points are added; the page builder drops them before render.
     html_columns = ["主键"] + DISPLAY_BASE + ordered_extra
+    for col in ("ATP上周总分", "WTA上周总分"):
+        if col in combined.columns and col not in html_columns:
+            html_columns.append(col)
     out = combined[html_columns].copy()
     out.attrs["instant"] = instant
     out.attrs["event_columns"] = ordered_extra
     return out
+
+
+def _ranking_entries(frame: pd.DataFrame) -> list[tuple[str, int, str]]:
+    entries: list[tuple[str, int, str]] = []
+    if frame is None or frame.empty or "主键" not in frame.columns:
+        return entries
+    names = frame["用户名"] if "用户名" in frame.columns else pd.Series("", index=frame.index)
+    points = pd.to_numeric(frame["总分"], errors="coerce").fillna(0)
+    for uid, score, name in zip(frame["主键"], points, names):
+        key = _as_key(uid)
+        if key:
+            entries.append((key, int(score), str(name or "")))
+    return entries
+
+
+def _status_by_year_end(frame: pd.DataFrame, roster: set[str] | None, result) -> pd.DataFrame:
+    """On the champion board, status follows the combined year-end.
+
+    Before the ATP finals' first day is settled, ``roster`` is ``None`` and
+    every status stays as recorded. Afterwards anyone outside the field is
+    未参赛. People in the field use the finals settlement, because the
+    single-tour board only keeps that tour's own top 8.
+    """
+    if roster is None or frame is None or frame.empty or "主键" not in frame.columns:
+        return frame
+    out = frame.copy()
+    keys = out["主键"].map(_as_key)
+    outside = ~keys.isin(roster)
+    for col in ("WTA状态", "ATP状态"):
+        if col in out.columns:
+            out.loc[outside, col] = "未参赛"
+    wta_status = getattr(result, "wta_status", {}) or {}
+    atp_status = getattr(result, "atp_status", {}) or {}
+
+    def _missing(value: object) -> bool:
+        return str(value or "").strip() in {"", "未参赛"}
+
+    for idx, key, is_out in zip(out.index, keys, outside):
+        if is_out or not key:
+            continue
+        # The single-tour board drops anyone outside that tour's own top 8,
+        # so their status is a blank 未参赛 even after they played the final.
+        if "WTA状态" in out.columns and _missing(out.at[idx, "WTA状态"]):
+            wta = wta_status.get(key)
+            if wta:
+                out.at[idx, "WTA状态"] = wta
+        if "ATP状态" in out.columns and _missing(out.at[idx, "ATP状态"]):
+            atp = atp_status.get(key)
+            if atp:
+                out.at[idx, "ATP状态"] = atp
+    return out
+
+
+def _with_year_end(
+    frame: pd.DataFrame,
+    result,
+    roster: set[str] | None,
+) -> pd.DataFrame:
+    """Add the halved finals columns and rank again."""
+    out = frame.copy()
+    keys = out["主键"].map(_as_key) if "主键" in out.columns else pd.Series(dtype=str)
+    wta_vals = []
+    atp_vals = []
+    present = set(keys)
+    for key in keys:
+        wta_half, atp_half = result.counted(key, roster)
+        wta_vals.append(wta_half)
+        atp_vals.append(atp_half)
+    out["WTA年终"] = wta_vals
+    out["ATP年终"] = atp_vals
+
+    extras: list[dict[str, object]] = []
+    for uid, name in result.names.items():
+        if uid in present:
+            continue
+        wta_half, atp_half = result.counted(uid, roster)
+        if wta_half <= 0 and atp_half <= 0:
+            continue
+        extras.append(
+            {
+                "主键": uid,
+                "用户名": name,
+                "ATP总分": 0,
+                "WTA总分": 0,
+                "ATP上周总分": 0,
+                "WTA上周总分": 0,
+                "ATP状态": "",
+                "WTA状态": "",
+                "上周总分": 0,
+                "WTA年终": wta_half,
+                "ATP年终": atp_half,
+            }
+        )
+    if extras:
+        out = pd.concat([out, pd.DataFrame(extras)], ignore_index=True)
+    out["用户名"] = out["用户名"].fillna("")
+    for col in ("ATP状态", "WTA状态"):
+        if col in out.columns:
+            out[col] = out[col].fillna("").astype(str)
+    for col in out.columns:
+        if col in {"主键", "用户名", "ATP状态", "WTA状态"}:
+            continue
+        out[col] = pd.to_numeric(out[col], errors="coerce").fillna(0).astype(int)
+
+    for col in ("ATP总分", "WTA总分", "ATP上周总分", "WTA上周总分", "WTA年终", "ATP年终"):
+        if col not in out.columns:
+            out[col] = 0
+        out[col] = _to_int(out[col])
+    out["总分"] = out["ATP总分"] + out["WTA总分"] + out["WTA年终"] + out["ATP年终"]
+    out["上周总分"] = out["ATP上周总分"] + out["WTA上周总分"]
+    out["上周排名"] = out["上周总分"].rank(ascending=False, method="min").astype(int)
+    out["排名"] = out["总分"].rank(ascending=False, method="min").astype(int)
+    out["排名变化"] = out["上周排名"] - out["排名"]
+    out["用户名"] = out["用户名"].fillna("")
+    out = out.sort_values(["排名", "用户名"]).reset_index(drop=True)
+
+    base = ["主键", *DISPLAY_BASE]
+    year_cols = ["WTA年终", "ATP年终"]
+    hidden = {"ATP上周总分", "WTA上周总分", "上周总分", "上周排名"}
+    extras_cols = [
+        col
+        for col in out.columns
+        if col not in set(base) | set(year_cols) | hidden
+    ]
+    ordered = [col for col in base if col in out.columns] + year_cols + extras_cols
+    return out[ordered]
 
 
 def update_combined_pages(
@@ -239,6 +377,8 @@ def update_combined_pages(
     *,
     atp_event: Optional[str] = None,
     wta_event: Optional[str] = None,
+    atp_event_id: Optional[Any] = None,
+    wta_event_id: Optional[Any] = None,
     atp_removed: Optional[Any] = None,
     wta_removed: Optional[Any] = None,
     year: Optional[Any] = None,
@@ -273,6 +413,8 @@ def update_combined_pages(
             wta_race_table=wta_race,
             atp_event=atp_event,
             wta_event=wta_event,
+            atp_event_id=atp_event_id,
+            wta_event_id=wta_event_id,
             atp_removed=atp_removed,
             wta_removed=wta_removed,
             output_dir=data_dir,
@@ -284,12 +426,50 @@ def update_combined_pages(
     except Exception:
         logger.exception("Failed to write user breakdown JSON")
 
+    atp_finals = current_event_is_finals(atp_event, atp_event_id)
+    wta_finals = current_event_is_finals(wta_event, wta_event_id)
+    atp_points_name = points_event_name(atp_event, atp_event_id)
+    wta_points_name = points_event_name(wta_event, wta_event_id)
+    atp_live = strip_individual_finals(
+        atp_live,
+        atp_rank_raw,
+        "ATP",
+        removed_names=atp_removed,
+        current_name=atp_points_name,
+        current_is_finals=atp_finals,
+    )
+    wta_live = strip_individual_finals(
+        wta_live,
+        wta_rank_raw,
+        "WTA",
+        removed_names=wta_removed,
+        current_name=wta_points_name,
+        current_is_finals=wta_finals,
+    )
+    atp_race = strip_individual_finals(
+        atp_race,
+        atp_race_raw,
+        "ATP",
+        current_name=atp_points_name,
+        current_is_finals=atp_finals,
+    )
+    wta_race = strip_individual_finals(
+        wta_race,
+        wta_race_raw,
+        "WTA",
+        current_name=wta_points_name,
+        current_is_finals=wta_finals,
+    )
+    # A finals week has no ordinary 本站 column; WTA年终 / ATP年终 carry it.
+    atp_label = None if atp_finals else atp_event
+    wta_label = None if wta_finals else wta_event
+
     instant = build_combined(
         atp_live,
         wta_live,
         instant=True,
-        atp_event=atp_event,
-        wta_event=wta_event,
+        atp_event=atp_label,
+        wta_event=wta_label,
         atp_removed=atp_removed,
         wta_removed=wta_removed,
         atp_year=year,
@@ -299,11 +479,35 @@ def update_combined_pages(
         atp_race,
         wta_race,
         instant=False,
-        atp_event=atp_event,
-        wta_event=wta_event,
+        atp_event=atp_label,
+        wta_event=wta_label,
         atp_year=year,
         wta_year=year,
     )
+    try:
+        year_end = load_year_end(int(year)) if year else None
+    except Exception:
+        logger.exception("联合年终结算失败，联合榜先不含这项分")
+        year_end = None
+    if year_end is not None:
+        entries = _ranking_entries(race)
+        known = {uid for uid, _points, _name in entries}
+        for uid, name in year_end.names.items():
+            if uid not in known:
+                entries.append((uid, 0, name))
+        roster = select_field(
+            entries,
+            year_end.participated,
+            locked=year_end.locked,
+        )
+        if roster is None:
+            logger.info("都灵首日未结算，联合年终先给所有选人记分")
+        else:
+            logger.info(f"都灵首日已结算，联合年终名单 {len(roster)} 人")
+        instant = _with_year_end(instant, year_end, roster)
+        race = _status_by_year_end(
+            _with_year_end(race, year_end, roster), roster, year_end
+        )
 
     specs = [
         (

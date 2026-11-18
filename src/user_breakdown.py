@@ -14,10 +14,16 @@ from typing import Any, Optional, Union
 
 import pandas as pd
 
+from finals_settlement import finals_score_name
 from live_ranking import add_new_tournament, remove_current_tournament
 from live_settlement import _as_key
 from logger import get_logger
-from points_calculation import calculate_points, parse_events
+from points_calculation import (
+    ATP_YEAR_END_FINALS,
+    WTA_YEAR_END_FINAL,
+    calculate_points,
+    parse_events,
+)
 from site_html.types_meta import level_from_champion_type
 from tournament_meta import (
     SURFACE_ORDER,
@@ -83,8 +89,22 @@ def _load_calendars(
     return out
 
 
+def _chart_key(city: str, event_id: object) -> str:
+    """Points-table name for one calendar row.
+
+    March 印第安维尔斯 is the 1000. The November finals share that city, so
+    their points use 印第安维尔斯年终 and must not replace the 1000.
+    """
+    name = str(city or "").strip()
+    return finals_score_name(name, str(event_id or "").strip())
+
+
 def _calendar_lookup(calendar: pd.DataFrame, tour: str) -> dict[str, dict]:
-    """city -> best (latest week) meta row for this tour."""
+    """Points-key -> latest week meta for this tour.
+
+    A later finals week does not overwrite an earlier 1000 that shares
+    the city. 印第安维尔斯 stays the March 1000; 印第安维尔斯年终 is the finals.
+    """
     if calendar is None or calendar.empty:
         return {}
     tour_u = "MS" if str(tour).upper() in {"MS", "ATP"} else "WS"
@@ -97,7 +117,7 @@ def _calendar_lookup(calendar: pd.DataFrame, tour: str) -> dict[str, dict]:
         city = str(row.get("city") or "").strip()
         if not city:
             continue
-        out[city] = {
+        out[_chart_key(city, row.get("event_id"))] = {
             "event_id": str(row.get("event_id") or ""),
             "year": int(row["event_year"])
             if pd.notna(row.get("event_year"))
@@ -127,13 +147,14 @@ def _build_day_index(
         return {}
     tour_u = "MS" if str(tour).upper() in {"MS", "ATP"} else "WS"
     index: dict[tuple[str, str], dict[str, int]] = {}
-    sub = calendar.loc[calendar["tour"] == tour_u]
+    sub = calendar.loc[calendar["tour"] == tour_u].sort_values("week_start_date")
     for _, row in sub.iterrows():
         event_id = str(row.get("event_id") or "")
         year = row.get("event_year") if pd.notna(row.get("event_year")) else row.get("year")
         city = str(row.get("city") or "").strip()
         if not event_id or year is None or not city:
             continue
+        city = _chart_key(city, event_id)
         from event_calendar import score_cache_path
 
         path = score_cache_path(tour_u, event_id, int(year), Path(score_dir))
@@ -221,6 +242,31 @@ def _event_score_map(live_frame: Optional[pd.DataFrame]) -> dict[str, int]:
     return out
 
 
+def _event_points(score_dir: Path, tour: str, event_id: object, year: object) -> dict[str, int]:
+    """uid -> score from one event's score cache."""
+    if not event_id or year in (None, ""):
+        return {}
+    from event_calendar import score_cache_path
+
+    path = score_cache_path(tour, str(event_id), int(year), Path(score_dir))
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    found: dict[str, int] = {}
+    for rec in payload.get("rows") or []:
+        uid = _as_key(rec.get("user_id"))
+        if not uid:
+            continue
+        val = pd.to_numeric(rec.get("score"), errors="coerce")
+        if pd.isna(val):
+            continue
+        found[uid] = int(val)
+    return found
+
+
 def _compose_scores(
     details_text: Any,
     *,
@@ -254,20 +300,17 @@ def _load_event_day_rounds(
     *,
     fetch: bool = False,
 ) -> dict[int, str]:
-    """Day number → *result* round label (``W``, ``F``, ``QF/2``, …)."""
-    from parser import pick_rounds_to_result_rounds
+    """Day number → the round a player exits in (``R3/1``, ``F``, ``W``)."""
+    from parser import load_day_rounds, pick_rounds_to_result_rounds
 
     path = _round_cache_path(tour, event_id, year, cache_dir)
     if path.exists():
         try:
             raw = json.loads(path.read_text(encoding="utf-8"))
-            cached = {
-                int(k): str(v) for k, v in (raw or {}).items() if str(v).strip()
-            }
-            # Old caches stored pick-page rounds (title day = F); normalize once.
-            if cached and cached.get(max(cached)) != "W":
-                cached = pick_rounds_to_result_rounds(cached)
-            return cached
+            played = load_day_rounds(
+                {int(k): str(v) for k, v in (raw or {}).items() if str(v).strip()}
+            )
+            return pick_rounds_to_result_rounds(played)
         except Exception:
             pass
     if not fetch:
@@ -312,13 +355,14 @@ def _build_round_index(
         return {}
     tour_u = "MS" if str(tour).upper() in {"MS", "ATP"} else "WS"
     index: dict[tuple[str, str], dict[int, str]] = {}
-    sub = calendar.loc[calendar["tour"] == tour_u]
+    sub = calendar.loc[calendar["tour"] == tour_u].sort_values("week_start_date")
     for _, row in sub.iterrows():
         event_id = str(row.get("event_id") or "")
         year = row.get("event_year") if pd.notna(row.get("event_year")) else row.get("year")
         city = str(row.get("city") or "").strip()
         if not event_id or year is None or not city:
             continue
+        city = _chart_key(city, event_id)
         mapping = _load_event_day_rounds(
             tour_u, event_id, int(year), Path(cache_dir), fetch=fetch
         )
@@ -334,7 +378,7 @@ def _round_for_event(
     points: int,
     day_rounds: Optional[dict[int, str]] = None,
 ) -> str:
-    """Map survivor day to pick-page round (R2/1, QF/2…); never 第N轮."""
+    """Map survivor day to the exit round (R3/1, F…); never 第N轮."""
     if day is None:
         return ""
     try:
@@ -395,6 +439,15 @@ def build_tour_breakdown(
     order = level_order(tour)
     tour_u = "MS" if str(tour).upper() in {"MS", "ATP"} else "WS"
     points_tour = "ATP" if tour_u == "MS" else "WTA"
+    # The rank page files the November finals under the city 印第安维尔斯,
+    # which overwrites the March 1000. Put that score back from the 1000's
+    # own score page; the finals stay on 印第安维尔斯年终.
+    march_points: dict[str, int] = {}
+    if new_tournament_name == "印第安维尔斯年终":
+        march = meta.get("印第安维尔斯") or {}
+        march_points = _event_points(
+            Path(score_dir), tour_u, march.get("event_id"), march.get("year")
+        )
 
     users: dict[str, dict[str, Any]] = {}
     for _, row in frame.iterrows():
@@ -408,6 +461,21 @@ def build_tour_breakdown(
             removed_tournament_name=removed_tournament_name,
             event_score_by_uid=event_score_by_uid,
         )
+        finals_pts = (
+            event_score_by_uid.get(uid) if event_score_by_uid else None
+        )
+        # Rank details either overwrite the March 1000 with the finals score
+        # or drop that city. Put the March score page back; leave any other
+        # value, which is the 1000 itself.
+        current = composed.get("印第安维尔斯")
+        if (
+            march_points
+            and finals_pts is not None
+            and uid in march_points
+            and (current is None or current == int(finals_pts))
+        ):
+            composed = dict(composed)
+            composed["印第安维尔斯"] = int(march_points[uid])
         if not composed:
             continue
         result = calculate_points(composed, tour=points_tour)
@@ -420,7 +488,11 @@ def build_tour_breakdown(
             if points <= 0:
                 continue
             info = meta.get(name) or {}
-            level = info.get("level") or classify_level(name, tour_u)
+            display = "印第安维尔斯" if name == "印第安维尔斯年终" else name
+            if name in WTA_YEAR_END_FINAL or name in ATP_YEAR_END_FINALS:
+                level = "年终总决赛"
+            else:
+                level = info.get("level") or classify_level(name, tour_u)
             surface = info.get("surface") or classify_surface(name, info.get("year"))
             year_s = str(info.get("year") or "")
             day_map = day_index.get((name, year_s)) or day_index.get((name, "")) or {}
@@ -432,7 +504,7 @@ def build_tour_breakdown(
             )
             events.append(
                 {
-                    "name": name,
+                    "name": display,
                     "points": points,
                     "level": level,
                     "surface": surface,
@@ -467,6 +539,8 @@ def write_breakdown_bundle(
     wta_race_table: Optional[pd.DataFrame] = None,
     atp_event: Optional[str] = None,
     wta_event: Optional[str] = None,
+    atp_event_id: Optional[Any] = None,
+    wta_event_id: Optional[Any] = None,
     atp_removed: Optional[Union[str, list]] = None,
     wta_removed: Optional[Union[str, list]] = None,
     output_dir: Union[str, Path] = OUT_DIR,
@@ -486,12 +560,14 @@ def write_breakdown_bundle(
     )
 
     written: dict[str, Path] = {}
+    atp_points = finals_score_name(atp_event, None if atp_event_id is None else str(atp_event_id))
+    wta_points = finals_score_name(wta_event, None if wta_event_id is None else str(wta_event_id))
     specs = [
         (
             "breakdown_live_atp.json",
             atp_live,
             "MS",
-            atp_event,
+            atp_points,
             atp_removed,
             _event_score_map(atp_live_table),
         ),
@@ -499,7 +575,7 @@ def write_breakdown_bundle(
             "breakdown_live_wta.json",
             wta_live,
             "WS",
-            wta_event,
+            wta_points,
             wta_removed,
             _event_score_map(wta_live_table),
         ),
@@ -507,7 +583,7 @@ def write_breakdown_bundle(
             "breakdown_race_atp.json",
             atp_race,
             "MS",
-            atp_event,
+            atp_points,
             None,  # race does not drop the rolling-window event
             _event_score_map(atp_race_table),
         ),
@@ -515,7 +591,7 @@ def write_breakdown_bundle(
             "breakdown_race_wta.json",
             wta_race,
             "WS",
-            wta_event,
+            wta_points,
             None,
             _event_score_map(wta_race_table),
         ),

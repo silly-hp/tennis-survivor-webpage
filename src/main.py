@@ -957,6 +957,8 @@ def update_rank_pages(
             ),
             atp_event=atp_cfg_local.get("name"),
             wta_event=wta_cfg_local.get("name"),
+            atp_event_id=atp_cfg_local.get("event"),
+            wta_event_id=wta_cfg_local.get("event"),
             atp_removed=atp_cfg_local.get("removed_tournament_name"),
             wta_removed=wta_cfg_local.get("removed_tournament_name"),
             year=(cfg or {}).get("year"),

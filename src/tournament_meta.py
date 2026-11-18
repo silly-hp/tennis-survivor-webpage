@@ -67,8 +67,8 @@ WTA_500 = {
     "罗马",  # may be 1000
 }
 
-LEVEL_ORDER_ATP = ["大满贯", "M1000", "M500", "M250"]
-LEVEL_ORDER_WTA = ["大满贯", "W1000", "W500", "W250"]
+LEVEL_ORDER_ATP = ["大满贯", "年终总决赛", "M1000", "M500", "M250"]
+LEVEL_ORDER_WTA = ["大满贯", "年终总决赛", "W1000", "W500", "W250"]
 # City→500 sets below are fallbacks only; prefer calendar ``level``/``type``
 # scraped per season (see parser.parse_survivor_level_logo).
 

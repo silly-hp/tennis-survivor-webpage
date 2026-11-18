@@ -49,6 +49,8 @@ body.dark .bd-modal{--bd-hard:#00b8f0;--bd-clay:#ff7a54;--bd-grass:#4ca86a;}
     font-size:13px;border-top:1px solid var(--border2);color:var(--ink);}
 .bd-row:hover{background:var(--row-hover);}
 .bd-row .pts{font-family:'Space Mono',monospace;font-weight:700;}
+.bd-tour{display:inline-block;margin-right:6px;padding:0 5px;border-radius:4px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;line-height:16px;vertical-align:1px;color:#fff;background:var(--primary);}
+.bd-tour[data-t="A"]{background:var(--secondary);color:#051420;}
 .bd-row>div:nth-child(n+3){color:var(--muted);}
 .bd-chart{height:420px;width:100%;}
 .bd-chart.tall{height:460px;}
@@ -60,6 +62,7 @@ body.dark .bd-modal{--bd-hard:#00b8f0;--bd-clay:#ff7a54;--bd-grass:#4ca86a;}
 .bd-grab{display:none;justify-content:center;padding:8px 0 4px;touch-action:none;cursor:grab;}
 .bd-grab i{width:40px;height:4px;border-radius:2px;background:var(--border);}
 .bd-sum{display:none;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;}
+.bd-sum.has-all{grid-template-columns:1fr 1fr 1fr;}
 .bd-kpi{font-family:inherit;text-align:left;border:1px solid var(--border);background:var(--surface2);border-radius:10px;padding:8px 12px;
     color:var(--ink);cursor:pointer;}
 .bd-kpi.active{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);}
@@ -107,7 +110,10 @@ _JS_BREAKDOWN = r"""
   if (!window.__BREAKDOWN__) return;
   var CFG = window.__BREAKDOWN__;
   var cache = {atp:null, wta:null};
-  var state = {uid:null, name:'', gender:'atp', view:'level', loading:false, totals:{atp:0, wta:0}};
+  var state = {uid:null, name:'', gender:'atp', view:'level', loading:false, totals:{atp:0, wta:0, wtaYear:0, atpYear:0, all:0}};
+  // Combined year-end ladder is half of 150/300/450/600/1000/1500.
+  // Dying on that day is the next pick-page round.
+  var YEAR_EXIT = {75:'RR2', 150:'RR3', 225:'RR4', 300:'SF', 500:'F', 750:'W'};
   var mq = window.matchMedia ? window.matchMedia('(max-width:720px)') : null;
   function isSheet(){ return !!(mq && mq.matches); }
   var charts = {level:null, surface:null, month:null};
@@ -162,6 +168,7 @@ _JS_BREAKDOWN = r"""
     });
   }
   function fetchTour(tour){
+    if (tour==='all') return Promise.all([fetchTour('atp'), fetchTour('wta')]);
     if (cache[tour]) return Promise.resolve(cache[tour]);
     var gname = globalBag(tour);
     if (window[gname]) {
@@ -175,14 +182,65 @@ _JS_BREAKDOWN = r"""
       return cache[tour];
     });
   }
+  function ownFinal(ev){
+    var id = String((ev && ev.event_id) || '');
+    return !!(ev && (ev.level==='年终总决赛' || ev.name==='都灵' || ev.name==='利雅得' || id==='30808' || id==='20605'));
+  }
+  function yearStation(points, name, eventId, expires, tour){
+    points = points || 0;
+    if (points<=0) return null;
+    return {
+      name: name,
+      tour: tour,
+      points: points,
+      level: '年终总决赛',
+      surface: '硬地',
+      round: YEAR_EXIT[points] || '',
+      expires: expires,
+      expires_month: '2027.11',
+      event_id: eventId,
+      year: 2026
+    };
+  }
+  function combinedPayload(){
+    var atp = (cache.atp || {})[state.uid] || null;
+    var wta = (cache.wta || {})[state.uid] || null;
+    var events = [];
+    [['ATP', atp], ['WTA', wta]].forEach(function(pair){
+      ((pair[1] && pair[1].events) || []).forEach(function(ev){
+        if ((ev.points||0)<=0 || ownFinal(ev)) return;
+        var copy = {};
+        Object.keys(ev).forEach(function(k){ copy[k] = ev[k]; });
+        copy.tour = pair[0];
+        events.push(copy);
+      });
+    });
+    var wtaEnd = yearStation(state.totals.wtaYear, '印第安维尔斯', '30808', '2027-11-22', 'WTA');
+    var atpEnd = yearStation(state.totals.atpYear, '都灵', '20605', '2027-11-29', 'ATP');
+    if (wtaEnd) events.push(wtaEnd);
+    if (atpEnd) events.push(atpEnd);
+    events.sort(function(a, b){ return (b.points||0) - (a.points||0); });
+    var total = 0;
+    events.forEach(function(ev){ total += ev.points || 0; });
+    if (!events.length) return null;
+    return {
+      username: state.name,
+      total: total,
+      levels: ['大满贯','年终总决赛','W1000','M1000','W500','M500','W250','M250'],
+      surfaces: ['硬地','红土','草地'],
+      events: events
+    };
+  }
   function userPayload(){
+    if (state.gender==='all') return combinedPayload();
     var bag = cache[state.gender] || {};
     return bag[state.uid] || null;
   }
   function levelOrder(payload){
+    if (state.gender==='all') return (payload && payload.levels) || ['大满贯','年终总决赛','W1000','M1000','W500','M500','W250','M250'];
     return (payload && payload.levels) || (state.gender==='wta'
-      ? ['大满贯','W1000','W500','W250']
-      : ['大满贯','M1000','M500','M250']);
+      ? ['大满贯','年终总决赛','W1000','W500','W250']
+      : ['大满贯','年终总决赛','M1000','M500','M250']);
   }
   function surfaceOrder(payload){
     return (payload && payload.surfaces) || ['硬地','红土','草地'];
@@ -192,6 +250,9 @@ _JS_BREAKDOWN = r"""
     var sum = 0;
     (payload.events||[]).forEach(function(e){ if ((e.points||0)>0) sum += e.points; });
     return sum || payload.total || 0;
+  }
+  function evLabel(e){
+    return (e.tour ? e.tour+' ' : '') + (e.name || '');
   }
   function esc(s){
     return String(s).replace(/[&<>"']/g, function(c){
@@ -220,8 +281,9 @@ _JS_BREAKDOWN = r"""
       html += '<div class="bd-group-hd'+surfCls+'">'+esc(g)+'</div>';
       rows.forEach(function(e, i){
         if (i >= 3) hidden++;
+        var tag = e.tour ? '<span class="bd-tour" data-t="'+(e.tour==='ATP'?'A':'W')+'">'+esc(e.tour)+'</span>' : '';
         html += '<div class="bd-row'+(i>=3?' bd-more':'')+'">'
-          + '<div>'+esc(e.name||'')+'</div>'
+          + '<div>'+tag+esc(e.name||'')+'</div>'
           + '<div class="pts">'+(e.points||0)+'</div>'
           + '<div>'+esc(e.round||'—')+'</div>'
           + '<div>'+esc(e.expires_month || (e.expires ? String(e.expires).slice(0,7).replace('-','.') : '') || '—')+'</div>'
@@ -301,7 +363,7 @@ _JS_BREAKDOWN = r"""
         var g = byMonth[m];
         var lines = [(m+' · 合计 '+((g&&g.points)||0))];
         (g&&g.events||[]).forEach(function(e){
-          lines.push((e.name||'')+'：'+(e.points||0));
+          lines.push(evLabel(e)+'：'+(e.points||0));
         });
         return lines.join('<br/>');
       }},
@@ -324,7 +386,7 @@ _JS_BREAKDOWN = r"""
     // Index 0 is at the bottom of the plot; place detail text just under each bar.
     months.forEach(function(m, i){
       var g = byMonth[m];
-      var text = (g.events||[]).map(function(e){ return (e.name||'')+' '+(e.points||0); }).join('  ·  ');
+      var text = (g.events||[]).map(function(e){ return evLabel(e)+' '+(e.points||0); }).join('  ·  ');
       var y = topPad + (plotH / n) * ((n - 1 - i) + 0.82);
       children.push({
         type:'text', left:78, top:y, z:10,
@@ -345,7 +407,8 @@ _JS_BREAKDOWN = r"""
     var payload = userPayload();
     var total = totalOf(payload);
     $('bd-title').textContent = state.name || '用户';
-    $('bd-sub').innerHTML = (state.gender==='atp'?'ATP 男单':'WTA 女单') + ' · 总分 <b>' + total + '</b>';
+    var side = state.gender==='atp' ? 'ATP 男单' : (state.gender==='wta' ? 'WTA 女单' : '联合');
+    $('bd-sub').innerHTML = side + ' · 总分 <b>' + total + '</b>';
     applyView();
     renderSummary(payload);
     if (!payload){
@@ -370,13 +433,14 @@ _JS_BREAKDOWN = r"""
     if (!$('bd-sum')) return;
     $('bd-kpi-atp').textContent = state.totals.atp;
     $('bd-kpi-wta').textContent = state.totals.wta;
+    if ($('bd-kpi-all')) $('bd-kpi-all').textContent = state.totals.all || ((state.totals.atp||0)+(state.totals.wta||0)+(state.totals.wtaYear||0)+(state.totals.atpYear||0));
     document.querySelectorAll('.bd-kpi').forEach(function(k){
       k.classList.toggle('active', k.getAttribute('data-gender')===state.gender);
     });
     var top = ((payload && payload.events) || []).filter(function(e){ return (e.points||0)>0; })
       .sort(function(a,b){ return b.points-a.points; }).slice(0,3);
     $('bd-top').innerHTML = top.length ? '主要来源：' + top.map(function(e){
-      return '<b>'+esc(e.name||'')+'</b> '+e.points; }).join(' · ') : '';
+      return '<b>'+esc(evLabel(e))+'</b> '+e.points; }).join(' · ') : '';
   }
   function setGender(g){
     state.gender = g;
@@ -401,8 +465,22 @@ _JS_BREAKDOWN = r"""
       Object.keys(charts).forEach(function(k){ if (charts[k]) charts[k].resize(); });
     }, 30);
   }
+  function yearHeads(){
+    var table = document.querySelector('table.filterable-table');
+    if (!table) return null;
+    var heads = Array.prototype.map.call(table.querySelectorAll('thead th'), function(th){ return th.textContent.trim(); });
+    if (heads.indexOf('WTA年终')<0 && heads.indexOf('ATP年终')<0) return null;
+    return heads;
+  }
+  function syncCombined(){
+    var on = !!yearHeads();
+    document.querySelectorAll('[data-gender="all"]').forEach(function(el){ el.hidden = !on; });
+    var sum = $('bd-sum');
+    if (sum) sum.classList.toggle('has-all', on);
+    return on;
+  }
   function openModal(uid, name, prefer, totals){
-    state.totals = totals || {atp:0, wta:0};
+    state.totals = totals || {atp:0, wta:0, wtaYear:0, atpYear:0, all:0};
     state.uid = String(uid||'');
     state.name = name||'';
     var modal = $('bd-modal');
@@ -420,7 +498,7 @@ _JS_BREAKDOWN = r"""
       $(id).innerHTML = '<div class="bd-empty">加载积分数据中…</div>';
     });
     setView(state.view || 'level');
-    var first = prefer || 'atp';
+    var first = prefer || (syncCombined() ? 'all' : 'atp');
     var echartsUrls = [CFG.echartsUrl, CFG.echartsCdn].filter(Boolean);
     (function loadE(i){
       if (i >= echartsUrls.length){
@@ -475,9 +553,18 @@ _JS_BREAKDOWN = r"""
       var name = nameIdx>=0 ? (tr.children[nameIdx].textContent||'').trim() : '';
       var atpIdx = heads.indexOf('ATP总分');
       var wtaIdx = heads.indexOf('WTA总分');
-      var atp = atpIdx>=0 ? parseInt((tr.children[atpIdx].textContent||'0').replace(/\D/g,''),10)||0 : 0;
-      var wta = wtaIdx>=0 ? parseInt((tr.children[wtaIdx].textContent||'0').replace(/\D/g,''),10)||0 : 0;
-      openModal(uid, name, (wta>atp) ? 'wta' : 'atp', {atp:atp, wta:wta});
+      function numAt(idx){
+        if (idx<0 || !tr.children[idx]) return 0;
+        return parseInt((tr.children[idx].textContent||'0').replace(/\D/g,''),10)||0;
+      }
+      var atp = numAt(atpIdx);
+      var wta = numAt(wtaIdx);
+      var headsNow = yearHeads();
+      var wtaYear = headsNow ? numAt(headsNow.indexOf('WTA年终')) : 0;
+      var atpYear = headsNow ? numAt(headsNow.indexOf('ATP年终')) : 0;
+      var all = headsNow ? numAt(headsNow.indexOf('总分')) : (atp+wta);
+      var prefer = headsNow ? 'all' : ((wta>atp) ? 'wta' : 'atp');
+      openModal(uid, name, prefer, {atp:atp, wta:wta, wtaYear:wtaYear, atpYear:atpYear, all:all});
       return;
     }
     if (el.id==='bd-close' || el=== $('bd-modal') || (el.classList && el.classList.contains('bd-modal'))) closeModal();
@@ -522,6 +609,7 @@ _JS_BREAKDOWN = r"""
   window.addEventListener('resize', function(){
     Object.keys(charts).forEach(function(k){ if (charts[k]) charts[k].resize(); });
   });
+  syncCombined();
 })();
 """
 
@@ -543,6 +631,7 @@ def breakdown_modal_html() -> str:
       <div class="bd-sum" id="bd-sum">
         <button type="button" class="bd-kpi" data-gender="atp"><div class="l">ATP</div><div class="v" id="bd-kpi-atp">0</div></button>
         <button type="button" class="bd-kpi" data-gender="wta"><div class="l">WTA</div><div class="v" id="bd-kpi-wta">0</div></button>
+        <button type="button" class="bd-kpi" data-gender="all" hidden><div class="l">联合</div><div class="v" id="bd-kpi-all">0</div></button>
         <div class="bd-top" id="bd-top"></div>
       </div>
       <div class="bd-filters">
@@ -550,6 +639,7 @@ def breakdown_modal_html() -> str:
           <span class="bd-gender-lbl">巡回赛</span>
           <button type="button" class="bd-chip active" data-gender="atp">ATP</button>
           <button type="button" class="bd-chip" data-gender="wta">WTA</button>
+          <button type="button" class="bd-chip" data-gender="all" hidden>联合</button>
         </div>
         <div class="bd-filter-row">
           <span class="bd-view-lbl">视图</span>
