@@ -257,7 +257,7 @@ def _ranking_entries(frame: pd.DataFrame) -> list[tuple[str, int, str]]:
 
 
 def _status_by_year_end(frame: pd.DataFrame, roster: set[str] | None, result) -> pd.DataFrame:
-    """On the champion board, status follows the combined year-end.
+    """On both combined boards, status follows the combined year-end.
 
     Before the ATP finals' first day is settled, ``roster`` is ``None`` and
     every status stays as recorded. Afterwards anyone outside the field is
@@ -504,7 +504,9 @@ def update_combined_pages(
             logger.info("都灵首日未结算，联合年终先给所有选人记分")
         else:
             logger.info(f"都灵首日已结算，联合年终名单 {len(roster)} 人")
-        instant = _with_year_end(instant, year_end, roster)
+        instant = _status_by_year_end(
+            _with_year_end(instant, year_end, roster), roster, year_end
+        )
         race = _status_by_year_end(
             _with_year_end(race, year_end, roster), roster, year_end
         )
