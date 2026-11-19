@@ -268,12 +268,48 @@ def _day1_users(submissions: pd.DataFrame | None) -> set[str]:
     return found
 
 
+def _uids_on_day(submissions: pd.DataFrame | None, day: int) -> set[str]:
+    """Users with a real pick on ``day``, including 轮空."""
+    if submissions is None or getattr(submissions, "empty", True) or int(day or 0) <= 0:
+        return set()
+    if "user_id" not in submissions.columns or "day" not in submissions.columns:
+        return set()
+    found: set[str] = set()
+    days = pd.to_numeric(submissions["day"], errors="coerce")
+    players = submissions["player"] if "player" in submissions.columns else ""
+    for uid, picked_day, player in zip(submissions["user_id"], days, players):
+        if int(picked_day or 0) != int(day):
+            continue
+        name = str(player or "").strip()
+        if not name or name.lower() == "nan":
+            continue
+        key = _as_key(uid)
+        if key:
+            found.add(key)
+    return found
+
+
+def _display_status(status: str, *, picked_today: bool, pending: bool) -> str:
+    """Same labels as the single-tour ranking page.
+
+    Settlement leaves a survivor at 存活 when the next day opens. That page
+    shows 未选 until they pick, then 未完赛 while today's match is unfinished.
+    """
+    if status != "存活":
+        return status
+    if pending:
+        return "未完赛"
+    if not picked_today:
+        return "未选"
+    return status
+
+
 def _score_submissions(
     submissions: pd.DataFrame | None,
     draw,
     day_results: dict | None,
 ) -> tuple[dict[str, int], dict[str, str]]:
-    settled, _counts, _bye, _play, _pending, _backups = settle_tour_scores(
+    settled, _counts, _bye, play_day, pending, _backups = settle_tour_scores(
         None,
         submissions,
         draw,
@@ -284,6 +320,9 @@ def _score_submissions(
     statuses: dict[str, str] = {}
     if settled is None or settled.empty:
         return halves, statuses
+    pending_keys = {_as_key(uid) for uid in pending}
+    pending_keys.discard("")
+    picked_today = _uids_on_day(submissions, play_day)
     for row in settled.to_dict(orient="records"):
         key = _as_key(row.get("user_id"))
         if not key:
@@ -291,7 +330,11 @@ def _score_submissions(
         halves[key] = half_points(int(row.get("day") or 0))
         status = str(row.get("fill_status") or "").strip()
         if status:
-            statuses[key] = status
+            statuses[key] = _display_status(
+                status,
+                picked_today=key in picked_today,
+                pending=key in pending_keys,
+            )
     return halves, statuses
 
 
