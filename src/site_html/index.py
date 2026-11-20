@@ -876,6 +876,17 @@ def render_index(
 {_this_week_html(week_data, trends, weather)}
 {_picks_html(week_data, picks)}
 {_last_week_html(week_data)}
+    <section class="block">
+        <h2 class="block-hd">联合杯</h2>
+        <a class="ev-card" href="combined_cup.html" style="text-decoration:none;color:inherit;">
+            <div class="ev-head">
+                <span class="ev-city">联合杯报名<span class="ev-level">截止 12月27日 23:59</span></span>
+                <span class="ev-eye">Combined Cup</span>
+            </div>
+            <p class="rest-sub">只在已报名的人里重算：ATP 前五、WTA 前五，再加去掉这 10 人之后的联合前八。</p>
+            <span class="text-link">去报名 →</span>
+        </a>
+    </section>
 {_nav_html(season)}
 
     <footer>
@@ -898,7 +909,7 @@ def render_index(
             </div>
             <button type="button" class="guide-close" aria-label="关闭">✕</button>
         </div>
-        <p>蛙网将举办联合年终。玩家可以同时参加 WTA 和 ATP 年终。</p>
+        <p>蛙网将举办联合年终。玩家可以同时参加 WTA 和 ATP 年终。<a class="text-link" href="combined_cup.html">去联合杯报名 →</a></p>
         <div class="guide-grid">
             <div class="guide-item"><b>照常选人</b>单项没有入围，也可以在丘网上正常选人。丘网会保留选人记录。</div>
             <div class="guide-item"><b>得分</b>两项得分取均值，作为联合年终得分。</div>
