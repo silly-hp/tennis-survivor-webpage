@@ -84,6 +84,7 @@ def build_ranking_table(
     *,
     use_settled_score: bool = False,
     bye_user_ids: Optional[Set[str]] = None,
+    finals: bool = False,
 ) -> pd.DataFrame:
     # Day1 always uses the bye / 非轮空 summary path. Settled scores are only
     # wired into the non-day1 builder from Day2 onward.
@@ -126,6 +127,7 @@ def build_ranking_table(
             new_tournament_name,
             removed_tournament_name,
             tour,
+            finals=finals,
         ).sort_values(by="current_rank", ascending=True, na_position="last")
 
 
@@ -384,6 +386,7 @@ def _build_non_day1(
     new_tournament_name: Optional[str],
     removed_tournament_name: Optional[Union[str, List[str]]],
     tour: str,
+    finals: bool = False,
 ) -> pd.DataFrame:
     live_rank_df = compute_live_ranking(
         rank_df,
@@ -399,7 +402,9 @@ def _build_non_day1(
     ]
     live_rank_df = live_rank_df.merge(today_sub, how="left", on="user_id")
 
-    live_rank_df = get_today_status(live_rank_df, bye=False)
+    live_rank_df = get_today_status(
+        live_rank_df, bye=False, phase_day=day if finals else None
+    )
     # Today's pick board: only users alive at the open of the day.
     # Keep their picks even after settlement (球员输球 / 自杀); drop picks from
     # anyone already eliminated / 未参赛 before today.

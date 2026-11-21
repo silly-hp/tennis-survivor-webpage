@@ -510,6 +510,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
         tour=tour_label,
         use_settled_score=use_settled,
         bye_user_ids=bye_users if day == 1 else None,
+        finals=finals_mode,
     ).rename(COL_ZH_DICT, axis=1)
     race = (
         build_ranking_table(
@@ -522,6 +523,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             tour=tour_label,
             use_settled_score=use_settled,
             bye_user_ids=bye_users if day == 1 else None,
+            finals=finals_mode,
         )
         .drop("removed_point", axis=1)
         .rename(COL_ZH_DICT, axis=1)

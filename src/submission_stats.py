@@ -1,7 +1,7 @@
 import math
 from logger import get_logger
 import pandas as pd
-from typing import Union, List
+from typing import List, Optional, Union
 
 logger = get_logger(__name__)
 
@@ -21,12 +21,16 @@ def get_bye_status(
     return p_df
 
 
-def _is_repeat_pick(row) -> bool:
-    """True if today's primary was already used on a prior day.
+def _is_repeat_pick(row, phase_day: Optional[int] = None) -> bool:
+    """True if today's primary was already used on a prior day of this phase.
 
     After live settlement, today's pick is appended to ``players`` for both
     wins (存活) and losses (球员输球) / suicides. That trailing entry must not
     count as 自杀（重复）. A backup is not judged unless the primary retired.
+
+    Year-end finals pass ``phase_day``. Days 1–4 and days 5–6 are separate:
+    a knockout pick may repeat a group-stage name. ``players`` is in day
+    order and finals have no 轮空, so index 0 is day 1.
     """
     players = row.get("players")
     pick = row.get("player")
@@ -36,13 +40,21 @@ def _is_repeat_pick(row) -> bool:
     if not pick or pick == "轮空":
         return False
     used = [str(p).strip() for p in players if str(p).strip() and str(p).strip() != "轮空"]
+    if phase_day is not None and int(phase_day) >= 5:
+        # Index 0 is day 1. Drop today only once the list already reaches it,
+        # so a knockout name that is only yesterday's pick still counts.
+        if len(used) >= int(phase_day) and used[-1] == pick:
+            used = used[:-1]
+        return pick in used[4:]
     # Settlement (win/loss/suicide) appends today's pick as the last entry.
     if used and used[-1] == pick:
         used = used[:-1]
     return pick in used
 
 
-def get_today_status(p_df: pd.DataFrame, bye: bool = False) -> pd.DataFrame:
+def get_today_status(
+    p_df: pd.DataFrame, bye: bool = False, phase_day: Optional[int] = None
+) -> pd.DataFrame:
     p_df_copy = p_df.copy()
     if bye:
         if "bye" not in p_df.columns:
@@ -65,7 +77,9 @@ def get_today_status(p_df: pd.DataFrame, bye: bool = False) -> pd.DataFrame:
         suicide = p_df_copy[
             p_df_copy["normal_match_id"] == p_df_copy["normal_match_id_alt"]
         ]
-        repeat = p_df_copy[p_df_copy.apply(_is_repeat_pick, axis=1)]
+        repeat = p_df_copy[
+            p_df_copy.apply(lambda row: _is_repeat_pick(row, phase_day), axis=1)
+        ]
         p_df_copy.loc[p_df_copy["user_id"].isin(suicide["user_id"]), "today_status"] = (
             "自杀（主备冲突）"
         )
