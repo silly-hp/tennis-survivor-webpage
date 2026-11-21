@@ -79,6 +79,7 @@ body.dark {
 body.dark .cup-msg.bad{color:#ff9a7a;}
 body.dark .cup-msg.ok{color:#7dcea0;}
 .cup-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.cup-tools [hidden]{display:none !important;}
 #deadlineBox.closed{opacity:.7;}
 @media(max-width:900px){.cup-grid{grid-template-columns:1fr;}}
 </style>
@@ -378,7 +379,7 @@ document.getElementById('clearBtn').addEventListener('click', function(){
 if (LOCAL){
   document.getElementById('formNote').textContent = '这是本地预览，报名只存在这台浏览器。推到线上后，提交会记到 GitHub，所有人看到同一份名单。';
 } else {
-  document.getElementById('clearBtn').hidden = true;
+  document.querySelector('.cup-tools').remove();
 }
 refreshRegs().then(render).catch(function(){
   setMsg('名单暂时没有读到，请刷新页面。', false);
