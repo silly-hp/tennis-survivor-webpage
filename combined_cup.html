@@ -150,7 +150,7 @@ body.dark .cup-msg.ok{color:#7dcea0;}
         <div class="guide-item"><b>单项前五</b>已报名的人里，ATP 冠军积分前 5 名、WTA 冠军积分前 5 名直接入围。</div>
         <div class="guide-item"><b>两边都在前五</b>只占排名更高的一边，另一边顺延到下一位已报名的人。</div>
         <div class="guide-item"><b>联合前八</b>去掉这 10 人之后，按联合积分再取前 8。不含单项年终。</div>
-        <div class="guide-item"><b>即时重算</b>每报名一人，就只在已报名的人里按上面的规则重算一遍。没人报名时名单是空的；不足 18 人时按实际人数组成。种子按入选者的联合积分排序。ATP#、WTA# 是已报名的人里的名次，Comb# 是去掉直接入围者之后的名次。</div>
+        <div class="guide-item"><b>即时重算</b>每报名一人，就只在已报名的人里按上面的规则重算一遍。没人报名时名单是空的；不足 18 人时按实际人数组成。种子按入选者的联合积分排序。通过 ATP 入围的人不再计入 WTA 名次，通过 WTA 入围的人不再计入 ATP 名次，所以是连续的 ATP#1–5 和 WTA#1–5。Comb#1–8 是去掉这 10 人之后的名次。</div>
     </div>
 </section>
 <section class="block">
@@ -230,19 +230,21 @@ function select(pool){
     const a = picksA.length < 5 && ai < atp.length ? atp[ai] : null;
     const w = picksW.length < 5 && wi < wta.length ? wta[wi] : null;
     if (!a && !w) break;
-    const ar = a ? atp.indexOf(a) + 1 : 0;
-    const wr = w ? wta.indexOf(w) + 1 : 0;
+    // Rank among registrants still eligible for this side. Someone already
+    // taken by the other tour is not in this count, so each side is 1–5.
+    const ar = picksA.length + 1;
+    const wr = picksW.length + 1;
     if (a && w && a === w){
-      if (ar <= wr){ picksA.push(a); a.rule = 'ATP#'+ar; }
-      else { picksW.push(a); a.rule = 'WTA#'+wr; }
+      if (ar <= wr){ a.rule = 'ATP#'+ar; picksA.push(a); }
+      else { a.rule = 'WTA#'+wr; picksW.push(a); }
       used.add(a); ai++; wi++;
     } else if (a && !w){
-      picksA.push(a); a.rule = 'ATP#'+ar; used.add(a); ai++;
+      a.rule = 'ATP#'+ar; picksA.push(a); used.add(a); ai++;
     } else if (w && !a){
-      picksW.push(w); w.rule = 'WTA#'+wr; used.add(w); wi++;
+      w.rule = 'WTA#'+wr; picksW.push(w); used.add(w); wi++;
     } else {
-      picksA.push(a); a.rule = 'ATP#'+ar; used.add(a); ai++;
-      picksW.push(w); w.rule = 'WTA#'+wr; used.add(w); wi++;
+      a.rule = 'ATP#'+ar; picksA.push(a); used.add(a); ai++;
+      w.rule = 'WTA#'+wr; picksW.push(w); used.add(w); wi++;
     }
   }
   const comb = combOrder.filter(function(p){ return set.has(p) && !used.has(p); }).slice(0, 8);
