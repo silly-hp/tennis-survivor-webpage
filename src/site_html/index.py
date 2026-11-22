@@ -685,10 +685,10 @@ _JS_INDEX = r"""
   guide.querySelector('.guide-close').addEventListener('click',()=>guide.close());
   guide.addEventListener('click',e=>{if(e.target===guide)guide.close();});
 
-  // ── first-visit announcement ──
-  const NOTICE_KEY='ts.notice.combined-finals';
+  // ── first-visit announcement; no data-key means nothing is posted ──
   const notice=document.getElementById('notice');
-  if(notice){
+  const NOTICE_KEY=notice&&notice.dataset.key;
+  if(notice&&NOTICE_KEY){
     const remember=()=>{ try{ localStorage.setItem(NOTICE_KEY,'1'); }catch(e){} };
     notice.addEventListener('close', remember);
     notice.querySelector('.guide-close').addEventListener('click',()=>notice.close());
@@ -789,6 +789,36 @@ _JS_WATCH_COUNT = """\
 })();"""
 
 
+# 首页公告。置空则不弹出。发新公告时换一个 key，关过上一条的人也会再看到。
+# NOTICE = {
+#     "key": "ts.notice.example",
+#     "title": "标题",
+#     "body": "<p>正文</p>",
+# }
+NOTICE = None
+
+
+def _notice_html(notice) -> str:
+    if not notice or not str(notice.get("title") or "").strip() or not str(notice.get("key") or "").strip():
+        return ""
+    key = html.escape(str(notice["key"]), quote=True)
+    title = html.escape(str(notice["title"]))
+    body = str(notice.get("body") or "")
+    return f"""<dialog class="guide notice" id="notice" data-key="{key}" aria-labelledby="noticeTitle">
+    <div class="guide-inner">
+        <div class="guide-hd">
+            <div>
+                <div class="notice-eye">公告</div>
+                <h2 id="noticeTitle">{title}</h2>
+            </div>
+            <button type="button" class="guide-close" aria-label="关闭">✕</button>
+        </div>
+        {body}
+    </div>
+</dialog>
+"""
+
+
 def render_index(
     stats: dict,
     version: str = VERSION,
@@ -834,6 +864,7 @@ def render_index(
     watch_count_js = html.escape(
         asset_url("index-watch.js", _JS_WATCH_COUNT, page), quote=True
     )
+    notice_html = _notice_html(NOTICE)
 
     html_str = f"""\
 <!DOCTYPE html>
@@ -900,25 +931,7 @@ def render_index(
     </footer>
 </div>
 
-<dialog class="guide notice" id="notice" aria-labelledby="noticeTitle">
-    <div class="guide-inner">
-        <div class="guide-hd">
-            <div>
-                <div class="notice-eye">公告</div>
-                <h2 id="noticeTitle">联合年终</h2>
-            </div>
-            <button type="button" class="guide-close" aria-label="关闭">✕</button>
-        </div>
-        <p>蛙网将举办联合年终。玩家可以同时参加 WTA 和 ATP 年终。<a class="text-link" href="combined_cup.html">去联合杯报名 →</a></p>
-        <div class="guide-grid">
-            <div class="guide-item"><b>照常选人</b>单项没有入围，也可以在丘网上正常选人。丘网会保留选人记录。</div>
-            <div class="guide-item"><b>得分</b>两项得分取均值，作为联合年终得分。</div>
-            <div class="guide-item"><b>参赛</b>两项年终都参加，视为成功参加联合年终。只参加一项，视为未参赛。</div>
-            <div class="guide-item"><b>有效参赛</b>在所有参赛选手里，联合冠军排名前 8 的玩家视为有效参赛。</div>
-        </div>
-    </div>
-</dialog>
-
+{notice_html}
 <dialog class="guide" id="guide" aria-label="使用指南">
     <div class="guide-inner">
         <div class="guide-hd"><h2>使用指南</h2><button type="button" class="guide-close" aria-label="关闭">✕</button></div>
