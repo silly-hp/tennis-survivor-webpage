@@ -81,7 +81,24 @@ body.dark .cup-msg.ok{color:#7dcea0;}
 .cup-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
 .cup-tools [hidden]{display:none !important;}
 #deadlineBox.closed{opacity:.7;}
-@media(max-width:900px){.cup-grid{grid-template-columns:1fr;}}
+.cup-days{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;margin:0 0 14px;}
+.cup-day{font:inherit;font-size:14px;font-weight:700;flex:1;min-width:76px;min-height:40px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--ink);cursor:pointer;}
+.cup-day[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff;}
+.cup-cities{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+.cup-city{min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 12px 4px;}
+.cup-city h3{margin:0 0 12px;font-family:"Songti SC","STSong",serif;font-size:20px;}
+.cup-empty{color:var(--muted);text-align:center;padding:36px 8px 44px;}
+.cup-group{margin:0 0 8px;}
+.cup-group-hd{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:14px;}
+.cup-group-hd b{font-size:15px;}
+.cup-pickers{margin:2px 0 8px;color:var(--muted);font-size:13px;}
+table.cup-tri{width:100%;border-collapse:collapse;margin:0 0 12px;background:transparent;}
+table.cup-tri th,table.cup-tri td{border:1px solid var(--border);padding:7px 6px;text-align:center;vertical-align:middle;background:var(--surface);font-size:13px;}
+table.cup-tri .who{display:block;margin-top:2px;font-weight:500;color:var(--muted);font-size:12px;}
+table.cup-tri td.match{background:var(--surface2);color:var(--ink2);}
+table.cup-tri td.on{background:var(--primary-dim);color:var(--primary-dark);font-weight:700;}
+table.cup-tri td.low,table.cup-tri td.diag{background:var(--bg);color:transparent;}
+@media(max-width:900px){.cup-grid,.cup-cities{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -169,12 +186,24 @@ body.dark .cup-msg.ok{color:#7dcea0;}
     </article>
 </section>
 <section class="block">
+    <h2 class="block-hd">小组赛日程 <span class="block-note">点一天，只看当天有比赛的小组。上三角是对阵日期，深色格子是这一天。组里三名玩家都要选。</span></h2>
+    <div class="cup-days" id="cupDays">
+        <button type="button" class="cup-day" data-day="1" aria-pressed="true">1月1日</button>
+        <button type="button" class="cup-day" data-day="2" aria-pressed="false">1月2日</button>
+        <button type="button" class="cup-day" data-day="3" aria-pressed="false">1月3日</button>
+        <button type="button" class="cup-day" data-day="4" aria-pressed="false">1月4日</button>
+        <button type="button" class="cup-day" data-day="5" aria-pressed="false">1月5日</button>
+        <button type="button" class="cup-day" data-day="6" aria-pressed="false">1月6日</button>
+    </div>
+    <div class="cup-cities" id="cupCities"></div>
+</section>
+<section class="block">
     <h2 class="block-hd">报名</h2>
     <form class="ev-card cup-form" id="form">
-        <p class="rest-sub" id="formNote">用户名要和排名里的一致。报名时设一个取消码，之后只有填对这个码才能取消。提交后记入同一份名单，页面会自动重算。</p>
+        <p class="rest-sub" id="formNote">用户名要和排名里的一致。报名时设一个密码，之后只有填对这个密码才能取消。提交后记入同一份名单，页面会自动重算。</p>
         <div class="cup-line">
             <input class="cup-input" type="text" id="name" name="name" list="names" placeholder="你的用户名" autocomplete="off" required>
-            <input class="cup-input" type="password" id="code" name="code" placeholder="设一个取消码，4–16 位" autocomplete="new-password" minlength="4" maxlength="16" required>
+            <input class="cup-input" type="password" id="code" name="code" placeholder="设一个密码，4–16 位" autocomplete="new-password" minlength="4" maxlength="16" required>
             <button class="pill-btn cup-go" type="submit" id="submitBtn">提交报名</button>
         </div>
         <datalist id="names"></datalist>
@@ -184,10 +213,10 @@ body.dark .cup-msg.ok{color:#7dcea0;}
         </div>
     </form>
     <form class="ev-card cup-form" id="cancelForm">
-        <p class="rest-sub">取消本人的报名。已报名的人如果当时没有设取消码，页面上不能取消。</p>
+        <p class="rest-sub">取消本人的报名。已报名的人如果当时没有设密码，页面上不能取消。</p>
         <div class="cup-line">
             <input class="cup-input" type="text" id="cancelName" name="name" list="names" placeholder="要取消的用户名" autocomplete="off" required>
-            <input class="cup-input" type="password" id="cancelCode" name="code" placeholder="取消码" autocomplete="current-password" minlength="4" maxlength="16" required>
+            <input class="cup-input" type="password" id="cancelCode" name="code" placeholder="密码" autocomplete="current-password" minlength="4" maxlength="16" required>
             <button class="chip-btn" type="submit" id="cancelBtn">取消报名</button>
         </div>
     </form>
@@ -327,6 +356,65 @@ const DRAW = [
   {group:'A组', country:'🇰🇿 哈萨克斯坦', city:'珀斯'},
   {group:'C组', country:'🇩🇰 丹麦', city:'珀斯'}
 ];
+const GROUP_STAGE = [
+  {id:'A', city:'珀斯', seeds:[1,11,17], ties:[[1,2,1],[0,2,2],[0,1,4]]},
+  {id:'C', city:'珀斯', seeds:[3,9,18], ties:[[1,2,2],[0,1,3],[0,2,5]]},
+  {id:'E', city:'珀斯', seeds:[5,12,16], ties:[[0,2,1],[1,2,3],[0,1,4]]},
+  {id:'B', city:'悉尼', seeds:[2,7,14], ties:[[0,1,2],[0,2,4],[1,2,5]]},
+  {id:'D', city:'悉尼', seeds:[4,10,15], ties:[[0,2,2],[1,2,3],[0,1,6]]},
+  {id:'F', city:'悉尼', seeds:[6,8,13], ties:[[0,2,3],[1,2,4],[0,1,6]]}
+];
+let pickDay = 1;
+function countryName(country){
+  const parts = String(country).split(' ');
+  return parts[parts.length - 1] || country;
+}
+function groupTable(group, bySeed){
+  const tieDay = {};
+  group.ties.forEach(function(tie){
+    tieDay[tie[0]+','+tie[1]] = tie[2];
+    tieDay[tie[1]+','+tie[0]] = tie[2];
+  });
+  const today = group.ties.filter(function(tie){ return tie[2] === pickDay; })[0];
+  const label = function(seed){
+    const slot = DRAW[seed - 1];
+    const row = bySeed[seed];
+    return esc(slot.country)+'<span class="who">'+esc(row ? row.name : '待定')+'</span>';
+  };
+  const heads = group.seeds.map(function(seed){ return '<th>'+label(seed)+'</th>'; }).join('');
+  const body = group.seeds.map(function(seed, i){
+    const cells = group.seeds.map(function(_, j){
+      if (j < i) return '<td class="low"></td>';
+      if (j === i) return '<td class="diag"></td>';
+      const day = tieDay[i+','+j];
+      return '<td class="'+(day === pickDay ? 'on' : 'match')+'">1月'+day+'日</td>';
+    }).join('');
+    return '<tr><th>'+label(seed)+'</th>'+cells+'</tr>';
+  }).join('');
+  const left = countryName(DRAW[group.seeds[today[0]] - 1].country);
+  const right = countryName(DRAW[group.seeds[today[1]] - 1].country);
+  const pickers = group.seeds.map(function(seed){
+    const row = bySeed[seed];
+    return esc(row ? row.name : '待定');
+  }).join('、');
+  return '<div class="cup-group"><div class="cup-group-hd"><b>'+group.id+'组</b><span>'+esc(left)+' vs '+esc(right)+'</span></div><p class="cup-pickers">选人：'+pickers+'</p><table class="cup-tri"><thead><tr><th></th>'+heads+'</tr></thead><tbody>'+body+'</tbody></table></div>';
+}
+function renderSchedule(rows){
+  const box = document.getElementById('cupCities');
+  if (!box) return;
+  const bySeed = {};
+  rows.forEach(function(row){ bySeed[row.seed] = row; });
+  document.querySelectorAll('#cupDays .cup-day').forEach(function(btn){
+    btn.setAttribute('aria-pressed', Number(btn.dataset.day) === pickDay ? 'true' : 'false');
+  });
+  box.innerHTML = ['珀斯','悉尼'].map(function(city){
+    const groups = GROUP_STAGE.filter(function(group){
+      return group.city === city && group.ties.some(function(tie){ return tie[2] === pickDay; });
+    });
+    const body = groups.length ? groups.map(function(group){ return groupTable(group, bySeed); }).join('') : '<div class="cup-empty">当天没有小组赛</div>';
+    return '<div class="cup-city"><h3>'+city+'</h3>'+body+'</div>';
+  }).join('');
+}
 function table(rows){
   if (!rows.length) return '<div class="rest-sub" style="padding:4px 2px 0">还没有人报名。</div>';
   const head = '<table class="dataframe filterable-table"><thead><tr><th>种子</th><th>用户名</th><th>分组</th><th>城市</th><th>对应国家</th><th>准则</th><th>联合积分</th></tr></thead><tbody>';
@@ -342,6 +430,7 @@ function render(){
   const live = select(pool);
   const isClosed = closed();
   document.getElementById('liveTable').innerHTML = table(live);
+  renderSchedule(live);
   document.getElementById('liveTitle').textContent = isClosed ? '正式名单' : '入选名单';
   let meta = '已报名 '+regs.length+' 人 · 入选 '+live.length+' 人';
   if (!regs.length) meta = '还没有报名';
@@ -396,7 +485,7 @@ function addName(name, code){
   if (closed()){ setMsg('报名已截止', false); return; }
   const p = byName[name];
   if (!p){ setMsg('没有这位用户', false); return; }
-  if (!validCode(code)){ setMsg('请填写 4 到 16 位取消码', false); return; }
+  if (!validCode(code)){ setMsg('请填写 4 到 16 位密码', false); return; }
   const regs = loadRegs();
   if (regs.indexOf(name) >= 0){ setMsg(name+' 已经报名', false); return; }
   if (!LOCAL){ openIssue('add', name, code); return true; }
@@ -407,7 +496,7 @@ function addName(name, code){
   saveCodes(codes);
   const live = select(regs.map(function(n){ return byName[n]; }));
   const row = live.filter(function(x){ return x.name === name; })[0];
-  setMsg(row ? ('已报名 · 种子 '+row.seed+' · '+row.rule+'。请记住取消码。') : '已报名，目前未进入入选名单。请记住取消码。', true);
+  setMsg(row ? ('已报名 · 种子 '+row.seed+' · '+row.rule+'。请记住密码。') : '已报名，目前未进入入选名单。请记住密码。', true);
   render();
   return true;
 }
@@ -415,13 +504,13 @@ function removeName(name, code){
   if (closed()){ setMsg('报名已截止', false); return; }
   const p = byName[name];
   if (!p){ setMsg('没有这位用户', false); return; }
-  if (!validCode(code)){ setMsg('请填写 4 到 16 位取消码', false); return; }
+  if (!validCode(code)){ setMsg('请填写 4 到 16 位密码', false); return; }
   if (!LOCAL){ openIssue('cancel', name, code); return true; }
   const regs = loadRegs();
   if (regs.indexOf(name) < 0){ setMsg(name+' 还没有报名', false); return; }
   const codes = loadCodes();
-  if (!codes[name]){ setMsg('报名时没有设取消码，页面上不能取消。', false); return; }
-  if (codes[name] !== code){ setMsg('取消码不对', false); return; }
+  if (!codes[name]){ setMsg('报名时没有设密码，页面上不能取消。', false); return; }
+  if (codes[name] !== code){ setMsg('密码不对', false); return; }
   delete codes[name];
   saveCodes(codes);
   saveRegs(regs.filter(function(n){ return n !== name; }));
@@ -429,6 +518,12 @@ function removeName(name, code){
   render();
   return true;
 }
+document.getElementById('cupDays').addEventListener('click', function(ev){
+  const btn = ev.target.closest('.cup-day');
+  if (!btn) return;
+  pickDay = Number(btn.dataset.day);
+  render();
+});
 document.getElementById('names').innerHTML = players.map(function(p){
   return '<option value="'+esc(p.name)+'">';
 }).join('');
@@ -454,7 +549,7 @@ document.getElementById('clearBtn').addEventListener('click', function(){
   render();
 });
 if (LOCAL){
-  document.getElementById('formNote').textContent = '这是本地预览，报名只存在这台浏览器。报名时设一个取消码，取消时要填对。';
+  document.getElementById('formNote').textContent = '这是本地预览，报名只存在这台浏览器。报名时设一个密码，取消时要填对。';
 } else {
   document.querySelector('.cup-tools').remove();
 }
