@@ -298,7 +298,7 @@ async function refreshRegs(){
 function closed(){ return Date.now() >= DEADLINE; }
 
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-const COUNTRIES = ['美国','捷克','加拿大','法国','波兰','比利时','希腊','西班牙','意大利','澳大利亚','克罗地亚','德国','阿根廷','匈牙利','英国','瑞士','哈萨克斯坦','丹麦'];
+const COUNTRIES = ['🇺🇸 美国','🇨🇿 捷克','🇨🇦 加拿大','🇫🇷 法国','🇵🇱 波兰','🇧🇪 比利时','🇬🇷 希腊','🇪🇸 西班牙','🇮🇹 意大利','🇦🇺 澳大利亚','🇭🇷 克罗地亚','🇩🇪 德国','🇦🇷 阿根廷','🇭🇺 匈牙利','🇬🇧 英国','🇨🇭 瑞士','🇰🇿 哈萨克斯坦','🇩🇰 丹麦'];
 function table(rows){
   if (!rows.length) return '<div class="rest-sub" style="padding:4px 2px 0">还没有人报名。</div>';
   const head = '<table class="dataframe filterable-table"><thead><tr><th>种子</th><th>用户名</th><th>对应国家</th><th>准则</th><th>联合积分</th></tr></thead><tbody>';
