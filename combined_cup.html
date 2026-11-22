@@ -299,31 +299,31 @@ function closed(){ return Date.now() >= DEADLINE; }
 
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 const DRAW = [
-  {group:'A组', country:'🇺🇸 美国'},
-  {group:'B组', country:'🇨🇿 捷克'},
-  {group:'C组', country:'🇨🇦 加拿大'},
-  {group:'D组', country:'🇫🇷 法国'},
-  {group:'E组', country:'🇵🇱 波兰'},
-  {group:'F组', country:'🇧🇪 比利时'},
-  {group:'B组', country:'🇬🇷 希腊'},
-  {group:'F组', country:'🇪🇸 西班牙'},
-  {group:'C组', country:'🇮🇹 意大利'},
-  {group:'D组', country:'🇦🇺 澳大利亚'},
-  {group:'A组', country:'🇭🇷 克罗地亚'},
-  {group:'E组', country:'🇩🇪 德国'},
-  {group:'F组', country:'🇦🇷 阿根廷'},
-  {group:'B组', country:'🇭🇺 匈牙利'},
-  {group:'D组', country:'🇬🇧 英国'},
-  {group:'E组', country:'🇨🇭 瑞士'},
-  {group:'A组', country:'🇰🇿 哈萨克斯坦'},
-  {group:'C组', country:'🇩🇰 丹麦'}
+  {group:'A组', country:'🇺🇸 美国', city:'珀斯'},
+  {group:'B组', country:'🇨🇿 捷克', city:'悉尼'},
+  {group:'C组', country:'🇨🇦 加拿大', city:'珀斯'},
+  {group:'D组', country:'🇫🇷 法国', city:'悉尼'},
+  {group:'E组', country:'🇵🇱 波兰', city:'珀斯'},
+  {group:'F组', country:'🇧🇪 比利时', city:'悉尼'},
+  {group:'B组', country:'🇬🇷 希腊', city:'悉尼'},
+  {group:'F组', country:'🇪🇸 西班牙', city:'悉尼'},
+  {group:'C组', country:'🇮🇹 意大利', city:'珀斯'},
+  {group:'D组', country:'🇦🇺 澳大利亚', city:'悉尼'},
+  {group:'A组', country:'🇭🇷 克罗地亚', city:'珀斯'},
+  {group:'E组', country:'🇩🇪 德国', city:'珀斯'},
+  {group:'F组', country:'🇦🇷 阿根廷', city:'悉尼'},
+  {group:'B组', country:'🇭🇺 匈牙利', city:'悉尼'},
+  {group:'D组', country:'🇬🇧 英国', city:'悉尼'},
+  {group:'E组', country:'🇨🇭 瑞士', city:'珀斯'},
+  {group:'A组', country:'🇰🇿 哈萨克斯坦', city:'珀斯'},
+  {group:'C组', country:'🇩🇰 丹麦', city:'珀斯'}
 ];
 function table(rows){
   if (!rows.length) return '<div class="rest-sub" style="padding:4px 2px 0">还没有人报名。</div>';
-  const head = '<table class="dataframe filterable-table"><thead><tr><th>种子</th><th>用户名</th><th>分组</th><th>对应国家</th><th>准则</th><th>联合积分</th></tr></thead><tbody>';
+  const head = '<table class="dataframe filterable-table"><thead><tr><th>种子</th><th>用户名</th><th>分组</th><th>城市</th><th>对应国家</th><th>准则</th><th>联合积分</th></tr></thead><tbody>';
   const body = rows.map(function(p, i){
-    const slot = DRAW[i] || {group:'', country:''};
-    return '<tr class="row-alive"><td>'+p.seed+'</td><td>'+esc(p.name)+'</td><td>'+esc(slot.group)+'</td><td>'+esc(slot.country)+'</td><td>'+esc(p.rule)+'</td><td>'+p.comb+'</td></tr>';
+    const slot = DRAW[i] || {group:'', country:'', city:''};
+    return '<tr class="row-alive"><td>'+p.seed+'</td><td>'+esc(p.name)+'</td><td>'+esc(slot.group)+'</td><td>'+esc(slot.city)+'</td><td>'+esc(slot.country)+'</td><td>'+esc(p.rule)+'</td><td>'+p.comb+'</td></tr>';
   }).join('');
   return head+body+'</tbody></table>';
 }
