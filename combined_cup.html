@@ -95,9 +95,25 @@ body.dark .cup-msg.ok{color:#7dcea0;}
 table.cup-tri{width:100%;border-collapse:collapse;margin:0 0 12px;background:transparent;}
 table.cup-tri th,table.cup-tri td{border:1px solid var(--border);padding:7px 6px;text-align:center;vertical-align:middle;background:var(--surface);font-size:13px;}
 table.cup-tri .who{display:block;margin-top:2px;font-weight:500;color:var(--muted);font-size:12px;}
-table.cup-tri td.match{background:var(--surface2);color:var(--ink2);}
-table.cup-tri td.on{background:var(--primary-dim);color:var(--primary-dark);font-weight:700;}
+table.cup-tri td.match{background:var(--surface2);color:var(--ink2);padding:0;}
+table.cup-tri td.on{background:var(--primary-dim);color:var(--primary-dark);font-weight:700;padding:0;}
 table.cup-tri td.low,table.cup-tri td.diag{background:var(--bg);color:transparent;}
+.cup-cell{font:inherit;font-size:13px;font-weight:700;color:inherit;width:100%;min-height:36px;border:0;background:transparent;cursor:pointer;padding:7px 6px;}
+.cup-cell:hover,.cup-cell:focus-visible{background:var(--primary-rim);}
+.cup-dlg{position:fixed;top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);margin:0;border:1px solid var(--border);border-radius:16px;padding:0;background:var(--surface);color:var(--ink);width:min(420px, calc(100% - 32px));max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 16px 40px rgba(5,20,32,.18);}
+.cup-dlg::backdrop{background:rgba(5,20,32,.45);}
+.cup-dlg form{display:flex;flex-direction:column;gap:12px;padding:20px;}
+.cup-dlg-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.cup-dlg h3{margin:4px 0 0;font-family:"Songti SC","STSong",serif;font-size:22px;}
+.cup-sides{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;}
+.cup-side{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
+.cup-side b{display:block;font-size:16px;}
+.cup-side span{display:block;margin-top:4px;color:var(--muted);font-size:13px;}
+.cup-vs{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
+.cup-field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted);}
+.cup-field .cup-input{width:100%;box-sizing:border-box;}
+.cup-dlg .pill-btn{align-self:flex-start;}
+.cup-dlg .pill-btn:disabled{opacity:.45;cursor:not-allowed;}
 @media(max-width:900px){.cup-grid,.cup-cities{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -186,7 +202,7 @@ table.cup-tri td.low,table.cup-tri td.diag{background:var(--bg);color:transparen
     </article>
 </section>
 <section class="block">
-    <h2 class="block-hd">小组赛日程 <span class="block-note">点一天，只看当天有比赛的小组。上三角是对阵日期，深色格子是这一天。组里三名玩家都要选。</span></h2>
+    <h2 class="block-hd">小组赛日程 <span class="block-note">点一天，只看当天有比赛的小组。点格子选出这场的胜者，下拉框里是这一组要选的玩家。</span></h2>
     <div class="cup-days" id="cupDays">
         <button type="button" class="cup-day" data-day="1" aria-pressed="true">1月1日</button>
         <button type="button" class="cup-day" data-day="2" aria-pressed="false">1月2日</button>
@@ -197,6 +213,26 @@ table.cup-tri td.low,table.cup-tri td.diag{background:var(--bg);color:transparen
     </div>
     <div class="cup-cities" id="cupCities"></div>
 </section>
+<dialog id="pickDlg" class="cup-dlg">
+    <form>
+        <div class="cup-dlg-hd">
+            <div>
+                <span class="ev-eye" id="pickMeta"></span>
+                <h3 id="pickTitle">对阵</h3>
+            </div>
+            <button type="button" class="chip-btn" id="pickClose">关闭</button>
+        </div>
+        <div class="cup-sides" id="pickSides"></div>
+        <label class="cup-field">玩家
+            <select class="cup-input" id="pickPlayer"></select>
+        </label>
+        <label class="cup-field">密码
+            <input class="cup-input" type="password" id="pickCode" placeholder="报名时设的密码" autocomplete="current-password">
+        </label>
+        <button type="button" class="pill-btn cup-go" id="pickSubmit" disabled>提交选择</button>
+        <p class="rest-sub" id="pickHint">模拟按钮，暂时不能提交。</p>
+    </form>
+</dialog>
 <section class="block">
     <h2 class="block-hd">报名</h2>
     <form class="ev-card cup-form" id="form">
@@ -365,6 +401,7 @@ const GROUP_STAGE = [
   {id:'F', city:'悉尼', seeds:[6,8,13], ties:[[0,2,3],[1,2,4],[0,1,6]]}
 ];
 let pickDay = 1;
+let lastLive = [];
 function countryName(country){
   const parts = String(country).split(' ');
   return parts[parts.length - 1] || country;
@@ -387,7 +424,8 @@ function groupTable(group, bySeed){
       if (j < i) return '<td class="low"></td>';
       if (j === i) return '<td class="diag"></td>';
       const day = tieDay[i+','+j];
-      return '<td class="'+(day === pickDay ? 'on' : 'match')+'">1月'+day+'日</td>';
+      if (day !== pickDay) return '<td class="match">1月'+day+'日</td>';
+      return '<td class="on"><button type="button" class="cup-cell" data-gid="'+group.id+'" data-i="'+i+'" data-j="'+j+'">1月'+day+'日</button></td>';
     }).join('');
     return '<tr><th>'+label(seed)+'</th>'+cells+'</tr>';
   }).join('');
@@ -430,6 +468,7 @@ function render(){
   const live = select(pool);
   const isClosed = closed();
   document.getElementById('liveTable').innerHTML = table(live);
+  lastLive = live;
   renderSchedule(live);
   document.getElementById('liveTitle').textContent = isClosed ? '正式名单' : '入选名单';
   let meta = '已报名 '+regs.length+' 人 · 入选 '+live.length+' 人';
@@ -518,6 +557,43 @@ function removeName(name, code){
   render();
   return true;
 }
+function sideCard(seed){
+  const slot = DRAW[seed - 1];
+  return '<div class="cup-side"><b>'+esc(slot.country)+'</b></div>';
+}
+function openPick(groupId, i, j){
+  const group = GROUP_STAGE.filter(function(item){ return item.id === groupId; })[0];
+  if (!group) return;
+  const bySeed = {};
+  lastLive.forEach(function(row){ bySeed[row.seed] = row; });
+  const left = group.seeds[i];
+  const right = group.seeds[j];
+  const day = group.ties.filter(function(tie){
+    return (tie[0] === i && tie[1] === j) || (tie[0] === j && tie[1] === i);
+  })[0];
+  document.getElementById('pickMeta').textContent = group.city+' · '+group.id+'组 · 1月'+(day ? day[2] : '')+'日';
+  document.getElementById('pickTitle').textContent = countryName(DRAW[left - 1].country)+' 对 '+countryName(DRAW[right - 1].country);
+  document.getElementById('pickSides').innerHTML = sideCard(left)+'<span class="cup-vs">对阵</span>'+sideCard(right);
+  const options = group.seeds.map(function(seed){
+    const row = bySeed[seed];
+    if (!row) return '';
+    const slot = DRAW[seed - 1];
+    return '<option value="'+esc(row.name)+'">'+esc(row.name)+' · '+esc(countryName(slot.country))+'</option>';
+  }).join('');
+  const player = document.getElementById('pickPlayer');
+  player.innerHTML = options || '<option value="">这一组还没有玩家</option>';
+  player.disabled = !options;
+  document.getElementById('pickCode').value = '';
+  document.getElementById('pickDlg').showModal();
+}
+document.getElementById('cupCities').addEventListener('click', function(ev){
+  const btn = ev.target.closest('.cup-cell');
+  if (!btn) return;
+  openPick(btn.dataset.gid, Number(btn.dataset.i), Number(btn.dataset.j));
+});
+document.getElementById('pickClose').addEventListener('click', function(){
+  document.getElementById('pickDlg').close();
+});
 document.getElementById('cupDays').addEventListener('click', function(ev){
   const btn = ev.target.closest('.cup-day');
   if (!btn) return;
