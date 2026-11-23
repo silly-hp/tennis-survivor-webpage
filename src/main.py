@@ -55,6 +55,8 @@ from finals_settlement import (
     finals_player_sets,
     finals_score_name,
     is_year_end_final,
+    scoring_removed_names,
+    scoring_removed_value,
 )
 from live_settlement import (
     day1_out_points,
@@ -103,20 +105,36 @@ COL_ZH_DICT = {
 }
 
 
+def _removed_for_scoring(tour_cfg):
+    """Removed cities for this week's scoring, without this year's finals."""
+    tour_cfg = tour_cfg or {}
+    return scoring_removed_value(
+        tour_cfg.get("removed_tournament_name"),
+        tour_cfg.get("name"),
+        tour_cfg.get("event"),
+    )
+
+
 def _expired_label(tour_cfg) -> str:
     """Last year's event(s) whose points drop out this week, e.g. ``2025九江``."""
-    removed = (tour_cfg or {}).get("removed_tournament_name")
-    names = [removed] if isinstance(removed, str) else list(removed or [])
-    names = [str(n).strip() for n in names if n and str(n).strip()]
+    tour_cfg = tour_cfg or {}
+    names = scoring_removed_names(
+        tour_cfg.get("removed_tournament_name"),
+        tour_cfg.get("name"),
+        tour_cfg.get("event"),
+    )
     year = int((cfg or {}).get("year") or datetime.today().year) - 1
     return "、".join(f"{year}{n}" for n in names) or "无"
 
 
 def _removed_point_header(tour_cfg) -> str:
     """Live-ranking column label, e.g. ``扣除积分（九江）``."""
-    removed = (tour_cfg or {}).get("removed_tournament_name")
-    names = [removed] if isinstance(removed, str) else list(removed or [])
-    names = [str(n).strip() for n in names if n and str(n).strip()]
+    tour_cfg = tour_cfg or {}
+    names = scoring_removed_names(
+        tour_cfg.get("removed_tournament_name"),
+        tour_cfg.get("name"),
+        tour_cfg.get("event"),
+    )
     if not names:
         return "扣除积分"
     return f"扣除积分（{'、'.join(names)}）"
@@ -254,7 +272,7 @@ def _closed_day_boards(
             )
             table = build_ranking_table(
                 rank_df=rank_df,
-                removed_tournament_name=tour_cfg.get("removed_tournament_name"),
+                removed_tournament_name=_removed_for_scoring(tour_cfg),
                 **kwargs,
             ).rename(COL_ZH_DICT, axis=1)
             race = build_ranking_table(rank_df=race_df, **kwargs)
@@ -360,7 +378,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
             day=day,
             bye_rate=tour_cfg["bye_rate"],
             new_tournament_name=tour_cfg.get("name", ""),
-            removed_tournament_name=tour_cfg.get("removed_tournament_name"),
+            removed_tournament_name=_removed_for_scoring(tour_cfg),
             tour=tour_label,
         ).rename(COL_ZH_DICT, axis=1)
         race = (
@@ -506,7 +524,7 @@ def build_tour_tables(tour_cfg, tour_code, tour_label):
         day=day,
         bye_rate=tour_cfg["bye_rate"],
         new_tournament_name=tour_cfg["name"],
-        removed_tournament_name=tour_cfg.get("removed_tournament_name"),
+        removed_tournament_name=_removed_for_scoring(tour_cfg),
         tour=tour_label,
         use_settled_score=use_settled,
         bye_user_ids=bye_users if day == 1 else None,
@@ -961,8 +979,8 @@ def update_rank_pages(
             wta_event=wta_cfg_local.get("name"),
             atp_event_id=atp_cfg_local.get("event"),
             wta_event_id=wta_cfg_local.get("event"),
-            atp_removed=atp_cfg_local.get("removed_tournament_name"),
-            wta_removed=wta_cfg_local.get("removed_tournament_name"),
+            atp_removed=_removed_for_scoring(atp_cfg_local),
+            wta_removed=_removed_for_scoring(wta_cfg_local),
             year=(cfg or {}).get("year"),
             updated=datetime.now().strftime(datetime_format),
             output_dir="..",

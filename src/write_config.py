@@ -10,6 +10,7 @@ from bye import get_draw_info
 from logger import get_logger
 from pathlib import Path
 from parser import get_coordinates, fetch_event_detail, fetch_survivor_calendar_event_df
+from finals_settlement import scoring_removed_value
 from points_calculation import (
     ATP_MANDATORY,
     GRAND_SLAMS,
@@ -428,7 +429,15 @@ def build_tour_config(
 
     if saved_id != current_id:
         if event_dict is None:
-            config_dict = {"event": None, "name": None, "week_start_date": None}
+            kept = scoring_removed_value(
+                config.get(tour_label, {}).get("removed_tournament_name")
+            )
+            config_dict = {
+                "event": None,
+                "name": None,
+                "week_start_date": None,
+                "removed_tournament_name": kept,
+            }
             config_manager.update({tour_label: config_dict})
             logger.info("Clear %s event in YAML (no ongoing tournament)", tour_label)
             return config_dict
@@ -437,17 +446,22 @@ def build_tour_config(
             "name": event_dict["city"],
             "week_start_date": event_dict["week_start_date"].strftime("%Y-%m-%d"),
         }
-        week_names = _resolve_removed_names(tour_flag, event_dict, current_id)
+        raw_removed = _resolve_removed_names(tour_flag, event_dict, current_id)
+        week_names = scoring_removed_value(
+            raw_removed,
+            event_dict.get("city"),
+            current_id,
+        )
         if week_names:
-            config_dict["removed_tournament_name"] = (
-                week_names[0] if len(week_names) == 1 else week_names
-            )
+            config_dict["removed_tournament_name"] = week_names
         else:
-            # No corresponding week last year (empty slot) — nothing to remove.
+            # Empty slot last year, or this week is the year-end final itself.
             config_dict["removed_tournament_name"] = None
             logger.info(
-                f"{tour_flag} {event_dict.get('city')}: no last-year counterpart; "
-                f"removed_tournament_name=null"
+                "%s %s: removed_tournament_name=null (last year %s)",
+                tour_flag,
+                event_dict.get("city"),
+                raw_removed or "∅",
             )
 
         if current_id is not None:
@@ -478,11 +492,10 @@ def build_tour_config(
     # Same event: still refresh −52w removed mapping (algorithm / calendar drift).
     config_dict = dict(config.get(tour_label) or {})
     if valid_flag and event_dict is not None:
-        week_names = _resolve_removed_names(tour_flag, event_dict, current_id)
-        new_removed = (
-            week_names[0]
-            if len(week_names) == 1
-            else (week_names if week_names else None)
+        new_removed = scoring_removed_value(
+            _resolve_removed_names(tour_flag, event_dict, current_id),
+            event_dict.get("city"),
+            current_id,
         )
         if config_dict.get("removed_tournament_name") != new_removed:
             config_dict["removed_tournament_name"] = new_removed

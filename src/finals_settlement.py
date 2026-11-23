@@ -66,6 +66,56 @@ def finals_score_name(event_name: str | None = None, event_id: str | None = None
     return name
 
 
+def scoring_removed_names(
+    removed,
+    event_name: str | None = None,
+    event_id: str | None = None,
+) -> list[str]:
+    """Cities whose points drop this week.
+
+    A year-end final is one points key. When this week's event is that final
+    and last year's edition uses the same key (都灵), dropping it subtracts
+    the final that just finished. The new score overwrites the key instead.
+    With no event this week, a leftover finals key is not deducted either.
+    """
+    if removed is None:
+        names: list[str] = []
+    elif isinstance(removed, str):
+        text = removed.strip()
+        names = [text] if text else []
+    else:
+        names = []
+        for item in removed:
+            text = str(item or "").strip()
+            if text and text not in names:
+                names.append(text)
+
+    city = str(event_name or "").strip()
+    eid = str(event_id or "").strip()
+    if is_year_end_final(city, eid):
+        points = finals_score_name(city, eid)
+        skip = {n for n in (points, city) if n}
+        return [n for n in names if n not in skip]
+    if not city and not eid:
+        finals_keys = set(FINALS_ONLY_CITIES) | {WTA_FINALS_POINTS_NAME}
+        return [n for n in names if n not in finals_keys]
+    return names
+
+
+def scoring_removed_value(
+    removed,
+    event_name: str | None = None,
+    event_id: str | None = None,
+):
+    """``None``, one city, or a list — same shape as ``removed_tournament_name``."""
+    names = scoring_removed_names(removed, event_name, event_id)
+    if not names:
+        return None
+    if len(names) == 1:
+        return names[0]
+    return names
+
+
 def _as_key(value: object) -> str:
     if value is None or (isinstance(value, float) and pd.isna(value)):
         return ""
